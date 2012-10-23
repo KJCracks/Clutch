@@ -256,10 +256,9 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
     struct fat_arch armv6, armv7, armv7s;
     
 	if (fh->magic == FAT_CIGAM) {
+        bool has_armv7 = FALSE, has_armv6 = FALSE;
        // uint32_t armv7_subtype = 0x09;
         //uint32_t armv6_subtype = 0x06;
-        uint32_t armv7s_subtype = 0x11;
-        
         VERBOSE("binary is a fat executable");
 		// fat binary
 		//uint32_t bin_nfat_arch;
@@ -272,20 +271,22 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                 armv6 = *arch;
                 archcount++;
                 VERBOSE("found armv6");
-                printf("### ARMV6 offset %u\n", CFSwapInt32(armv6.offset));
-                printf("armv6 subtype %u\n", arch->cpusubtype);
+                //printf("### ARMV6 offset %u\n", CFSwapInt32(armv6.offset));
+                //printf("armv6 subtype %u\n", arch->cpusubtype);
+                has_armv6 = TRUE;
             }
             else if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
                 armv7 = *arch;
                 archcount++;
                 VERBOSE("found armv7");
-                printf("### ARMV7 offset %u\n", CFSwapInt32(armv7.offset));
-                printf("armv7 subtype %u\n", arch->cpusubtype);
+                //printf("### ARMV7 offset %u\n", CFSwapInt32(armv7.offset));
+                //printf("armv7 subtype %u\n", arch->cpusubtype);
+                has_armv7 = TRUE;
             }
             else if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
                 armv7s = *arch;
                 VERBOSE("found armv7s");
-                printf("armv7s subtype %u\n", arch->cpusubtype);
+                //printf("armv7s subtype %u\n", arch->cpusubtype);
                 archcount++;
             }
             arch++;
@@ -319,20 +320,25 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 		if (local_arch != ARMV6) {
             VERBOSE("Application is a fat binary, cracking all architectures...");
             NOTIFY("Dumping ARMV7 portion...");
-            printf("armv7 offset %d", CFSwapInt32(armv7.offset));
+            //printf("armv7 offset %d", CFSwapInt32(armv7.offset));
 			// crack the armv7 portion
 			if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath)) {
                 stop_bar();
 				*error = @"Cannot crack ARMV7 portion of fat binary.";
 				goto c_err;
 			}
-			
+            
+            if (!has_armv6) {
+                NOTIFY("Application has no ARMV6 portion, yay!");
+                goto c_complete;
+            }
 			// we need to move the binary temporary as well as the decryption key names
 			// this avoids the IV caching problem with fat binary cracking (and allows us to crack
 			// the armv6 portion)
+            
 			VERBOSE("Preparing to crack ARMV6 portion...");
 			// move the binary first
-			printf("armv6 offset %d", CFSwapInt32(armv6.offset));
+			//printf("armv6 offset %d", CFSwapInt32(armv6.offset));
 			NSString *orig_old_path = binaryPath; // save old binary path
 			binaryPath = [binaryPath stringByAppendingString:@"_lwork"]; // new binary path
 			[[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:binaryPath error: NULL]; 
@@ -351,10 +357,10 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 
 
             NOTIFY("Swapping architectures");
-            bool swap1, swap2;
+            bool swap1 = FALSE, swap2 = FALSE;
             struct fat_arch* arch = (struct fat_arch *) &fh[1];
             for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-                printf("swag yolo %i\n", CFSwapInt32(arch->cpusubtype));
+                //printf("swag yolo %i\n", CFSwapInt32(arch->cpusubtype));
                 if (CFSwapInt32(arch->cpusubtype) == ARMV6) {
                     arch->cpusubtype = ARMV7_SUBTYPE;
                     VERBOSE("found armv6");
@@ -544,6 +550,11 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 	}
 	
 	fclose(newbinary); // close the new binary stream
+	fclose(oldbinary); // close the old binary stream
+	return finalPath; // return cracked binary path
+	
+c_complete:
+    fclose(newbinary); // close the new binary stream
 	fclose(oldbinary); // close the old binary stream
 	return finalPath; // return cracked binary path
 	

@@ -15,7 +15,7 @@ char buffer[4096];
 char old_buffer[4096];
 FILE *oldbinary;
 struct fat_header* fh;
-
+BOOL stripHeader = FALSE;
 
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface

@@ -321,7 +321,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
     struct fat_arch armv6, armv7, armv7s;
     
 	if (fh->magic == FAT_CIGAM) {
-        bool has_armv7 = FALSE, has_armv6 = FALSE;
+        bool has_armv7s = FALSE, has_armv7 = FALSE, has_armv6 = FALSE;
        // uint32_t armv7_subtype = 0x09;
         //uint32_t armv6_subtype = 0x06;
         VERBOSE("binary is a fat executable");
@@ -353,6 +353,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                 VERBOSE("found armv7s");
                 //printf("armv7s subtype %u\n", arch->cpusubtype);
                 archcount++;
+                has_armv7s = TRUE;
             }
             arch++;
         }
@@ -385,10 +386,156 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 		
 		//fread(&armv6, sizeof(struct fat_arch), 1, oldbinary);
 		//fread(&armv7, sizeof(struct fat_arch), 1, oldbinary);
-		
         
-       
-		if (local_arch != ARMV6) {
+        
+        // right so this cracking shit works like this, you can crack armv6 on armv7 & armv7s
+        // but you can't crack armv7 or armv7s on armv6 so we need to figure out what arch
+        // we are on and from there crack only the ones we can and discard the ones we can't
+        // else they will fail if the binary is loaded onto onto a system that uses that arch
+        
+        if (local_arch == ARMV7S) {
+            VERBOSE("We are on an ARMV7S device.");
+            VERBOSE("Application is a fat binary, cracking all architectures...");
+            NOTIFY("Dumping ARMV7S portion...");
+            
+            if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7s.offset), binaryPath)) {
+                stop_bar();
+                *error = @"Cannot crack ARMV7S portion of fat binary.";
+                goto c_err;
+            }
+            
+            if (!has_armv7) {
+                NOTIFY("Application has no ARMV7 portion..."); // unlikely 
+                goto c_complete;
+            }
+            
+            // we need to move the binary temporarily as well as the decryption key names
+            // this avoids the IV caching problem with fat binary cracking (and allows us yo
+            // crack armv6 & armv7 portions
+            
+            VERBOSE("Preparing to crack ARMV7 portion...");
+            
+            NSString *orig_old_path = binaryPath; // save old binary path;
+            binaryPath = [binaryPath stringByAppendingString:@"_lwork"]; // new binary path
+            [[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:binaryPath error:NULL];
+            fclose(oldbinary);
+            oldbinary = fopen([binaryPath UTF8String], "r+");
+            
+            //move the SC_Info keys
+            
+            NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
+            
+            [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork.sinf"] error:NULL];
+            [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork.supp"] error:NULL];
+            
+            // swap the arches
+            
+            NOTIFY("Swapping architectures");
+            
+            bool swap1 = FALSE, swap2 = FALSE;
+            struct fat_arch* arch = (struct fat_arch *) &fh[1];
+            for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+                if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
+                    arch->cpusubtype = ARMV7S_SUBTYPE;
+                    VERBOSE("Found armv7");
+                    swap1 = TRUE;
+                } else if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
+                    arch->cpusubtype = ARMV7_SUBTYPE;
+                    VERBOSE("Found armv7s");
+                    swap2 = TRUE;
+                }
+                arch++;
+            }
+            
+            if (swap1 && swap2) {
+                VERBOSE("Swapped ARMV7 & ARMV7S architectures");
+            } else {
+                *error = @"Could not swap ARMV7 & ARMV7S architectures";
+                goto c_err;
+            }
+            
+            fseek(oldbinary, 0, SEEK_SET);
+            fwrite(buffer, sizeof(buffer), 1, oldbinary);
+            
+            PERCENT(-1);
+            
+            NOTIFY("Dumping ARMV7 portion...");
+            
+            BOOL res = dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath);
+            stop_bar();
+            
+            // move the binary and SC_Info keys back
+            [[NSFileManager defaultManager] removeItemAtPath:binaryPath error:NULL];
+            [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork.sinf"] toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
+			[[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork.supp"] toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
+            
+            fclose(oldbinary);
+            
+            if (!res) {
+                *error = @"Cannot crack ARMV7 portion of fat binary.";
+                goto c_err;
+            }
+            
+            if (archcount == 3) {
+                // Woah mama
+                NOTIFY("Monseter binary detected!");
+                VERBOSE("Preparing to crack ARMV6 portion.");
+                
+                binaryPath = orig_old_path;
+                binaryPath = [binaryPath stringByAppendingString:@"_lwork2"]; //new binary path
+                [[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:binaryPath error:NULL];
+                
+                oldbinary = fopen([binaryPath UTF8String], "r+");
+                
+                // move SC_Info keys
+                NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
+                
+                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork2.sinf"] error:NULL];
+                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork2.supp"] error:NULL];
+                
+                NOTIFY("Swapping architectures (again)");
+                
+                fread(&buffer, sizeof(buffer), 1, oldbinary);
+                fh = (struct fat_header*)(buffer);
+                arch = (struct fat_arch*) &fh[1];
+                swap1 = FALSE; swap2 = FALSE;
+                
+                for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+                    if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
+                        arch->cpusubtype = ARMV6_SUBTYPE;
+                        VERBOSE("Found ARMV7");
+                        swap1 = TRUE;
+                    } else if (CFSwapInt32(arch->cpusubtype) == ARMV6) {
+                        arch->cpusubtype = ARMV7_SUBTYPE;
+                        VERBOSE("Found ARMV6");
+                        swap2 = TRUE;
+                    }
+                    
+                    arch++;
+                }
+                
+                if (swap1 && swap2) {
+                    VERBOSE("Swapped both architectures (again)");
+                } else {
+                    *error = @"Could not swap architectures (again)";
+                    goto c_err;
+                }
+                
+                fseek(oldbinary, 0, SEEK_SET);
+                fwrite(buffer, sizeof(buffer), 1, oldbinary);
+                
+                res = dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath);
+                stop_bar();
+                
+                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork2.sinf"] toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
+                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork2.supp"] toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
+                
+                if (!res) {
+                    *error = @"Cannot crack ARMV7S portion of fat binary.";
+                    goto c_err;
+                }
+            }
+        } else if (local_arch == ARMV7) {
             VERBOSE("Application is a fat binary, cracking all architectures...");
             NOTIFY("Dumping ARMV7 portion...");
             //printf("armv7 offset %d", CFSwapInt32(armv7.offset));
@@ -491,77 +638,6 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 				*error = @"Cannot crack ARMV6 portion of fat binary.";
 				goto c_err;
 			}
-            
-            if (archcount == 3) {
-                NOTIFY("Monster binary detected!");
-                
-                VERBOSE("Preparing to crack ARMV7S portion...");
-                // move the binary first
-                binaryPath = orig_old_path;
-                printf("armv7s offset %d", CFSwapInt32(armv7s.offset));
-                binaryPath = [binaryPath stringByAppendingString:@"_lwork2"]; // new binary path
-                [[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:binaryPath error: NULL]; 
-                //[[NSFileManager defaultManager] moveItemAtPath:orig_old_path toPath:binaryPath error:NULL];
- 
-                oldbinary = fopen([binaryPath UTF8String], "r+");
-                
-                // move the SC_Info keys
-                
-                NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
-                
-                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork2.sinf"] error:NULL];
-                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork2.supp"] error:NULL];
-                
-                NOTIFY("Swapping architectures (again)");
-                
-                fread(&buffer, sizeof(buffer), 1, oldbinary);
-                fh = (struct fat_header*) (buffer);
-                arch = (struct fat_arch *) &fh[1];
-                swap1 = FALSE, swap2 = FALSE; 
-                
-                for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-                    printf("swag yolo %i\n", CFSwapInt32(arch->cpusubtype));
-                    if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
-                        arch->cpusubtype = ARMV7S_SUBTYPE;
-                        VERBOSE("found armv7");
-                        swap1 = TRUE;
-                    }
-                    else if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
-                        arch->cpusubtype = ARMV7_SUBTYPE;
-                        VERBOSE("found armv7s");
-                        swap2 = TRUE;
-                        
-                    }
-                    arch++;
-                }
-                if (swap1 && swap2) {
-                    VERBOSE("swapped both architectures");
-                }
-                else {
-                    *error = @"Could not swap architectures";
-                    goto c_err;
-                }
-
-                fseek(oldbinary, 0, SEEK_SET);
-                fwrite(buffer, sizeof(buffer), 1, oldbinary);
-                
-                //crack it
-                res = dump_binary(oldbinary, newbinary, CFSwapInt32(armv7s.offset), binaryPath);
-                stop_bar();
-                
-                //derp
-                
-                //move it back like a baws
-                //[[NSFileManager defaultManager] removeItemAtPath:binaryPath error:NULL];
-                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork2.sinf"] toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
-                [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork2.supp"] toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
-                
-                if (!res) {
-                    *error = @"Cannot crack ARMV7S portion of fat binary.";
-                    goto c_err;
-                }
-                
-            }
 		} else {
             VERBOSE("Application is a fat binary, only cracking ARMV6 portion (we are on an ARMV6 device)...");
             NOTIFY("Dumping ARMV6 portion...");

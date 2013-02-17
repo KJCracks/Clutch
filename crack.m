@@ -110,7 +110,10 @@ NSString * crack_application(NSString *application_basedir, NSString *basename) 
 										  @"", @"versionRestrictions",
 										  @"", @"com.apple.iTunesStore.downloadInfo",
 										  @"", @"bundleVersion",
-										  @"", @"bundleShortVersionString", nil];
+										  @"", @"bundleShortVersionString",
+                                          @"", @"product-type",
+                                          @"", @"is-purchased-redownload",
+                                          @"", @"asset-info", nil];
 			for (id plistItem in metadataPlist) {
 				if (([noCensorList objectForKey:plistItem] == nil) && ([censorList objectForKey:plistItem] == nil)) {
 					printf("\033[0;37;41mwarning: iTunesMetadata.plist item named '\033[1;37;41m%s\033[0;37;41m' is unrecognized\033[0m\n", [plistItem UTF8String]);

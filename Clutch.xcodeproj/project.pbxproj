@@ -10,12 +10,12 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		41261396141B5CFA006DBF89 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 41261395141B5CFA006DBF89 /* scinfo.m */; };
-		4155391C1238256D008EE206 /* crack.m in Sources */ = {isa = PBXBuildFile; fileRef = 4155391B1238256D008EE206 /* crack.m */; };
 		4155393D12387017008EE206 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 4155393C12387017008EE206 /* sha1.c */; };
-		4155396A12387DF8008EE206 /* dump.m in Sources */ = {isa = PBXBuildFile; fileRef = 4155396912387DF8008EE206 /* dump.m */; };
 		41C30A2914311408008C17DB /* out.m in Sources */ = {isa = PBXBuildFile; fileRef = 41C30A2814311408008C17DB /* out.m */; };
 		41E0DF0B123752D30068268F /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E0DF0A123752D30068268F /* Configuration.m */; };
 		41E0DFD3123823030068268F /* applist.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E0DFD2123823030068268F /* applist.m */; };
+		E9A607E616CFE8BE00129C9A /* crack.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A607E316CFE8BE00129C9A /* crack.m */; };
+		E9A607E716CFE8BE00129C9A /* dump.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A607E516CFE8BE00129C9A /* dump.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,12 +25,8 @@
 		32CA4F630368D1EE00C91783 /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clutch_Prefix.pch; sourceTree = "<group>"; };
 		41261392141B5C8D006DBF89 /* scinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scinfo.h; sourceTree = "<group>"; };
 		41261395141B5CFA006DBF89 /* scinfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = scinfo.m; sourceTree = "<group>"; };
-		4155391A1238256D008EE206 /* crack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crack.h; sourceTree = "<group>"; };
-		4155391B1238256D008EE206 /* crack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = crack.m; sourceTree = "<group>"; };
 		4155393B12387017008EE206 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		4155393C12387017008EE206 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
-		4155396812387DF8008EE206 /* dump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dump.h; sourceTree = "<group>"; };
-		4155396912387DF8008EE206 /* dump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dump.m; sourceTree = "<group>"; };
 		41C30A2814311408008C17DB /* out.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = out.m; sourceTree = "<group>"; };
 		41C30A2A14311416008C17DB /* out.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = out.h; sourceTree = "<group>"; };
 		41E0DF09123752D30068268F /* Configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Configuration.h; path = Classes/Configuration.h; sourceTree = "<group>"; };
@@ -38,6 +34,10 @@
 		41E0DFD1123823030068268F /* applist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = applist.h; sourceTree = "<group>"; };
 		41E0DFD2123823030068268F /* applist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = applist.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Clutch-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		E9A607E216CFE8BE00129C9A /* crack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crack.h; sourceTree = "<group>"; };
+		E9A607E316CFE8BE00129C9A /* crack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = crack.m; sourceTree = "<group>"; };
+		E9A607E416CFE8BE00129C9A /* dump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dump.h; sourceTree = "<group>"; };
+		E9A607E516CFE8BE00129C9A /* dump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dump.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,14 +82,14 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				4155391A1238256D008EE206 /* crack.h */,
-				4155391B1238256D008EE206 /* crack.m */,
+				E9A607E216CFE8BE00129C9A /* crack.h */,
+				E9A607E316CFE8BE00129C9A /* crack.m */,
+				E9A607E416CFE8BE00129C9A /* dump.h */,
+				E9A607E516CFE8BE00129C9A /* dump.m */,
 				41C30A2814311408008C17DB /* out.m */,
 				41C30A2A14311416008C17DB /* out.h */,
 				41261392141B5C8D006DBF89 /* scinfo.h */,
 				41261395141B5CFA006DBF89 /* scinfo.m */,
-				4155396812387DF8008EE206 /* dump.h */,
-				4155396912387DF8008EE206 /* dump.m */,
 				4155393B12387017008EE206 /* sha1.h */,
 				4155393C12387017008EE206 /* sha1.c */,
 				32CA4F630368D1EE00C91783 /* Clutch_Prefix.pch */,
@@ -211,11 +211,11 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				41E0DF0B123752D30068268F /* Configuration.m in Sources */,
 				41E0DFD3123823030068268F /* applist.m in Sources */,
-				4155391C1238256D008EE206 /* crack.m in Sources */,
 				4155393D12387017008EE206 /* sha1.c in Sources */,
-				4155396A12387DF8008EE206 /* dump.m in Sources */,
 				41261396141B5CFA006DBF89 /* scinfo.m in Sources */,
 				41C30A2914311408008C17DB /* out.m in Sources */,
+				E9A607E616CFE8BE00129C9A /* crack.m in Sources */,
+				E9A607E716CFE8BE00129C9A /* dump.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

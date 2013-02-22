@@ -4,21 +4,18 @@
 #import <unistd.h>
 #import <mach/mach_traps.h>
 #import <mach/mach.h>
-#include <mach-o/dyld.h>
-#include <dlfcn.h>
 #import "out.h"
 #import "crack.h"
+
+#include <mach-o/dyld.h>
+#include <dlfcn.h>
 
 #define OVERDRIVE_DYLIB_PATH "@executable_path/overdrive.dylib"
 #define OVERDRIVE_DYLIB_CURRENT_VER 0x20000
 #define OVERDRIVE_DYLIB_COMPATIBILITY_VERSION 0x20000
 
-void sha1(uint8_t *hash, uint8_t *data, size_t size);
-BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath);
-
 #define LC_CODE_SIGNATURE  0x1d
 #define LC_ENCRYPTION_INFO 0x21
-
 #define LC_SEGMENT 0x1
 
 #define MH_PIE 0x200000
@@ -26,6 +23,11 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 #define CSSLOT_CODEDIRECTORY 0
 
 #define PT_TRACE_ME 0
+
+
+void sha1(uint8_t *hash, uint8_t *data, size_t size);
+BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath);
+
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
 
 struct BlobIndex {

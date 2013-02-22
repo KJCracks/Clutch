@@ -232,6 +232,7 @@ NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSSt
 	
 	return ret;
 }
+
 FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch) {
     int local_arch = get_local_arch();
     if (local_arch == swaparch) {
@@ -258,7 +259,6 @@ FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseNam
     bool swap1 = FALSE, swap2 = FALSE;
     int i;
     for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-        //printf("swag yolo %i\n", CFSwapInt32(arch->cpusubtype));
         if (CFSwapInt32(arch->cpusubtype) == local_arch) {
             switch (swaparch) {
                 case ARMV7S:
@@ -308,6 +308,7 @@ FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseNam
     
     return oldbinary;
 }
+
 NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **error) {
     int local_arch = get_local_arch(); // get the local architecture
     
@@ -325,16 +326,238 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 	//uint32_t bin_magic;
 	//fread(&bin_magic, 4, 1, oldbinary);
 	//fseek(oldbinary, 0, SEEK_SET);
-    printf("yolo");
     fread(&buffer, sizeof(buffer), 1, oldbinary);
     
     fh = (struct fat_header*) (buffer);
-    
-    printf("fat magic %u\n", fh->magic);
-    
+        
     struct fat_arch armv6, armv7, armv7s;
     
-	if (fh->magic == FAT_CIGAM) {
+    
+
+    /* TESTING CODE FOR DUMPING INCLUDING STRIPPING
+     * DON'T RELY ON THIS OR EXPECT IT TO WORK MA NIGGAS
+     */
+    
+    
+    if (fh->magic == FAT_CIGAM) {
+        VERBOSE("binary is a fat executable");
+        
+        bool has_armv6 = FALSE;
+        bool has_armv7 = FALSE;
+        bool has_armv7s = FALSE;
+        
+        
+        struct fat_arch *arch;
+        arch = (struct fat_arch *) &fh[1];
+        int i;
+        int archcount = 0;
+        
+        if (local_arch > ARMV6) {
+            // Running on an armv7, armv7s, or higher device
+            
+            for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+                // iterate through the amount of arch types found
+                if (CFSwapInt32(arch->cpusubtype) == ARMV6) {
+                    // ARMV6 portion found
+                    if (local_arch != ARMV6) {
+                        // are we not an ARMV6 device
+                        backupold = oldbinary;
+                        oldbinary = swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
+                        
+                        if (oldbinary == NULL) {
+                            // Swap failed
+                            oldbinary = backupold;
+                        }
+                    }
+                
+                    armv6 = *arch;
+                
+                    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath)) {
+                        // Dumping failed
+                        stop_bar();
+                        *error = @"Cannot crack ARMV6 portion of binary.";
+                        goto c_err;
+                    }
+                
+                    oldbinary = backupold;
+                    archcount++;
+                
+                    VERBOSE("found armv6");
+                    has_armv6 = TRUE;
+                    
+                } else if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
+                    // ARMV7 portion found
+                    if (local_arch != ARMV7) {
+                        // are we not on an ARMV7 device
+                        backupold = oldbinary;
+                        oldbinary = swap_arch(binaryPath, baseDirectory, baseName, ARMV7);
+                        if (oldbinary == NULL) {
+                            // swap failed
+                            oldbinary = backupold;
+                        }
+                    }
+                    
+                    armv7 = *arch;
+                    
+                    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath)) {
+                        // Dumping failed
+                        stop_bar();
+                        *error = @"Cannot crack ARMV7 portion of binary.";
+                        goto c_err;
+                    }
+                    
+                    oldbinary = backupold;
+                    archcount++;
+                    
+                    VERBOSE("found armv7");
+                    
+                    has_armv7 = TRUE;
+                } else if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
+                    // ARMV7S portion found
+                    if (local_arch != ARMV7S) {
+                        // On a non-armv7s device {armv6 || armv7}
+                        // We cannot crack this and need to strip the headers
+                        stripHeader = 1;
+                        VERBOSE("found armv7s but cannot crack it on this device");
+                    } else {
+                        // On an armv7s device
+                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7s.offset), binaryPath)) {
+                            // Dumping failed
+                            stop_bar();
+                            *error = @"Cannot crack ARMV7S portion of binary.";
+                            goto c_err;
+                        }
+                        
+                        armv7s = *arch;
+                        VERBOSE("found armv7s");
+                        has_armv7s = TRUE;
+
+                    }
+                    
+                    archcount++;
+                }
+                
+                arch++;
+            }
+            
+            if (archcount != CFSwapInt32(fh->nfat_arch)) {
+                // Found an incorrect amount of architectures - bailin'
+                *error = @"Could not find correct architectures";
+                goto c_err;
+            }
+        } else if (local_arch == ARMV6) {
+            // Can only crack ARMV6 binaries because we have a shitty device :(
+            
+            VERBOSE("Application is a fat binary, only cracking ARMV6 portion (we are on an ARMV6 device)...");
+            
+            if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath)) {
+                // Dumping failed
+                stop_bar();
+                *error = @"Cannot crack ARMV6 portion.";
+                goto c_err;
+            }
+            
+            stop_bar();
+            
+            VERBOSE("Performing liposuction of ARMV6 mach object...");
+            
+            // Lipo out the data
+			NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
+			FILE *lipoOut = fopen([lipoPath UTF8String], "w+"); // prepare the file stream
+			fseek(newbinary, CFSwapInt32(armv6.offset), SEEK_SET); // go to the armv6 offset
+			void *tmp_b = malloc(0x1000); // allocate a temporary buffer
+			
+			uint32_t remain = CFSwapInt32(armv6.size);
+			
+			while (remain > 0) {
+				if (remain > 0x1000) {
+					// move over 0x1000
+					fread(tmp_b, 0x1000, 1, newbinary);
+					fwrite(tmp_b, 0x1000, 1, lipoOut);
+					remain -= 0x1000;
+				} else {
+					// move over remaining and break
+					fread(tmp_b, remain, 1, newbinary);
+					fwrite(tmp_b, remain, 1, lipoOut);
+					break;
+				}
+			}
+			
+			free(tmp_b); // free temporary buffer
+			fclose(lipoOut); // close lipo output stream
+			fclose(newbinary); // close new binary stream
+			fclose(oldbinary); // close old binary stream
+			
+			[[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // remove old file
+			[[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:finalPath error:NULL]; // move the lipo'd binary to the final path
+			chown([finalPath UTF8String], 501, 501); // adjust permissions
+			chmod([finalPath UTF8String], 0777); // adjust permissions
+			
+			return finalPath;
+		}
+    } else {
+        // Application is a thin binary
+        
+        VERBOSE("Application is a thin binary, cracking single architecture...");
+        NOTIFY("Dumping binary...");
+        
+        if (!dump_binary(oldbinary, newbinary, 0, binaryPath)) {
+            // Dump failed
+            stop_bar();
+            *error = @"Cannot crack thin binary.";
+            goto c_err;
+        }
+        stop_bar();
+    }
+    
+    fclose(newbinary); // close the new binary stream
+    fclose(oldbinary); // close the old binary stream
+    
+#warning strip binaries here - or move off to a seperate thinggiemagig?
+    
+    
+    if (stripHeader == 1) {
+        fread(&buffer, sizeof(buffer), 1, newbinary);
+        struct fat_arch *arch;
+        arch = (struct fat_arch *) &fh[1];
+        int i;
+        
+        for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++){
+        
+            if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
+                // strip the
+                arch->cpusubtype = 0xf000000;
+                arch->cputype = 0xf000000;
+                break;
+            }
+            
+            arch++;
+        }
+        
+        fseek(newbinary, 0, SEEK_SET);
+        fwrite(buffer, sizeof(buffer), 1, newbinary);
+        
+        VERBOSE("wrote new earch information");
+    }
+    
+    
+    
+    return finalPath; // return  cracked binary path
+    
+
+
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+	/*if (fh->magic == FAT_CIGAM) {
         bool has_armv7 = FALSE, has_armv6 = FALSE;
        // uint32_t armv7_subtype = 0x09;
         //uint32_t armv6_subtype = 0x06;
@@ -498,13 +721,13 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
             fseek(oldbinary, 0, SEEK_SET);
             fwrite(buffer, sizeof(buffer), 1, oldbinary);
             
-			/*uint8_t armv7_subtype = 0x09;
+			uint8_t armv7_subtype = 0x09;
 			uint8_t armv6_subtype = 0x06;
 			
 			fseek(oldbinary, 15, SEEK_SET);
 			fwrite(&armv7_subtype, 1, 1, oldbinary);
 			fseek(oldbinary, 35, SEEK_SET);
-			fwrite(&armv6_subtype, 1, 1, oldbinary);*/
+			fwrite(&armv6_subtype, 1, 1, oldbinary);
 			
             PERCENT(-1);
             NOTIFY("Dumping ARMV6 portion...");
@@ -512,12 +735,12 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 			BOOL res = dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath);
 			stop_bar();
             
-			/*
+			
             // swap the architectures back
 			fseek(oldbinary, 15, SEEK_SET);
 			fwrite(&armv6_subtype, 1, 1, oldbinary);
 			fseek(oldbinary, 35, SEEK_SET);
-			fwrite(&armv7_subtype, 1, 1, oldbinary);*/
+			fwrite(&armv7_subtype, 1, 1, oldbinary);
             
                         
 			// move the binary and SC_Info keys back
@@ -664,7 +887,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 	fclose(newbinary); // close the new binary stream
 	fclose(oldbinary); // close the old binary stream
     if (stripHeader == 1) {
-         /* strip armv7s *hopefully */
+          strip armv7s *hopefully 
         fread(&buffer, sizeof(buffer), 1, newbinary);
         fh = (struct fat_header*) (buffer);
         struct fat_arch *arch;
@@ -681,7 +904,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         fwrite(buffer, sizeof(buffer), 1, newbinary);
         VERBOSE("wrote new arch info");
     }
-	return finalPath; // return cracked binary path
+	return finalPath; // return cracked binary path */
 	
 c_complete:
     fclose(newbinary); // close the new binary stream

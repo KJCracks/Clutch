@@ -175,8 +175,8 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 			if (err != KERN_SUCCESS) {
 				free(checksum);
 				kill(pid, SIGKILL);
+                printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
 				return FALSE;
-				printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
 			}
 		}
 		

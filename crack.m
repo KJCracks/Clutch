@@ -392,7 +392,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                 }
                 else if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
                     if (local_arch != ARMV7S) {
-                        stripHeader = TRUE;
+                        stripHeader = 1;
                     }
                     else {
                         armv7s = *arch;
@@ -663,8 +663,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 	
 	fclose(newbinary); // close the new binary stream
 	fclose(oldbinary); // close the old binary stream
-    if (stripHeader == TRUE) {
-        /* strip armv7s *hopefully */
+    if (stripHeader == 1) {
+         /* strip armv7s *hopefully */
         fread(&buffer, sizeof(buffer), 1, newbinary);
         fh = (struct fat_header*) (buffer);
         struct fat_arch *arch;

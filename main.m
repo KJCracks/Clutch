@@ -15,9 +15,11 @@ int main(int argc, char *argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	if (getuid() != 0) {
-		printf("You must be root to use Clutch.\n");
+		printf("You must be root to use \033[1;33mClutch\033[0m.\n");
 		goto endMain;
 	}
+    
+    printf("Welcome to \033[1;31mClutch\033[0m\n\n");
 	
 	// we need to import the configuration file
 	[ClutchConfiguration configWithFile:@"/etc/clutch.conf"];
@@ -28,7 +30,7 @@ int main(int argc, char *argv[]) {
 			printf("There are no encrypted applications on this device.\n");
 			goto endMain;
 		}
-		printf("usage: %s [application name] [...]\n", argv[0]);
+        printf("usage: %s [flags] [application]\n\t-v \t[version]\n\t-a \t[crack all]\n\t-f \t[flush cache]\n\t--overdrive [overdrive]\n\n", argv[0]);
 		printf("Applications available: ");
 		NSEnumerator *e = [applist objectEnumerator];
 		NSDictionary *applicationDetails;
@@ -61,7 +63,7 @@ int main(int argc, char *argv[]) {
 		goto endMain;
 	}
 	
-	if (strncmp(argv[1], "--", 3) == 0) {
+	if (strncmp(argv[1], "-a", 2) == 0) {
 		NSArray *applist = get_application_list(FALSE);
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
@@ -77,7 +79,7 @@ int main(int argc, char *argv[]) {
 			printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
 			ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"]);
 			if (ipapath == nil) {
-				printf("Failed.\n");
+				printf("\033[41mFailed.\033[0m\n");
 			} else {
 				printf("\t%s\n", [ipapath UTF8String]);
 			}
@@ -123,7 +125,7 @@ int main(int argc, char *argv[]) {
 					printf("Cracking %s...\n", [[applicationDetails objectForKey:compareWith] UTF8String]);
 					ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"]);
 					if (ipapath == nil) {
-						printf("Failed.\n");
+						printf("\033[41mFailed.\033[0m\n");
 					} else {
 						printf("\t%s\n", [ipapath UTF8String]);
 					}

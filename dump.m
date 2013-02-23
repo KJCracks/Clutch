@@ -196,7 +196,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 			// move an entire page into memory (we have to move an entire page regardless of whether it's a resultant or not)
 			if((err = vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
                 VERBOSE("dumping binary: failed to dump a page");
-                printf("failed at %i\n", togo);
+                printf("\033[41mfailed at %i\033[0m\n", togo);
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill fork
 				return FALSE;
@@ -255,7 +255,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
                 // is overdrive enabled?
                 if (overdrive_enabled) {
                     // add the overdrive dylib as long as we have room
-                    if ((curloc + overdrive_size) < (buf + 0x1000)) {
+                    if ((curloc + overdrive_size) < (void*)(buf + 0x1000)) {
                         VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;

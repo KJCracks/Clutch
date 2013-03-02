@@ -2,8 +2,8 @@
  Introducing Clutch, the fastest and most advanced cracking utility for the iPhone, iPod Touch, and iPad.
  
  Created by dissident at Hackulo.us (<http://hackulo.us/>)
-  Credit: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
-*/
+ Credit: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
+ */
 
 #import "Configuration.h"
 #import "applist.h"
@@ -15,22 +15,20 @@ int main(int argc, char *argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	if (getuid() != 0) {
-		printf("You must be root to use \033[1;33mClutch\033[0m.\n");
+		printf("You must be root to use ClutchMod.\n");
 		goto endMain;
 	}
-    
-    printf("Welcome to \033[1;31mClutch\033[0m\n\n");
 	
 	// we need to import the configuration file
 	[ClutchConfiguration configWithFile:@"/etc/clutch.conf"];
     
 	if (argc < 2) {
-		NSArray *applist = get_application_list(TRUE);
+		NSArray *applist = get_application_list(TRUE, FALSE);
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
 			goto endMain;
 		}
-        printf("usage: %s [flags] [application]\n\t-v \t[version]\n\t-a \t[crack all]\n\t-f \t[flush cache]\n\t--overdrive [overdrive]\n\n", argv[0]);
+		printf("usage: %s [application name] [...]\n", argv[0]);
 		printf("Applications available: ");
 		NSEnumerator *e = [applist objectEnumerator];
 		NSDictionary *applicationDetails;
@@ -42,7 +40,7 @@ int main(int argc, char *argv[]) {
 		} else {
 			compareWith = @"ApplicationName";
 		}
-
+        
 		int cindex = 0;
 		
 		BOOL numberMenu = [(NSString *)[ClutchConfiguration getValue:@"NumberBasedMenu"] isEqualToString:@"YES"];
@@ -63,8 +61,8 @@ int main(int argc, char *argv[]) {
 		goto endMain;
 	}
 	
-	if (strncmp(argv[1], "-a", 2) == 0) {
-		NSArray *applist = get_application_list(FALSE);
+	if (strncmp(argv[1], "--", 3) == 0) {
+		NSArray *applist = get_application_list(FALSE, FALSE);
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
 			goto endMain;
@@ -77,26 +75,51 @@ int main(int argc, char *argv[]) {
 		
 		while (applicationDetails = [e nextObject]) {
 			printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
-			ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"]);
+			ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
 			if (ipapath == nil) {
-				printf("\033[41mFailed.\033[0m\n");
+				printf("Failed.\n");
 			} else {
 				printf("\t%s\n", [ipapath UTF8String]);
 			}
 		}
-	} else if (strncmp(argv[1], "-f", 2) == 0) {
+	} else if (strncmp(argv[1], "-u", 2) == 0) {
+        NSArray *applist = get_application_list(FALSE, TRUE);
+        if (applist == NULL) {
+            printf("There are no new applications on this device that aren't cracked.\n");
+            goto endMain;
+        }
+        NSEnumerator *e = [applist objectEnumerator];
+        printf("Cracking all updated applications on this device.\n");
+        
+        NSDictionary *applicationDetails;
+        NSString *ipapath;
+        
+        while (applicationDetails = [e nextObject]) {
+            printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
+            ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
+            if (ipapath == nil) {
+                printf("Failed.\n");
+            } else {
+                printf("\t%s\n", [ipapath UTF8String]);
+            }
+        }
+    } else if (strncmp(argv[1], "-f", 2) == 0) {
 		[[NSFileManager defaultManager] removeItemAtPath:@"/var/cache/clutch.plist" error:NULL];
 		printf("Caches cleared.\n");
 	} else if (strncmp(argv[1], "-v", 2) == 0) {
 		printf("%s\n", CLUTCH_VERSION);
-	} else {
+	} else if (strncmp(argv[1], "-update", 7) == 0) {
+        
+    } else if (strncmp(argv[1], "-h", 2) == 0) {
+        goto help;
+    } else {
 		BOOL numberMenu = [(NSString *)[ClutchConfiguration getValue:@"NumberBasedMenu"] isEqualToString:@"YES"];
 		NSArray *applist;
 		if (numberMenu)
-			applist = get_application_list(TRUE);
+			applist = get_application_list(TRUE, FALSE);
 		else
-			applist = get_application_list(FALSE);
-
+			applist = get_application_list(FALSE, FALSE);
+        
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
 			goto endMain;
@@ -120,12 +143,12 @@ int main(int argc, char *argv[]) {
 			while (applicationDetails = [e nextObject]) {
 				cindex++;
 				if (!numberMenu && ([(NSString *)[applicationDetails objectForKey:compareWith] caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame)) {
-					inCrackRoutine:
+                inCrackRoutine:
 					cracked = TRUE;
 					printf("Cracking %s...\n", [[applicationDetails objectForKey:compareWith] UTF8String]);
-					ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"]);
+					ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
 					if (ipapath == nil) {
-						printf("\033[41mFailed.\033[0m\n");
+						printf("Failed.\n");
 					} else {
 						printf("\t%s\n", [ipapath UTF8String]);
 					}
@@ -140,7 +163,8 @@ int main(int argc, char *argv[]) {
                 if (!strcmp(argv[i], "--overdrive")) {
                     printf("Overdrive is enabled.\n");
                     overdrive_enabled = 1;
-                } else {
+                }
+                else {
                     printf("error: Unrecognized application \"%s\"\n", argv[i]);
                 }
 			}
@@ -150,5 +174,16 @@ int main(int argc, char *argv[]) {
 	
 endMain:
 	return retVal;
+    [pool release];
+help:
+    printf("Clutch Help\n");
+    printf("---------------------------------\n");
+    printf("--          Cracks all applications\n");
+    printf("-u          Cracks updated applications\n");
+    printf("-f          Clears cache\n");
+    printf("-v          Shows version\n");
+    printf("\n");
+    printf("--[no|fast|best]-compression       Set the compression level\n");
+    
     [pool release];
 }

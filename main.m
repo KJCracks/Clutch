@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 			printf("There are no encrypted applications on this device.\n");
 			goto endMain;
 		}
-		printf("usage: %s [application name] [...]\n", argv[0]);
+		printf("usage: %s [flags] [application name] [...]\n", argv[0]);
 		printf("Applications available: ");
 		NSEnumerator *e = [applist objectEnumerator];
 		NSDictionary *applicationDetails;

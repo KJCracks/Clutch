@@ -5,13 +5,13 @@ Usage
 ------------
 Clutch [flags] [application name] [...]
 
-> -a Crack all applications
-> -u Cracks updated applications
-> -f Flushes cache
-> -v Shows version
+> -a      Crack all applications<br />
+> -u      Cracks updated applications<br />
+> -f      Flushes cache<br />
+> -v      Shows version<br />
 
---[no | fast | best]-compression Sets compression level
---overdrive Enables overdrive
+--[no | fast | best]-compression      Sets compression level<br />
+--overdrive     Enables overdrive
 
 Compiling
 ------------

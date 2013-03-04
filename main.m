@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	if (getuid() != 0) {
-		printf("You must be root to use ClutchMod.\n");
+		printf("You must be root to use Clutch.\n");
 		goto endMain;
 	}
 	
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 		goto endMain;
 	}
 	
-	if (strncmp(argv[1], "--", 3) == 0) {
+	if (strncmp(argv[1], "-a", 3) == 0) {
 		NSArray *applist = get_application_list(FALSE, FALSE);
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
@@ -178,7 +178,7 @@ endMain:
 help:
     printf("Clutch Help\n");
     printf("---------------------------------\n");
-    printf("--          Cracks all applications\n");
+    printf("-a          Cracks all applications\n");
     printf("-u          Cracks updated applications\n");
     printf("-f          Clears cache\n");
     printf("-v          Shows version\n");

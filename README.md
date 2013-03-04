@@ -3,7 +3,15 @@ Updated to support more FAT binaries and triple-architecture binaries
 
 Usage
 ------------
-Clutch -v [version] AppName -- [crack all] -f [flush cache] --overdrive [overdrive]
+Clutch [flags] [application name] [...]
+
+> -a Crack all applications
+> -u Cracks updated applications
+> -f Flushes cache
+> -v Shows version
+
+--[no | fast | best]-compression Sets compression level
+--overdrive Enables overdrive
 
 Compiling
 ------------

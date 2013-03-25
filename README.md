@@ -1,6 +1,8 @@
 *Clutch* is a cracking utility for the iPhone, iPod Touch and iPad.
 Updated to support more FAT binaries and triple-architecture binaries
 
+*Warning; this version currently corrupts binaries that contain an ARMV7S portion! Please use 1.2.4 until a fix is released*
+
 Usage
 ------------
 Clutch [flags] [application name] [...]

@@ -249,6 +249,7 @@ NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSSt
 }
 
 FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch) {
+    NSLog(@"FILE LOCCCCCCCCCC %@", baseDirectory);
     int local_arch = get_local_arch();
     if (local_arch == swaparch) {
         return NULL;
@@ -270,7 +271,7 @@ FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseNam
     // swap the architectures
     
     struct fat_arch *arch = (struct fat_arch *) &fh[1];
-    NOTIFY("Swapping architectures");
+    printf("Swapping architectures\n");
     bool swap1 = FALSE, swap2 = FALSE;
     int i;
     for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
@@ -307,6 +308,7 @@ FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseNam
         }
         arch++;
     }
+    printf("ARCH COUNT %u", i);
     if (swap1 && swap2) {
         VERBOSE("swapped both architectures");
     }
@@ -375,18 +377,21 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
             // Running on an armv7, armv7s, or higher device
             
             for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+                BOOL swap = FALSE;
                 // iterate through the amount of arch types found
                 if (CFSwapInt32(arch->cpusubtype) == ARMV6) {
                     // ARMV6 portion found
                     if (local_arch != ARMV6) {
                         // are we not an ARMV6 device
                         backupold = oldbinary;
+                        printf("SWAPPING ARMV6 #$######## YOLO\n");
                         oldbinary = swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
-                        
+                        swap = TRUE; 
                         if (oldbinary == NULL) {
                             // Swap failed
                             oldbinary = backupold;
                         }
+                    
                     }
                 
                     armv6 = *arch;
@@ -398,7 +403,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                         goto c_err;
                     }
                     //move back SC_Info files etc.
-                    swap_back(binaryPath, baseDirectory, baseName);
+                    if (swap) swap_back(binaryPath, baseDirectory, baseName);
                     
                 
                     oldbinary = backupold;
@@ -409,9 +414,12 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     
                 } else if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
                     // ARMV7 portion found
+                    printf("HUHHHHHHHHHHH YOLO SWAG %u SSSSS %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
+            
                     if (local_arch != ARMV7) {
                         // are we not on an ARMV7 device
                         backupold = oldbinary;
+                         printf("SWAPPING ARMV7 TO ARMV7 HUHHHH ????? #$######## YOLO\n");
                         oldbinary = swap_arch(binaryPath, baseDirectory, baseName, ARMV7);
                         if (oldbinary == NULL) {
                             // swap failed
@@ -427,8 +435,9 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                         *error = @"Cannot crack ARMV7 portion of binary.";
                         goto c_err;
                     }
+                    printf("HELLLLO POLIS DUmping armv7 $$$$$$$$##O$#)_$*()#(*$) iTWORKED???\n");
                     //move back SC_Info files etc.
-                    swap_back(binaryPath, baseDirectory, baseName);
+                    if (swap) swap_back(binaryPath, baseDirectory, baseName);
                     
                     
                     oldbinary = backupold;
@@ -594,7 +603,12 @@ NSString * genRandStringLength(int len) {
 int get_local_arch() {
 	int i;
 	int len = sizeof(i);
-	
 	sysctlbyname("hw.cpusubtype", &i, (size_t *) &len, NULL, 0);
+    if (i == 10) {
+        i = 9;
+        //??? yolo
+    }
+    //i = 11;
+    printf("SWAg pls %u", i);
 	return i;
 }

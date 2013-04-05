@@ -248,7 +248,7 @@ NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSSt
 	return ret;
 }
 
-FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch) {
+NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch) {
     NSLog(@"FILE LOCCCCCCCCCC %@", baseDirectory);
     int local_arch = get_local_arch();
     if (local_arch == swaparch) {
@@ -316,10 +316,9 @@ FILE* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseNam
     fseek(oldbinary, 0, SEEK_SET);
     fwrite(buffer, sizeof(buffer), 1, oldbinary);
     VERBOSE("wrote new arch info");
-    
+    fclose(oldbinary);
+    return binaryPath;
 
-    
-    return oldbinary;
 }
 void swap_back(NSString *binaryPath, NSString* baseDirectory, NSString* baseName) {
     // move the binary and SC_Info keys back
@@ -375,76 +374,70 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         
         if (local_arch > ARMV6) {
             // Running on an armv7, armv7s, or higher device
-            
+            NSLog(@"cool swag %@", binaryPath);
             for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
                 BOOL swap = FALSE;
                 // iterate through the amount of arch types found
                 if (CFSwapInt32(arch->cpusubtype) == ARMV6) {
                     // ARMV6 portion found
+                    armv6 = *arch;
                     if (local_arch != ARMV6) {
                         // are we not an ARMV6 device
                         backupold = oldbinary;
                         printf("SWAPPING ARMV6 #$######## YOLO\n");
-                        oldbinary = swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
-                        swap = TRUE; 
-                        if (oldbinary == NULL) {
-                            // Swap failed
-                            oldbinary = backupold;
+                        NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
+                        FILE* swapbinary = fopen([newPath UTF8String], "r+");
+                        swap = TRUE;
+                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(armv6.offset), newPath)) {
+                            // Dumping failed
+                            stop_bar();
+                            *error = @"Cannot crack ARMV6 portion of binary.";
+                            goto c_err;
                         }
+                        swap_back(newPath, baseDirectory, baseName);
                     
                     }
-                
-                    armv6 = *arch;
-                
-                    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath)) {
-                        // Dumping failed
-                        stop_bar();
-                        *error = @"Cannot crack ARMV6 portion of binary.";
-                        goto c_err;
+                    else {
+                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath)) {
+                            // Dumping failed
+                            stop_bar();
+                            *error = @"Cannot crack ARMV6 portion of binary.";
+                            goto c_err;
+                        }
                     }
-                    //move back SC_Info files etc.
-                    if (swap) swap_back(binaryPath, baseDirectory, baseName);
-                    
-                
-                    oldbinary = backupold;
                     archcount++;
-                
                     VERBOSE("found armv6");
                     has_armv6 = TRUE;
                     
                 } else if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
                     // ARMV7 portion found
                     printf("HUHHHHHHHHHHH YOLO SWAG %u SSSSS %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
+                    armv7 = *arch;
             
                     if (local_arch != ARMV7) {
-                        // are we not on an ARMV7 device
-                        backupold = oldbinary;
-                         printf("SWAPPING ARMV7 TO ARMV7 HUHHHH ????? #$######## YOLO\n");
-                        oldbinary = swap_arch(binaryPath, baseDirectory, baseName, ARMV7);
-                        if (oldbinary == NULL) {
-                            // swap failed
-                            oldbinary = backupold;
+                        printf("SWAPPING SOMETHING TO ARMV7 HUHHHH ????? #$######## YOLO\n");
+                        NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
+                        FILE* swapbinary = fopen([newPath UTF8String], "r+");
+                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(armv7.offset), newPath)) {
+                            // Dumping failed
+                            stop_bar();
+                            *error = @"Cannot crack ARMV7 portion of binary.";
+                            goto c_err;
+                        }
+                        swap_back(newPath, baseDirectory, baseName);
+                    }
+                    else {
+                         printf("HELLLLO POLIS DUmping armv7 $$$$$$$$##O$#)_$*()#(*$) iTWORKED???\n");
+                        NSLog(@"swag of the century %@ %u", binaryPath, CFSwapInt32(armv7.offset));
+                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath)) {
+                            // Dumping failed
+                            stop_bar();
+                            *error = @"Cannot crack ARMV7 portion of binary.";
+                            goto c_err;
                         }
                     }
-                    
-                    armv7 = *arch;
-                    
-                    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath)) {
-                        // Dumping failed
-                        stop_bar();
-                        *error = @"Cannot crack ARMV7 portion of binary.";
-                        goto c_err;
-                    }
-                    printf("HELLLLO POLIS DUmping armv7 $$$$$$$$##O$#)_$*()#(*$) iTWORKED???\n");
-                    //move back SC_Info files etc.
-                    if (swap) swap_back(binaryPath, baseDirectory, baseName);
-                    
-                    
-                    oldbinary = backupold;
                     archcount++;
-                    
                     VERBOSE("found armv7");
-                    
                     has_armv7 = TRUE;
                 } else if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
                     // ARMV7S portion found
@@ -479,7 +472,9 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                 *error = @"Could not find correct architectures";
                 goto c_err;
             }
-        } else if (local_arch == ARMV6) {
+        
+        }
+        else if (local_arch == ARMV6) {
             // Can only crack ARMV6 binaries because we have a shitty device :(
             
             VERBOSE("Application is a fat binary, only cracking ARMV6 portion (we are on an ARMV6 device)...");
@@ -529,7 +524,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 			
 			return finalPath;
 		}
-    } else {
+    }
+    else {
         // Application is a thin binary
         
         VERBOSE("Application is a thin binary, cracking single architecture...");
@@ -543,7 +539,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         }
         stop_bar();
     }
-    
+
     
 #warning strip binaries here - or move off to a seperate thinggiemagig?
     

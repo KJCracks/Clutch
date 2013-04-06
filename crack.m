@@ -27,7 +27,7 @@
 
 
 int overdrive_enabled = 0;
-
+BOOL stripHeader = FALSE;
 
 NSString * crack_application(NSString *application_basedir, NSString *basename, NSString* version) {
     VERBOSE("Creating working directory...");
@@ -287,19 +287,13 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
 
     FILE* oldbinary = fopen([binaryPath UTF8String], "r+");
     
-    // move the SC_Info keys
-    
-    NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
-    
-    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork.sinf"] error:NULL];
-    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:[scinfo_prefix stringByAppendingString:@"_lwork.supp"] error:NULL];
-    
     // swap the architectures
     
     struct fat_arch *arch = (struct fat_arch *) &fh[1];
     printf("Swapping architectures\n");
     bool swap1 = FALSE, swap2 = FALSE;
     int i;
+    NSString* suffix;
     
     arch = (struct fat_arch *) &fh[1];
     for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
@@ -307,12 +301,15 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
             switch (swaparch) {
                 case ARMV7S:
                     arch->cpusubtype = ARMV7S_SUBTYPE;
+                    suffix = @"armv7s";
                     break;
                 case ARMV7:
                     arch->cpusubtype = ARMV7_SUBTYPE;
+                    suffix = @"armv7";
                     break;
                 case ARMV6:
                     arch->cpusubtype = ARMV6_SUBTYPE;
+                    suffix = @"armv6";
                     break;
             }
             VERBOSE("found local arch");
@@ -336,6 +333,15 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
         }
         arch++;
     }
+    
+    // move the SC_Info keys
+    NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
+    sinf_file = [NSString stringWithFormat:@"%@-%@_lwork.sinf", scinfo_prefix, suffix];
+    supp_file = [NSString stringWithFormat:@"%@-%@_lwork.supp", scinfo_prefix, suffix];
+    NSLog(@"sinf file yo %@", sinf_file);
+    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:sinf_file error:NULL];
+    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:supp_file error:NULL];
+
     printf("ARCH COUNT %u", i);
     if (swap1 && swap2) {
         VERBOSE("swapped both architectures");
@@ -353,8 +359,8 @@ void swap_back(NSString *binaryPath, NSString* baseDirectory, NSString* baseName
     [[NSFileManager defaultManager] removeItemAtPath:binaryPath error:NULL];
     //moveItemAtPath:binaryPath toPath:orig_old_path error:NULL];
     NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
-    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork.sinf"] toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
-    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@"_lwork.supp"] toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
+    [[NSFileManager defaultManager] moveItemAtPath:sinf_file toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
+    [[NSFileManager defaultManager] moveItemAtPath:supp_file toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
 }
 
 NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **error) {
@@ -405,7 +411,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                 printf("Cool looks like this is an iPhone 5 binary!\n");
                 if (local_arch != ARMV7S) {
                     printf("hmmm looks like we can't crack it, #noswag.\n");
-                    stripHeader = TRUE;
+                    //stripHeader = TRUE;
                     int n_arch = CFSwapInt32(fh->nfat_arch);
                     n_arch--;
                     lipo_offset =  sizeof(struct fat_header) + n_arch * sizeof(struct fat_arch);
@@ -413,6 +419,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
             }
             arch++;
         }
+        arch = (struct fat_arch *) &fh[1];
         
         if (local_arch > ARMV6) {
             // Running on an armv7, armv7s, or higher device
@@ -433,6 +440,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                         backupold = oldbinary;
                         printf("SWAPPING ARMV6 #$######## YOLO\n");
                         NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
+                        NSLog(@"new path yolo swag %@", newPath);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
                         swap = TRUE;
                         if (!dump_binary(swapbinary, newbinary, CFSwapInt32(offset), newPath)) {
@@ -596,16 +604,22 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
     
     
     if (stripHeader) {
-        printf("stripping headers yo\n");
-        //create new headers
-        struct fat_header *newheader;
-        newheader->nfat_arch = fh->nfat_arch;
-        newheader->nfat_arch--;
-        newheader->magic = FAT_MAGIC;
+        //clear the headers (I think)
+        fread(&buffer, sizeof(buffer), 1, newbinary);
+        fh = (struct fat_header*) (buffer);
         
         fseek(newbinary, 0, SEEK_SET);
+        //fwrite("", sizeof(buffer), 1, newbinary);
+        printf("stripping headers yo\n");
+        //create new headers
+        struct fat_header newheader = { 0 };
+        newheader.nfat_arch = fh->nfat_arch;
+        newheader.nfat_arch--;
+        newheader.magic = FAT_MAGIC;
+        printf("created new headers yo\n");
+        fseek(newbinary, 0, SEEK_SET);
         //write the header information
-        fwrite(newheader, sizeof(struct fat_header), 1, newbinary);
+        fwrite(&newheader, sizeof(struct fat_header), 1, newbinary);
         printf("Wrote new header info\n");
         //write the individual arch
         if (armv6.offset > armv7.offset) {

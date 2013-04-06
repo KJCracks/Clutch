@@ -15,8 +15,9 @@ char buffer[4096];
 char old_buffer[4096];
 FILE *oldbinary;
 struct fat_header* fh;
-int stripHeader;
 uint32_t offset;
+NSString* sinf_file;
+NSString* supp_file;
 
 //if the event of lipo
 uint32_t lipo_offset;

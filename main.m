@@ -12,6 +12,7 @@
 
 int main(int argc, char *argv[]) {
     int retVal = 0;
+    printf("%s\n", CLUTCH_VERSION);
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	if (getuid() != 0) {

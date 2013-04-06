@@ -15,8 +15,7 @@ int determine_screen_width (void) {
 int bar_mode = 0;
 // percent of bar, negative is no bar
 int bar_percent = -1;
-char *bar_msg = NULL;
-
+char bar_msg[200];
 /**
  progress_message places an "active" message for what Clutch is currently doing
  */
@@ -26,9 +25,9 @@ void progress_message(char *msg) {
     }
     
     if (bar_msg != NULL)
-        free(bar_msg);
-    bar_msg = malloc(strlen(msg) + 1);
+        //free(bar_msg);
     strcpy(bar_msg, msg);
+    //printf("yo tryin to progress msg yo\n");
     print_bar();
 }
 
@@ -42,6 +41,7 @@ void progress_percent(int percent) {
     
     if ((bar_percent < percent - 5) || (percent == 100) || (percent < 0)) {
         bar_percent = percent;
+        //printf("yo tryin to progress percent yo %u\n", percent);
         print_bar();
     }
 }
@@ -125,8 +125,7 @@ void stop_bar(void) {
         printf("\033[0G\033[J");
         fflush(stdout);
         bar_mode = 0;
-        free(bar_msg);
-        bar_msg = NULL;
+        //free(bar_msg);
         bar_percent = -1;
     }
 }

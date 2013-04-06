@@ -20,7 +20,7 @@ int stripHeader;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.5"
+#define CLUTCH_VERSION "Clutch 1.2.6-git"
 
 #define ARMV6 6
 #define ARMV7 9

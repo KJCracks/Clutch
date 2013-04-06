@@ -429,7 +429,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     else {
                          printf("HELLLLO POLIS DUmping armv7 $$$$$$$$##O$#)_$*()#(*$) iTWORKED???\n");
                         NSLog(@"swag of the century %@ %u", binaryPath, CFSwapInt32(armv7.offset));
-                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath)) {
+                        if (!dump_binary(oldbinary, newbinary, 4096, binaryPath)) {
                             // Dumping failed
                             stop_bar();
                             *error = @"Cannot crack ARMV7 portion of binary.";
@@ -444,7 +444,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     if (local_arch != ARMV7S) {
                         // On a non-armv7s device {armv6 || armv7}
                         // We cannot crack this and need to strip the headers
-                        stripHeader = 1;
+                        //stripHeader = 1;
                         VERBOSE("found armv7s but cannot crack it on this device");
                     } else {
                         // On an armv7s device
@@ -544,7 +544,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
 #warning strip binaries here - or move off to a seperate thinggiemagig?
     
     
-    if (stripHeader == 1) {
+   /* if (stripHeader == 1) {
+        printf("stripping headers yo\n");
         fread(&buffer, sizeof(buffer), 1, newbinary);
         struct fat_arch *arch;
         arch = (struct fat_arch *) &fh[1];
@@ -567,7 +568,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         
         VERBOSE("wrote new earch information");
     }
-    
+    */
     fclose(newbinary); // close the new binary stream
     fclose(oldbinary); // close the old binary stream
     

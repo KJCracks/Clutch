@@ -29,12 +29,10 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 			fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
 			fread(&crypt, sizeof(struct encryption_info_command), 1, target);
 			foundCrypt = TRUE; // remember that it was found
-            VERBOSE("found LC_ENCRYPTION");
 		} else if (l_cmd.cmd == LC_CODE_SIGNATURE) { // code signature?
 			fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
 			fread(&ldid, sizeof(struct linkedit_data_command), 1, target);
 			foundSignature = TRUE; // remember that it was found
-            VERBOSE("found LC_CODE_SIGNATURE");
 		} else if (l_cmd.cmd == LC_SEGMENT) {
 			// some applications, like Skype, have decided to start offsetting the executable image's
 			// vm regions by substantial amounts for no apparant reason. this will find the vmaddr of
@@ -45,7 +43,6 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 				foundStartText = TRUE;
 				__text_start = __text.vmaddr;
 				__text_size = __text.vmsize;
-                VERBOSE("found vmaddr");
 			}
 			fseek(target, l_cmd.cmdsize - sizeof(struct segment_command), SEEK_CUR);
 		} else {
@@ -87,6 +84,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 		execl([originPath UTF8String], "", (char *) 0); // import binary memory into executable space
 		exit(2); // exit with err code 2 in case we could not import (this should not happen)
 	} else if (pid < 0) {
+        printf("error: Couldn't fork, did you compile with proper entitlements?");
 		return FALSE; // couldn't fork
 	} else {
 		// wait until the binary stops
@@ -175,8 +173,8 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 			if (err != KERN_SUCCESS) {
 				free(checksum);
 				kill(pid, SIGKILL);
-                printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
 				return FALSE;
+				printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
 			}
 		}
 		
@@ -196,13 +194,13 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 			// move an entire page into memory (we have to move an entire page regardless of whether it's a resultant or not)
 			if((err = vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
                 VERBOSE("dumping binary: failed to dump a page");
-                printf("\033[41mfailed at %i\033[0m\n", togo);
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill fork
 				return FALSE;
 			}
 			
 			if (header) {
+                printf("helloooo polis?\n");
                 // is this the first header page?
                 if (i_lcmd == 0) {
                     // is overdrive enabled?
@@ -223,6 +221,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
                         // load command size is at the start of the next page
                         // we need to get it
                         vm_read_overwrite(port, (mach_vm_address_t) __text_start + ((pages_d+1) * 0x1000), (vm_size_t) 0x1, (pointer_t) &lcmd_size, &local_size);
+                        //printf("ieterating through header\n");
                     } else {
                         lcmd_size = l_cmd->cmdsize;
                     }
@@ -232,6 +231,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
                         newcrypt->cryptid = 0; // change the cryptid to 0
                         VERBOSE("dumping binary: patched cryptid");
                     } else if (l_cmd->cmd == LC_SEGMENT) {
+                        //printf("lc segemn yo\n");
                         struct segment_command *newseg = (struct segment_command *) curloc;
                         if (newseg->fileoff == 0 && newseg->filesize > 0) {
                             // is overdrive enabled? this is __TEXT
@@ -245,6 +245,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
                     }
                     curloc += lcmd_size;
                     if ((void *)curloc >= (void *)buf + 0x1000) {
+                        //printf("skipped pass the haeder yo\n");
                         // we are currently extended past the header page
                         // offset for the next round:
                         headerProgress = (((void *)curloc - (void *)buf) % 0x1000);
@@ -255,7 +256,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
                 // is overdrive enabled?
                 if (overdrive_enabled) {
                     // add the overdrive dylib as long as we have room
-                    if ((curloc + overdrive_size) < (void*)(buf + 0x1000)) {
+                    if ((curloc + overdrive_size) < (buf + 0x1000)) {
                         VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;
@@ -273,11 +274,12 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 				header = FALSE;
 			}
         skipoverdrive:
-            
+            //printf("attemtping to write to binary\n");
 			fwrite(buf, 0x1000, 1, target); // write the new data to the target
 			sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
-			
+			//printf("doing checksum yo\n");
 			togo -= 0x1000; // remove a page from the togo
+            //printf("togo yo %u\n", togo);
 			pages_d += 1; // increase the amount of completed pages
 		}
         
@@ -289,8 +291,8 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 		
 		free(checksum); // free checksum table from memory
 		kill(pid, SIGKILL); // kill the fork
-	}		
-	
+	}
+	stop_bar();
 	return TRUE;
 }
 

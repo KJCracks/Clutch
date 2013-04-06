@@ -35,8 +35,6 @@ uint32_t lipo_offset;
 #define ARMV7S_SUBTYPE 0xb000000 //ya boooooooo
 
 
-
-
 NSString * crack_application(NSString *application_basedir, NSString *basename, NSString* version);
 NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSString *workingDir, NSDictionary *infoplist);
 NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch);

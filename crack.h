@@ -25,7 +25,7 @@ uint32_t lipo_offset;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.6-git1"
+#define CLUTCH_VERSION "Clutch 1.2.6-git4"
 
 #define ARMV6 6
 #define ARMV7 9

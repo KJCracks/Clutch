@@ -281,8 +281,6 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
         return NULL;
     }
     NSString *orig_old_path = binaryPath; // save old binary path
-    binaryPath = [binaryPath stringByAppendingString:@"_lwork"]; // new binary path
-    [[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:binaryPath error: NULL];
     //moveItemAtPath:orig_old_path toPath:binaryPath error:NULL];
 
     FILE* oldbinary = fopen([binaryPath UTF8String], "r+");
@@ -334,10 +332,14 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
         arch++;
     }
     
-    // move the SC_Info keys
+    
+    binaryPath = [binaryPath stringByAppendingFormat:@"_%@_lwork", suffix]; // new binary path
+    [[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:binaryPath error: NULL];
+
+    // move the SC_Info keys    
     NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
-    sinf_file = [NSString stringWithFormat:@"%@-%@_lwork.sinf", scinfo_prefix, suffix];
-    supp_file = [NSString stringWithFormat:@"%@-%@_lwork.supp", scinfo_prefix, suffix];
+    sinf_file = [NSString stringWithFormat:@"%@_%@_lwork.sinf", scinfo_prefix, suffix];
+    supp_file = [NSString stringWithFormat:@"%@_%@_lwork.supp", scinfo_prefix, suffix];
     NSLog(@"sinf file yo %@", sinf_file);
     [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:sinf_file error:NULL];
     [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:supp_file error:NULL];
@@ -432,6 +434,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     armv6 = *arch;
                     offset = armv6.offset;
                     if (stripHeader) {
+                        printf("yolo swag polis\n");
                         lipo_offset+= armv6.size;
                         armv6.offset = lipo_offset;
                     }
@@ -443,7 +446,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                         NSLog(@"new path yolo swag %@", newPath);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
                         swap = TRUE;
-                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(offset), newPath)) {
+                        NSLog(@"@da offset brah %u", CFSwapInt16(armv6.offset));
+                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(armv6.offset), newPath)) {
                             // Dumping failed
                             stop_bar();
                             *error = @"Cannot crack ARMV6 portion of binary.";
@@ -475,7 +479,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     }
                     if (local_arch != ARMV7) {
                         printf("SWAPPING SOMETHING TO ARMV7 HUHHHH ????? #$######## YOLO\n");
-                        NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
+                        NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV7);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
                         if (!dump_binary(swapbinary, newbinary, CFSwapInt32(offset), newPath)) {
                             // Dumping failed

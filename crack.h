@@ -21,6 +21,7 @@ NSString* supp_file;
 
 //if the event of lipo
 uint32_t lipo_offset;
+uint32_t start;
 
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface

@@ -447,8 +447,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                         NSLog(@"new path yolo swag %@", newPath);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
                         swap = TRUE;
-                        NSLog(@"offset yo %u", CFSwapInt32(armv6.offset));
-                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(armv6.offset), newPath)) {
+                        NSLog(@"ARMV ffset yo %u", CFSwapInt32(arch->offset));
+                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(arch->offset), newPath)) {
                             // Dumping failed
                             stop_bar();
                             *error = @"Cannot crack ARMV6 portion of binary.";
@@ -458,7 +458,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     
                     }
                     else {
-                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(offset), binaryPath)) {
+                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(arch->offset), binaryPath)) {
                             // Dumping failed
                             stop_bar();
                             *error = @"Cannot crack ARMV6 portion of binary.";
@@ -482,8 +482,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                         printf("SWAPPING SOMETHING TO ARMV7 HUHHHH ????? #$######## YOLO\n");
                         NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV7);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
-                            NSLog(@"offset yo %u", CFSwapInt32(armv7.offset));
-                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(armv7.offset), newPath)) {
+                            NSLog(@"offset yo %u", CFSwapInt32(arch->offset));
+                        if (!dump_binary(swapbinary, newbinary, CFSwapInt32(arch->offset), newPath)) {
                             // Dumping failed
                             stop_bar();
                             *error = @"Cannot crack ARMV7 portion of binary.";
@@ -493,8 +493,8 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     }
                     else {
                          printf("HELLLLO POLIS DUmping armv7 $$$$$$$$##O$#)_$*()#(*$) iTWORKED???\n");
-                        NSLog(@"swag of the century %@ %u", binaryPath, CFSwapInt32(offset));
-                        if (!dump_binary(oldbinary, newbinary, armv7.offset, binaryPath)) {
+                        NSLog(@"offset yo %u", CFSwapInt32(arch->offset));
+                        if (!dump_binary(oldbinary, newbinary, CFSwapInt32(arch->offset), binaryPath)) {
                             // Dumping failed
                             stop_bar();
                             *error = @"Cannot crack ARMV7 portion of binary.";

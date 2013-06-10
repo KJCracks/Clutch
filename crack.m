@@ -438,11 +438,11 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     // ARMV6 portion found
                     armv6 = *arch;
                     offset = arch->offset;
-                    if (stripHeader) {
+                    /*if (stripHeader) {
                         printf("yolo swag polis\n");
                         lipo_offset+= arch->size;
                         offset = lipo_offset;
-                    }
+                    }*/
                     if (local_arch != ARMV6) {
                         // are we not an ARMV6 device
                         backupold = oldbinary;
@@ -478,11 +478,12 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     printf("HUHHHHHHHHHHH YOLO SWAG %u SSSSS %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
                     armv7 = *arch;
                     offset = arch->offset;
-                    if (stripHeader) {
+                   /* if (stripHeader) {
                         lipo_offset+= arch->size;
                         offset = lipo_offset;
                         NSLog(@"offset yo %u", CFSwapInt32(offset));
-                    }
+                    }*/
+                    NSLog(@"offset yo %u", CFSwapInt32(offset));
                     if (local_arch != ARMV7) {
                         printf("SWAPPING SOMETHING TO ARMV7 HUHHHH ????? #$######## YOLO\n");
                         NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV7);

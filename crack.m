@@ -412,12 +412,12 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
             if (CFSwapInt32(arch->cpusubtype) == ARMV7S) {
                 printf("Cool looks like this is an iPhone 5 binary!\n");
                 if (local_arch != ARMV7S) {
-                    printf("hmmm looks like we can't crack it, #noswag.\n");
+                    printf("Can't crack this binary on this platform (cpusubtype incorrect).\n");
                     stripHeader = TRUE;
                     uint32_t n_arch = fh->nfat_arch;
-                    NSLog(@"number of archs borrrrrr3e34343 %u", CFSwapInt32(n_arch));
+                    NSLog(@"number of archs %u", CFSwapInt32(n_arch));
                     n_arch = n_arch - 0x1000000;
-                    NSLog(@"number of archs borrrrrr %u", CFSwapInt32(n_arch));
+                    NSLog(@"number of archs %u", CFSwapInt32(n_arch));
                     lipo_offset = sizeof(buffer);
                     NSLog(@"lipo offset %u", CFSwapInt32(lipo_offset));
                     
@@ -430,7 +430,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         
         if (local_arch > ARMV6) {
             // Running on an armv7, armv7s, or higher device
-            NSLog(@"cool swag %@", binaryPath);
+            NSLog(@"DEBUG: path: %@", binaryPath);
             for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
                 BOOL swap = FALSE;
                 // iterate through the amount of arch types found
@@ -439,16 +439,15 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     armv6 = *arch;
                     offset = arch->offset;
                     /*if (stripHeader) {
-                        printf("yolo swag polis\n");
                         lipo_offset+= arch->size;
                         offset = lipo_offset;
                     }*/
                     if (local_arch != ARMV6) {
                         // are we not an ARMV6 device
                         backupold = oldbinary;
-                        printf("SWAPPING ARMV6 #$######## YOLO\n");
+                        printf("Swapping armv6\n");
                         NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV6);
-                        NSLog(@"new path yolo swag %@", newPath);
+                        NSLog(@"DEBUG: new path: %@", newPath);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
                         swap = TRUE;
                         NSLog(@"ARMV ffset yo %u", CFSwapInt32(offset));
@@ -475,7 +474,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     
                 } else if (CFSwapInt32(arch->cpusubtype) == ARMV7) {
                     // ARMV7 portion found
-                    printf("HUHHHHHHHHHHH YOLO SWAG %u SSSSS %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
+                    printf("DEBUG: cpu_subtype: %u local_arch: %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
                     armv7 = *arch;
                     offset = arch->offset;
                    /* if (stripHeader) {
@@ -485,7 +484,7 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     }*/
                     NSLog(@"offset yo %u", CFSwapInt32(offset));
                     if (local_arch != ARMV7) {
-                        printf("SWAPPING SOMETHING TO ARMV7 HUHHHH ????? #$######## YOLO\n");
+                        printf("Swapping to armv7\n");
                         NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, ARMV7);
                         FILE* swapbinary = fopen([newPath UTF8String], "r+");
                             
@@ -681,9 +680,7 @@ int get_local_arch() {
     if (i == 10) {
         i = 9;
         ios6 = TRUE;
-        //??? yolo
     }
     //i = 11;
-    printf("SWAg pls %u", i);
 	return i;
 }

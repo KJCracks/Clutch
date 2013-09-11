@@ -98,6 +98,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
         
 		// open mach port to the other process
 		if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
+            VERBOSE("ERROR: Could not obtain mach port, did you sign with proper entitlements?");
 			kill(pid, SIGKILL); // kill the fork
 			return FALSE;
 		}

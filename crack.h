@@ -23,10 +23,12 @@ NSString* supp_file;
 uint32_t lipo_offset;
 uint32_t start;
 
+#define NOZIP 1
+
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.6-git6"
+#define CLUTCH_VERSION "Clutch 1.2.6-git7"
 
 #define ARMV6 6
 #define ARMV7 9

@@ -5,6 +5,8 @@ Updated to support more FAT binaries and triple-architecture binaries
 
 Usage
 ------------
+Current version: Clutch 1.2.6-git9
+
 Clutch [flags] [application name] [...]
 
 > -a      Crack all applications<br />

@@ -397,7 +397,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
     fread(&buffer, sizeof(buffer), 1, oldbinary);
     fh = (struct fat_header*) (buffer);
         
-    struct fat_arch armv6, armv7, armv7s, armv8;
+    struct fat_arch armv6, armv7, armv7s, armv8, lipo;
     struct fat_arch *arch;
     
     int i;
@@ -441,8 +441,51 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                     goto c_err;
                     break;
             }
+            if ((arch->cpusubtype == ARMV7S_SUBTYPE) && (local_arch != ARMV7S)) {
+                NSLog(@"DEBUG: Can't crack armv7s on non-armv7s! skipping");
+                [stripHeaders addObject:[NSNumber numberWithUnsignedInt:ARMV7S_SUBTYPE]];
+            }
+            else if ((arch->cpusubtype == ARMV8_SUBTYPE) && (local_arch != ARMV8)) {
+                NSLog(@"DEBUG: Can't crack armv8 on non-armv8! skipping");
+                [stripHeaders addObject:[NSNumber numberWithUnsignedInt:ARMV8_SUBTYPE]];
+            }
+            else if ((local_arch == ARMV6) && (CFSwapInt32(arch->cpusubtype) > ARMV6)) {
+                NSLog(@"DEBUG: Can't crack >armv6 on armv6! skipping");
+                [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
+            }
+            arch++;
         }
-
+        
+        if (CFSwapInt32(fh->nfat_arch) == 1) {
+            // Application is a thin binary
+            VERBOSE("Application is a thin binary, cracking single architecture...");
+            NOTIFY("Dumping binary...");
+            
+            if (!dump_binary(oldbinary, newbinary, 0, binaryPath)) {
+                // Dump failed
+                stop_bar();
+                *error = @"Cannot crack thin binary.";
+                goto c_err;
+            }
+            stop_bar();
+            goto c_complete;
+        }
+        
+        if ((CFSwapInt32(fh->nfat_arch) - [stripHeaders count]) == 1) {
+            NSLog(@"DEBUG: Only one architecture left, lipo");
+            arch = (struct fat_arch *) &fh[1];
+            for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+                NSNumber* subtype = [NSNumber numberWithUnsignedInt:arch->cpusubtype];
+                if (![stripHeaders containsObject:subtype]) {
+                    lipo = *arch;
+                    goto c_lipo;
+                    break;
+                }
+                arch++;
+            }
+            
+        }
+    
         arch = (struct fat_arch *) &fh[1];
         
         NSLog(@"############################");
@@ -498,125 +541,11 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                 }
                 
             }
-            else {
-                if (has_armv7s && has_armv7 && (local_arch != ARMV7S)) {
-                    NSLog(@"DEBUG: Cannot crack armv7s portion, lipo");
-                    NSLog(@"DEBUG: armv7 offset %u", CFSwapInt32(armv7.offset));
-                    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv7.offset), binaryPath)) {
-                        // Dumping failed
-                        stop_bar();
-                        *error = @"Cannot crack ARMV7 portion.";
-                        goto c_err;
-                    }
-                    stop_bar();
-                    
-                    NSLog(@"DEBUG: Performing liposuction of ARMV7 mach object...");
-                    
-                    // Lipo out the data
-                    NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
-                    FILE *lipoOut = fopen([lipoPath UTF8String], "w+"); // prepare the file stream
-                    fseek(newbinary, CFSwapInt32(armv7.offset), SEEK_SET); // go to the armv6 offset
-                    void *tmp_b = malloc(0x1000); // allocate a temporary buffer
-                    
-                    uint32_t remain = CFSwapInt32(armv7.size);
-                    
-                    while (remain > 0) {
-                        if (remain > 0x1000) {
-                            // move over 0x1000
-                            fread(tmp_b, 0x1000, 1, newbinary);
-                            fwrite(tmp_b, 0x1000, 1, lipoOut);
-                            remain -= 0x1000;
-                        } else {
-                            // move over remaining and break
-                            fread(tmp_b, remain, 1, newbinary);
-                            fwrite(tmp_b, remain, 1, lipoOut);
-                            break;
-                        }
-                    }
-                    
-                    free(tmp_b); // free temporary buffer
-                    fclose(lipoOut); // close lipo output stream
-                    fclose(newbinary); // close new binary stream
-                    fclose(oldbinary); // close old binary stream
-                    
-                    [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // remove old file
-                    [[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:finalPath error:NULL]; // move the lipo'd binary to the final path
-                    chown([finalPath UTF8String], 501, 501); // adjust permissions
-                    chmod([finalPath UTF8String], 0777); // adjust permissions
-                    
-                    return finalPath;
-                }
-                
-            }
         }
         //fat + armv6
-        else if (local_arch == ARMV6) {
-            // Can only crack ARMV6 binaries because we have a shitty device :(
-            
-            VERBOSE("Application is a fat binary, only cracking ARMV6 portion (we are on an ARMV6 device)...");
-            
-            if (!dump_binary(oldbinary, newbinary, CFSwapInt32(armv6.offset), binaryPath)) {
-                // Dumping failed
-                stop_bar();
-                *error = @"Cannot crack ARMV6 portion.";
-                goto c_err;
-            }
-            
-            stop_bar();
-            
-            VERBOSE("Performing liposuction of ARMV6 mach object...");
-            
-            // Lipo out the data
-            NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
-            FILE *lipoOut = fopen([lipoPath UTF8String], "w+"); // prepare the file stream
-            fseek(newbinary, CFSwapInt32(armv6.offset), SEEK_SET); // go to the armv6 offset
-            void *tmp_b = malloc(0x1000); // allocate a temporary buffer
-            
-            uint32_t remain = CFSwapInt32(armv6.size);
-            
-            while (remain > 0) {
-                if (remain > 0x1000) {
-                    // move over 0x1000
-                    fread(tmp_b, 0x1000, 1, newbinary);
-                    fwrite(tmp_b, 0x1000, 1, lipoOut);
-                    remain -= 0x1000;
-                } else {
-                    // move over remaining and break
-                    fread(tmp_b, remain, 1, newbinary);
-                    fwrite(tmp_b, remain, 1, lipoOut);
-                    break;
-                }
-            }
-            
-            free(tmp_b); // free temporary buffer
-            fclose(lipoOut); // close lipo output stream
-            fclose(newbinary); // close new binary stream
-            fclose(oldbinary); // close old binary stream
-            
-            [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // remove old file
-            [[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:finalPath error:NULL]; // move the lipo'd binary to the final path
-            chown([finalPath UTF8String], 501, 501); // adjust permissions
-            chmod([finalPath UTF8String], 0777); // adjust permissions
-            
-            return finalPath;
-        }
     }
     
     //thin binary
-    else {
-        // Application is a thin binary
-        
-        VERBOSE("Application is a thin binary, cracking single architecture...");
-        NOTIFY("Dumping binary...");
-        
-        if (!dump_binary(oldbinary, newbinary, 0, binaryPath)) {
-            // Dump failed
-            stop_bar();
-            *error = @"Cannot crack thin binary.";
-            goto c_err;
-        }
-        stop_bar();
-    }
 
     //9 11 6
     struct fat_arch copy, doh;
@@ -704,6 +633,52 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
     fclose(oldbinary); // close the old binary stream
     return finalPath; // return  cracked binary path
 	
+c_lipo:
+    NSLog(@"DEBUG: lipo offset %u", CFSwapInt32(lipo.offset));
+    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(lipo.offset), binaryPath)) {
+        // Dumping failed
+        stop_bar();
+        *error = [NSString stringWithFormat:@"Cannot crack %u portion", get_arch(&lipo)];
+        goto c_err;
+    }
+    stop_bar();
+    
+    NSLog(@"DEBUG: Performing liposuction of mach object...");
+    
+    // Lipo out the data
+    NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
+    FILE *lipoOut = fopen([lipoPath UTF8String], "w+"); // prepare the file stream
+    fseek(newbinary, CFSwapInt32(lipo.offset), SEEK_SET); // go to the armv6 offset
+    void *tmp_b = malloc(0x1000); // allocate a temporary buffer
+    
+    uint32_t remain = CFSwapInt32(lipo.size);
+    
+    while (remain > 0) {
+        if (remain > 0x1000) {
+            // move over 0x1000
+            fread(tmp_b, 0x1000, 1, newbinary);
+            fwrite(tmp_b, 0x1000, 1, lipoOut);
+            remain -= 0x1000;
+        } else {
+            // move over remaining and break
+            fread(tmp_b, remain, 1, newbinary);
+            fwrite(tmp_b, remain, 1, lipoOut);
+            break;
+        }
+    }
+    
+    free(tmp_b); // free temporary buffer
+    fclose(lipoOut); // close lipo output stream
+    fclose(newbinary); // close new binary stream
+    fclose(oldbinary); // close old binary stream
+    
+    [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // remove old file
+    [[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:finalPath error:NULL]; // move the lipo'd binary to the final path
+    chown([finalPath UTF8String], 501, 501); // adjust permissions
+    chmod([finalPath UTF8String], 0777); // adjust permissions
+    
+    return finalPath;
+    
 c_complete:
     fclose(newbinary); // close the new binary stream
 	fclose(oldbinary); // close the old binary stream
@@ -715,7 +690,7 @@ c_err:
 	[[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
 	return nil;
 }
-    
+
 
 NSString * genRandStringLength(int len) {
 	NSMutableString *randomString = [NSMutableString stringWithCapacity: len];

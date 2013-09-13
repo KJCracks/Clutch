@@ -258,8 +258,6 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
     }
     NSString *orig_old_path = binaryPath; // save old binary path
     //moveItemAtPath:orig_old_path toPath:binaryPath error:NULL];
-
-    FILE* oldbinary = fopen([binaryPath UTF8String], "r+");
     // swap the architectures
     
     struct fat_arch *arch = (struct fat_arch *) &fh[1];
@@ -323,21 +321,23 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
     if (swap1 && swap2) {
         VERBOSE("swapped both architectures");
     }
-    
-    fseek(oldbinary, 0, SEEK_SET);
-    fwrite(buffer, sizeof(buffer), 1, oldbinary);
+    FILE* swapbinary = fopen([binaryPath UTF8String], "r+");
+    fseek(swapbinary, 0, SEEK_SET);
+    fwrite(buffer, sizeof(buffer), 1, swapbinary);
     VERBOSE("wrote new arch info");
-    fclose(oldbinary);
+    fclose(swapbinary);
     return binaryPath;
 
 }
 void swap_back(NSString *binaryPath, NSString* baseDirectory, NSString* baseName) {
-    // move the binary and SC_Info keys back
+    // remove swapped binary 
     [[NSFileManager defaultManager] removeItemAtPath:binaryPath error:NULL];
     //moveItemAtPath:binaryPath toPath:orig_old_path error:NULL];
+    //move SC_Info back
     NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
     [[NSFileManager defaultManager] moveItemAtPath:sinf_file toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
     [[NSFileManager defaultManager] moveItemAtPath:supp_file toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
+    NSLog(@"DEBUG: Moving sinf_file %@ to %@", sinf_file, [scinfo_prefix stringByAppendingString:@".sinf"]);
 }
 
 NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **error) {
@@ -377,8 +377,6 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         bool has_armv7 = FALSE;
         bool has_armv7s = FALSE;
         
-        
-       
         arch = (struct fat_arch *) &fh[1];        
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
             NSLog(@"DEBUG: Analyzing binary..");
@@ -405,6 +403,13 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
                     NSLog(@"DEBUG: armv6 portion detected");
                     armv6 = *arch;
                     break;
+                default:
+                    NSLog(@"ERROR: UNKNOWN ARCH DETECTED");
+                    NSLog(@"32BIT SWAP %u", CFSwapInt32(arch->cpusubtype));
+                    NSLog(@"64BIT SWAP %u %u", CFSwapInt64(arch->cpusubtype), CFSwapInt64(arch->cputype));
+                    stop_bar();
+                    *error = @"Unknown architecture detected";
+                    goto c_err;
             }
             
             arch++;
@@ -583,21 +588,82 @@ NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **er
         stop_bar();
     }
 
+    //9 11 6
+    struct fat_arch copy, doh;
+    fpos_t copypos, rempos;
     if (stripHeader != 0) {
+        NSLog(@"######### STRIP HEADER STRIP STRIP STRIP STRIP ############");
+        NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
+        [[NSFileManager defaultManager] copyItemAtPath:finalPath toPath:lipoPath error: NULL];
+        FILE *lipoOut = fopen([lipoPath UTF8String], "r+"); // prepare the file stream
         char stripBuffer[4096];
-        fread(&stripBuffer, sizeof(stripBuffer), 1, oldbinary);
-        fh = (struct fat_header*) (buffer);
-        NSLog(@"DEBUG: Stripping headers");
+        fseek(lipoOut, SEEK_SET, 0);
+        fread(&stripBuffer, sizeof(buffer), 1, lipoOut);
+        fh = (struct fat_header*) (stripBuffer);
         arch = (struct fat_arch *) &fh[1];
+        
+        fseek(lipoOut, 8, SEEK_SET); //skip nfat_arch and bin_magic
+        NSLog(@"DEBUG: Stripping headers");
+        
+
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+            NSLog(@"DEBUG: loopy looopy %u", CFSwapInt32(arch->cpusubtype));
+            fread(&doh, sizeof(struct fat_arch), 1, lipoOut);
             if (CFSwapInt32(arch->cpusubtype) == stripHeader) {
-                NSLog(@"DEBUG: Found arch to strip! Replacing with dummy values");
-                arch->cpusubtype = 0x1000000;
+                NSLog(@"DEBUG: Found arch to strip! Storing it");
+                if (i < CFSwapInt32(fh->nfat_arch)) {
+                    NSLog(@"DEBUG: TEST TEST 2130");
+                    fgetpos(lipoOut, &copypos);
+                    NSLog(@"DEBUG: FROMPOS %lld", copypos);
+                }
+                else {
+                    NSLog(@"ERROR: Dunno where to store ler0-i09483430470374 help!!!!!");
+                }
+            }
+            else if (i == (CFSwapInt32(fh->nfat_arch)) - 1) {
+                copy = doh;
+                fgetpos(lipoOut, &rempos);
+                NSLog(@"DEBUG: TOPOS %lld", rempos);
             }
             arch++;
         }
-        fwrite(stripBuffer, sizeof(stripBuffer), 1, newbinary);
+        fh = (struct fat_header*) (stripBuffer);
+        arch = (struct fat_arch *) &fh[1];
+        for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+            if (CFSwapInt32(arch->cpusubtype) == stripHeader)  {
+                rempos = rempos - sizeof(struct fat_arch);
+                fseek(lipoOut,rempos, SEEK_SET);
+                NSLog(@"DEBUG: rempos %lld", rempos);
+                NSLog(@"DEBUG: Writing nulls to unwanted arch swag swag 2");
+                char data[20];
+                memset(data,'\0',sizeof(data));
+                fwrite(data, sizeof(data), 1, lipoOut);
+                
+                NSLog(@"DEBUG: Written nulls to unwanted arch swag swag swag 3");
+            }
+            else if (i == (CFSwapInt32(fh->nfat_arch) - 1)) {
+                copypos = copypos - sizeof(struct fat_arch);
+                NSLog(@"DEBUG: copypos %lld", copypos);
+                fseek(lipoOut, copypos, SEEK_SET);
+                fwrite(&copy, sizeof(struct fat_arch), 1, lipoOut);
+                NSLog(@"DEBUG: Written arch swap swap swap 1");
+            }
+            arch++;
+        }
+        NSLog(@"DEBUG: changing nfat_arch");
+        uint32_t bin_nfat_arch;
+		
+        fseek(lipoOut, 4, SEEK_SET); //bin_magic
+        fread(&bin_nfat_arch, 4, 1, lipoOut); // get the number of fat architectures in the file
+        NSLog(@"DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
+		bin_nfat_arch = bin_nfat_arch - 0x1000000;
+
+        NSLog(@"DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
+        fseek(lipoOut, 4, SEEK_SET); //bin_magic
+        fwrite(&bin_nfat_arch, 4, 1, lipoOut);
+        
         NSLog(@"DEBUG: Written new header to binary!");
+        [[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:finalPath error:NULL];
     }
     
     fclose(newbinary); // close the new binary stream

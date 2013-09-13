@@ -22,22 +22,36 @@ NSString* supp_file;
 //if the event of lipo
 uint32_t lipo_offset;
 uint32_t start;
+NSMutableArray* stripHeaders;
 
 #define NOZIP 1
 
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.6-git9"
+#define CLUTCH_VERSION "Clutch 1.2.6-git10"
 
 #define ARMV6 6
 #define ARMV7 9
 #define ARMV7S 11
+#define ARMV8 0
+
+#define CPUTYPE_32 0xc000000
+#define CPUTYPE_64 0xc000001
+
 
 #define ARMV7_SUBTYPE 0x9000000
 #define ARMV6_SUBTYPE 0x6000000
 #define ARMV7S_SUBTYPE 0xb000000 //ya boooooooo
+#define ARMV8_SUBTYPE 0x0000000
 
+#define DEBUGMODE 1
+
+#ifdef DEBUGMODE
+#   define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#   define NSLog(...)
+#endif
 
 NSString * crack_application(NSString *application_basedir, NSString *basename, NSString* version);
 NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSString *workingDir, NSDictionary *infoplist);

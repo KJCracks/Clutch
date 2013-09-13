@@ -9,6 +9,9 @@ static NSString *configPath = nil;
 	return [configurationDictionary objectForKey:key];
 }
 
++ (void) setValueTemp:(id)value forKey:(NSString *)key {
+	[configurationDictionary setValue:value forKey:key];
+}
 + (BOOL) setValue:(id)value forKey:(NSString *)key {
 	[configurationDictionary setValue:value forKey:key];
 	[configurationDictionary writeToFile:configPath atomically:YES];

@@ -451,7 +451,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
             }
             else if ((local_arch == ARMV6) && (CFSwapInt32(arch->cpusubtype) > ARMV6)) {
                 NSLog(@"DEBUG: Can't crack >armv6 on armv6! skipping");
-                [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
+                [stripHeaders addObject:[NSNumber numberWithUnsignedInt:CFSwapInt32(arch->cpusubtype)]];
             }
             arch++;
         }
@@ -506,16 +506,14 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                     if (local_arch != CFSwapInt32(arch->cpusubtype)) {
                         if ((arch->cpusubtype == ARMV7S_SUBTYPE) && (local_arch != ARMV7S)) {
                             NSLog(@"DEBUG: Can't crack armv7s on non-armv7s! skipping");
-                            [stripHeaders addObject:[NSNumber numberWithUnsignedInt:ARMV7S_SUBTYPE]];
                             arch++;
                             continue;
                         }
                         else if ((arch->cpusubtype == ARMV8_SUBTYPE) && (local_arch != ARMV8)) {
-                            NSLog(@"DEBUG: Can't crack armv8 on non-armv8! skipping");
-                            [stripHeaders addObject:[NSNumber numberWithUnsignedInt:ARMV8_SUBTYPE]];
                             arch++;
                             continue;
                         }
+                        
                         NSLog(@"DEBUG: cpusubtype isn't the same as local arch! swapping");
                         NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, arch->cpusubtype);
                         NSLog(@"DEBUG: new path: %@", newPath);
@@ -550,9 +548,10 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
     //9 11 6
     struct fat_arch copy, doh;
     fpos_t copypos, rempos;
-    uint32_t stripHeader;
+    NSLog(@"DEBUG: stripHeaders %@", stripHeaders);
+    NSNumber* stripHeader;
     for (id item in stripHeaders) {
-        stripHeader = (uint32_t) item;
+        stripHeader = (NSNumber*) item;
         NSLog(@"######### STRIP HEADER STRIP STRIP STRIP STRIP ############");
         NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
         [[NSFileManager defaultManager] copyItemAtPath:finalPath toPath:lipoPath error: NULL];
@@ -564,18 +563,17 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
         arch = (struct fat_arch *) &fh[1];
         
         fseek(lipoOut, 8, SEEK_SET); //skip nfat_arch and bin_magic
-        NSLog(@"DEBUG: Stripping headers");
-        
+        NOTIFY("Stripping headers..");
         
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
             NSLog(@"DEBUG: loopy looopy %u", CFSwapInt32(arch->cpusubtype));
+            NSLog(@"STIPHEADER: %d", [stripHeader unsignedIntValue]);
             fread(&doh, sizeof(struct fat_arch), 1, lipoOut);
-            if (arch->cpusubtype == stripHeader) {
+            if (arch->cpusubtype == [stripHeader unsignedIntValue]) {
                 NSLog(@"DEBUG: Found arch to strip! Storing it");
                 if (i < CFSwapInt32(fh->nfat_arch)) {
-                    NSLog(@"DEBUG: TEST TEST 2130");
                     fgetpos(lipoOut, &copypos);
-                    NSLog(@"DEBUG: FROMPOS %lld", copypos);
+                    NSLog(@"DEBUG: copy position %lld", copypos);
                 }
                 else {
                     NSLog(@"ERROR: Dunno where to store ler0-i09483430470374 help!!!!!");
@@ -584,14 +582,15 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
             else if (i == (CFSwapInt32(fh->nfat_arch)) - 1) {
                 copy = doh;
                 fgetpos(lipoOut, &rempos);
-                NSLog(@"DEBUG: TOPOS %lld", rempos);
+                NSLog(@"DEBUG: remove position %lld", rempos);
             }
             arch++;
         }
+
         fh = (struct fat_header*) (stripBuffer);
         arch = (struct fat_arch *) &fh[1];
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-            if (arch->cpusubtype == stripHeader)  {
+            if (arch->cpusubtype == [stripHeader unsignedIntValue])  {
                 rempos = rempos - sizeof(struct fat_arch);
                 fseek(lipoOut,rempos, SEEK_SET);
                 NSLog(@"DEBUG: rempos %lld", rempos);
@@ -611,6 +610,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
             }
             arch++;
         }
+        
         NSLog(@"DEBUG: changing nfat_arch");
         uint32_t bin_nfat_arch;
         

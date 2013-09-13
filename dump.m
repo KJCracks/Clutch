@@ -201,7 +201,6 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 			}
 			
 			if (header) {
-                printf("helloooo polis?\n");
                 // is this the first header page?
                 if (i_lcmd == 0) {
                     // is overdrive enabled?

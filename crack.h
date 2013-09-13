@@ -29,7 +29,7 @@ NSMutableArray* stripHeaders;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.6-git10"
+#define CLUTCH_VERSION "Clutch 1.2.6-git11"
 
 #define ARMV6 6
 #define ARMV7 9

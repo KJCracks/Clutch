@@ -29,7 +29,7 @@ NSMutableArray* stripHeaders;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.6-git11"
+#define CLUTCH_VERSION "Clutch 1.2.6-git12"
 
 #define ARMV6 6
 #define ARMV7 9
@@ -59,6 +59,10 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
 NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **error);
 NSString * genRandStringLength(int len);
 int get_local_arch();
+uint32_t get_local_cputype();
+
+int local_arch;
+uint32_t local_cputype;
 
 /*struct fat_arch {
 	uint32_t cputype;

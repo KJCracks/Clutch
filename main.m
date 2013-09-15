@@ -9,8 +9,20 @@
 #import "applist.h"
 #import "crack.h"
 #import <unistd.h>
+#import <QuartzCore/QuartzCore.h>
+
+BOOL crack = FALSE;
+
+int diff_ms(struct timeval t1, struct timeval t2)
+{
+    return (((t1.tv_sec - t2.tv_sec) * 1000000) +
+            (t1.tv_usec - t2.tv_usec))/1000;
+}
 
 int main(int argc, char *argv[]) {
+    struct timeval start,end;
+    gettimeofday(&start, NULL);
+    
     int retVal = 0;
     printf("%s\n", CLUTCH_VERSION);
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -80,6 +92,8 @@ int main(int argc, char *argv[]) {
 			if (ipapath == nil) {
 				printf("Failed.\n");
 			} else {
+                gettimeofday(&end, NULL);
+                crack = TRUE;
 				printf("\t%s\n", [ipapath UTF8String]);
 			}
 		}
@@ -101,6 +115,8 @@ int main(int argc, char *argv[]) {
             if (ipapath == nil) {
                 printf("Failed.\n");
             } else {
+                gettimeofday(&end, NULL);
+                crack = TRUE;
                 printf("\t%s\n", [ipapath UTF8String]);
             }
         }
@@ -151,6 +167,8 @@ int main(int argc, char *argv[]) {
 					if (ipapath == nil) {
 						printf("Failed.\n");
 					} else {
+                        gettimeofday(&end, NULL);
+                        crack = TRUE;
 						printf("\t%s\n", [ipapath UTF8String]);
 					}
 					break;
@@ -172,6 +190,11 @@ int main(int argc, char *argv[]) {
 			cracked = FALSE;
 		}
 	}
+    
+    if (crack) {
+        int dif = diff_ms(end,start);
+        printf("\nelapsed time: %dms\n", dif);
+    }
 	
 endMain:
 	return retVal;
@@ -188,3 +211,5 @@ help:
     
     [pool release];
 }
+
+

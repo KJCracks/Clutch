@@ -29,7 +29,7 @@ NSMutableArray* stripHeaders;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch 1.2.6-git12"
+#define CLUTCH_VERSION "Clutch-1.3"
 
 #define ARMV6 6
 #define ARMV7 9
@@ -45,7 +45,7 @@ NSMutableArray* stripHeaders;
 #define ARMV7S_SUBTYPE 0xb000000 //ya boooooooo
 #define ARMV8_SUBTYPE 0x0000000
 
-#define DEBUGMODE 1
+//#define DEBUGMODE 1
 
 #ifdef DEBUGMODE
 #   define NSLog(...) NSLog(__VA_ARGS__)

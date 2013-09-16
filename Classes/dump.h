@@ -1,14 +1,15 @@
+
+#import <mach/mach_traps.h>
+#import <mach/mach.h>
+#include <mach-o/dyld.h>
+#include <dlfcn.h>
+
 #import "Configuration.h"
 #import "sha1.h"
 #import <dlfcn.h>
 #import <unistd.h>
-#import <mach/mach_traps.h>
-#import <mach/mach.h>
 #import "out.h"
 #import "crack.h"
-
-#include <mach-o/dyld.h>
-#include <dlfcn.h>
 
 #define OVERDRIVE_DYLIB_PATH "@executable_path/overdrive.dylib"
 #define OVERDRIVE_DYLIB_CURRENT_VER 0x20000

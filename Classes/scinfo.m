@@ -18,9 +18,9 @@ void *create_atom(char *name, int len, void *content) {
 }
 
 void *coalesced_atom(int amount, uint32_t name, ...) {
-    
     va_list vl;
     va_start(vl, name);
+    
     uint32_t atomsize = 8 + amount * 8; // 8 bytes per field, 8 bytes for atom header
     amount = amount * 2;
     void *buf = malloc(atomsize);
@@ -31,14 +31,20 @@ void *coalesced_atom(int amount, uint32_t name, ...) {
     memcpy(buf + 4, &name, 4); // copy name
     
     uint32_t *curpos = (uint32_t *) buf + 2;
+    
     for (int i=0;i<amount;i++) {
         uint32_t arg = va_arg(vl, uint32_t);
-        if (i%2)
+        
+        if (i%2) {
             arg = CFSwapInt32(arg);
+        }
+        
         memcpy(curpos, &arg, 4);
         curpos += 1;
     }
+    
     va_end(vl);
+    
     return buf;
 }
 
@@ -62,6 +68,7 @@ void *combine_atoms(char *name, int amount, ...) {
     va_start(vl, amount);
     
     void *curloc = (void *)buf + 8;
+    
     for (int i=0;i<amount;i++) {
         void *atom = va_arg(vl, void *);
         uint32_t content = CFSwapInt32(*(uint32_t *)atom);
@@ -69,6 +76,7 @@ void *combine_atoms(char *name, int amount, ...) {
         memcpy(curloc, atom, content);
         curloc += content;
     }
+    
     va_end(vl);
     
     return buf;
@@ -78,9 +86,11 @@ void *generate_supp(uint32_t *suppsize) {
     // create a random 100612 byte file
     uint32_t *supp = malloc(100612);
     *suppsize = 100612;
+    
     for (int i=0;i<25153;i++) {
         supp[i] = arc4random();
     }
+    
     return supp;
 }
 
@@ -99,6 +109,7 @@ void *generate_sinf(int appid, char *cracker_name, int vendorID) {
                                 0x0, 0x0, // padding
                                 0x0, 0x0 // padding
                                 );
+    
     // sinf.schi.user is a userid. make it random
     uint32_t fakeuserid = arc4random();
     void *user = create_atom("user", 4, &fakeuserid);
@@ -109,6 +120,7 @@ void *generate_sinf(int appid, char *cracker_name, int vendorID) {
     
     // sinf.schi.iviv is a 128bit IV for the private key
     uint32_t *iviv = malloc(16);
+    
     for (int i=0;i<4;i++) {
         iviv[i] = arc4random();
     }
@@ -127,11 +139,13 @@ void *generate_sinf(int appid, char *cracker_name, int vendorID) {
     
     // sinf.schi.priv is a 440 byte private key
     uint32_t *fakepriv = malloc(440);
+    
     for (int i=0;i<110;i++) {
-        if (i>107)
+        if (i>107) {
             fakepriv[i] = 0;
-        else
+        } else {
             fakepriv[i] = arc4random();
+        }
     }
     
     void *priv = create_atom("priv", 440, fakepriv);
@@ -152,6 +166,7 @@ void *generate_sinf(int appid, char *cracker_name, int vendorID) {
     void *schm = create_atom("schm", 12, "\x00\x00\x00\x00itun\x00\x00\x00\x00");
     
     uint32_t *sign = malloc(128);
+    
     for (int i=0;i<32;i++) {
         sign[i] = arc4random();
     }

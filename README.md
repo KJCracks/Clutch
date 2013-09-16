@@ -4,7 +4,7 @@ Updated to support more FAT binaries, 64-bit arch types, and monster-architectur
 
 Usage
 ------------
-Current version: Clutch 1.2.6-git9
+Current version: Clutch 1.3
 
 Clutch [flags] [application name] [...]
 

@@ -256,7 +256,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
                 // is overdrive enabled?
                 if (overdrive_enabled) {
                     // add the overdrive dylib as long as we have room
-                    if ((curloc + overdrive_size) < (buf + 0x1000)) {
+                    if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
                         VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;

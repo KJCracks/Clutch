@@ -769,7 +769,8 @@ uint32_t get_local_cputype() {
 }
 
 int get_local_arch() {
-	uint32_t i, sixtyfour;
+	uint32_t i;
+    //uint32_t sixtyfour;
 	int len = sizeof(i);
 	sysctlbyname("hw.cpusubtype", &i, (size_t *) &len, NULL, 0);
     if (i == 10) {

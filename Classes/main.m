@@ -125,8 +125,8 @@ int main(int argc, char *argv[]) {
 		printf("Caches cleared.\n");
 	} else if (strncmp(argv[1], "-v", 2) == 0) {
 		printf("%s\n", CLUTCH_VERSION);
-	} else if (strncmp(argv[1], "-update", 7) == 0) {
-        
+	} else if (strncmp(argv[1], "-C", 2) == 0) {
+        [ClutchConfiguration setupConfig];
     } else if (strncmp(argv[1], "-h", 2) == 0) {
         goto help;
     } else {

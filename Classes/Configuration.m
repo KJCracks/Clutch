@@ -5,6 +5,8 @@
 static NSMutableDictionary *configurationDictionary = nil;
 static NSString *configPath = nil;
 
+#define MAX_NAME_SZ 256
+
 @implementation ClutchConfiguration
 
 + (id) getValue:(NSString *)key {
@@ -28,8 +30,14 @@ static NSString *configPath = nil;
 + (void) setupConfig {
     printf("Clutch configuration\n===============\n");
     NSDictionary* help = [NSDictionary dictionaryWithContentsOfFile:@"/var/lib/clutch/support.plist"];
+    NSMutableDictionary* tempDict = [NSMutableDictionary dictionaryWithDictionary:configurationDictionary];
     NSString* support;
-    char read[40];
+    char *read;
+    if (read == NULL) {
+        printf ("No memory\n");
+        return;
+    }
+
     for (NSString* key in configurationDictionary) {
         
         if ([key isEqualToString:@"MetadataPurchaseDate"]) {
@@ -39,20 +47,38 @@ static NSString *configPath = nil;
         id value = [configurationDictionary objectForKey:key];
         support = [help objectForKey:key];
         IFPrint([NSString stringWithFormat:@"%@\n - %@ (%@) ", key, support, value]);
-        int nChars = 1000;
-        nChars = scanf("%39s", read);
-        while (nChars > 38) {
-            IFPrint(@"error: too long, please try again\n");
-            nChars = scanf("%39s", read);
-        }
+        read = malloc (MAX_NAME_SZ);
+        fgets(read, MAX_NAME_SZ, stdin);
+        read[strlen(read) - 1] = '\0';
         NSString* input = [NSString stringWithUTF8String:read];
-        if (nChars > 0) {
-            IFPrint(@"Using default value..\n");
-            [self setValue:key forKey:input];
+        NSLog(@"input omg %@", input);
+        NSLog(@"value omg %@,", value);
+        if (read[0] != '\0') {
+            if ([[value lowercaseString] hasPrefix:@"y"] || [[value lowercaseString] hasPrefix:@"n"]) {
+                if ([[input lowercaseString] hasPrefix:@"y"]) {
+                    [tempDict setValue:key forKey:@"YES"];
+                    continue;
+                }
+                else if ([[input lowercaseString] hasPrefix:@"n"]) {
+                    [tempDict setValue:key forKey:@"NO"];
+                    continue;
+                }
+                
+                else {
+                    IFPrint(@"error: invalid input\n");
+                    return;
+                }
+            }
+            NSLog(@"input: %@, %@", key, input);
+            [tempDict setValue:key forKey:input];
         }
-        
+        else {
+            IFPrint(@"Using default value..\n");
+        }
+        free(read);
     }
-    
+    configurationDictionary = tempDict;
+    [configurationDictionary writeToFile:configPath atomically:YES];
 }
 
 

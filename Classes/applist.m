@@ -1,10 +1,6 @@
-
-// Lists all applications installed on the device
-
 #import "applist.h"
 
 NSArray * get_application_list(BOOL sort, BOOL updates) {
-    
 	NSString *basePath = @"/var/mobile/Applications/";
 	NSMutableArray *returnArray = [[NSMutableArray alloc] init];
 	NSArray *apps = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:basePath error:NULL];
@@ -15,21 +11,16 @@ NSArray * get_application_list(BOOL sort, BOOL updates) {
 	
 	NSEnumerator *e, *e2;
 	e = [apps objectEnumerator];
-	
-    NSString *applicationDirectory;
+	NSString *applicationDirectory;
 	NSString *applicationSubdirectory;
 	NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/cache/clutch.plist"];
-	
-    BOOL cflush = FALSE;
-	
-    if ((cache == nil) || (![cache count])) {
+	BOOL cflush = FALSE;
+	if ((cache == nil) || (![cache count])) {
 		cache = [NSMutableDictionary dictionary];
 		cflush = TRUE;
 	}
-    
     NSMutableDictionary *versions;
-	
-    if (updates) {
+	if (updates) {
         if (![[NSFileManager defaultManager] fileExistsAtPath:@"/etc/clutch_cracked.plist"]) {
             versions = [[NSMutableDictionary alloc] init];
         }
@@ -37,21 +28,21 @@ NSArray * get_application_list(BOOL sort, BOOL updates) {
             versions = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/cache/clutch_cracked.plist"];
         }
     }
-    
 	NSDictionary *applicationDetailObject;
 	NSString *bundleDisplayName, *applicationRealname, *bundleVersionString;
     
 	while (applicationDirectory = [e nextObject]) {
+		//if ([cache objectForKey:applicationDirectory] != nil) {
+        //[returnArray addObject:[cache objectForKey:applicationDirectory]];
+        //	} else {
         NSArray *sandboxPath = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[basePath stringByAppendingFormat:@"%@/", applicationDirectory] error:NULL];
         
         e2 = [sandboxPath objectEnumerator];
-        
         while (applicationSubdirectory = [e2 nextObject]) {
             if ([applicationSubdirectory rangeOfString:@".app"].location == NSNotFound)
                 continue;
             else {
                 bundleDisplayName = [[NSDictionary dictionaryWithContentsOfFile:[basePath stringByAppendingFormat:@"%@/%@/Info.plist", applicationDirectory, applicationSubdirectory]] objectForKey:@"CFBundleDisplayName"];
-                
                 bundleVersionString = [[[NSDictionary dictionaryWithContentsOfFile:[basePath stringByAppendingFormat:@"%@/%@/Info.plist", applicationDirectory, applicationSubdirectory]] objectForKey:@"CFBundleVersion"] stringByReplacingOccurrencesOfString:@"." withString:@""];
                 
                 applicationRealname = [applicationSubdirectory stringByReplacingOccurrencesOfString:@".app" withString:@""];
@@ -75,8 +66,8 @@ NSArray * get_application_list(BOOL sort, BOOL updates) {
                         if ([versions objectForKey:applicationRealname] != bundleVersionString) {
                             [returnArray addObject:applicationDetailObject];
                         }
+                        
                     }
-                    
                     else {
                         [returnArray addObject:applicationDetailObject];
                     }
@@ -87,6 +78,7 @@ NSArray * get_application_list(BOOL sort, BOOL updates) {
             }
         }
     }
+	//}
 	
 	if (cflush) {
 		[cache writeToFile:@"/var/cache/clutch.plist" atomically:TRUE];
@@ -94,14 +86,12 @@ NSArray * get_application_list(BOOL sort, BOOL updates) {
     
 	if ([returnArray count] == 0) {
         [returnArray release];
-        
 		return NULL;
     }
 	
 	if (sort) {
 		return (NSArray *)[returnArray sortedArrayUsingFunction:alphabeticalSort context:NULL];
     }
-    
 	return (NSArray *) returnArray;
 }
 

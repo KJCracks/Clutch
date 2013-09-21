@@ -16,54 +16,79 @@ static NSString *configPath = nil;
 + (void) setValueTemp:(id)value forKey:(NSString *)key {
 	[configurationDictionary setValue:value forKey:key];
 }
-
 + (BOOL) setValue:(id)value forKey:(NSString *)key {
 	[configurationDictionary setValue:value forKey:key];
 	[configurationDictionary writeToFile:configPath atomically:YES];
-    
 	return YES;
 }
 
 + (BOOL) configWithFile:(NSString *)filename {
 	configurationDictionary = [NSMutableDictionary dictionaryWithContentsOfFile:filename];
 	configPath = filename;
-    
 	return TRUE;
 }
 + (void) setupConfig {
+    printf("Downloading config files..\n");
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://kjcracks.github.io/Clutch/support.plist"] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+    NSURLResponse* response = [[NSURLResponse alloc] init];
+    NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+    NSError * error = nil;
+    
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:@"/var/lib/clutch/"]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:@"/var/lib/clutch"
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:&error];
+    }
+    if (error != nil) {
+        IFPrint(@"error creating directory: %@", error);
+        return;
+       
+    }
+    [data writeToFile:@"/var/lib/clutch/support.plist" atomically:YES];
+    
     printf("Clutch configuration\n===============\n");
-    NSDictionary* help = [NSDictionary dictionaryWithContentsOfFile:@"/var/lib/clutch/support.plist"];
+    
+    NSDictionary* supportDictionary = [NSDictionary dictionaryWithContentsOfFile:@"/var/lib/clutch/support.plist"];
     NSMutableDictionary* tempDict = [NSMutableDictionary dictionaryWithDictionary:configurationDictionary];
-    NSString* support;
+    NSString* support, *defaultValue;
     char *read;
     if (read == NULL) {
         printf ("No memory\n");
         return;
     }
 
-    for (NSString* key in configurationDictionary) {
+    for (NSString* key in supportDictionary) {
         
-        if ([key isEqualToString:@"MetadataPurchaseDate"]) {
+        NSDictionary* supportEntry = [supportDictionary objectForKey:key];
+        if ([[supportEntry objectForKey:@"enabled"] isEqualToString:@"NO"]) {
+            IFPrint(@"Not enabled entry %@\n", key);
             continue;
         }
+        support = [supportEntry objectForKey:@"support"];
+        defaultValue = [configurationDictionary objectForKey:key];
+        if (defaultValue == nil) {
+            defaultValue = [supportEntry objectForKey:@"default"];
+        }
         
-        id value = [configurationDictionary objectForKey:key];
-        support = [help objectForKey:key];
-        IFPrint([NSString stringWithFormat:@"%@\n - %@ (%@) ", key, support, value]);
+        IFPrint([NSString stringWithFormat:@"%@\n - %@ (%@) ", key, support, defaultValue]);
         read = malloc (MAX_NAME_SZ);
         fgets(read, MAX_NAME_SZ, stdin);
         read[strlen(read) - 1] = '\0';
         NSString* input = [NSString stringWithUTF8String:read];
-        NSLog(@"input omg %@", input);
-        NSLog(@"value omg %@,", value);
+        //NSLog(@"input omg %@", input);
+        //NSLog(@"value omg %@,", defaultValue);
         if (read[0] != '\0') {
-            if ([[value lowercaseString] hasPrefix:@"y"] || [[value lowercaseString] hasPrefix:@"n"]) {
+            if ([[defaultValue lowercaseString] hasPrefix:@"y"] || [[defaultValue lowercaseString] hasPrefix:@"n"]) {
                 if ([[input lowercaseString] hasPrefix:@"y"]) {
-                    [tempDict setValue:key forKey:@"YES"];
+                    [tempDict setValue:@"YES" forKey:key];
+                    free(read);
                     continue;
                 }
                 else if ([[input lowercaseString] hasPrefix:@"n"]) {
-                    [tempDict setValue:key forKey:@"NO"];
+                    [tempDict setValue:@"NO" forKey:key];
+                    free(read);
                     continue;
                 }
                 
@@ -73,7 +98,7 @@ static NSString *configPath = nil;
                 }
             }
             NSLog(@"input: %@, %@", key, input);
-            [tempDict setValue:key forKey:input];
+            [tempDict setValue:input forKey:key];
         }
         else {
             IFPrint(@"Using default value..\n");

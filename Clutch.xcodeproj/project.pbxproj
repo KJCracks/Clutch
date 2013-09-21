@@ -10,6 +10,16 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		41E0DF0B123752D30068268F /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E0DF0A123752D30068268F /* Configuration.m */; };
 		AD2019F817E576D100BF9F6C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2019F717E576D100BF9F6C /* QuartzCore.framework */; };
+		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
+		ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */; };
+		ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC617ECA8A7005282CE /* make_vms.com */; };
+		ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */; };
+		ADC68CDC17ECA8A7005282CE /* MiniZip64_info.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CCB17ECA8A7005282CE /* MiniZip64_info.txt */; };
+		ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CD317ECA8A7005282CE /* ZipArchive.m */; };
+		ADC68CE517ECAD3E005282CE /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CD017ECA8A7005282CE /* zip.c */; };
+		ADC68CE617ECAD4C005282CE /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CCE17ECA8A7005282CE /* unzip.c */; };
+		ADC68CE717ECAD61005282CE /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CCC17ECA8A7005282CE /* mztools.c */; };
+		ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CC217ECA8A7005282CE /* ioapi.c */; };
 		BC871C7F17E7122500048636 /* applist.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7317E7122500048636 /* applist.m */; };
 		BC871C8017E7122500048636 /* crack.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7517E7122500048636 /* crack.m */; };
 		BC871C8117E7122500048636 /* dump.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7717E7122500048636 /* dump.m */; };
@@ -17,6 +27,7 @@
 		BC871C8317E7122500048636 /* out.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7A17E7122500048636 /* out.m */; };
 		BC871C8417E7122500048636 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7C17E7122500048636 /* scinfo.m */; };
 		BC871C8517E7122500048636 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7D17E7122500048636 /* sha1.c */; };
+		BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC871C8717E7126F00048636 /* Clutch-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +37,25 @@
 		41E0DF0A123752D30068268F /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Configuration.m; sourceTree = "<group>"; };
 		AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AD2019F717E576D100BF9F6C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AD201A0517EC908800BF9F6C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLogUnzip; sourceTree = "<group>"; };
+		ADC68CC117ECA8A7005282CE /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		ADC68CC217ECA8A7005282CE /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		ADC68CC317ECA8A7005282CE /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		ADC68CC617ECA8A7005282CE /* make_vms.com */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = make_vms.com; sourceTree = "<group>"; };
+		ADC68CC717ECA8A7005282CE /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		ADC68CC817ECA8A7005282CE /* miniunz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = miniunz.c; sourceTree = "<group>"; };
+		ADC68CC917ECA8A7005282CE /* minizip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = minizip.c; sourceTree = "<group>"; };
+		ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MiniZip64_Changes.txt; sourceTree = "<group>"; };
+		ADC68CCB17ECA8A7005282CE /* MiniZip64_info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MiniZip64_info.txt; sourceTree = "<group>"; };
+		ADC68CCC17ECA8A7005282CE /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
+		ADC68CCD17ECA8A7005282CE /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
+		ADC68CCE17ECA8A7005282CE /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		ADC68CCF17ECA8A7005282CE /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		ADC68CD017ECA8A7005282CE /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		ADC68CD117ECA8A7005282CE /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		ADC68CD217ECA8A7005282CE /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
+		ADC68CD317ECA8A7005282CE /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		BC871C7217E7122500048636 /* applist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = applist.h; sourceTree = "<group>"; };
 		BC871C7317E7122500048636 /* applist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = applist.m; sourceTree = "<group>"; };
 		BC871C7417E7122500048636 /* crack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crack.h; sourceTree = "<group>"; };
@@ -41,6 +71,7 @@
 		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
 		BC871C8917E7165A00048636 /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clutch_Prefix.pch; sourceTree = "<group>"; };
+		BCA6708B17E7199A005B42F3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */,
 				AD2019F817E576D100BF9F6C /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 			);
@@ -59,6 +91,9 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				ADC68CBF17ECA8A7005282CE /* minizip */,
+				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
+				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
 				BC871C7217E7122500048636 /* applist.h */,
 				BC871C7317E7122500048636 /* applist.m */,
 				BC871C7417E7122500048636 /* crack.h */,
@@ -89,6 +124,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				AD201A0517EC908800BF9F6C /* libz.dylib */,
+				BCA6708B17E7199A005B42F3 /* Default-568h@2x.png */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -124,6 +161,29 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		ADC68CBF17ECA8A7005282CE /* minizip */ = {
+			isa = PBXGroup;
+			children = (
+				ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */,
+				ADC68CC117ECA8A7005282CE /* crypt.h */,
+				ADC68CC217ECA8A7005282CE /* ioapi.c */,
+				ADC68CC317ECA8A7005282CE /* ioapi.h */,
+				ADC68CC617ECA8A7005282CE /* make_vms.com */,
+				ADC68CC717ECA8A7005282CE /* Makefile */,
+				ADC68CC817ECA8A7005282CE /* miniunz.c */,
+				ADC68CC917ECA8A7005282CE /* minizip.c */,
+				ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */,
+				ADC68CCB17ECA8A7005282CE /* MiniZip64_info.txt */,
+				ADC68CCC17ECA8A7005282CE /* mztools.c */,
+				ADC68CCD17ECA8A7005282CE /* mztools.h */,
+				ADC68CCE17ECA8A7005282CE /* unzip.c */,
+				ADC68CCF17ECA8A7005282CE /* unzip.h */,
+				ADC68CD017ECA8A7005282CE /* zip.c */,
+				ADC68CD117ECA8A7005282CE /* zip.h */,
+			);
+			path = minizip;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,9 +191,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Clutch" */;
 			buildPhases = (
+				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				1D60588D0D05DD3D006BFB54 /* Resources */,
 				41E0DE311237440B0068268F /* ShellScript */,
 			);
 			buildRules = (
@@ -151,7 +211,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0410;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Clutch" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -174,6 +234,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */,
+				ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */,
+				ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */,
+				ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */,
+				ADC68CDC17ECA8A7005282CE /* MiniZip64_info.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +273,11 @@
 				BC871C8317E7122500048636 /* out.m in Sources */,
 				BC871C8417E7122500048636 /* scinfo.m in Sources */,
 				BC871C8517E7122500048636 /* sha1.c in Sources */,
+				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,
+				ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */,
+				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,
+				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
+				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +322,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
+				"OTHER_LDFLAGS[arch=*]" = "-all_load";
 				PRODUCT_NAME = Clutch;
 				VALIDATE_PRODUCT = YES;
 			};

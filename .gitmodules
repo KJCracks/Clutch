@@ -1,0 +1,3 @@
+[submodule "Libraries/ZipArchive"]
+	path = Libraries/ZipArchive
+	url = https://github.com/mattconnolly/ZipArchive.git

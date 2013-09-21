@@ -4,20 +4,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-
 #import "Configuration.h"
 
 // print something verbose
+//#define VERBOSE(x) if ([[ClutchConfiguration getValue:@"VerboseLogging"] isEqualToString:@"YES"]) { progress_event(x); };
 #define VERBOSE(x) { progress_event(x); };
-
-// print debug data
-#define DEBUG(x) { progress_event(x); };
-
 // output some data
-#define NOTIFY(x) { progress_message(x); };
-
+#define NOTIFY(x) progress_message(x);
 // update percentage of currently running task
-#define PERCENT(x) { progress_percent(x); };
+#define PERCENT(x) progress_percent(x);
 
 int determine_screen_width (void);
 void progress_percent(int percent);

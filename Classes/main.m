@@ -33,7 +33,7 @@ BOOL check_version() {
     if (build_version > CLUTCH_BUILD) {
         printf("Your current version of Clutch %u is outdated!\nPlease get the latest version %u!\n", CLUTCH_BUILD, build_version);
         return FALSE;
-    }else {
+    } else {
         printf("Your version of Clutch is up to date!\n");
     }
     return TRUE;
@@ -242,12 +242,12 @@ endMain:
 help:
     printf("Clutch Help\n");
     printf("---------------------------------\n");
+    printf("-c          Runs configuration utility\n");
     printf("-a          Cracks all applications\n");
     printf("-u          Cracks updated applications\n");
     printf("-f          Clears cache\n");
     printf("-v          Shows version\n");
     printf("\n");
-    printf("--[no|fast|best]-compression       Set the compression level\n");
     
     [pool release];
 }

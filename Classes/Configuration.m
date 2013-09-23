@@ -109,6 +109,16 @@ static NSString *configPath = nil;
     [configurationDictionary writeToFile:configPath atomically:YES];
 }
 
+/*NSString* generateIPAPath(NSString* displayName, NSString* version) {
+    NSString* ipapath = [configurationDictionary objectForKey:@"filename"];
+    NSString* crackername = [configurationDictionary objectForKey:<#(id)#>]
+    ipapath = [ipapath stringByReplacingOccurrencesOfString:@"$appname" withString:displayName];
+    ipapath = [ipapath stringByReplacingOccurrencesOfString:@"$appversion" withString:version];
+    ipapath = [ipapath stringByReplacingOccurrencesOfString:@"$crackername" withString:];
+    displayName = [displayName stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+    NSString* ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@%@-(%@).ipa", displayName , version, crackerName, addendum, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+    return ipapath;
+}*/
 
 
 void IFPrint (NSString *format, ...) {

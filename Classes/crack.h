@@ -10,7 +10,7 @@
 #include <mach-o/loader.h>
 
 //sharing is caring
-int overdrive_enabled;
+int overdrive_enabled, new_zip;
 char buffer[4096];
 char old_buffer[4096];
 FILE *oldbinary;
@@ -32,7 +32,7 @@ int compression_level;
 #define MH_MAGIC 0xfeedface
 
 #define CLUTCH_VERSION "Clutch-1.3.1"
-#define CLUTCH_BUILD 13102
+#define CLUTCH_BUILD 13103
 #define CLUTCH_DEV 0
 
 #define ARMV6 6

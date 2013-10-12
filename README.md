@@ -38,6 +38,11 @@ Nighthawk - Code contributor (pre 1.2.6)<br />
 Rastignac - Inspiration and genius<br />
 TheSexyPenguin - Inspiration<br />
 
+TODO
+-------------
+* use proper zip library (libarchive)
+
+
 
 (c) Kim Jong-Cracks 1819-2013
 

@@ -155,6 +155,12 @@ int main(int argc, char *argv[]) {
 		printf("%s\n", CLUTCH_VERSION);
 	} else if (strncmp(argv[1], "-C", 2) == 0) {
         [ClutchConfiguration setupConfig];
+    } else if (strncmp(argv[1], "-c", 2) == 0) {
+        [ClutchConfiguration setupConfig];
+    }
+    else if (strncmp(argv[1], "-z", 2) == 0) {
+        printf("Using native zipping! (may be unstable)\n\n");
+        new_zip = 1;
     } else if (strncmp(argv[1], "-h", 2) == 0) {
         goto help;
     } else if (strncmp(argv[1], "-vb", 2) == 0) {
@@ -186,7 +192,7 @@ int main(int argc, char *argv[]) {
 		NSString *ipapath;
 		NSDictionary *applicationDetails;
 		BOOL cracked = FALSE;
-		for (int i = 1; i<argc; i++) {
+		for (int i = 0; i<argc; i++) {
 			NSEnumerator *e = [applist objectEnumerator];
 			int cindex = 0;
 			while (applicationDetails = [e nextObject]) {

@@ -253,11 +253,17 @@ NSString * crack_application(NSString *application_basedir, NSString *basename, 
     VERBOSE("Packaging IPA file...");
     
     // filename addendum
-    NSString *addendum = @"";
+    NSMutableString *addendum = [[NSMutableString alloc]init];
     
-    if (overdrive_enabled)
-        addendum = @"-OD";
+    if (overdrive_enabled) {
+        [addendum appendString:@"-OD"];
+    }
+    if ([(NSString *)[ClutchConfiguration getValue:@"CheckMinOS"] isEqualToString:@"YES"]) {
+        [addendum appendString: [NSString stringWithFormat:@"-iOS-%@", [infoplist objectForKey:@"MinimumOSVersion"]]];
+    }
     
+    NSLog(@"addenum: %@", addendum);
+         
 	NSString *ipapath;
 	if ([[ClutchConfiguration getValue:@"FilenameCredit"] isEqualToString:@"YES"]) {
 		ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@%@-(%@).ipa", [[infoplist objectForKey:@"CFBundleDisplayName"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"], [infoplist objectForKey:@"CFBundleVersion"], crackerName, addendum, [NSString stringWithUTF8String:CLUTCH_VERSION]];
@@ -276,23 +282,36 @@ NSString * crack_application(NSString *application_basedir, NSString *basename, 
         compression_level = config_compression;
     }
     printf("compression level: %d\n", compression_level);
-    NOTIFY("Compressing original application (1/2)...");
     
-    ZipArchive *archiver = createZip(ipapath);
-    zip_original(archiver, [application_basedir stringByAppendingString:@"../"], binary_name, ipapath);
-    stop_bar();
-	//system([[NSString stringWithFormat:@"cd %@; zip %@-m -r \"%@\" * 2>&1> /dev/null", workingDir, compressionArguments, ipapath] UTF8String]);
-	//[[NSFileManager defaultManager] moveItemAtPath:[workingDir stringByAppendingString:@"Payload"] toPath:[workingDir stringByAppendingString:@"Payload_1"] error:NULL];
     
-    NOTIFY("Compressing second cracked application (2/2)...");
-    zip(archiver, workingDir);
-    stop_bar();
-    [archiver CloseZipFile2];
-	//[[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingDir stringByAppendingString:@"Payload"] withDestinationPath:[application_basedir stringByAppendingString:@"/../"] error:NULL];
-    
-	//system([[NSString stringWithFormat:@"cd %@; zip %@-u -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", workingDir, compressionArguments, ipapath, binary_name] UTF8String]);
-	
-    //stop_bar();
+    if (new_zip == 1) {
+        NOTIFY("Compressing original application (native zip) (1/2)...");
+        ZipArchive *archiver = createZip(ipapath);
+        zip_original(archiver, [application_basedir stringByAppendingString:@"../"], binary_name, ipapath);
+        stop_bar();
+        NOTIFY("Compressing second cracked application (native zip) (2/2)...");
+        zip(archiver, workingDir);
+        stop_bar();
+        [archiver CloseZipFile2];
+    }
+    else {
+        
+        NSString *compressionArguments = @"";
+        if (compression_level != -1) {
+            compressionArguments = [NSString stringWithFormat:@"-%d", compression_level];
+        }
+        NOTIFY("Compressing cracked application (2/2)...");
+        system([[NSString stringWithFormat:@"cd %@; zip %@ -m -r \"%@\" * 2>&1> /dev/null", workingDir, compressionArguments, ipapath] UTF8String]);
+        [[NSFileManager defaultManager] moveItemAtPath:[workingDir stringByAppendingString:@"Payload"] toPath:[workingDir stringByAppendingString:@"Payload_1"] error:NULL];
+        
+        
+        [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingDir stringByAppendingString:@"Payload"] withDestinationPath:[application_basedir stringByAppendingString:@"/../"] error:NULL];
+         NOTIFY("Compressing original application (2/2)...");
+        system([[NSString stringWithFormat:@"cd %@; zip %@ -u -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", workingDir, compressionArguments, ipapath, binary_name] UTF8String]);
+        
+        stop_bar();
+
+    }
     
 	[[NSFileManager defaultManager] removeItemAtPath:workingDir error:NULL];
     

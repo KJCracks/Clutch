@@ -233,7 +233,7 @@ NSString * crack_application(NSString *application_basedir, NSString *basename, 
         VERBOSE("Creating fake SC_Info data...");
         // create fake SC_Info directory
         [[NSFileManager defaultManager] createDirectoryAtPath:[workingDir stringByAppendingFormat:@"Payload/%@/SF_Info/", basename] withIntermediateDirectories:YES attributes:nil error:NULL];
-        //NSLog@"DEBUG: made fake directory");
+        NSLog(@"DEBUG: made fake directory");
         // create fake SC_Info SINF file
         FILE *sinfh = fopen([[workingDir stringByAppendingFormat:@"Payload/%@/SF_Info/%@.sinf", basename, binary_name] UTF8String], "w");
         void *sinf = generate_sinf([[metadataPlist objectForKey:@"itemId"] intValue], (char *)[crackerName UTF8String], [[metadataPlist objectForKey:@"vendorId"] intValue]);
@@ -300,7 +300,7 @@ NSString * crack_application(NSString *application_basedir, NSString *basename, 
         if (compression_level != -1) {
             compressionArguments = [NSString stringWithFormat:@"-%d", compression_level];
         }
-        NOTIFY("Compressing cracked application (2/2)...");
+        NOTIFY("Compressing cracked application (1/2)...");
         system([[NSString stringWithFormat:@"cd %@; zip %@ -m -r \"%@\" * 2>&1> /dev/null", workingDir, compressionArguments, ipapath] UTF8String]);
         [[NSFileManager defaultManager] moveItemAtPath:[workingDir stringByAppendingString:@"Payload"] toPath:[workingDir stringByAppendingString:@"Payload_1"] error:NULL];
         
@@ -365,22 +365,22 @@ NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSSt
 int get_arch(struct fat_arch* arch) {
     int i;
     if (arch->cputype == CPUTYPE_32) {
-        //NSLog@"DEBUG: 32bit portion detected %u", arch->cpusubtype);
+        NSLog(@"DEBUG: 32bit portion detected %u", arch->cpusubtype);
         switch (arch->cpusubtype) {
             case ARMV7S_SUBTYPE:
-                //NSLog@"DEBUG: armv7s portion detected");
+                NSLog(@"DEBUG: armv7s portion detected");
                 i = 11;
                 break;
             case ARMV7_SUBTYPE:
-                //NSLog@"DEBUG: armv7 portion detected");
+                NSLog(@"DEBUG: armv7 portion detected");
                 i = 9;
                 break;
             case ARMV6_SUBTYPE:
-                //NSLog@"DEBUG: armv6 portion detected");
+                NSLog(@"DEBUG: armv6 portion detected");
                 i = 6;
                 break;
             default:
-                //NSLog@"ERROR: unknown 32bit portion detected %u", arch->cpusubtype);
+                NSLog(@"ERROR: unknown 32bit portion detected %u", arch->cpusubtype);
                 i = -1;
                 break;
         }
@@ -388,11 +388,11 @@ int get_arch(struct fat_arch* arch) {
     else if (arch->cputype == CPUTYPE_64) {
         switch (arch->cpusubtype) {
             case ARMV8_SUBTYPE:
-                //NSLog@"DEBUG: armv8 portion detected! 64bit!!");
+                NSLog(@"DEBUG: armv8 portion detected! 64bit!!");
                 i = 8;
                 break;
             default:
-                //NSLog@"ERROR: unknown 64bit portion detected");
+                NSLog(@"ERROR: unknown 64bit portion detected");
                 i = -1;
                 break;
         }
@@ -402,7 +402,7 @@ int get_arch(struct fat_arch* arch) {
 NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch) {    
     char swapBuffer[4096];
     if (local_arch == swaparch) {
-        //NSLog@"UH HELLRO PLIS");
+        NSLog(@"UH HELLRO PLIS");
         return NULL;
     }
     
@@ -444,7 +444,7 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
     
     struct fat_arch *swap_arch = (struct fat_arch *) &swapfh[1];
     
-      //NSLog@"arch arch arch ok ok");
+      NSLog(@"arch arch arch ok ok");
     
     for (i = CFSwapInt32(swapfh->nfat_arch); i--;) {
         if (CFSwapInt32(swap_arch->cpusubtype) == local_arch) {
@@ -481,7 +481,7 @@ NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* bas
     NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
     sinf_file = [NSString stringWithFormat:@"%@_%@_lwork.sinf", scinfo_prefix, suffix];
     supp_file = [NSString stringWithFormat:@"%@_%@_lwork.supp", scinfo_prefix, suffix];
-    //NSLog@"sinf file yo %@", sinf_file);
+    NSLog(@"sinf file yo %@", sinf_file);
     [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:sinf_file error:NULL];
     [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:supp_file error:NULL];
 
@@ -504,7 +504,7 @@ void swap_back(NSString *binaryPath, NSString* baseDirectory, NSString* baseName
     NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
     [[NSFileManager defaultManager] moveItemAtPath:sinf_file toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
     [[NSFileManager defaultManager] moveItemAtPath:supp_file toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
-    //NSLog@"DEBUG: Moving sinf_file %@ to %@", sinf_file, [scinfo_prefix stringByAppendingString:@".sinf"]);
+    NSLog(@"DEBUG: Moving sinf_file %@ to %@", sinf_file, [scinfo_prefix stringByAppendingString:@".sinf"]);
 }
 
 NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **error) {
@@ -514,7 +514,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
 	
 	// open streams from both files
 	FILE *oldbinary, *newbinary;
-    //NSLog@"DEBUG: binary path %@", binaryPath);
+    NSLog(@"DEBUG: binary path %@", binaryPath);
 	oldbinary = fopen([binaryPath UTF8String], "r+");
 	newbinary = fopen([finalPath UTF8String], "r+");
 	
@@ -530,7 +530,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
      * DON'T RELY ON THIS OR EXPECT IT TO WORK MA NIGGAS
      */
     
-    //NSLog@"DEBUG: local cputype %u", get_local_cputype());
+    NSLog(@"DEBUG: local cputype %u", get_local_cputype());
     
     if (fh->magic == FAT_CIGAM) {
         VERBOSE("binary is a fat executable");
@@ -545,8 +545,8 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
        // for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
         //apparently this is faster? I think so too.
         for (i = CFSwapInt32(fh->nfat_arch); i--;) {
-            ////NSLog@"DEBUG: cpusubtype %u %u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(arch->cputype));
-            ////NSLog@"DEBUG: cpusubtype %u %u", arch->cpusubtype, arch->cputype);
+            NSLog(@"DEBUG: cpusubtype %u %u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(arch->cputype));
+            NSLog(@"DEBUG: cpusubtype %u %u", arch->cpusubtype, arch->cputype);
             switch (get_arch(arch)) {
                 case 6:
                     armv6 = *arch;
@@ -570,25 +570,25 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                     break;
             }
             if ((local_cputype == CPUTYPE_32) && (CFSwapInt32(arch->cpusubtype) > local_arch)) {
-                    //NSLog@"DEBUG: Can't crack arch %d on %d! skipping", CFSwapInt32(arch->cpusubtype), local_arch);
+                    NSLog(@"DEBUG: Can't crack arch %d on %d! skipping", CFSwapInt32(arch->cpusubtype), local_arch);
                     [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
             }
             else if (arch->cputype == CPUTYPE_64) {
                 if ((local_cputype == CPUTYPE_64) && (arch->cpusubtype > local_arch)) {
-                    //NSLog@"DEBUG: Can't crack 64bit arch %d on %d! skipping", CFSwapInt32(arch->cpusubtype), local_arch);
+                    NSLog(@"DEBUG: Can't crack 64bit arch %d on %d! skipping", CFSwapInt32(arch->cpusubtype), local_arch);
                     [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
                 }
                 else if (local_cputype == CPUTYPE_32) {
-                    //NSLog@"DEBUG: can crack 64bit arch on this device! skipping");
+                    NSLog(@"DEBUG: can crack 64bit arch on this device! skipping");
                     [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
                 }
             }
             /*else if ((arch->cpusubtype == ARMV8_SUBTYPE) && (local_arch != ARMV8)) {
-                //NSLog@"DEBUG: Can't crack armv8 on non-armv8! skipping");
+                NSLog(@"DEBUG: Can't crack armv8 on non-armv8! skipping");
                 [stripHeaders addObject:[NSNumber numberWithUnsignedInt:ARMV8_SUBTYPE]];
             }
             else if ((local_arch == ARMV6) && (CFSwapInt32(arch->cpusubtype) > ARMV6)) {
-                //NSLog@"DEBUG: Can't crack >armv6 on armv6! skipping");
+                NSLog(@"DEBUG: Can't crack >armv6 on armv6! skipping");
                 [stripHeaders addObject:[NSNumber numberWithUnsignedInt:CFSwapInt32(arch->cpusubtype)]];
             }*/
             arch++;
@@ -610,30 +610,30 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
         }
     
         
-        ////NSLog@"############################");
-        ////NSLog@"DEBUG: cpu_subtype: %u local_arch: %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
-        ////NSLog@"DEBUG: offset: %u", CFSwapInt32(arch->offset));
-        ////NSLog@"############################");
+        NSLog(@"############################");
+        NSLog(@"DEBUG: cpu_subtype: %u local_arch: %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
+        NSLog(@"DEBUG: offset: %u", CFSwapInt32(arch->offset));
+        NSLog(@"############################");
         
         
         // Running on an armv7, armv7s, armv8, or higher device
-        //NSLog@"DEBUG: path: %@", binaryPath);
+        NSLog(@"DEBUG: path: %@", binaryPath);
         
         //fat binary
-        //NSLog@"DEBUG: fat binary");
+        NSLog(@"DEBUG: fat binary");
         arch = (struct fat_arch *) &fh[1];
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-            //NSLog@"DEBUG: Currently cracking arch %u", CFSwapInt32(arch->cpusubtype));
+            NSLog(@"DEBUG: Currently cracking arch %u", CFSwapInt32(arch->cpusubtype));
             if (local_arch != CFSwapInt32(arch->cpusubtype)) {
                 if ([stripHeaders containsObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]]) {
-                    //NSLog@"DEBUG: skipping");
+                    NSLog(@"DEBUG: skipping");
                     arch++;
                     continue;
                 }
                 printf("swap: Currently cracking armv%u portion\n", CFSwapInt32(arch->cpusubtype));
-                //NSLog@"DEBUG: cpusubtype isn't the same as local arch! swapping");
+                NSLog(@"DEBUG: cpusubtype isn't the same as local arch! swapping");
                 NSString* newPath =  swap_arch(binaryPath, baseDirectory, baseName, arch->cpusubtype);
-                //NSLog@"DEBUG: new path: %@", newPath);
+                NSLog(@"DEBUG: new path: %@", newPath);
                 FILE* swapbinary = fopen([newPath UTF8String], "r+");
                 if (!dump_binary(swapbinary, newbinary, CFSwapInt32(arch->offset), newPath)) {
                     // Dumping failed
@@ -673,16 +673,16 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
         
         fseek(newbinary, 0, SEEK_SET);
         fread(&mh, sizeof(struct mach_header), 1, newbinary);
-        //NSLog@"fread sucessful!");
+        NSLog(@"fread sucessful!");
         for (int lc_index = 0; lc_index < mh.ncmds; lc_index++) {
             fread(&lc, sizeof(struct load_command), 1, newbinary);
-            //NSLog@"loopy loopy %u", lc.cmd);
+            NSLog(@"loopy loopy %u", lc.cmd);
             if (lc-.cmd == LC_ENCRYPTION_INFO) {
-                //NSLog@"LC_ENCRYPTION!!!!");
+                NSLog(@"LC_ENCRYPTION!!!!");
                 fseek(newbinary, -1 * sizeof(struct load_command), SEEK_CUR);
                 fread(&crypt, sizeof(struct encryption_info_command), 1, newbinary);
                 if (crypt->cryptid == 0) {
-                    //NSLog@"DEBUG: cryptid was patched!");
+                    NSLog(@"DEBUG: cryptid was patched!");
                     break;
                 }
                 else {
@@ -706,12 +706,12 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
     //9 11 6
     struct fat_arch copy, doh;
     fpos_t copypos, rempos;
-    //NSLog@"DEBUG: stripHeaders %@", stripHeaders);
+    NSLog(@"DEBUG: stripHeaders %@", stripHeaders);
     NSNumber* stripHeader;
     for (id item in stripHeaders) {
         NOTIFY("Removing unwanted header information..");
         stripHeader = (NSNumber*) item;
-        ////NSLog@"");
+        
         NSString *lipoPath = [NSString stringWithFormat:@"%@_l", finalPath]; // assign a new lipo path
         [[NSFileManager defaultManager] copyItemAtPath:finalPath toPath:lipoPath error: NULL];
         FILE *lipoOut = fopen([lipoPath UTF8String], "r+"); // prepare the file stream
@@ -724,23 +724,23 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
         fseek(lipoOut, 8, SEEK_SET); //skip nfat_arch and bin_magic
         
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-            //NSLog@"DEBUG: loopy looopy %u", CFSwapInt32(arch->cpusubtype));
-            //NSLog@"STIPHEADER: %d", [stripHeader unsignedIntValue]);
+            NSLog(@"DEBUG: loopy looopy %u", CFSwapInt32(arch->cpusubtype));
+            NSLog(@"STIPHEADER: %d", [stripHeader unsignedIntValue]);
             fread(&doh, sizeof(struct fat_arch), 1, lipoOut);
             if (arch->cpusubtype == [stripHeader unsignedIntValue]) {
-                //NSLog@"DEBUG: Found arch to strip! Storing it");
+                NSLog(@"DEBUG: Found arch to strip! Storing it");
                 if (i < CFSwapInt32(fh->nfat_arch)) {
                     fgetpos(lipoOut, &copypos);
-                    //NSLog@"DEBUG: copy position %lld", copypos);
+                    NSLog(@"DEBUG: copy position %lld", copypos);
                 }
                 else {
-                    //NSLog@"ERROR: Dunno where to store ler0-i09483430470374 help!!!!!");
+                    NSLog(@"ERROR: Dunno where to store ler0-i09483430470374 help!!!!!");
                 }
             }
             else if (i == (CFSwapInt32(fh->nfat_arch)) - 1) {
                 copy = doh;
                 fgetpos(lipoOut, &rempos);
-                //NSLog@"DEBUG: remove position %lld", rempos);
+                NSLog(@"DEBUG: remove position %lld", rempos);
             }
             arch++;
         }
@@ -751,33 +751,33 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
             if (arch->cpusubtype == [stripHeader unsignedIntValue])  {
                 rempos = rempos - sizeof(struct fat_arch);
                 fseek(lipoOut,rempos, SEEK_SET);
-                //NSLog@"DEBUG: rempos %lld", rempos);
+                NSLog(@"DEBUG: rempos %lld", rempos);
                 char data[20];
                 memset(data,'\0',sizeof(data));
                 fwrite(data, sizeof(data), 1, lipoOut);
             }
             else if (i == (CFSwapInt32(fh->nfat_arch) - 1)) {
                 copypos = copypos - sizeof(struct fat_arch);
-                //NSLog@"DEBUG: copypos %lld", copypos);
+                NSLog(@"DEBUG: copypos %lld", copypos);
                 fseek(lipoOut, copypos, SEEK_SET);
                 fwrite(&copy, sizeof(struct fat_arch), 1, lipoOut);
             }
             arch++;
         }
         
-        //NSLog@"DEBUG: changing nfat_arch");
+        NSLog(@"DEBUG: changing nfat_arch");
         uint32_t bin_nfat_arch;
         
         fseek(lipoOut, 4, SEEK_SET); //bin_magic
         fread(&bin_nfat_arch, 4, 1, lipoOut); // get the number of fat architectures in the file
-        //NSLog@"DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
+        NSLog(@"DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
         bin_nfat_arch = bin_nfat_arch - 0x1000000;
         
-        //NSLog@"DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
+        NSLog(@"DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
         fseek(lipoOut, 4, SEEK_SET); //bin_magic
         fwrite(&bin_nfat_arch, 4, 1, lipoOut);
         
-        //NSLog@"DEBUG: Written new header to binary!");
+        NSLog(@"DEBUG: Written new header to binary!");
         fclose(lipoOut);
         [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL];
         [[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:finalPath error:NULL];
@@ -789,7 +789,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
 	
 c_lipo:
     NOTIFY("Can only crack one architecture!");
-    //NSLog@"DEBUG: lipo offset %u", CFSwapInt32(lipo.offset));
+    NSLog(@"DEBUG: lipo offset %u", CFSwapInt32(lipo.offset));
     if (!dump_binary(oldbinary, newbinary, CFSwapInt32(lipo.offset), binaryPath)) {
         // Dumping failed
         stop_bar();
@@ -862,13 +862,13 @@ uint32_t get_local_cputype() {
     int value;
 	int len = sizeof(value);
     sysctlbyname("hw.cpu64bit_capable", &value, (size_t *) &len, NULL, 0);
-    //NSLog@"DEBUG: PROCESSOR VALUE %u", value);
+    NSLog(@"DEBUG: PROCESSOR VALUE %u", value);
     if (value != 0) {
-        //NSLog@"DEBUG: 64bit processor!");
+        NSLog(@"DEBUG: 64bit processor!");
         return CPUTYPE_64;
     }
     else {
-        //NSLog@"DEBUG: Not 64bit processor!");
+        NSLog(@"DEBUG: Not 64bit processor!");
         return CPUTYPE_32;
     }
 }
@@ -884,11 +884,11 @@ int get_local_arch() {
     }
     /*sysctlbyname("hw.optional.64bitops", &sixtyfour, (size_t *) &len, NULL, 0);
     if (sixtyfour != 0) {
-        //NSLog@"DEBUG: 64bit processor detected!");
-        //NSLog@"DEBUG: hw.cpusubtype %u, hw.optional.64bitops %u", i, sixtyfour);
+        NSLog(@"DEBUG: 64bit processor detected!");
+        NSLog(@"DEBUG: hw.cpusubtype %u, hw.optional.64bitops %u", i, sixtyfour);
         i = 8;
     }*/
     //i = 11;
-    //NSLog@"DEBUG: local arch %u %u", i,  CFSwapInt32(i));
+    NSLog(@"DEBUG: local arch %u %u", i,  CFSwapInt32(i));
 	return i;
 }

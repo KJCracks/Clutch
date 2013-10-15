@@ -32,7 +32,7 @@ int compression_level;
 #define MH_MAGIC 0xfeedface
 
 #define CLUTCH_VERSION "Clutch-1.3.1"
-#define CLUTCH_BUILD 13103
+#define CLUTCH_BUILD 13104
 #define CLUTCH_DEV 0
 
 #define ARMV6 6

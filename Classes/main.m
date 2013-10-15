@@ -14,6 +14,7 @@
 #import "Configuration.h"
 #import "applist.h"
 #import "crack.h"
+#import "install.h"
 #import <unistd.h>
 
 BOOL crack = FALSE;
@@ -45,7 +46,6 @@ int main(int argc, char *argv[]) {
     gettimeofday(&start, NULL);
     
     int retVal = 0;
-    printf("%s\n", CLUTCH_VERSION);
     if (CLUTCH_DEV == 1) {
         printf("You're using a Clutch development build, checking for updates..\n");
         if (!check_version()) {
@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
 	[ClutchConfiguration configWithFile:@"/etc/clutch.conf"];
     
 	if (argc < 2) {
+        printf("%s\n", CLUTCH_VERSION);
 		NSArray *applist = get_application_list(TRUE, FALSE);
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
@@ -81,7 +82,7 @@ int main(int argc, char *argv[]) {
 			compareWith = @"ApplicationName";
 		}
         
-		int cindex = 0;
+		int cindex = 1;
 		
 		BOOL numberMenu = [(NSString *)[ClutchConfiguration getValue:@"NumberBasedMenu"] isEqualToString:@"YES"];
 		if (numberMenu) {
@@ -153,21 +154,33 @@ int main(int argc, char *argv[]) {
 		printf("Caches cleared.\n");
 	} else if (strncmp(argv[1], "-v", 2) == 0) {
 		printf("%s\n", CLUTCH_VERSION);
+	} else if (strncmp(argv[1], "-b", 2) == 0) {
+		printf("%d\n", CLUTCH_BUILD);
 	} else if (strncmp(argv[1], "-C", 2) == 0) {
         [ClutchConfiguration setupConfig];
     } else if (strncmp(argv[1], "-c", 2) == 0) {
         [ClutchConfiguration setupConfig];
+    }
+    else if (strncmp(argv[1], "-i", 2) == 0) {
+        NSString *ipa = [NSString stringWithUTF8String:argv[2]];
+        printf("one \n");
+        NSString *binary = [NSString stringWithUTF8String:argv[3]];
+        printf("two \n");
+        NSString *outbinary = [NSString stringWithUTF8String:argv[4]];
+        printf("three \n");
+        install_and_crack(ipa, binary, outbinary);
+
+        //printf("location %s\n", [location UTF8String]);
+        
     }
     else if (strncmp(argv[1], "-z", 2) == 0) {
         printf("Using native zipping! (may be unstable)\n\n");
         new_zip = 1;
     } else if (strncmp(argv[1], "-h", 2) == 0) {
         goto help;
-    } else if (strncmp(argv[1], "-vb", 2) == 0) {
-        printf("%u", CLUTCH_BUILD);
-        return retVal;
     }
     else {
+        printf("%s\n", CLUTCH_VERSION);
 		BOOL numberMenu = [(NSString *)[ClutchConfiguration getValue:@"NumberBasedMenu"] isEqualToString:@"YES"];
 		NSArray *applist;
 		if (numberMenu)
@@ -192,7 +205,7 @@ int main(int argc, char *argv[]) {
 		NSString *ipapath;
 		NSDictionary *applicationDetails;
 		BOOL cracked = FALSE;
-		for (int i = 0; i<argc; i++) {
+		for (int i = 1; i<argc; i++) {
 			NSEnumerator *e = [applist objectEnumerator];
 			int cindex = 0;
 			while (applicationDetails = [e nextObject]) {
@@ -246,6 +259,7 @@ endMain:
 	return retVal;
     [pool release];
 help:
+    printf("%s\n", CLUTCH_VERSION);
     printf("Clutch Help\n");
     printf("---------------------------------\n");
     printf("-c          Runs configuration utility\n");
@@ -257,5 +271,6 @@ help:
     
     [pool release];
 }
+
 
 

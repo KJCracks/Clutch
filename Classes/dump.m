@@ -82,6 +82,7 @@ BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath)
 		
 		ptrace(PT_TRACE_ME, 0, 0, 0); // trace
 		execl([originPath UTF8String], "", (char *) 0); // import binary memory into executable space
+        
 		exit(2); // exit with err code 2 in case we could not import (this should not happen)
 	} else if (pid < 0) {
         printf("error: Couldn't fork, did you compile with proper entitlements?");

@@ -1,6 +1,8 @@
 ## Xcode ##
 ###########
 
+codesign.sh
+
 build/*
 *.pbxuser
 !default.pbxuser

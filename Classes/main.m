@@ -160,6 +160,26 @@ int main(int argc, char *argv[]) {
         [ClutchConfiguration setupConfig];
     } else if (strncmp(argv[1], "-c", 2) == 0) {
         [ClutchConfiguration setupConfig];
+    } else if (strncmp(argv[1], "-32", 3) == 0) {
+        if (get_local_cputype() == CPUTYPE_64) {
+            printf("error: binary running in 64bit mode, expected 32bit, help??");
+            exit(2);
+        }
+        NSString* originPath = [NSString stringWithUTF8String:argv[2]];
+        NSString* finalPath = [NSString stringWithUTF8String:argv[3]];
+        
+        FILE* origin = fopen(argv[2], "r+");
+        FILE* target = fopen(argv[3], "r+");
+        
+        uint32_t top = atoi(argv[4]);
+        
+        BOOL* success = dump_binary_32(origin, target, top, originPath, finalPath);
+        if (success) {
+            exit(0);
+        }
+        else {
+            exit(1);
+        }
     }
     else if (strncmp(argv[1], "-i", 2) == 0) {
         NSString *ipa = [NSString stringWithUTF8String:argv[2]];

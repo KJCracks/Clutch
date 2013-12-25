@@ -9,12 +9,12 @@ BOOL ios6 = FALSE;
 BOOL* sixtyfour = FALSE;
 
 
-BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath) {
+BOOL dump_binary(FILE *origin, FILE *target, uint32_t top, NSString *originPath, NSString* finalPath) {
     if (sixtyfour) {
-        return dump_binary_64(origin, target, top, originPath);
+        return dump_binary_64(origin, target, top, originPath, finalPath);
     }
     else {
-        return dump_binary_32(origin, target, top, originPath);
+        return dump_binary_32(origin, target, top, originPath, finalPath);
     }
 }
 long fsize(const char *file) {
@@ -640,7 +640,13 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                     goto c_err;
                     break;
             }
-            if ((local_cputype == CPUTYPE_32) && (CFSwapInt32(arch->cpusubtype) > local_arch)) {
+            if ((local_cputype == CPUTYPE_32) && (local_arch == ARM64)) {
+                NSLog(@"64bit running as 32bit, much weird");
+                if (arch->cputype == CPUTYPE_64) {
+                    [stripHeaders addObject:[NSNumber numberWithUnsignedInteger:arch->cpusubtype]];
+                }
+            }
+            else if ((local_cputype == CPUTYPE_32) && (CFSwapInt32(arch->cpusubtype) > local_arch)) {
                 NSLog(@"DEBUG: Can't crack arch %d on %d! skipping", CFSwapInt32(arch->cpusubtype), local_arch);
                 [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
             }
@@ -650,7 +656,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                     [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
                 }
                 else if (local_cputype == CPUTYPE_32) {
-                    NSLog(@"DEBUG: can crack 64bit arch on this device! skipping");
+                    NSLog(@"DEBUG: can't crack 64bit arch on this device! skipping");
                     [stripHeaders addObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]];
                 }
             }
@@ -680,20 +686,12 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
             
         }
         
-        
-        NSLog(@"############################");
-        NSLog(@"DEBUG: cpu_subtype: %llu local_arch: %u\n", CFSwapInt64(arch->cpusubtype), local_arch);
-        NSLog(@"DEBUG: offset: %llu", CFSwapInt64(arch->offset));
-        NSLog(@"############################");
-        
-        
         // Running on an armv7, armv7s, arm64, or higher device
         NSLog(@"DEBUG: path: %@", binaryPath);
         
         //fat binary
         NSLog(@"DEBUG: fat binary");
-        
-        
+
         
         arch = (struct fat_arch *) &fh[1];
         for (i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
@@ -702,6 +700,12 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
             if (arch->cputype == CPUTYPE_64) {
                 sixtyfour = TRUE;
             }
+            
+            NSLog(@"############################");
+            NSLog(@"DEBUG: cpu_subtype: %u local_arch: %u\n", CFSwapInt32(arch->cpusubtype), local_arch);
+            NSLog(@"DEBUG: offset: %u", CFSwapInt32(arch->offset));
+            NSLog(@"############################");
+            
             if (local_arch != CFSwapInt32(arch->cpusubtype)) {
                 if ([stripHeaders containsObject:[NSNumber numberWithUnsignedInt:arch->cpusubtype]]) {
                     NSLog(@"DEBUG: skipping");
@@ -720,7 +724,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                 NSString* newPath =  strip_arch(binaryPath, baseDirectory, baseName, stripArray);
                 NSLog(@"DEBUG: new path: %@", newPath);
                 FILE* swapbinary = fopen([newPath UTF8String], "r+");
-                if (!dump_binary(swapbinary, newbinary, CFSwapInt32(arch->offset), newPath)) {
+                if (!dump_binary(swapbinary, newbinary, CFSwapInt32(arch->offset), newPath, finalPath)) {
                     // Dumping failed
                     stop_bar();
                     *error = @"Cannot crack swapped portion of binary.";
@@ -730,7 +734,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
                 swap_back(newPath, baseDirectory, baseName);
             }
             else {
-                if (!dump_binary_64(oldbinary, newbinary, CFSwapInt32(arch->offset), binaryPath)) {
+                if (!dump_binary(oldbinary, newbinary, CFSwapInt32(arch->offset), binaryPath, finalPath)) {
                     // Dumping failed
                     stop_bar();
                     *error = @"Cannot crack unswapped portion of binary.";
@@ -748,7 +752,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
         VERBOSE("Application is a thin binary, cracking single architecture...");
         NOTIFY("Dumping binary...");
         
-        if (!dump_binary_64(oldbinary, newbinary, 0, binaryPath)) {
+        if (!dump_binary(oldbinary, newbinary, 0, binaryPath, finalPath)) {
             // Dump failed
             stop_bar();
             *error = @"Cannot crack thin binary.";
@@ -878,7 +882,7 @@ NSString *crack_binary(NSString *binaryPath, NSString *finalPath, NSString **err
 c_lipo:
     NOTIFY("Can only crack one architecture!");
     NSLog(@"DEBUG: lipo offset %u", CFSwapInt32(lipo.offset));
-    if (!dump_binary_64(oldbinary, newbinary, CFSwapInt32(lipo.offset), binaryPath)) {
+    if (!dump_binary(oldbinary, newbinary, CFSwapInt32(lipo.offset), binaryPath, finalPath)) {
         // Dumping failed
         stop_bar();
         *error = [NSString stringWithFormat:@"Cannot crack armv%u portion", get_arch(&lipo)];

@@ -1,9 +1,10 @@
 #import "dump.h"
 
-BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPath) {
-#ifndef __LP64__
+BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPath, NSString* finalPath) {
+//#ifndef __LP64__
     fseek(target, top, SEEK_SET); // go the top of the target
-	
+	NSLog(@"da top %u", top);
+    NSLog(@"originpath %@ %@", originPath, finalPath);
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;
 	fgetpos(target, &topPosition);
@@ -26,6 +27,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	fread(&mach, sizeof(struct mach_header), 1, target); // read mach header to get number of load commands
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
 		fread(&l_cmd, sizeof(struct load_command), 1, target); // read load command from binary
+        //NSLog(@"command: %u", CFSwapInt32(l_cmd.cmd));
 		if (l_cmd.cmd == LC_ENCRYPTION_INFO) { // encryption info?
 			fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
 			fread(&crypt, sizeof(struct encryption_info_command), 1, target);
@@ -159,14 +161,14 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 			// perform checks on vm regions
 			memory_object_name_t object;
 			vm_region_basic_info_data_t info;
-			mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT;
-            //mach_msg_type_number_t info_count = TASK_BASIC_INFO_COUNT;
+			//mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT;
+            mach_msg_type_number_t info_count = TASK_BASIC_INFO_32_COUNT;
 			mach_vm_address_t region_start = 0;
 			mach_vm_size_t region_size = 0;
 			vm_region_flavor_t flavor = VM_REGION_BASIC_INFO;
 			err = 0;
 			
-			while (err == KERN_SUCCESS) {
+            while (err == KERN_SUCCESS) {
 				err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
 				if (region_size == crypt.cryptsize) {
 					break;
@@ -176,10 +178,12 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 				region_size	= 0;
 			}
 			if (err != KERN_SUCCESS) {
-                NSLog(@"mach_vm_error: %u", err);
+                NSLog(@"32-bit mach_vm_error: %u", err);
 				free(checksum);
 				kill(pid, SIGKILL);
                 printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
+                int *p = NULL;
+                *p = 1;
 				return FALSE;
 				
 			}
@@ -300,22 +304,23 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	}
 	stop_bar();
 	return TRUE;
-#endif
-#ifdef __LP64__
-    NOTIFY("We can't crack 32bit portions when running in 64bit mode!");
-    int retVal = system("Clutch_32 -32 \"%s\" \"%s\"");
+//#endif
+/*#ifdef __LP64__
+    printf("\nWe can't crack 32bit portions when running in 64bit mode!\n\n");
+    NSLog(@"string %@", [NSString stringWithFormat:@"./Clutch_32 -32 \"%@\" \"%@\" %u", originPath, finalPath, top]);
+    int retVal = system([[NSString stringWithFormat:@"./Clutch_32 -32 \"%@\" \"%@\" %u", originPath, finalPath, top] UTF8String]);
     if (retVal != 0) {
         printf("error: could not dump 32bit portion");
         return FALSE;
     }
     return TRUE;
-#endif
+#endif*/
 }
 
 
 
 
-BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPath) {
+BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPath, NSString* finalPath) {
 	fseek(target, top, SEEK_SET); // go the top of the target
 	
     NSLog(@"top position %u", top);

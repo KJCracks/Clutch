@@ -38,7 +38,7 @@ int compression_level;
 #define ARMV6 6
 #define ARMV7 9
 #define ARMV7S 11
-#define ARMV8 0
+#define ARM64 0
 
 #define CPUTYPE_32 0xc000000
 #define CPUTYPE_64 0xc000001
@@ -47,9 +47,9 @@ int compression_level;
 #define ARMV7_SUBTYPE 0x9000000
 #define ARMV6_SUBTYPE 0x6000000
 #define ARMV7S_SUBTYPE 0xb000000 //ya boooooooo
-#define ARMV8_SUBTYPE 0x0000000
+#define ARM64_SUBTYPE 0x0000000
 
-//#define DEBUGMODE 1
+#define DEBUGMODE 1
 
 #ifdef DEBUGMODE
 #   define NSLog(...) NSLog(__VA_ARGS__)

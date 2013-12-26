@@ -20,9 +20,9 @@ char bar_msg[200];
  progress_message places an "active" message for what Clutch is currently doing
  */
 void progress_message(char *msg) {
-    if ([[ClutchConfiguration getValue:@"ProgressBar"] isEqualToString:@"NO"]) {
+    /*if ([[ClutchConfiguration getValue:@"ProgressBar"] isEqualToString:@"NO"]) {
         return;
-    }
+    }*/
     
     if (bar_msg != NULL)
         //free(bar_msg);
@@ -35,9 +35,9 @@ void progress_message(char *msg) {
  progress_percent places a percentage for the task being done by Clutch
  */
 void progress_percent(int percent) {
-    if ([[ClutchConfiguration getValue:@"ProgressBar"] isEqualToString:@"NO"]) {
+   /* if ([[ClutchConfiguration getValue:@"ProgressBar"] isEqualToString:@"NO"]) {
         return;
-    }
+    }*/
     
     if ((bar_percent < percent - 5) || (percent == 100) || (percent < 0)) {
         bar_percent = percent;
@@ -50,10 +50,10 @@ void progress_percent(int percent) {
  progress_event places an event in the log
  */
 void progress_event(char *text) {
-    if ([[ClutchConfiguration getValue:@"ProgressBar"] isEqualToString:@"NO"]) {
+    /*if ([[ClutchConfiguration getValue:@"ProgressBar"] isEqualToString:@"NO"]) {
         printf("%s\n", text);
         return;
-    }
+    }*/
     if (bar_mode == 1) {
         // if the bar is there, we need to remove it, print the event, and then print the bar again
         printf("\033[0G\033[J");

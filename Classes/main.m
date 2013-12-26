@@ -62,6 +62,9 @@ int main(int argc, char *argv[]) {
 	// we need to import the configuration file
 	[ClutchConfiguration configWithFile:@"/etc/clutch.conf"];
     
+    NSMutableArray *successfulCracks = [[NSMutableArray alloc] init];
+    NSMutableArray *failedCracks = [[NSMutableArray alloc] init];
+    
 	if (argc < 2) {
         printf("%s\n", CLUTCH_VERSION);
 		NSArray *applist = get_application_list(TRUE, FALSE);
@@ -114,16 +117,18 @@ int main(int argc, char *argv[]) {
 		
 		NSDictionary *applicationDetails;
 		NSString *ipapath;
-		
+
 		while (applicationDetails = [e nextObject]) {
 			printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
 			ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
 			if (ipapath == nil) {
+                [failedCracks addObject:applicationDetails[@"ApplicationName"]];
 				printf("Failed.\n");
 			} else {
                 gettimeofday(&end, NULL);
                 crack = TRUE;
 				printf("\t%s\n", [ipapath UTF8String]);
+                [successfulCracks addObject:applicationDetails[@"ApplicationName"]];
 			}
 		}
 	} else if (strncmp(argv[1], "-u", 2) == 0) {
@@ -142,11 +147,13 @@ int main(int argc, char *argv[]) {
             printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
             ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
             if (ipapath == nil) {
+                [failedCracks addObject:applicationDetails[@"ApplicationName"]];
                 printf("Failed.\n");
             } else {
                 gettimeofday(&end, NULL);
                 crack = TRUE;
                 printf("\t%s\n", [ipapath UTF8String]);
+                [successfulCracks addObject:applicationDetails[@"ApplicationName"]];
             }
         }
     } else if (strncmp(argv[1], "-f", 2) == 0) {
@@ -237,10 +244,12 @@ int main(int argc, char *argv[]) {
 					ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
 					if (ipapath == nil) {
 						printf("Failed.\n");
+                        [failedCracks addObject:applicationDetails[@"ApplicationName"]];
 					} else {
                         gettimeofday(&end, NULL);
                         crack = TRUE;
 						printf("\t%s\n", [ipapath UTF8String]);
+                        [successfulCracks addObject:applicationDetails[@"ApplicationName"]];
 					}
 					break;
 				} else {
@@ -274,6 +283,20 @@ int main(int argc, char *argv[]) {
         int dif = diff_ms(end,start);
         printf("\nelapsed time: %dms\n", dif);
     }
+    
+    printf("\nApplications Cracked: \n");
+    
+    for (int i = 0; i < [successfulCracks count]; i++) {
+        printf("\033[0;32m%s\033[0m\n", [successfulCracks[i] UTF8String]);
+    }
+    
+    printf("\nApplications that Failed:\n");
+    
+    for (int i = 0; i < [failedCracks count]; i++) {
+        printf("033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
+    }
+    
+    printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
 	
 endMain:
 	return retVal;

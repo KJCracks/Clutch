@@ -8,16 +8,18 @@
 #import "out.h"
 #include <mach-o/fat.h>
 #include <mach-o/loader.h>
+#include <mach-o/dyld.h>
+#include <mach-o/arch.h>
 
 //sharing is caring
 int overdrive_enabled, new_zip;
 char buffer[4096];
 char old_buffer[4096];
 FILE *oldbinary;
-struct fat_header* fh;
 uint32_t offset;
 NSString* sinf_file;
 NSString* supp_file;
+NSString* supf_file;
 
 //if the event of lipo
 uint32_t lipo_offset;
@@ -31,9 +33,9 @@ int compression_level;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch-1.3.1"
-#define CLUTCH_BUILD 13104
-#define CLUTCH_DEV 0
+#define CLUTCH_VERSION "Clutch-1.3.2-git1"
+#define CLUTCH_BUILD 13201
+#define CLUTCH_DEV 1
 
 #define ARMV6 6
 #define ARMV7 9
@@ -62,10 +64,10 @@ NSString * init_crack_binary(NSString *application_basedir, NSString *bdir, NSSt
 NSString* swap_arch(NSString *binaryPath, NSString* baseDirectory, NSString* baseName, uint32_t swaparch);
 NSString * crack_binary(NSString *binaryPath, NSString *finalPath, NSString **error);
 NSString * genRandStringLength(int len);
-int get_local_arch();
+uint32_t get_local_cpusubtype();
 uint32_t get_local_cputype();
 
-int local_arch;
+uint32_t local_cpusubtype;
 uint32_t local_cputype;
 
 /*struct fat_arch {

@@ -18,7 +18,9 @@
 
 #ifdef DEBUG_MODE
 #   define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
-#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | " M "\n", FILE_NAME, __LINE__, ##__VA_ARGS__); // print C objects
+//#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | " M "\n", FILE_NAME, __LINE__, ##__VA_ARGS__); //
+#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s | " M "\n", FILE_NAME, ##__VA_ARGS__); 
+//print C objects
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #else
 #   define DEBUG(M, ...)

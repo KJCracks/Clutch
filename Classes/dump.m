@@ -63,13 +63,13 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	BOOL foundStartText = FALSE;
 	uint64_t __text_start = 0;
 	uint64_t __text_size = 0;
-    
+    DEBUG("32bit dumping, offset %u", top);
     VERBOSE("dumping binary: analyzing load commands");
 	fread(&mach, sizeof(struct mach_header), 1, target); // read mach header to get number of load commands
     
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
 		fread(&l_cmd, sizeof(struct load_command), 1, target); // read load command from binary
-        
+        //DEBUG("command %u", l_cmd.cmd);
 		if (l_cmd.cmd == LC_ENCRYPTION_INFO) { // encryption info?
 			fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
 			fread(&crypt, sizeof(struct encryption_info_command), 1, target);
@@ -407,7 +407,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	fread(&mach, sizeof(struct mach_header_64), 1, target); // read mach header to get number of load commands
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
         fread(&l_cmd, sizeof(struct load_command), 1, target); // read load command from binary
-        DEBUG("command: %u", CFSwapInt32(l_cmd.cmd));
+        //DEBUG("command: %u", CFSwapInt32(l_cmd.cmd));
         if (l_cmd.cmd == LC_ENCRYPTION_INFO_64) { // encryption info?
             fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
             fread(&crypt, sizeof(struct encryption_info_command_64), 1, target);

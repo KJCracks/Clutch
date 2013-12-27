@@ -32,7 +32,6 @@ NSString* generateUuidString() {
 
 NSString* install_and_crack(NSString* ipa, NSString* binary, NSString* outbinary) {
    // printf("hello tere\n");
-    NSLog(@"swag %@ %@ %@", ipa, binary, outbinary);
     bool exists = TRUE;
     NSString* location;
     while (exists == TRUE) {
@@ -49,11 +48,10 @@ NSString* install_and_crack(NSString* ipa, NSString* binary, NSString* outbinary
     
     NSString* error;
     NSString* binaryPath = [NSString stringWithFormat:@"%@/%@", location, binary];
-    NSLog(@"binary path %@", binaryPath);
     NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithShort:0775], NSFilePosixPermissions, nil];
     
     [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:binaryPath error:nil];
-    NSLog(@"setted attributes!");
+    VERBOSE("setted attributes!");
     crack_binary(binaryPath, outbinary, &error);
     [[NSFileManager defaultManager] removeItemAtPath:location error:nil];
     return location;

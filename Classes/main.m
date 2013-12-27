@@ -22,8 +22,8 @@ BOOL readCompression;
 
 int diff_ms(struct timeval t1, struct timeval t2)
 {
-    return (((t1.tv_sec - t2.tv_sec) * 1000000) +
-            (t1.tv_usec - t2.tv_usec))/1000;
+    return (int)((((t1.tv_sec - t2.tv_sec) * 1000000) +
+            (t1.tv_usec - t2.tv_usec)) / 1000);
 }
 
 BOOL check_version() {
@@ -94,9 +94,11 @@ int main(int argc, char *argv[]) {
 		
 		while (applicationDetails = [e nextObject]) {
 			if (numberMenu) {
-				printf("%d) \033[1;3%dm%s\033[0m \n", cindex, 5 + ((cindex++) % 2), [[applicationDetails objectForKey:compareWith] UTF8String]);
+				printf("%d) \033[1;3%dm%s\033[0m \n", cindex, 5 + ((cindex + 1) % 2), [[applicationDetails objectForKey:compareWith] UTF8String]);
+                cindex++;
 			} else {
-				printf("\033[1;3%dm%s\033[0m ", 5 + ((cindex++) % 2), [[applicationDetails objectForKey:compareWith] UTF8String]);
+				printf("\033[1;3%dm%s\033[0m ", 5 + ((cindex + 1) % 2), [[applicationDetails objectForKey:compareWith] UTF8String]);
+                cindex++;
 			}
         
 		}
@@ -293,7 +295,7 @@ int main(int argc, char *argv[]) {
     printf("\nApplications that Failed:\n");
     
     for (int i = 0; i < [failedCracks count]; i++) {
-        printf("033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
+        printf("\033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
     }
     
     printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);

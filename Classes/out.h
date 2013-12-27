@@ -14,6 +14,17 @@
 // update percentage of currently running task
 #define PERCENT(x) progress_percent(x);
 
+#define DEBUG_MODE 1
+
+#ifdef DEBUG_MODE
+#   define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
+#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | " M "\n", FILE_NAME, __LINE__, ##__VA_ARGS__); // print C objects
+#   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#else
+#   define DEBUG(M, ...)
+#   define NSLog(...)
+#endif
+
 int determine_screen_width (void);
 void progress_percent(int percent);
 void progress_message(char *msg);

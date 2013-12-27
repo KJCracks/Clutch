@@ -45,8 +45,6 @@ extern kern_return_t mach_vm_region
 BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPath, NSString* finalPath) {
 //#ifndef __LP64__
     fseek(target, top, SEEK_SET); // go the top of the target
-	NSLog(@"da top %u", top);
-    NSLog(@"originpath %@ %@", originPath, finalPath);
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;
 	fgetpos(target, &topPosition);
@@ -66,7 +64,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	uint64_t __text_start = 0;
 	uint64_t __text_size = 0;
     
-    NSLog(@"dumping binary: analyzing load commands");
+    VERBOSE("dumping binary: analyzing load commands");
 	fread(&mach, sizeof(struct mach_header), 1, target); // read mach header to get number of load commands
     
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
@@ -103,7 +101,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	
 	// we need to have found both of these
 	if (!foundCrypt || !foundSignature || !foundStartText) {
-        NSLog(@"dumping binary: some load commands were not found");
+        VERBOSE("dumping binary: some load commands were not found");
 		return FALSE;
 	}
 	
@@ -115,14 +113,14 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 	uint32_t begin;
 	
-    NSLog(@"dumping binary: obtaining ptrace handle");
+    VERBOSE("dumping binary: obtaining ptrace handle");
     
 	// open handle to dylib loader
 	void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW);
 	// load ptrace library into handle
 	ptrace_ptr_t ptrace = dlsym(handle, "ptrace");
 	// begin the forking process
-    NSLog(@"dumping binary: forking to begin tracing");
+    VERBOSE("dumping binary: forking to begin tracing");
     
 	if ((pid = fork()) == 0) {
 		// it worked! the magic is in allowing the process to trace before execl.
@@ -130,7 +128,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 		// execl stops the process before this is capable
 		// PT_DENY_ATTACH was never meant to be good security, only a minor roadblock
         
-        NSLog(@"dumping binary: successfully forked");
+        VERBOSE("dumping binary: successfully forked");
 		
 		ptrace(PT_TRACE_ME, 0, 0, 0); // trace
 		execl([originPath UTF8String], "", (char *) 0); // import binary memory into executable space
@@ -147,16 +145,16 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 				return FALSE;
 		} while (!WIFSTOPPED( status ));
 		
-        NSLog(@"dumping binary: obtaining mach port");
+        VERBOSE("dumping binary: obtaining mach port");
         
 		// open mach port to the other process
 		if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-            NSLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
+            VERBOSE("ERROR: Could not obtain mach port, did you sign with proper entitlements?");
 			kill(pid, SIGKILL); // kill the fork
 			return FALSE;
 		}
 		
-        NSLog(@"dumping binary: preparing code resign");
+        VERBOSE("dumping binary: preparing code resign");
         
 		codesignblob = malloc(ldid.datasize);
 		fseek(target, top + ldid.dataoff, SEEK_SET); // seek to the codesign blob
@@ -186,7 +184,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 		uint8_t buf_d[0x1000]; // create a single page buffer
 		uint8_t *buf = &buf_d[0]; // store the location of the buffer
 		
-        NSLog(@"dumping binary: preparing to dump");
+        VERBOSE("dumping binary: preparing to dump");
         
 		// we should only have to write and perform checksums on data that changes
 		uint32_t togo = crypt.cryptsize + crypt.cryptoff;
@@ -219,7 +217,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
             while (err == KERN_SUCCESS) {
                 err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
                 
-                NSLog(@"32-bit Region Size: %llu %u", region_size, crypt.cryptsize);
+                DEBUG("32-bit Region Size: %llu %u", region_size, crypt.cryptsize);
                 
                 if ((uint32_t)region_size == crypt.cryptsize) {
                     break;
@@ -230,7 +228,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
             }
             if (err != KERN_SUCCESS) {
                 free(checksum);
-                NSLog(@"32-bit mach_vm_error: %u", err);
+                DEBUG("32-bit mach_vm_error: %u", err);
                 printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
                 kill(pid, SIGKILL);
                 return FALSE;
@@ -246,7 +244,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
         uint32_t overdrive_size = sizeof(OVERDRIVE_DYLIB_PATH) + sizeof(struct dylib_command);
         overdrive_size += sizeof(long) - (overdrive_size % sizeof(long)); // load commands like to be aligned by long
         
-        NSLog(@"dumping binary: performing dump");
+        VERBOSE("dumping binary: performing dump");
         
 		while (togo > 0) {
             // get a percentage for the progress bar
@@ -254,7 +252,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
             
 			// move an entire page into memory (we have to move an entire page regardless of whether it's a resultant or not)
 			/*if((err = vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
-                NSLog(@"dumping binary: failed to dump a page");
+                VERBOSE("dumping binary: failed to dump a page");
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill fork
 				return FALSE;
@@ -262,7 +260,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
             
             if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
                 
-                NSLog(@"dumping binary: failed to dump a page (32)");
+                VERBOSE("dumping binary: failed to dump a page (32)");
                 
                 free(checksum); // free checksum table
                 kill(pid, SIGKILL); // kill the fork
@@ -279,7 +277,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                         // prepare the mach header for the new load command (overdrive dylib)
                         ((struct mach_header *)buf)->ncmds += 1;
                         ((struct mach_header *)buf)->sizeofcmds += overdrive_size;
-                        NSLog(@"dumping binary: patched mach header (overdrive)");
+                        VERBOSE("dumping binary: patched mach header (overdrive)");
                     }
                 }
                 // iterate over the header (or resume iteration)
@@ -301,7 +299,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                     if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                         struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
                         newcrypt->cryptid = 0; // change the cryptid to 0
-                        NSLog(@"dumping binary: patched cryptid");
+                        VERBOSE("dumping binary: patched cryptid");
                     } else if (l_cmd->cmd == LC_SEGMENT) {
                         //printf("lc segemn yo\n");
                         struct segment_command *newseg = (struct segment_command *) curloc;
@@ -311,7 +309,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                                 // maxprot so that overdrive can change the __TEXT protection &
                                 // cryptid in realtime
                                 newseg->maxprot |= VM_PROT_ALL;
-                                NSLog(@"dumping binary: patched maxprot (overdrive)");
+                                VERBOSE("dumping binary: patched maxprot (overdrive)");
                             }
                         }
                     }
@@ -329,7 +327,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                 if (overdrive_enabled) {
                     // add the overdrive dylib as long as we have room
                     if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
-                        NSLog(@"dumping binary: attaching overdrive DYLIB (overdrive)");
+                        VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;
                         overdrive_dyld->cmdsize = overdrive_size;
@@ -356,7 +354,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 			pages_d += 1; // increase the amount of completed pages
 		}
         
-        NSLog(@"dumping binary: writing new checksum");
+        VERBOSE("dumping binary: writing new checksum");
 		
 		// nice! now let's write the new checksum data
 		fseek(target, begin + CFSwapInt32(directory.hashOffset), SEEK_SET); // go to the hash offset
@@ -370,7 +368,7 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 //#endif
 /*#ifdef __LP64__
     printf("\nWe can't crack 32bit portions when running in 64bit mode!\n\n");
-    NSLog(@"string %@", [NSString stringWithFormat:@"./Clutch_32 -32 \"%@\" \"%@\" %u", originPath, finalPath, top]);
+    VERBOSE("string %@", [NSString stringWithFormat:@"./Clutch_32 -32 \"%@\" \"%@\" %u", originPath, finalPath, top]);
     int retVal = system([[NSString stringWithFormat:@"./Clutch_32 -32 \"%@\" \"%@\" %u", originPath, finalPath, top] UTF8String]);
     if (retVal != 0) {
         printf("error: could not dump 32bit portion");
@@ -385,8 +383,6 @@ BOOL dump_binary_32(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 
 BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPath, NSString* finalPath) {
 	fseek(target, top, SEEK_SET); // go the top of the target
-	
-    NSLog(@"top position %u", top);
     
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;
@@ -406,22 +402,21 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	BOOL foundStartText = FALSE;
 	uint64_t __text_start = 0;
 	uint64_t __text_size = 0;
-    NSLog(@"dumping binary: analyzing load commands");
-    NSLog(@"##########");
+    VERBOSE("dumping binary: analyzing load commands");
     
 	fread(&mach, sizeof(struct mach_header_64), 1, target); // read mach header to get number of load commands
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
         fread(&l_cmd, sizeof(struct load_command), 1, target); // read load command from binary
-        NSLog(@"command: %u", CFSwapInt32(l_cmd.cmd));
+        DEBUG("command: %u", CFSwapInt32(l_cmd.cmd));
         if (l_cmd.cmd == LC_ENCRYPTION_INFO_64) { // encryption info?
             fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
             fread(&crypt, sizeof(struct encryption_info_command_64), 1, target);
-            NSLog(@"found cryptid");
+            VERBOSE("found cryptid");
             foundCrypt = TRUE; // remember that it was found
         } else if (l_cmd.cmd == LC_CODE_SIGNATURE) { // code signature?
             fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
             fread(&ldid, sizeof(struct linkedit_data_command), 1, target);
-            NSLog(@"found code signature");
+            VERBOSE("found code signature");
             foundSignature = TRUE; // remember that it was found
         } else if (l_cmd.cmd == LC_SEGMENT_64) {
             // some applications, like Skype, have decided to start offsetting the executable image's
@@ -431,7 +426,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
             fread(&__text, sizeof(struct segment_command_64), 1, target);
             if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                 foundStartText = TRUE;
-                NSLog(@"found start text");
+                VERBOSE("found start text");
                 __text_start = __text.vmaddr;
                 __text_size = __text.vmsize;
                 
@@ -447,7 +442,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	
 	// we need to have found both of these
 	if (!foundCrypt || !foundSignature || !foundStartText) {
-        NSLog(@"dumping binary: some load commands were not found");
+        VERBOSE("dumping binary: some load commands were not found");
 		return FALSE;
 	}
 	
@@ -458,14 +453,14 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 	mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 	uint32_t begin;
 	
-    NSLog(@"dumping binary: obtaining ptrace handle");
+    VERBOSE("dumping binary: obtaining ptrace handle");
     
 	// open handle to dylib loader
 	void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW);
 	// load ptrace library into handle
 	ptrace_ptr_t ptrace = dlsym(handle, "ptrace");
 	// begin the forking process
-    NSLog(@"dumping binary: forking to begin tracing");
+    VERBOSE("dumping binary: forking to begin tracing");
     
 	if ((pid = fork()) == 0) {
 		// it worked! the magic is in allowing the process to trace before execl.
@@ -488,16 +483,16 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 				return FALSE;
 		} while (!WIFSTOPPED( status ));
 		
-        NSLog(@"dumping binary: obtaining mach port");
+        VERBOSE("dumping binary: obtaining mach port");
         
 		// open mach port to the other process
 		if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-            NSLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
+            VERBOSE("ERROR: Could not obtain mach port, did you sign with proper entitlements?");
 			kill(pid, SIGKILL); // kill the fork
 			return FALSE;
 		}
 		
-        NSLog(@"dumping binary: preparing code resign");
+        VERBOSE("dumping binary: preparing code resign");
         
 		codesignblob = malloc(ldid.datasize);
 		fseek(target, top + ldid.dataoff, SEEK_SET); // seek to the codesign blob
@@ -527,7 +522,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 		uint8_t buf_d[0x1000]; // create a single page buffer
 		uint8_t *buf = &buf_d[0]; // store the location of the buffer
 		
-        NSLog(@"dumping binary: preparing to dump");
+        VERBOSE("dumping binary: preparing to dump");
         
 		// we should only have to write and perform checksums on data that changes
 		uint32_t togo = crypt.cryptsize + crypt.cryptoff;
@@ -546,7 +541,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 		// binary after cracking) we instead manually identify the vm regions which
 		// contain the header and subsequent decrypted executable code.
 		if (mach.flags & MH_PIE) {
-            NSLog(@"dumping binary: ASLR enabled, identifying dump location dynamically");
+            VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
 			// perform checks on vm regions
 			memory_object_name_t object;
 			vm_region_basic_info_data_t info;
@@ -559,7 +554,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 			
 			while (err == KERN_SUCCESS) {
 				err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
-				NSLog(@"64-bit Region Size: %llu %u", region_size, crypt.cryptsize);
+				DEBUG("64-bit Region Size: %llu %u", region_size, crypt.cryptsize);
                 
                 if (region_size == crypt.cryptsize) {
 					break;
@@ -569,7 +564,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 				region_size	= 0;
 			}
 			if (err != KERN_SUCCESS) {
-                NSLog(@"mach_vm_error: %u", err);
+                DEBUG("mach_vm_error: %u", err);
 				free(checksum);
 				kill(pid, SIGKILL);
                 printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
@@ -585,15 +580,15 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
         uint32_t overdrive_size = sizeof(OVERDRIVE_DYLIB_PATH) + sizeof(struct dylib_command);
         overdrive_size += sizeof(long) - (overdrive_size % sizeof(long)); // load commands like to be aligned by long
         
-        NSLog(@"dumping binary: performing dump");
+        VERBOSE("dumping binary: performing dump");
         
 		while (togo > 0) {
             // get a percentage for the progress bar
             PERCENT((int)ceil((((double)total - togo) / (double)total) * 100));
 			// move an entire page into memory (we have to move an entire page regardless of whether it's a resultant or not)
 			if((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
-                NSLog(@"dum_error: %u", err);
-                NSLog(@"dumping binary: failed to dump a page");
+                DEBUG("dum_error: %u", err);
+                VERBOSE("dumping binary: failed to dump a page");
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill fork
 				return FALSE;
@@ -607,7 +602,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                         // prepare the mach header for the new load command (overdrive dylib)
                         ((struct mach_header *)buf)->ncmds += 1;
                         ((struct mach_header *)buf)->sizeofcmds += overdrive_size;
-                        NSLog(@"dumping binary: patched mach header (overdrive)");
+                        VERBOSE("dumping binary: patched mach header (overdrive)");
                     }
                 }
                 // iterate over the header (or resume iteration)
@@ -629,7 +624,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                     if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                         struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
                         newcrypt->cryptid = 0; // change the cryptid to 0
-                        NSLog(@"dumping binary: patched cryptid");
+                        VERBOSE("dumping binary: patched cryptid");
                     } else if (l_cmd->cmd == LC_SEGMENT) {
                         //printf("lc segemn yo\n");
                         struct segment_command *newseg = (struct segment_command *) curloc;
@@ -639,7 +634,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                                 // maxprot so that overdrive can change the __TEXT protection &
                                 // cryptid in realtime
                                 newseg->maxprot |= VM_PROT_ALL;
-                                NSLog(@"dumping binary: patched maxprot (overdrive)");
+                                VERBOSE("dumping binary: patched maxprot (overdrive)");
                             }
                         }
                     }
@@ -657,7 +652,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
                 if (overdrive_enabled) {
                     // add the overdrive dylib as long as we have room
                     if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
-                        NSLog(@"dumping binary: attaching overdrive DYLIB (overdrive)");
+                        VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;
                         overdrive_dyld->cmdsize = overdrive_size;
@@ -684,7 +679,7 @@ BOOL dump_binary_64(FILE *origin, FILE *target, uint32_t top, NSString *originPa
 			pages_d += 1; // increase the amount of completed pages
 		}
         
-        NSLog(@"dumping binary: writing new checksum");
+        VERBOSE("dumping binary: writing new checksum");
 		
 		// nice! now let's write the new checksum data
 		fseek(target, begin + CFSwapInt32(directory.hashOffset), SEEK_SET); // go to the hash offset

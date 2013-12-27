@@ -77,8 +77,8 @@ static NSString *configPath = nil;
         fgets(read, MAX_NAME_SZ, stdin);
         read[strlen(read) - 1] = '\0';
         NSString* input = [NSString stringWithUTF8String:read];
-        //NSLog(@"input omg %@", input);
-        //NSLog(@"value omg %@,", defaultValue);
+        //VERBOSE("input omg %@", input);
+        //VERBOSE("value omg %@,", defaultValue);
         if (read[0] != '\0') {
             if ([[defaultValue lowercaseString] hasPrefix:@"y"] || [[defaultValue lowercaseString] hasPrefix:@"n"]) {
                 if ([[input lowercaseString] hasPrefix:@"y"]) {
@@ -97,7 +97,7 @@ static NSString *configPath = nil;
                     return;
                 }
             }
-            NSLog(@"input: %@, %@", key, input);
+            //DEBUG("input: %@, %@", key, input);
             [tempDict setValue:input forKey:key];
         }
         else {

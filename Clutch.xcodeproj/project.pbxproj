@@ -128,7 +128,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				AD201A0517EC908800BF9F6C /* libz.dylib */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -157,6 +156,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AD201A0517EC908800BF9F6C /* libz.dylib */,
 				AD2019F717E576D100BF9F6C /* QuartzCore.framework */,
 				AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,

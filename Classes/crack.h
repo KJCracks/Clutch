@@ -33,8 +33,8 @@ int compression_level;
 #define FAT_CIGAM 0xbebafeca
 #define MH_MAGIC 0xfeedface
 
-#define CLUTCH_VERSION "Clutch-1.3.2-git3"
-#define CLUTCH_BUILD 13203
+#define CLUTCH_VERSION "Clutch-1.3.2-git4"
+#define CLUTCH_BUILD 13204
 #define CLUTCH_DEV 1
 
 #define ARMV6 6

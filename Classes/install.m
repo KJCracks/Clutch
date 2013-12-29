@@ -32,6 +32,7 @@ NSString* generateUuidString() {
 
 NSString* install_and_crack(NSString* ipa, NSString* binary, NSString* outbinary) {
    // printf("hello tere\n");
+    DEBUG("install_and_crack: %s %s %s", [ipa UTF8String], [binary UTF8String], [outbinary UTF8String]);
     bool exists = TRUE;
     NSString* location;
     while (exists == TRUE) {
@@ -41,7 +42,7 @@ NSString* install_and_crack(NSString* ipa, NSString* binary, NSString* outbinary
             break;
         }
     }
-    printf("location extract: %s\n", [location UTF8String]);
+    DEBUG("location extract: %s", [location UTF8String]);
     ZipArchive* zip = [[ZipArchive alloc] init];
     [zip UnzipOpenFile:ipa];
     [zip UnzipFileTo:location overWrite:YES];

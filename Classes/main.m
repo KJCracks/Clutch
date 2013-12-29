@@ -284,23 +284,25 @@ int main(int argc, char *argv[]) {
     if (crack) {
         int dif = diff_ms(end,start);
         printf("\nelapsed time: %dms\n", dif);
+        
+        printf("\nApplications Cracked: \n");
+        
+        for (int i = 0; i < [successfulCracks count]; i++) {
+            printf("\033[0;32m%s\033[0m\n", [successfulCracks[i] UTF8String]);
+        }
+        
+        printf("\nApplications that Failed:\n");
+        
+        for (int i = 0; i < [failedCracks count]; i++) {
+            printf("\033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
+        }
+        
+        printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
+        
+
     }
     
-    printf("\nApplications Cracked: \n");
-    
-    for (int i = 0; i < [successfulCracks count]; i++) {
-        printf("\033[0;32m%s\033[0m\n", [successfulCracks[i] UTF8String]);
-    }
-    
-    printf("\nApplications that Failed:\n");
-    
-    for (int i = 0; i < [failedCracks count]; i++) {
-        printf("\033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
-    }
-    
-    printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
-	
-endMain:
+    endMain:
 	return retVal;
     [pool release];
 help:

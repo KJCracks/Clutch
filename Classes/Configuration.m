@@ -1,4 +1,5 @@
 #import "Configuration.h"
+#import "out.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,6 +11,7 @@ static NSString *configPath = nil;
 @implementation ClutchConfiguration
 
 + (id) getValue:(NSString *)key {
+    //DEBUG("objectForKey: getValue");
 	return [configurationDictionary objectForKey:key];
 }
 
@@ -61,14 +63,17 @@ static NSString *configPath = nil;
 
     for (NSString* key in supportDictionary) {
         
+        //DEBUG("objectForKey: supportDictionary %s", [key UTF8String]);
         NSDictionary* supportEntry = [supportDictionary objectForKey:key];
         if ([[supportEntry objectForKey:@"enabled"] isEqualToString:@"NO"]) {
             IFPrint(@"Not enabled entry %@\n", key);
             continue;
         }
+        //DEBUG("objectForKey: supportEntry");
         support = [supportEntry objectForKey:@"support"];
         defaultValue = [configurationDictionary objectForKey:key];
         if (defaultValue == nil) {
+            //DEBUG("objectForKey: defaultValue");
             defaultValue = [supportEntry objectForKey:@"default"];
         }
         

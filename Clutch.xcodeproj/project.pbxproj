@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		41E0DF0B123752D30068268F /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E0DF0A123752D30068268F /* Configuration.m */; };
+		AD13066A186E6A9800DFE220 /* locale.m in Sources */ = {isa = PBXBuildFile; fileRef = AD130669186E6A9800DFE220 /* locale.m */; };
 		AD2019F817E576D100BF9F6C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2019F717E576D100BF9F6C /* QuartzCore.framework */; };
 		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
 		ADBFE260180D46FA00CEDD9A /* install.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBFE25F180D46FA00CEDD9A /* install.m */; };
@@ -36,6 +37,8 @@
 		1D6058910D05DD3D006BFB54 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41E0DF09123752D30068268F /* Configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Configuration.h; sourceTree = "<group>"; };
 		41E0DF0A123752D30068268F /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Configuration.m; sourceTree = "<group>"; };
+		AD130669186E6A9800DFE220 /* locale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = locale.m; sourceTree = "<group>"; };
+		AD13066B186E6AAF00DFE220 /* locale.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = locale.h; sourceTree = "<group>"; };
 		AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AD2019F717E576D100BF9F6C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AD201A0517EC908800BF9F6C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -99,6 +102,8 @@
 				BC871C7217E7122500048636 /* applist.h */,
 				BC871C7317E7122500048636 /* applist.m */,
 				BC871C7417E7122500048636 /* crack.h */,
+				AD130669186E6A9800DFE220 /* locale.m */,
+				AD13066B186E6AAF00DFE220 /* locale.h */,
 				BC871C7517E7122500048636 /* crack.m */,
 				ADBFE25E180D46FA00CEDD9A /* install.h */,
 				ADBFE25F180D46FA00CEDD9A /* install.m */,
@@ -279,6 +284,7 @@
 				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,
 				ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */,
 				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,
+				AD13066A186E6A9800DFE220 /* locale.m in Sources */,
 				ADBFE260180D46FA00CEDD9A /* install.m in Sources */,
 				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
 				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,

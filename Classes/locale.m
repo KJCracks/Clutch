@@ -1,9 +1,12 @@
-//
-//  locale.m
-//  Clutch
-//
-//  Created by Terence Tan on 28/12/13.
-//
-//
+enum
+{
+    LANG_EN,
+    LANG_ZH
+};
 
-#include <stdio.h>
+enum
+{
+    WELCOME_TO_CLUTCH,
+    DEV_BUILD_CHECKING_UPDATES,
+    
+};

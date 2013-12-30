@@ -12,15 +12,14 @@
 @interface CAApplication ()
 {
     
-    NSString *applicationBaseDirectory,
-    *applicationDirectory,
-    *applicationDisplayName,
-    *applicationName,
-    *applicationBaseName,
-    *realUniqueID,
-    *applicationVersion,
-    *applicationBundleID,
-    *applicationExecutableName;
+    NSString *applicationContainer,    // /private/var/mobile/Applications/C320A08E-1295-4F40-8B4F-9D8A5634CE92/
+    *applicationDisplayName,           // what you see on SpringBoard
+    *applicationName,                  // AppAddict.app - .app = AppAddict
+    *appDirectory,                     // AppAddict.app
+    *realUniqueID,                     // C320A08E-1295-4F40-8B4F-9D8A5634CE92
+    *applicationVersion,               // 1.0
+    *applicationBundleID,              // com.apple.purpleshit
+    *applicationExecutableName;        // Clutch-1.3.2-git4
     
     UIImage *applicationIcon;
     NSDictionary *dictRep;
@@ -42,16 +41,16 @@
 - (id)initWithAppInfo:(NSDictionary *)info
 {
     if (self = [super init]) {
-        applicationBaseDirectory = info[@"ApplicationBaseDirectory"];
-        applicationDirectory = info[@"ApplicationDirectory"];
+        applicationContainer = info[@"ApplicationContainer"];
         applicationDisplayName = info[@"ApplicationDisplayName"];
         applicationName = info[@"ApplicationName"];
-        applicationBaseName = info[@"ApplicationBasename"];
+        appDirectory = info[@"ApplicationBasename"];
         realUniqueID = info[@"RealUniqueID"];
         applicationVersion = info[@"ApplicationVersion"];
         applicationBundleID = info[@"ApplicationBundleID"];
         applicationExecutableName = info[@"ApplicationExecutableName"];
         applicationIcon = [self getApplicationIcon];
+        applicationSINF = info[@"ApplicationSINF"];
         dictRep = info;
         isCracking = NO;
     }
@@ -64,14 +63,9 @@ NSInteger diff_ms(struct timeval t1, struct timeval t2)
             (t1.tv_usec - t2.tv_usec))/1000;
 }
 
-- (NSString *)applicationBaseDirectory
+- (NSString *)applicationContainer
 {
-    return applicationBaseDirectory;
-}
-
-- (NSString *)applicationDirectory
-{
-    return applicationDirectory;
+    return applicationContainer;
 }
 
 - (NSString *)applicationDisplayName
@@ -84,9 +78,9 @@ NSInteger diff_ms(struct timeval t1, struct timeval t2)
     return applicationName;
 }
 
-- (NSString *)applicationBaseName
+- (NSString *)appDirectory
 {
-    return applicationBaseName;
+    return appDirectory;
 }
 
 - (NSString *)realUniqueID
@@ -119,7 +113,7 @@ NSInteger diff_ms(struct timeval t1, struct timeval t2)
 
 - (UIImage *)getApplicationIcon
 {
-    NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/Info.plist", applicationDirectory]];
+    NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:[[applicationContainer stringByAppendingPathComponent:appDirectory] stringByAppendingPathComponent:@"Info.plist"]];
     
     NSArray *iconPaths = [infoDictionary objectForKey:@"CFBundleIconFiles"];
     
@@ -137,7 +131,7 @@ NSInteger diff_ms(struct timeval t1, struct timeval t2)
         
         NSString *iconName = [iconPaths objectAtIndex:i];
         
-        image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@%@", applicationDirectory,iconName,[iconName pathExtension].length>0?@"":@".png"]];
+        image = [UIImage imageWithContentsOfFile:[[applicationContainer stringByAppendingPathComponent:appDirectory] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",iconName,[iconName pathExtension].length>0?@"":@".png"]]];
         
         CGFloat width = image.size.width;
         CGFloat height = image.size.height;

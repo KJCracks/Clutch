@@ -8,7 +8,6 @@
 #import "Prefs.h"
 
 @implementation Prefs
-static Prefs *sMySingleton = nil;
 
 + (Prefs *) sharedInstance
 {

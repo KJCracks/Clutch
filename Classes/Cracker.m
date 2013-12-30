@@ -10,6 +10,10 @@
 #import "CAApplication.h"
 #import "out.h"
 
+@interface Cracker ()
+
+@end
+
 @implementation Cracker
 
 - (id)init
@@ -120,6 +124,7 @@ static BOOL copyFile(NSString *infile, NSString *outfile)
     [files addObject:[NSString stringWithFormat:@"SC_Info/%@.sinf", mainexe]];
     [files addObject:[NSString stringWithFormat:@"SC_Info/%@.supp", mainexe]];
     [files addObject:mainexe];
+    
     //XXX:[files addObject:[NSString stringWithFormat:@"%@/_CodeSignature/CodeResources", appdirprefix]];
     //XXX:[files addObject:[NSString stringWithFormat:@"%@/SC_Info/%@.sinf", appdirprefix, mainexe]];
     //XXX:[files addObject:[NSString stringWithFormat:@"%@/SC_Info/%@.supp", appdirprefix, mainexe]];
@@ -147,7 +152,7 @@ static BOOL copyFile(NSString *infile, NSString *outfile)
 }
 static NSString * genRandStringLength(int len) {
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
-    NSString *letters = @"abcdef0123456789";
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     
     for (int i=0; i<len; i++) {
         [randomString appendFormat: @"%c", [letters characterAtIndex: arc4random()%[letters length]]];
@@ -171,11 +176,9 @@ static NSString * genRandStringLength(int len) {
     
     
     // Create working directory
-    _workingDir = [NSString stringWithFormat:@"%@%@/Payload/%@", @"/tmp/clutch_", genRandStringLength(8), app.applicationBaseName];
+    _workingDir = [NSString stringWithFormat:@"%@%@/Payload/%@", @"/tmp/clutch_", genRandStringLength(8), app.appDirectory];
     DebugLog(@"temporary directory %@", _workingDir);
-    if (![[NSFileManager defaultManager] createDirectoryAtPath:_workingDir withIntermediateDirectories:YES attributes:[NSDictionary dictionaryWithObjects:
-                                                                           [NSArray arrayWithObjects:@"mobile", @"mobile", nil]                                                                                                                                                    forKeys:[NSArray arrayWithObjects:@"NSFileOwnerAccountName", @"NSFileGroupOwnerAccountName", nil]
-                                                                            ] error:NULL]) {
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:_workingDir withIntermediateDirectories:YES attributes:@{NSFileOwnerAccountName:@"mobile",NSFileGroupOwnerAccountName:@"mobile"} error:NULL]) {
         
         printf("error: Could not create working directory\n");
         return nil;
@@ -183,9 +186,10 @@ static NSString * genRandStringLength(int len) {
     _tempBinaryPath = [_workingDir stringByAppendingFormat:@"/%@", app.applicationExecutableName];
     DebugLog(@"tempBinaryPath: %@", _tempBinaryPath);
     
-#warning binaryPath might be wrong, please check
+    #warning binaryPath might be wrong, please check  <===== fixed
     
-    _binaryPath = [app.applicationDirectory stringByAppendingFormat:@"%@", app.applicationExecutableName];
+    _binaryPath = [[app.applicationContainer stringByAppendingPathComponent:app.appDirectory] stringByAppendingPathComponent:app.applicationExecutableName];
+    
     _binary = [[CABinary alloc] initWithBinary:_binaryPath];
     DebugLog(@"binaryPath: %@", _binaryPath);
     return YES;

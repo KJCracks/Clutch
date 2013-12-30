@@ -29,13 +29,12 @@
 
 - (instancetype)initWithAppInfo:(NSDictionary *)info;
 
-- (NSString *)applicationBaseDirectory;
-- (NSString *)applicationDirectory;
-- (NSString *)applicationDisplayName;
-- (NSString *)applicationName;
+- (NSString *)appDirectory;
+- (NSString *)applicationContainer;
 - (NSString *)applicationBundleID;
-- (NSString *)applicationBaseName;
+- (NSString *)applicationDisplayName;
 - (NSString *)applicationExecutableName;
+- (NSString *)applicationName;
 - (NSString *)realUniqueID;
 - (NSString *)applicationVersion;
 - (UIImage *)applicationIcon;

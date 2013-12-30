@@ -35,7 +35,7 @@ NSArray * get_application_list(BOOL sort) {
         
         if (SINF)
         {
-            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationBaseDirectory":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationSINF":SINF,@"ApplicationExecutableName":executableName}];
+            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationContainer":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationSINF":SINF,@"ApplicationExecutableName":executableName}];
             
             [returnArray addObject:app];
         }

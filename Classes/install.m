@@ -7,9 +7,9 @@
 //
 
 #import "install.h"
+#import "CABinary.h"
 #import <Foundation/Foundation.h>
 #import "ZipArchive.h"
-#import "CABinary.m"
 
 // return a new autoreleased UUID string
 NSString* generateUuidString() {

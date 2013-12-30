@@ -138,7 +138,7 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
     {
         // Prepare this application from the installed app
         
-        NSMutableString *description=[[NSMutableString alloc] init];
+        printf("Currently cracking %s\n", app.applicationName.UTF8String);
         Cracker *cracker = [[Cracker alloc] init];
         [cracker prepareFromInstalledApp:app];
         
@@ -247,15 +247,13 @@ int cmd_flush_cache(void)
 
 int cmd_list_applications(NSArray *list)
 {
-    NSEnumerator *e = [list objectEnumerator];
-    NSDictionary *application;
+
     int index = 1;
     
     printf("\n");
     
-    while (application = [e nextObject])
-    {
-        printf("%d) \033[1;3%dm%s\033[0m \n", index, 5 + ((index + 1) % 2), [application[@"ApplicationDisplayName"] UTF8String]);
+    for (CAApplication* application in list) {
+        printf("%d) \033[1;3%dm%s\033[0m \n", index, 5 + ((index + 1) % 2), application.applicationName.UTF8String);
         index++;
     }
     
@@ -356,6 +354,24 @@ int main(int argc, const char *argv[])
         //else if ([arg isEqualToString:@""])
         else
         {
+            if (argc > 1) {
+                NSMutableArray* apps_to_crack = [[NSMutableArray alloc] init];
+                for (int i = 1; i<argc; i++) {
+                    printf("argv: %s", argv[i]);
+                    for (CAApplication* app in [[CAApplicationsController sharedInstance] installedApps]) {
+                        if ([app.applicationName caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame) {
+                            printf("Queuing application %s\n", app.applicationName.UTF8String);
+                            [apps_to_crack addObject:app];
+                        }
+                    }
+                }
+                NSMutableArray *failures=[[NSMutableArray alloc] init];
+                NSMutableArray *successes=[[NSMutableArray alloc] init];
+                
+                iterate_crack(apps_to_crack, successes, failures);
+                print_failures(successes, failures);
+                
+            }
             // Unknown command line option
             printf ("unknown option '%s'\n", [arg UTF8String]);
             return 1;

@@ -75,7 +75,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     return randomString;
 }
 
-- (id)initWithFile:(NSString *)thePath
+- (id)initWithBinary:(NSString *)thePath
 {
     if (self = [super init]) {
         binaryPath = thePath;
@@ -144,19 +144,22 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 - (BOOL)crackBinaryToFile:(NSString *)finalPath error:(NSError *__autoreleasing *)error
 {
-    
+    DebugLog(@"attempting to crack binary to file! finalpath %@", finalPath);
+    DebugLog(@"DEBUG: binary path %@", binaryPath);
     if (![[NSFileManager defaultManager] copyItemAtPath:binaryPath toPath:finalPath error:NULL]) {
         return NO;
     }
     
    	NSString *baseName = [binaryPath lastPathComponent]; // get the basename (name of the binary)
+    DEBUG("basename ok");
 	NSString *baseDirectory = [NSString stringWithFormat:@"%@/", [binaryPath stringByDeletingLastPathComponent]]; // get the base directory
-    
+    DEBUG("basedir ok");
     // open streams from both files
 	FILE *oldbinary, *newbinary;
-    DebugLog(@"DEBUG: binary path %@", binaryPath);
+    
 	oldbinary = fopen([binaryPath UTF8String], "r+");
 	newbinary = fopen([finalPath UTF8String], "r+");
+    DEBUG("open ok");
 	
     if (oldbinary==NULL) {
         
@@ -194,7 +197,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
             return NO;
         }
         
-        if (![self dump64bitOrigFile:oldbinary toFile:newbinary withTop:0]) {
+        if (![self dump64bitOrigFile:oldbinary withLocation:binaryPath toFile:newbinary withTop:0]) {
+            
             // Dumping failed
             DebugLog(@"Failed to dump %@",[self readable_cpusubtype:mh64->cpusubtype]);
             return NO;
@@ -511,16 +515,15 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 - (BOOL)dumpOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch
 {
     if (arch.cputype == CPUTYPE_64) {
-        return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withArch:arch];
+        return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
     }
     else {
-        return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withArch:arch];
+        return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
     }
 }
 
-- (BOOL)dump64bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch
+- (BOOL)dump64bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top
 {
-    uint32_t top = CFSwapInt32(arch.offset);
     fseek(target, top, SEEK_SET); // go the top of the target
     
 	// we're going to be going to this position a lot so let's save it
@@ -832,9 +835,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 }
 
-- (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch
-{
-    uint32_t top = CFSwapInt32(arch.offset);
+- (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top {
+
     fseek(target, top, SEEK_SET); // go the top of the target
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;

@@ -140,7 +140,10 @@ int diff_ms(struct timeval t1, struct timeval t2)
 {
     return applicationVersion;
 }
-
+- (NSString *)applicationExecutableName
+{
+    return applicationExecutableName;
+}
 - (NSString *)applicationBundleID
 {
     return applicationBundleID;

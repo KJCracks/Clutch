@@ -1,6 +1,7 @@
+
 #import "CAApplicationsController.h"
-
-
+#import "MobileInstallation.h"
+#import "out.h"
 
 NSArray * get_application_list(BOOL sort) {
     
@@ -11,20 +12,17 @@ NSArray * get_application_list(BOOL sort) {
     
     NSDictionary *installedApps = MobileInstallationLookup(options);
     
+    //DebugLog(@"installed apps %@", installedApps);
+    
+    
     for (NSString *bundleID in [installedApps allKeys]) {
         
         NSDictionary *appI=[installedApps objectForKey:bundleID];
-        
         NSString *appPath=[[appI objectForKey:@"Path"]stringByAppendingString:@"/"];
-        
         NSString *container=[[appPath stringByDeletingLastPathComponent]stringByAppendingString:@"/"];
-        
         NSString *scinfo=[appPath stringByAppendingPathComponent:@"SC_Info"];
-        
         NSString *displayName=[appI objectForKey:@"CFBundleDisplayName"];
-        
         NSString *executableName = [appI objectForKey:@"CFBundleExecutable"];
-        
         if (displayName==nil) {
             displayName=[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""];
         }
@@ -36,7 +34,6 @@ NSArray * get_application_list(BOOL sort) {
         }else{
             version=[appI objectForKey:@"CFBundleVersion"];
         }
-        
         BOOL yrn=YES;
         
         BOOL scinfoExist = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&yrn];

@@ -1,5 +1,4 @@
 #import "CAApplication.h"
-#import "MobileInstallation.h"
 
 @interface CAApplicationsController : NSObject
 

@@ -63,7 +63,7 @@ static BOOL forceCreateDirectory(NSString *dirpath)
 {
     BOOL isDir;
     NSFileManager *fileManager= [NSFileManager defaultManager];
-    if(![fileManager fileExistsAtPath:dirpath isDirectory:&isDir])
+    if([fileManager fileExistsAtPath:dirpath isDirectory:&isDir])
     {
         if(![fileManager removeItemAtPath:dirpath error:NULL])
         {
@@ -171,17 +171,23 @@ static NSString * genRandStringLength(int len) {
     
     
     // Create working directory
-    _workingDir = [NSString stringWithFormat:@"%@%@/", @"/tmp/clutch_", genRandStringLength(8)];
-    if (!forceCreateDirectory(_workingDir)) {
-        DEBUG("could not create temporary directory!");
-        return NO;
+    _workingDir = [NSString stringWithFormat:@"%@%@/Payload/%@", @"/tmp/clutch_", genRandStringLength(8), app.applicationBaseName];
+    DebugLog(@"temporary directory %@", _workingDir);
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:_workingDir withIntermediateDirectories:YES attributes:[NSDictionary dictionaryWithObjects:
+                                                                           [NSArray arrayWithObjects:@"mobile", @"mobile", nil]                                                                                                                                                    forKeys:[NSArray arrayWithObjects:@"NSFileOwnerAccountName", @"NSFileGroupOwnerAccountName", nil]
+                                                                            ] error:NULL]) {
+        
+        printf("error: Could not create working directory\n");
+        return nil;
     }
-    _tempBinaryPath = [_workingDir stringByAppendingFormat:@"Payload/%@/%@", app.applicationBaseName, app.applicationExecutableName];
+    _tempBinaryPath = [_workingDir stringByAppendingFormat:@"/%@", app.applicationExecutableName];
+    DebugLog(@"tempBinaryPath: %@", _tempBinaryPath);
     
 #warning binaryPath might be wrong, please check
     
-    _binaryPath = [app.applicationDirectory stringByAppendingFormat:@"%@/%@", app.applicationDirectory, app.applicationExecutableName];
+    _binaryPath = [app.applicationDirectory stringByAppendingFormat:@"%@", app.applicationExecutableName];
     _binary = [[CABinary alloc] initWithBinary:_binaryPath];
+    DebugLog(@"binaryPath: %@", _binaryPath);
     return YES;
 }
 

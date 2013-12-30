@@ -2,7 +2,8 @@
 ###########
 
 codesign.sh
-
+.idea/*
+.idea
 build/*
 *.pbxuser
 !default.pbxuser

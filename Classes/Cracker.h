@@ -15,11 +15,13 @@
     NSString *_appDescription;
     NSString *_finaldir;
     NSString *_baselinedir;
-    NSString *_workingDir;
     NSString *_tempBinaryPath;
     NSString *_binaryPath;
     CABinary *_binary;
     CAApplication *_app;
+    
+    @public
+        NSString *_workingDir;
 }
 
 -(id)init;

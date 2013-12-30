@@ -151,6 +151,8 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
             [failures addObject:app];
         }
         
+        [NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
+        
     }
     return 0;
 }
@@ -233,6 +235,8 @@ int cmd_crack_exe(NSString *path)
     
     [failures release];
     [successes release];
+    
+    [NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
     
     return ret;
 }

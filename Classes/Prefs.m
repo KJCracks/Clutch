@@ -47,7 +47,7 @@ static Prefs *sMySingleton = nil;
 
 - (BOOL)boolForKey:(NSString *)defaultName{
     if ([defaultName isEqualToString:@"useOverdrive"]) {
-        return YES;
+        return YES; //CrackAddict default :P
     }
     
     NSDictionary *dict=[NSDictionary dictionaryWithContentsOfFile:prefsPath];

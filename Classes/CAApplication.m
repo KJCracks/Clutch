@@ -12,19 +12,19 @@
 @interface CAApplication ()
 {
     
-   NSString *applicationBaseDirectory,
-            *applicationDirectory,
-            *applicationDisplayName,
-            *applicationName,
-            *applicationBaseName,
-            *realUniqueID,
-            *applicationVersion,
-            *applicationBundleID,
-            *applicationExecutableName;
-
+    NSString *applicationBaseDirectory,
+    *applicationDirectory,
+    *applicationDisplayName,
+    *applicationName,
+    *applicationBaseName,
+    *realUniqueID,
+    *applicationVersion,
+    *applicationBundleID,
+    *applicationExecutableName;
+    
     UIImage *applicationIcon;
     NSDictionary *dictRep;
-    
+    NSData *applicationSINF;
 }
 
 @end
@@ -58,48 +58,11 @@
     return self;
 }
 
-int diff_ms(struct timeval t1, struct timeval t2)
+NSInteger diff_ms(struct timeval t1, struct timeval t2)
 {
     return (((t1.tv_sec - t2.tv_sec) * 1000000) +
             (t1.tv_usec - t2.tv_usec))/1000;
 }
-
-- (void)crackWithDelegate:(id <CAApplicationDelegate>)delegate additionalLibs:(NSArray *)libs
-{
-    isCracking=YES;
-    
-    progress = @{@"status":@"",@"progress":@0};
-    
-    [delegate crackingProcessStarted:self];
-    
-    //weed is bad
-    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
-    dispatch_async(globalQueue, ^{
-        NSString *ipapath = nil;
-        NSError *error = nil;
-        
-        //ipapath = crack_application(applicationBaseDirectory, applicationBaseName, applicationVersion,&error);
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            isCracking=NO;
-            
-            [delegate crackingProcessFinished:self];
-
-            
-            if (error != nil) {
-                [self alertMessage:@"Could not crack IPA :(" info:error.userInfo[@"description"]];
-            }
-            else{
-                //int dif = diff_ms(end,start);
-                [self alertMessage:[NSString stringWithFormat:@"Cracked IPA at: %@", ipapath] info:nil];
-            }
-        });
-    });
-}
-
-
 
 - (NSString *)applicationBaseDirectory
 {
@@ -149,12 +112,17 @@ int diff_ms(struct timeval t1, struct timeval t2)
     return applicationBundleID;
 }
 
+- (NSData *)applicationSINF
+{
+    return applicationSINF;
+}
+
 - (UIImage *)getApplicationIcon
 {
     NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/Info.plist", applicationDirectory]];
     
     NSArray *iconPaths = [infoDictionary objectForKey:@"CFBundleIconFiles"];
-        
+    
     if (iconPaths == NULL) {
         iconPaths = [[[infoDictionary objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"];
     }
@@ -194,6 +162,43 @@ int diff_ms(struct timeval t1, struct timeval t2)
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, appName: %@, bundleID: %@>",NSStringFromClass([self class]),self,self.applicationName,self.applicationBundleID];
+}
+
+#pragma mark Cracking stuff
+
+- (void)crackWithDelegate:(id <CAApplicationDelegate>)delegate additionalLibs:(NSArray *)libs
+{
+    isCracking=YES;
+    
+    progress = @{@"status":@"",@"progress":@0};
+    
+    [delegate crackingProcessStarted:self];
+    
+    //weed is bad
+    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+    dispatch_async(globalQueue, ^{
+        NSString *ipapath = nil;
+        NSError *error = nil;
+        
+        //ipapath = crack_application(applicationBaseDirectory, applicationBaseName, applicationVersion,&error);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            isCracking=NO;
+            
+            [delegate crackingProcessFinished:self];
+            
+            
+            if (error != nil) {
+                [self alertMessage:@"Could not crack IPA :(" info:error.userInfo[@"description"]];
+            }
+            else{
+                //int dif = diff_ms(end,start);
+                [self alertMessage:[NSString stringWithFormat:@"Cracked IPA at: %@", ipapath] info:nil];
+            }
+        });
+    });
 }
 
 @end

@@ -1,26 +1,22 @@
-
 #import "CAApplicationsController.h"
 #import "MobileInstallation.h"
 #import "out.h"
 
 NSArray * get_application_list(BOOL sort) {
     
-    
     NSMutableArray *returnArray = [NSMutableArray new];
     
-    NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName",@"CFBundleExecutable"]};
+    NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName",@"CFBundleExecutable",@"ApplicationSINF"]};
     
     NSDictionary *installedApps = MobileInstallationLookup(options);
     
     //DebugLog(@"installed apps %@", installedApps);
-    
     
     for (NSString *bundleID in [installedApps allKeys]) {
         
         NSDictionary *appI=[installedApps objectForKey:bundleID];
         NSString *appPath=[[appI objectForKey:@"Path"]stringByAppendingString:@"/"];
         NSString *container=[[appPath stringByDeletingLastPathComponent]stringByAppendingString:@"/"];
-        NSString *scinfo=[appPath stringByAppendingPathComponent:@"SC_Info"];
         NSString *displayName=[appI objectForKey:@"CFBundleDisplayName"];
         NSString *executableName = [appI objectForKey:@"CFBundleExecutable"];
         if (displayName==nil) {
@@ -34,13 +30,12 @@ NSArray * get_application_list(BOOL sort) {
         }else{
             version=[appI objectForKey:@"CFBundleVersion"];
         }
-        BOOL yrn=YES;
         
-        BOOL scinfoExist = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&yrn];
+        NSData *SINF = appI[@"ApplicationSINF"];
         
-        if (scinfoExist)
+        if (SINF)
         {
-            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationBaseDirectory":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationExecutableName":executableName}];
+            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationBaseDirectory":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationSINF":SINF,@"ApplicationExecutableName":executableName}];
             
             [returnArray addObject:app];
         }

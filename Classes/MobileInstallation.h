@@ -59,7 +59,7 @@ extern "C" {
      *   CFDictionaryRef data = MobileInstallationLookup((CFDictionaryRef)attributes);
      */
     
-    CFDictionaryRef MobileInstallationLookup(CFDictionaryRef properties);
+    NSDictionary* MobileInstallationLookup(NSDictionary *options);
     
     /*
      * @param bundleIdentifier: (Required) The application's bundle identfier that you wish to uninstall.

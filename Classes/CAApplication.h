@@ -5,7 +5,7 @@
 //  Created by Ninja on 28/02/2013.
 //  Copyright (c) 2013 Hackulous. All rights reserved.
 //
-//  Improved by Zorro :P 
+//  Improved by Zorro :P
 //
 
 #import <Foundation/Foundation.h>
@@ -22,10 +22,12 @@
 
 @interface CAApplication : NSObject
 {
-    @public
-       BOOL isCracking;
-       NSDictionary *progress;
+@public
+    BOOL isCracking;
+    NSDictionary *progress;
 }
+
+- (instancetype)initWithAppInfo:(NSDictionary *)info;
 
 - (NSString *)applicationBaseDirectory;
 - (NSString *)applicationDirectory;
@@ -37,7 +39,8 @@
 - (NSString *)realUniqueID;
 - (NSString *)applicationVersion;
 - (UIImage *)applicationIcon;
+- (NSData *)applicationSINF;
 
-- (instancetype)initWithAppInfo:(NSDictionary *)info;
 - (void)crackWithDelegate:(id <CAApplicationDelegate>)delegate additionalLibs:(NSArray *)libs;
+
 @end

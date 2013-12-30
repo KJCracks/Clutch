@@ -19,7 +19,8 @@
     *realUniqueID,                     // C320A08E-1295-4F40-8B4F-9D8A5634CE92
     *applicationVersion,               // 1.0
     *applicationBundleID,              // com.apple.purpleshit
-    *applicationExecutableName;        // Clutch-1.3.2-git4
+    *applicationExecutableName,        // Clutch-1.3.2-git4
+    *minimumOSVersion;                 // 4.3
     
     NSData *applicationSINF;           // NSData of /SC_Info/$(applicationExecutableName).sinf
     UIImage *applicationIcon;
@@ -51,8 +52,11 @@
         applicationVersion = info[@"ApplicationVersion"];
         applicationBundleID = info[@"ApplicationBundleID"];
         applicationExecutableName = info[@"ApplicationExecutableName"];
-        applicationIcon = [self getApplicationIcon];
         applicationSINF = info[@"ApplicationSINF"];
+        minimumOSVersion = info[@"MinimumOSVersion"];
+
+        applicationIcon = [self getApplicationIcon];
+        
         dictRep = info;
         isCracking = NO;
     }
@@ -111,6 +115,11 @@ NSInteger diff_ms(struct timeval t1, struct timeval t2)
 - (NSData *)applicationSINF
 {
     return applicationSINF;
+}
+
+- (NSString *)minimumOSVersion
+{
+    return minimumOSVersion;
 }
 
 - (UIImage *)getApplicationIcon

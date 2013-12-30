@@ -12,6 +12,8 @@
 #import "imetadata.h"
 #import "scinfo.h"
 
+#import "Packager.h"
+
 @interface Cracker ()
 
 @end
@@ -243,11 +245,11 @@ static NSString * genRandStringLength(int len) {
     fclose(supph);
     free(supp);
     }
-    
-#warning TODO - should we generate fake .supf for 64bit?
-    
+        
 #warning TODO - zip not implemented
 
+    
+    
     return NO;
 }
 -(BOOL)prepareFromSpecificExecutable:(NSString *)exepath returnDescription:(NSMutableString *)description

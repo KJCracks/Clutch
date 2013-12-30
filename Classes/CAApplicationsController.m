@@ -6,7 +6,7 @@ NSArray * get_application_list(BOOL sort) {
     
     NSMutableArray *returnArray = [NSMutableArray new];
     
-    NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName",@"CFBundleExecutable",@"ApplicationSINF"]};
+    NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName",@"CFBundleExecutable",@"ApplicationSINF",@"MinimumOSVersion"]};
     
     NSDictionary *installedApps = MobileInstallationLookup(options);
     
@@ -19,6 +19,11 @@ NSArray * get_application_list(BOOL sort) {
         NSString *container=[[appPath stringByDeletingLastPathComponent]stringByAppendingString:@"/"];
         NSString *displayName=[appI objectForKey:@"CFBundleDisplayName"];
         NSString *executableName = [appI objectForKey:@"CFBundleExecutable"];
+        
+        NSString *minimumOSVersion = [appI objectForKey:@"MinimumOSVersion"];
+
+        minimumOSVersion = minimumOSVersion!=nil ? minimumOSVersion : @"1.0";
+        
         if (displayName==nil) {
             displayName=[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""];
         }
@@ -35,7 +40,7 @@ NSArray * get_application_list(BOOL sort) {
         
         if (SINF)
         {
-            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationContainer":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationSINF":SINF,@"ApplicationExecutableName":executableName}];
+            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationContainer":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationSINF":SINF,@"ApplicationExecutableName":executableName,@"MinimumOSVersion":minimumOSVersion}];
             
             [returnArray addObject:app];
         }

@@ -37,6 +37,7 @@
 		BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC871C8717E7126F00048636 /* Clutch-Info.plist */; };
 		F473DA571871F97D00AF3C59 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F473DA561871F97D00AF3C59 /* Default-568h@2x.png */; };
 		F473DA76187223EE00AF3C59 /* imetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA75187223EE00AF3C59 /* imetadata.m */; };
+		F473DA7A1872300800AF3C59 /* izip.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA791872300800AF3C59 /* izip.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +101,8 @@
 		F473DA561871F97D00AF3C59 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F473DA75187223EE00AF3C59 /* imetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imetadata.m; sourceTree = "<group>"; };
 		F473DA77187223F900AF3C59 /* imetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = imetadata.h; sourceTree = "<group>"; };
+		F473DA781872300800AF3C59 /* izip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = izip.h; sourceTree = "<group>"; };
+		F473DA791872300800AF3C59 /* izip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = izip.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +140,8 @@
 				F473DA75187223EE00AF3C59 /* imetadata.m */,
 				AD30146B18715EF800E06315 /* Packager.h */,
 				AD30146C18715EF800E06315 /* Packager.m */,
+				F473DA781872300800AF3C59 /* izip.h */,
+				F473DA791872300800AF3C59 /* izip.m */,
 				ADC68CBF17ECA8A7005282CE /* minizip */,
 				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
 				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
@@ -328,6 +333,7 @@
 				AD2790D41870580000A4FD11 /* CAApplicationsController.m in Sources */,
 				BC871C8217E7122500048636 /* main.m in Sources */,
 				BC871C8317E7122500048636 /* out.m in Sources */,
+				F473DA7A1872300800AF3C59 /* izip.m in Sources */,
 				AD2790D51870580000A4FD11 /* CABinary.m in Sources */,
 				BC871C8417E7122500048636 /* scinfo.m in Sources */,
 				BC871C8517E7122500048636 /* sha1.c in Sources */,

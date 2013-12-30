@@ -37,6 +37,7 @@
 - (NSString *)applicationName;
 - (NSString *)realUniqueID;
 - (NSString *)applicationVersion;
+- (NSString *)minimumOSVersion;
 - (UIImage *)applicationIcon;
 - (NSData *)applicationSINF;
 

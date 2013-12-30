@@ -24,7 +24,6 @@
     NSString* sinf_file;
     NSString* supp_file;
     NSString* supf_file;
-    
 }
 @end
 
@@ -51,6 +50,11 @@
 
 - (id)initWithBinary:(NSString *)thePath
 {
+    
+    if (![NSFileManager.defaultManager fileExistsAtPath:thePath]) {
+        return nil;
+    }
+    
     if (self = [super init]) {
         binaryPath = thePath;
         overdriveEnabled = NO;
@@ -67,8 +71,9 @@
         [[[[Prefs sharedInstance] objectForKey:@"crackerName"] componentsSeparatedByCharactersInSet:charactersToRemove1]
          componentsJoinedByString:@""];
         
-        OVERDRIVE_DYLIB_PATH = [[NSString alloc]initWithFormat:@"@executable_path/%@.dylib",credit? trimmedReplacement:@"overdrive"];
+        OVERDRIVE_DYLIB_PATH = [[NSString alloc]initWithFormat:@"@executable_path/%@.dylib",credit? trimmedReplacement : @"overdrive"]; //credit protection FTW
     }
+    
     return self;
 }
 
@@ -106,7 +111,6 @@
         case CPU_SUBTYPE_ARM64_V8:
             _cpusubtype = @"armv8";
             break;
-            
         case CPU_SUBTYPE_ARM64_ALL:
             _cpusubtype = @"arm64";
             break;
@@ -120,6 +124,7 @@
 {
     DebugLog(@"attempting to crack binary to file! finalpath %@", finalPath);
     DebugLog(@"DEBUG: binary path %@", binaryPath);
+    
     if (![[NSFileManager defaultManager] copyItemAtPath:binaryPath toPath:finalPath error:NULL]) {
         return NO;
     }
@@ -210,7 +215,8 @@
             return NO;
         }
         
-        if (![self dumpOrigFile:oldbinary toFile:newbinary withTop:0]) {
+        if (![self dump32bitOrigFile:oldbinary withLocation:binaryPath toFile:newbinary withTop:0])
+        {
             // Dumping failed
             DebugLog(@"Failed to dump %@",[self readable_cpusubtype:mh32->cpusubtype]);
             return NO;
@@ -267,7 +273,7 @@
                         DebugLog(@"Can only crack one architecture!");
                         DebugLog(@"DEBUG: lipo offset %u", CFSwapInt32(lipo.offset));
                         
-                        if ((CFSwapInt32(lipo.cputype) == CPU_TYPE_ARM64) && (local_cputype == CPU_TYPE_ARM64)) {
+                        /*if ((CFSwapInt32(lipo.cputype) == CPU_TYPE_ARM64) && (local_cputype == CPU_TYPE_ARM64)) {
                             DebugLog(@"lipo 64bit cracking");
                             if (![self dump64bitOrigFile:oldbinary toFile:newbinary withTop:CFSwapInt32(lipo.offset)])
                             {
@@ -290,7 +296,18 @@
                                 return NO;
                             }
                             
+                        }*/
+                        
+                        if (![self dumpOrigFile:oldbinary withLocation:binaryPath toFile:newbinary withArch:lipo])
+                        {
+                            // Dumping failed
+                            
+                            fclose(newbinary); // close the new binary stream
+                            fclose(oldbinary); // close the old binary stream
+                            [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
+                            return NO;
                         }
+                        
                         DebugLog(@"Performing liposuction of mach object...");
                         
                         // Lipo out the data
@@ -491,7 +508,7 @@
 
 - (BOOL)dumpOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch
 {
-    if (arch.cputype == CPUTYPE_64) {
+    if (OSSwapInt32(arch.cputype) == CPU_TYPE_ARM64) {
         return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
     }
     else {
@@ -779,9 +796,7 @@
                         overdrive_dyld->dylib.current_version = OVERDRIVE_DYLIB_CURRENT_VER;
                         overdrive_dyld->dylib.timestamp = 2;
                         overdrive_dyld->dylib.name.offset = sizeof(struct dylib_command);
-#ifndef __LP64__
-                        overdrive_dyld->dylib.name.ptr = (char *) sizeof(struct dylib_command);
-#endif
+
                         char *p = (char *) overdrive_dyld + overdrive_dyld->dylib.name.offset;
                         strncpy(p, OVERDRIVE_DYLIB_PATH.UTF8String, sizeof(OVERDRIVE_DYLIB_PATH));
                     }
@@ -978,7 +993,7 @@
             // perform checks on vm regions
             memory_object_name_t object;
             vm_region_basic_info_data_t info;
-            mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
+            mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_; // 32/64bit :P
             mach_vm_address_t region_start = 0;
             mach_vm_size_t region_size = 0;
             vm_region_flavor_t flavor = VM_REGION_BASIC_INFO;

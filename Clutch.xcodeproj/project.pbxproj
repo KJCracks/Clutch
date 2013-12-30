@@ -35,6 +35,8 @@
 		BC871C8417E7122500048636 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7C17E7122500048636 /* scinfo.m */; };
 		BC871C8517E7122500048636 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7D17E7122500048636 /* sha1.c */; };
 		BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC871C8717E7126F00048636 /* Clutch-Info.plist */; };
+		F473DA571871F97D00AF3C59 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F473DA561871F97D00AF3C59 /* Default-568h@2x.png */; };
+		F473DA76187223EE00AF3C59 /* imetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA75187223EE00AF3C59 /* imetadata.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +97,9 @@
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
 		BC871C8917E7165A00048636 /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clutch_Prefix.pch; sourceTree = "<group>"; };
 		F473DA551871E77400AF3C59 /* stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stuff.h; sourceTree = "<group>"; };
+		F473DA561871F97D00AF3C59 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		F473DA75187223EE00AF3C59 /* imetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imetadata.m; sourceTree = "<group>"; };
+		F473DA77187223F900AF3C59 /* imetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = imetadata.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,8 +131,10 @@
 				AD2790D01870580000A4FD11 /* CABinary.m */,
 				AD2790D11870580000A4FD11 /* CADevice.h */,
 				AD2790D21870580000A4FD11 /* CADevice.m */,
-				AD3014681871514D00E06315 /* Cracker.m */,
 				AD30146A1871517400E06315 /* Cracker.h */,
+				AD3014681871514D00E06315 /* Cracker.m */,
+				F473DA77187223F900AF3C59 /* imetadata.h */,
+				F473DA75187223EE00AF3C59 /* imetadata.m */,
 				AD30146B18715EF800E06315 /* Packager.h */,
 				AD30146C18715EF800E06315 /* Packager.m */,
 				ADC68CBF17ECA8A7005282CE /* minizip */,
@@ -162,6 +169,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				F473DA561871F97D00AF3C59 /* Default-568h@2x.png */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -287,6 +295,7 @@
 				ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */,
 				ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */,
 				ADC68CDC17ECA8A7005282CE /* MiniZip64_info.txt in Resources */,
+				F473DA571871F97D00AF3C59 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +337,7 @@
 				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,
 				AD13066A186E6A9800DFE220 /* locale.m in Sources */,
 				ADBFE260180D46FA00CEDD9A /* install.m in Sources */,
+				F473DA76187223EE00AF3C59 /* imetadata.m in Sources */,
 				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
 				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,
 				AD3014691871514D00E06315 /* Cracker.m in Sources */,

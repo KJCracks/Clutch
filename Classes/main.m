@@ -102,7 +102,7 @@ int cmd_help(void)
 // prints the list of things that succeeded and things that failed
 void print_failures(NSArray *successes, NSArray *failures)
 {
-    NSString* app;
+    CAApplication* app;
     if(successes && [successes count]>0)
     {
         printf("Success:\n");
@@ -110,7 +110,7 @@ void print_failures(NSArray *successes, NSArray *failures)
         NSEnumerator *e = [successes objectEnumerator];
         while(app = [e nextObject])
         {
-            printf("%s\n",[app UTF8String]);
+            printf("%s\n",[app applicationDisplayName].UTF8String);
         }
     }
     if(failures && [failures count]>0)
@@ -120,7 +120,7 @@ void print_failures(NSArray *successes, NSArray *failures)
         NSEnumerator *e = [failures objectEnumerator];
         while(app = [e nextObject])
         {
-            printf("%s\n",[app UTF8String]);
+            printf("%s\n",[app applicationDisplayName].UTF8String);
         }
     }
 }
@@ -137,7 +137,6 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
     for (CAApplication* app in apps)
     {
         // Prepare this application from the installed app
-        
         printf("Currently cracking %s\n", app.applicationName.UTF8String);
         Cracker *cracker = [[Cracker alloc] init];
         [cracker prepareFromInstalledApp:app];

@@ -9,6 +9,8 @@
 #import "Cracker.h"
 #import "CAApplication.h"
 #import "out.h"
+#import "imetadata.h"
+#import "scinfo.h"
 
 @interface Cracker ()
 
@@ -185,30 +187,67 @@ static NSString * genRandStringLength(int len) {
     }
     _tempBinaryPath = [_workingDir stringByAppendingFormat:@"/%@", app.applicationExecutableName];
     DebugLog(@"tempBinaryPath: %@", _tempBinaryPath);
-    
-    #warning binaryPath might be wrong, please check  <===== fixed
-    
+        
     _binaryPath = [[app.applicationContainer stringByAppendingPathComponent:app.appDirectory] stringByAppendingPathComponent:app.applicationExecutableName];
     
     _binary = [[CABinary alloc] initWithBinary:_binaryPath];
     DebugLog(@"binaryPath: %@", _binaryPath);
-    return YES;
+    return (!_binary)?NO:YES;
 }
 
 -(BOOL) execute {
     //1. dump binary
     NSError* error;
     if (![_binary crackBinaryToFile:_tempBinaryPath error:&error]) {
-        DEBUG("error: could not crack binary")
+        DebugLog(@"error: could not crack binary");
         return NO;
     }
-    [self packageIPA];
+    
+   return [self packageIPA];
     
 }
 -(BOOL)packageIPA {
-#warning TODO - not implemented
-    //fake iTunesMetaData, SC_Info
-    //zip
+
+    NSString *crackerName = [[Prefs sharedInstance] objectForKey:@"crackerName"];
+    if (crackerName == nil) {
+        crackerName = @"no-name-cracker";
+    }
+    
+    if (![[Prefs sharedInstance] boolForKey:@"removeMetadata"])
+    {
+        generateMetadata([_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"]);
+    }
+    
+    {
+    NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];
+    
+    DebugLog(@"Creating fake SC_Info data...");
+    // create fake SC_Info directory
+    [[NSFileManager defaultManager] createDirectoryAtPath:[_workingDir stringByAppendingPathComponent:@"SF_Info"] withIntermediateDirectories:YES attributes:nil error:NULL];
+    
+    NSLog(@"DEBUG: made fake directory");
+    // create fake SC_Info SINF file
+    FILE *sinfh = fopen([[_workingDir stringByAppendingPathComponent:@"SF_Info"]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sinf", _app.applicationExecutableName]].UTF8String, "w");
+
+    void *sinf = generate_sinf([imetadata_orig[@"itemId"] intValue], (char *)[crackerName UTF8String], [imetadata_orig[@"vendorId"] intValue]);
+    
+    fwrite(sinf, CFSwapInt32(*(uint32_t *)sinf), 1, sinfh);
+    fclose(sinfh);
+    free(sinf);
+    
+    // create fake SC_Info SUPP file
+    FILE *supph = fopen([[_workingDir stringByAppendingPathComponent:@"SF_Info"]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.supp", _app.applicationExecutableName]].UTF8String, "w");
+    uint32_t suppsize;
+    void *supp = generate_supp(&suppsize);
+    fwrite(supp, suppsize, 1, supph);
+    fclose(supph);
+    free(supp);
+    }
+    
+#warning TODO - should we generate fake .supf for 64bit?
+    
+#warning TODO - zip not implemented
+
     return NO;
 }
 -(BOOL)prepareFromSpecificExecutable:(NSString *)exepath returnDescription:(NSMutableString *)description

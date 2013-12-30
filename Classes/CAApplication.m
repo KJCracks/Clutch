@@ -21,9 +21,10 @@
     *applicationBundleID,              // com.apple.purpleshit
     *applicationExecutableName;        // Clutch-1.3.2-git4
     
+    NSData *applicationSINF;           // NSData of /SC_Info/$(applicationExecutableName).sinf
     UIImage *applicationIcon;
-    NSDictionary *dictRep;
-    NSData *applicationSINF;
+
+    NSDictionary *dictRep;             // NSDictionary representation of all stuff above,except applicationIcon(UIImage)
 }
 
 @end
@@ -40,6 +41,7 @@
 
 - (id)initWithAppInfo:(NSDictionary *)info
 {
+    
     if (self = [super init]) {
         applicationContainer = info[@"ApplicationContainer"];
         applicationDisplayName = info[@"ApplicationDisplayName"];

@@ -9,315 +9,366 @@
  
  Created by dissident at Hackulo.us (<http://hackulo.us/>)
  Credit: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
+  ___ _       _       _
+ / __\ |_   _| |_ ___| |__
+ / /  | | | | | __/ __| '_ \
+ / /___| | |_| | || (__| | | |
+ \____/|_|\__,_|\__\___|_| |_|
+ 
+ --------------------------------
+ High-Speed iOS Decryption System
+ --------------------------------
+ 
+ Authors:
+ 
+ dissident - The original creator of Clutch (pre 1.2.6)
+ Nighthawk - Code contributor (pre 1.2.6)
+ Rastignac - Inspiration and genius
+ TheSexyPenguin - Inspiration
+ dildog - Refactoring and code cleanup (2.0)
+ 
  */
 
+/*
+ * Includes
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#import  "main.h"
 #import "Configuration.h"
-#import "applist.h"
-#import "crack.h"
+#import "CAApplicationsController.h"
 #import "install.h"
-#import <unistd.h>
+#import "CABinary.h"
+#import <sys/time.h>
 
-BOOL crack = FALSE;
-BOOL readCompression;
+#import "Foundation/Foundation.h"
 
-int diff_ms(struct timeval t1, struct timeval t2)
+
+/*
+ * Configuration
+ */
+
+#define CLUTCH_TITLE "Clutch"
+#define CLUTCH_VERSION "v2.0"
+#define CLUTCH_RELEASE "ALPHA 2"
+
+/*
+ * Prototypes
+ */
+
+void print_failures(NSArray *failures, NSArray *successes);
+int iterate_crack(NSArray *apps, NSArray *successes, NSArray *failures);
+int cmd_version(void);
+int cmd_help(void);
+int cmd_crack_all(void);
+int cmd_crack_updated(void);
+int cmd_flush_cache(void);
+int cmd_crack_exe(const char *path);
+int cmd_list_applications(NSArray *list);
+
+/*
+ * Commands
+ */
+
+
+int cmd_version(void)
 {
-    return (int)((((t1.tv_sec - t2.tv_sec) * 1000000) +
-            (t1.tv_usec - t2.tv_usec)) / 1000);
+    printf("%s %s (%s)\n",CLUTCH_TITLE, CLUTCH_VERSION,CLUTCH_RELEASE);
+    return 0;
 }
 
-BOOL check_version() {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://kjcracks.github.io/Clutch/current_build"] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
-    NSURLResponse* response = [[NSURLResponse alloc] init];
-    NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-    int build_version = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] intValue];
-    if (build_version > CLUTCH_BUILD) {
-        printf("Your current version of Clutch %u is outdated!\nPlease get the latest version %u!\n", CLUTCH_BUILD, build_version);
-        return FALSE;
-    } else {
-        printf("Your version of Clutch is up to date!\n");
-    }
-    return TRUE;
-}
-
-int main(int argc, char *argv[]) {
-    compression_level = -1;
-    struct timeval start,end;
-    gettimeofday(&start, NULL);
+int cmd_help(void)
+{
+    cmd_version();
     
-    int retVal = 0;
-    if (CLUTCH_DEV == 1) {
-        printf("You're using a Clutch development build, checking for updates..\n");
-        if (!check_version()) {
-            return retVal;  
-        }
-    }
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	
-	if (getuid() != 0) {
-		printf("You must be root to use Clutch.\n");
-		goto endMain;
-	}
-	
-	// we need to import the configuration file
-	[ClutchConfiguration configWithFile:@"/etc/clutch.conf"];
-    
-    NSMutableArray *successfulCracks = [[NSMutableArray alloc] init];
-    NSMutableArray *failedCracks = [[NSMutableArray alloc] init];
-    
-	if (argc < 2) {
-        printf("%s\n", CLUTCH_VERSION);
-		NSArray *applist = get_application_list(TRUE, FALSE);
-		if (applist == NULL) {
-			printf("There are no encrypted applications on this device.\n");
-			goto endMain;
-		}
-		printf("usage: %s [flags] [application name] [...]\n", argv[0]);
-		printf("Applications available: ");
-		NSEnumerator *e = [applist objectEnumerator];
-		NSDictionary *applicationDetails;
-		NSString *compareWith;
-		if ([(NSString *)[ClutchConfiguration getValue:@"ListWithDisplayName"] isEqualToString:@"YES"]) {
-			compareWith = @"ApplicationDisplayName";
-		} else if ([(NSString *)[ClutchConfiguration getValue:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"]) {
-			compareWith = @"RealUniqueID";
-		} else {
-			compareWith = @"ApplicationName";
-		}
-        
-		int cindex = 1;
-		
-		BOOL numberMenu = [(NSString *)[ClutchConfiguration getValue:@"NumberBasedMenu"] isEqualToString:@"YES"];
-		if (numberMenu) {
-			printf("\n");
-		}
-		
-		while (applicationDetails = [e nextObject]) {
-			if (numberMenu) {
-				printf("%d) \033[1;3%dm%s\033[0m \n", cindex, 5 + ((cindex + 1) % 2), [[applicationDetails objectForKey:compareWith] UTF8String]);
-                cindex++;
-			} else {
-				printf("\033[1;3%dm%s\033[0m ", 5 + ((cindex + 1) % 2), [[applicationDetails objectForKey:compareWith] UTF8String]);
-                cindex++;
-			}
-        
-		}
-		
-		printf("\n");
-		
-		goto endMain;
-	}
-	
-	if (strncmp(argv[1], "-a", 3) == 0) {
-		NSArray *applist = get_application_list(FALSE, FALSE);
-		if (applist == NULL) {
-			printf("There are no encrypted applications on this device.\n");
-			goto endMain;
-		}
-		NSEnumerator *e = [applist objectEnumerator];
-		printf("Cracking all encrypted applications on this device.\n");
-		
-		NSDictionary *applicationDetails;
-		NSString *ipapath;
-
-		while (applicationDetails = [e nextObject]) {
-			printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
-			ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
-			if (ipapath == nil) {
-                [failedCracks addObject:applicationDetails[@"ApplicationName"]];
-				printf("Failed.\n");
-			} else {
-                gettimeofday(&end, NULL);
-                crack = TRUE;
-				printf("\t%s\n", [ipapath UTF8String]);
-                [successfulCracks addObject:applicationDetails[@"ApplicationName"]];
-			}
-		}
-	} else if (strncmp(argv[1], "-u", 2) == 0) {
-        NSArray *applist = get_application_list(FALSE, TRUE);
-        if (applist == NULL) {
-            printf("There are no new applications on this device that aren't cracked.\n");
-            goto endMain;
-        }
-        NSEnumerator *e = [applist objectEnumerator];
-        printf("Cracking all updated applications on this device.\n");
-        
-        NSDictionary *applicationDetails;
-        NSString *ipapath;
-        
-        while (applicationDetails = [e nextObject]) {
-            printf("Cracking %s...\n", [[applicationDetails objectForKey:@"ApplicationName"] UTF8String]);
-            ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
-            if (ipapath == nil) {
-                [failedCracks addObject:applicationDetails[@"ApplicationName"]];
-                printf("Failed.\n");
-            } else {
-                gettimeofday(&end, NULL);
-                crack = TRUE;
-                printf("\t%s\n", [ipapath UTF8String]);
-                [successfulCracks addObject:applicationDetails[@"ApplicationName"]];
-            }
-        }
-    } else if (strncmp(argv[1], "-f", 2) == 0) {
-		[[NSFileManager defaultManager] removeItemAtPath:@"/var/cache/clutch.plist" error:NULL];
-		printf("Caches cleared.\n");
-	} else if (strncmp(argv[1], "-v", 2) == 0) {
-		printf("%s\n", CLUTCH_VERSION);
-	} else if (strncmp(argv[1], "-b", 2) == 0) {
-		printf("%d\n", CLUTCH_BUILD);
-	} else if (strncmp(argv[1], "-C", 2) == 0) {
-        [ClutchConfiguration setupConfig];
-    } else if (strncmp(argv[1], "-c", 2) == 0) {
-        [ClutchConfiguration setupConfig];
-    } else if (strncmp(argv[1], "-32", 3) == 0) {
-        if (get_local_cputype() == CPUTYPE_64) {
-            printf("error: binary running in 64bit mode, expected 32bit, help??");
-            exit(2);
-        }
-        NSString* originPath = [NSString stringWithUTF8String:argv[2]];
-        NSString* finalPath = [NSString stringWithUTF8String:argv[3]];
-        
-        FILE* origin = fopen(argv[2], "r+");
-        FILE* target = fopen(argv[3], "r+");
-        
-        uint32_t top = atoi(argv[4]);
-        
-        BOOL* success = dump_binary_32(origin, target, top, originPath, finalPath);
-        if (success) {
-            exit(0);
-        }
-        else {
-            exit(1);
-        }
-    }
-    else if (strncmp(argv[1], "-i", 2) == 0) {
-        NSString *ipa = [NSString stringWithUTF8String:argv[2]];
-        printf("one \n");
-        NSString *binary = [NSString stringWithUTF8String:argv[3]];
-        printf("two \n");
-        NSString *outbinary = [NSString stringWithUTF8String:argv[4]];
-        printf("three \n");
-        install_and_crack(ipa, binary, outbinary);
-
-        //printf("location %s\n", [location UTF8String]);
-        
-    }
-    else if (strncmp(argv[1], "-z", 2) == 0) {
-        printf("Using native zipping! (may be unstable)\n\n");
-        new_zip = 1;
-    } else if (strncmp(argv[1], "-h", 2) == 0) {
-        goto help;
-    }
-    else {
-        printf("%s\n", CLUTCH_VERSION);
-		BOOL numberMenu = [(NSString *)[ClutchConfiguration getValue:@"NumberBasedMenu"] isEqualToString:@"YES"];
-		NSArray *applist;
-		if (numberMenu)
-			applist = get_application_list(TRUE, FALSE);
-		else
-			applist = get_application_list(FALSE, FALSE);
-        
-		if (applist == NULL) {
-			printf("There are no encrypted applications on this device.\n");
-			goto endMain;
-		}
-		NSString *compareWith;
-		
-		if ([(NSString *)[ClutchConfiguration getValue:@"ListWithDisplayName"] isEqualToString:@"YES"]) {
-			compareWith = @"ApplicationDisplayName";
-		} else if ([(NSString *)[ClutchConfiguration getValue:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"]) {
-			compareWith = @"RealUniqueID";
-		} else {
-			compareWith = @"ApplicationName";
-		}
-		
-		NSString *ipapath;
-		NSDictionary *applicationDetails;
-		BOOL cracked = FALSE;
-		for (int i = 1; i<argc; i++) {
-			NSEnumerator *e = [applist objectEnumerator];
-			int cindex = 0;
-			while (applicationDetails = [e nextObject]) {
-				cindex++;
-				if (!numberMenu && ([(NSString *)[applicationDetails objectForKey:compareWith] caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame)) {
-                inCrackRoutine:
-					cracked = TRUE;
-					printf("Cracking %s...\n", [[applicationDetails objectForKey:compareWith] UTF8String]);
-					ipapath = crack_application([applicationDetails objectForKey:@"ApplicationDirectory"], [applicationDetails objectForKey:@"ApplicationBasename"], [applicationDetails objectForKey:@"ApplicationVersion"]);
-					if (ipapath == nil) {
-						printf("Failed.\n");
-                        [failedCracks addObject:applicationDetails[@"ApplicationName"]];
-					} else {
-                        gettimeofday(&end, NULL);
-                        crack = TRUE;
-						printf("\t%s\n", [ipapath UTF8String]);
-                        [successfulCracks addObject:applicationDetails[@"ApplicationName"]];
-					}
-					break;
-				} else {
-					if (numberMenu && (0 == strcmp([[NSString stringWithFormat:@"%d", cindex] UTF8String], argv[i]))) {
-						goto inCrackRoutine;
-					}
-				}
-			}
-			if (!cracked) {
-                if (!strcmp(argv[i], "--overdrive")) {
-                    printf("Overdrive is enabled.\n");
-                    overdrive_enabled = 1;
-                }
-                /*if (readCompression) {
-                    compression_level = atoi(argv[i]);
-                    printf("compression level: %u\n", compression_level);
-                    readCompression = FALSE;
-                }
-                else if (!readCompression && (!strcmp(argv[i], "-c"))) {
-                    readCompression = TRUE;
-                }*/
-                else {
-                    printf("error: Unrecognized application \"%s\"\n", argv[i]);
-                }
-			}
-			cracked = FALSE;
-		}
-	}
-    
-    if (crack) {
-        int dif = diff_ms(end,start);
-        printf("\nelapsed time: %dms\n", dif);
-        
-        printf("\nApplications Cracked: \n");
-        
-        for (int i = 0; i < [successfulCracks count]; i++) {
-            printf("\033[0;32m%s\033[0m\n", [successfulCracks[i] UTF8String]);
-        }
-        
-        printf("\nApplications that Failed:\n");
-        
-        for (int i = 0; i < [failedCracks count]; i++) {
-            printf("\033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
-        }
-        
-        printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
-        
-
-    }
-    
-    endMain:
-	return retVal;
-    [pool release];
-help:
-    printf("%s\n", CLUTCH_VERSION);
-    printf("Clutch Help\n");
-    printf("---------------------------------\n");
-    printf("-c          Runs configuration utility\n");
+    printf("-----------------------------\n");
+    //printf("-c          Runs configuration utility\n");
+    printf("-x <path>   Crack specific executable\n");
     printf("-a          Cracks all applications\n");
     printf("-u          Cracks updated applications\n");
-    printf("-f          Clears cache\n");
+    printf("-f          Flush/clear cache\n");
     printf("-v          Shows version\n");
+    printf("-h,-?       Shows this help\n");
     printf("\n");
     
-    [pool release];
+    return 0;
+}
+
+// print_failures()
+// prints the list of things that succeeded and things that failed
+void print_failures(NSArray *successes, NSArray *failures)
+{
+    NSString* app;
+    if(successes && [successes count]>0)
+    {
+        printf("Success:\n");
+        
+        NSEnumerator *e = [successes objectEnumerator];
+        while(app = [e nextObject])
+        {
+            printf("%s\n",[app UTF8String]);
+        }
+    }
+    if(failures && [failures count]>0)
+    {
+        printf("Failure:\n");
+        
+        NSEnumerator *e = [failures objectEnumerator];
+        while(app = [e nextObject])
+        {
+            printf("%s\n",[app UTF8String]);
+        }
+    }
 }
 
 
+// iterate_crack()
+// iterates over all of the apps in the NSArray list,
+// prepares the app, and cracks it.
+// returns a list of successes and failures
 
+int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *failures)
+{
+    // Iterate over all applications
+    for (CAApplication* app in apps)
+    {
+        // Prepare this application from the installed app
+        CABinary* binary = [[CABinary alloc] initWithBinary:app.applicationBaseName];
+        
+        //if ([binary crackBinaryToFile: error:<#(NSError **)#>])
+        
+        NSMutableString *description=[[NSMutableString alloc] init];
+        [cracker prepareFromInstalledApp:appdict returnDescription:description];
+        
+        
+        if([cracker execute])
+        {
+            [successes addObject:description];
+        }
+        else
+        {
+            [failures addObject:description];
+        }
+        
+        // Repackage IPA file
+        Packager *packager=[[Packager alloc] init];
+        [packager pack_from_source:[appdict objectForKey:@"ApplicationBaseDirectory"]
+                      with_overlay:[cracker getOutputFolder]];
+    }
+    return 0;
+}
+
+int cmd_crack_all(void)
+{
+    // Get list of all applications
+    //NSArray *all_applications = get_application_list(FALSE, FALSE);
+    NSArray *all_applications = [[[applist alloc] init] listApplications];
+    
+    // Create list for failures and successes
+    NSMutableArray *failures=[[NSMutableArray alloc] init];
+    NSMutableArray *successes=[[NSMutableArray alloc] init];
+    
+    // Iterate over all applications
+    int ret=iterate_crack(all_applications, successes, failures);
+    
+    // Print failures and success status
+    print_failures(successes,failures);
+    
+    [failures release];
+    [successes release];
+    
+    return ret;
+}
+
+int cmd_crack_updated(void)
+{
+    // Get list of updated applications
+    NSArray *update_applications;// = get_application_list(FALSE, TRUE);
+    
+    // Create list for failures and successes
+    NSMutableArray *failures=[[NSMutableArray alloc] init];
+    NSMutableArray *successes=[[NSMutableArray alloc] init];
+    
+    // Iterate over all applications
+    int ret=iterate_crack(update_applications, successes, failures);
+    
+    // Print failures and success status
+    print_failures(successes,failures);
+    
+    [failures release];
+    [successes release];
+    
+    return ret;
+}
+
+
+int cmd_crack_exe(NSString *path)
+{
+    // Create list for failures and successes
+    NSMutableArray *failures=[[NSMutableArray alloc] init];
+    NSMutableArray *successes=[[NSMutableArray alloc] init];
+    
+    // Prepare this application from the installed app
+    Cracker *cracker=[[Cracker alloc] init];
+    
+    NSMutableString *description=[[NSMutableString alloc] init];
+    [cracker prepareFromSpecificExecutable:path returnDescription:description];
+    
+    int ret=0;
+    if([cracker execute])
+    {
+        [successes addObject:description];
+        ret=0;
+    }
+    else
+    {
+        [failures addObject:description];
+        ret=1;
+    }
+    
+    // Repackage IPA file
+    Packager *packager=[[Packager alloc] init];
+    [packager packFromSource:[path stringByDeletingLastPathComponent]
+                 withOverlay:[cracker getOutputFolder]];
+    
+    // Print failures and success status
+    print_failures(successes,failures);
+    
+    [failures release];
+    [successes release];
+    
+    return ret;
+}
+
+
+int cmd_flush_cache(void)
+{
+    return 0;
+}
+
+int cmd_crack_exe(const char *path)
+{
+    return 0;
+}
+
+int cmd_list_applications(NSArray *list)
+{
+    NSEnumerator *e = [list objectEnumerator];
+    NSDictionary *application;
+    int index = 1;
+    
+    printf("\n");
+    
+    while (application = [e nextObject])
+    {
+        printf("%d) \033[1;3%dm%s\033[0m \n", index, 5 + ((index + 1) % 2), [application[@"ApplicationDisplayName"] UTF8String]);
+        index++;
+    }
+    
+    printf("\n");
+    
+    return 0;
+}
+
+/*
+ * Main Function
+ */
+
+int main(int argc, const char *argv[])
+{
+    // Prepare command line options
+    int ret=0;
+    
+    printf("\n");
+    
+    // check that we are root
+    if (getuid() != 0)
+    {
+        printf("You need to be root to use Clutch.\n");
+        
+        return 1;
+    }
+    
+    // this line gives me
+    NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+    
+    int cnt = (int)[arguments count];
+    
+    for(int idx = 0;idx < cnt; idx++)
+    {
+        // Process each command line option
+        NSString *arg = [arguments objectAtIndex:idx];
+        
+        if([arg isEqualToString:@"/usr/bin/Clutch"] && [arguments count] == 1)
+        {
+            // show help & list applications
+            cmd_help();
+            NSArray *apps = [[[applist alloc] init] listApplications];
+            
+            if (apps == nil)
+            {
+                printf("Error finding applications!\n");
+            } else if ([apps count] == 0)
+            {
+                printf("No encrypted applications found\n");
+            } else
+            {
+                cmd_list_applications(apps);
+            }
+            
+            break;
+        }
+        
+        if([arg isEqualToString:@"-a"])
+        {
+            // Crack all applications
+            ret = cmd_crack_all();
+        }
+        else if([arg isEqualToString:@"-u"])
+        {
+            // Crack updated applications
+            ret = cmd_crack_updated();
+        }
+        else if([arg isEqualToString:@"-f"])
+        {
+            // Flush caches
+            ret = cmd_flush_cache();
+        }
+        else if([arg isEqualToString:@"-v"])
+        {
+            // Display version string
+            ret = cmd_version();
+        }
+        else if([arg isEqualToString:@"-x"])
+        {
+            // Crack specific executable
+            
+            // Get path argument
+            idx++;
+            if(idx>=cnt)
+            {
+                printf("-x requires a 'path' argument");
+                return 1;
+            }
+            NSString *path = [arguments objectAtIndex:idx];
+            
+            ret = cmd_crack_exe(path);
+        }
+        else if([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-?"])
+        {
+            // Display help
+            ret = cmd_help();
+        }
+        //else if ([arg isEqualToString:@""])
+        else
+        {
+            // Unknown command line option
+            printf ("unknown option '%s'\n", [arg UTF8String]);
+            return 1;
+        }
+    }
+    
+    return ret;
+}

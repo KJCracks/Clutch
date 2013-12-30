@@ -9,7 +9,7 @@
 #import "install.h"
 #import <Foundation/Foundation.h>
 #import "ZipArchive.h"
-#import "crack.h"
+#import "CABinary.m"
 
 // return a new autoreleased UUID string
 NSString* generateUuidString() {
@@ -53,6 +53,9 @@ NSString* install_and_crack(NSString* ipa, NSString* binary, NSString* outbinary
     
     [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:binaryPath error:nil];
     VERBOSE("setted attributes!");
+    
+    CABinary* binary = [[CABinary alloc] init];
+    
     crack_binary(binaryPath, outbinary, &error);
     [[NSFileManager defaultManager] removeItemAtPath:location error:nil];
     return location;

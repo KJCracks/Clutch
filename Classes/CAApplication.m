@@ -19,7 +19,8 @@
             *applicationBaseName,
             *realUniqueID,
             *applicationVersion,
-            *applicationBundleID;
+            *applicationBundleID,
+            *applicationExecutableName;
 
     UIImage *applicationIcon;
     NSDictionary *dictRep;
@@ -49,6 +50,7 @@
         realUniqueID = info[@"RealUniqueID"];
         applicationVersion = info[@"ApplicationVersion"];
         applicationBundleID = info[@"ApplicationBundleID"];
+        applicationExecutableName = info[@"ApplicationExecutableName"];
         applicationIcon = [self getApplicationIcon];
         dictRep = info;
         isCracking = NO;
@@ -61,10 +63,7 @@ int diff_ms(struct timeval t1, struct timeval t2)
     return (((t1.tv_sec - t2.tv_sec) * 1000000) +
             (t1.tv_usec - t2.tv_usec))/1000;
 }
-- (BOOL)crack {
-    CABinary* binary = [[CABinary alloc] init];
-    binary
-}
+
 - (void)crackWithDelegate:(id <CAApplicationDelegate>)delegate additionalLibs:(NSArray *)libs
 {
     isCracking=YES;

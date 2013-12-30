@@ -41,6 +41,8 @@
 #import "CAApplicationsController.h"
 #import "install.h"
 #import "CABinary.h"
+#import "Cracker.h"
+#import "Packager.h"
 #import <sys/time.h>
 
 #import "Foundation/Foundation.h"
@@ -65,7 +67,7 @@ int cmd_help(void);
 int cmd_crack_all(void);
 int cmd_crack_updated(void);
 int cmd_flush_cache(void);
-int cmd_crack_exe(const char *path);
+int cmd_crack_exe(NSString *path);
 int cmd_list_applications(NSArray *list);
 
 /*
@@ -135,27 +137,21 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
     for (CAApplication* app in apps)
     {
         // Prepare this application from the installed app
-        CABinary* binary = [[CABinary alloc] initWithBinary:app.applicationBaseName];
-        
-        //if ([binary crackBinaryToFile: error:<#(NSError **)#>])
         
         NSMutableString *description=[[NSMutableString alloc] init];
-        [cracker prepareFromInstalledApp:appdict returnDescription:description];
+        Cracker *cracker = [[Cracker alloc] init];
+        [cracker prepareFromInstalledApp:app];
         
         
         if([cracker execute])
         {
-            [successes addObject:description];
+            [successes addObject:app];
         }
         else
         {
-            [failures addObject:description];
+            [failures addObject:app];
         }
         
-        // Repackage IPA file
-        Packager *packager=[[Packager alloc] init];
-        [packager pack_from_source:[appdict objectForKey:@"ApplicationBaseDirectory"]
-                      with_overlay:[cracker getOutputFolder]];
     }
     return 0;
 }
@@ -164,14 +160,14 @@ int cmd_crack_all(void)
 {
     // Get list of all applications
     //NSArray *all_applications = get_application_list(FALSE, FALSE);
-    NSArray *all_applications = [[[applist alloc] init] listApplications];
+    NSArray *all_applications = [[CAApplicationsController sharedInstance] installedApps];
     
     // Create list for failures and successes
     NSMutableArray *failures=[[NSMutableArray alloc] init];
     NSMutableArray *successes=[[NSMutableArray alloc] init];
     
     // Iterate over all applications
-    int ret=iterate_crack(all_applications, successes, failures);
+    int ret = iterate_crack(all_applications, successes, failures);
     
     // Print failures and success status
     print_failures(successes,failures);
@@ -248,10 +244,6 @@ int cmd_flush_cache(void)
     return 0;
 }
 
-int cmd_crack_exe(const char *path)
-{
-    return 0;
-}
 
 int cmd_list_applications(NSArray *list)
 {
@@ -305,7 +297,7 @@ int main(int argc, const char *argv[])
         {
             // show help & list applications
             cmd_help();
-            NSArray *apps = [[[applist alloc] init] listApplications];
+            NSArray *apps = [[CAApplicationsController sharedInstance] installedApps];
             
             if (apps == nil)
             {

@@ -737,7 +737,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                 // is this the first header page?
                 if (i_lcmd == 0) {
                     // is overdrive enabled?
-                    if (overdrive_enabled) {
+                    if (overdriveEnabled) {
                         // prepare the mach header for the new load command (overdrive dylib)
                         ((struct mach_header *)buf)->ncmds += 1;
                         ((struct mach_header *)buf)->sizeofcmds += overdrive_size;
@@ -769,7 +769,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                         struct segment_command *newseg = (struct segment_command *) curloc;
                         if (newseg->fileoff == 0 && newseg->filesize > 0) {
                             // is overdrive enabled? this is __TEXT
-                            if (overdrive_enabled) {
+                            if (overdriveEnabled) {
                                 // maxprot so that overdrive can change the __TEXT protection &
                                 // cryptid in realtime
                                 newseg->maxprot |= VM_PROT_ALL;
@@ -788,7 +788,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                     }
                 }
                 // is overdrive enabled?
-                if (overdrive_enabled) {
+                if (overdriveEnabled) {
                     // add the overdrive dylib as long as we have room
                     if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
                         VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
@@ -1064,7 +1064,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                 // is this the first header page?
                 if (i_lcmd == 0) {
                     // is overdrive enabled?
-                    if (overdrive_enabled) {
+                    if (overdriveEnabled) {
                         // prepare the mach header for the new load command (overdrive dylib)
                         ((struct mach_header *)buf)->ncmds += 1;
                         ((struct mach_header *)buf)->sizeofcmds += overdrive_size;
@@ -1096,7 +1096,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                         struct segment_command *newseg = (struct segment_command *) curloc;
                         if (newseg->fileoff == 0 && newseg->filesize > 0) {
                             // is overdrive enabled? this is __TEXT
-                            if (overdrive_enabled) {
+                            if (overdriveEnabled) {
                                 // maxprot so that overdrive can change the __TEXT protection &
                                 // cryptid in realtime
                                 newseg->maxprot |= VM_PROT_ALL;
@@ -1115,7 +1115,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                     }
                 }
                 // is overdrive enabled?
-                if (overdrive_enabled) {
+                if (overdriveEnabled) {
                     // add the overdrive dylib as long as we have room
                     if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
                         VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");

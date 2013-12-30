@@ -16,6 +16,8 @@
 		AD2790D41870580000A4FD11 /* CAApplicationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CE187057FF00A4FD11 /* CAApplicationsController.m */; };
 		AD2790D51870580000A4FD11 /* CABinary.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D01870580000A4FD11 /* CABinary.m */; };
 		AD2790D61870580000A4FD11 /* CADevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D21870580000A4FD11 /* CADevice.m */; };
+		AD3014691871514D00E06315 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3014681871514D00E06315 /* Cracker.m */; };
+		AD30146D18715EF800E06315 /* Packager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD30146C18715EF800E06315 /* Packager.m */; };
 		ADAA367E1870606D0029AF7D /* Prefs.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA367D1870606D0029AF7D /* Prefs.m */; };
 		ADBFE260180D46FA00CEDD9A /* install.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBFE25F180D46FA00CEDD9A /* install.m */; };
 		ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */; };
@@ -54,6 +56,10 @@
 		AD2790D11870580000A4FD11 /* CADevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADevice.h; sourceTree = "<group>"; };
 		AD2790D21870580000A4FD11 /* CADevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CADevice.m; sourceTree = "<group>"; };
 		AD2790D718705BBB00A4FD11 /* MobileInstallation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MobileInstallation.h; sourceTree = "<group>"; };
+		AD3014681871514D00E06315 /* Cracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cracker.m; sourceTree = "<group>"; };
+		AD30146A1871517400E06315 /* Cracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cracker.h; sourceTree = "<group>"; };
+		AD30146B18715EF800E06315 /* Packager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packager.h; sourceTree = "<group>"; };
+		AD30146C18715EF800E06315 /* Packager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packager.m; sourceTree = "<group>"; };
 		ADAA367C1870606D0029AF7D /* Prefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefs.h; sourceTree = "<group>"; };
 		ADAA367D1870606D0029AF7D /* Prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Prefs.m; sourceTree = "<group>"; };
 		ADAA367F187125220029AF7D /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
@@ -118,6 +124,10 @@
 				AD2790D01870580000A4FD11 /* CABinary.m */,
 				AD2790D11870580000A4FD11 /* CADevice.h */,
 				AD2790D21870580000A4FD11 /* CADevice.m */,
+				AD3014681871514D00E06315 /* Cracker.m */,
+				AD30146A1871517400E06315 /* Cracker.h */,
+				AD30146B18715EF800E06315 /* Packager.h */,
+				AD30146C18715EF800E06315 /* Packager.m */,
 				ADC68CBF17ECA8A7005282CE /* minizip */,
 				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
 				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
@@ -318,6 +328,8 @@
 				ADBFE260180D46FA00CEDD9A /* install.m in Sources */,
 				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
 				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,
+				AD3014691871514D00E06315 /* Cracker.m in Sources */,
+				AD30146D18715EF800E06315 /* Packager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

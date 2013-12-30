@@ -33,6 +33,7 @@
 - (NSString *)applicationName;
 - (NSString *)applicationBundleID;
 - (NSString *)applicationBaseName;
+- (NSString *)applicationExecutableName;
 - (NSString *)realUniqueID;
 - (NSString *)applicationVersion;
 - (UIImage *)applicationIcon;

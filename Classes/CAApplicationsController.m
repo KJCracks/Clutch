@@ -7,7 +7,7 @@ NSArray * get_application_list(BOOL sort) {
     
     NSMutableArray *returnArray = [NSMutableArray new];
     
-    NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName"]};
+    NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName",@"CFBundleExecutable"]};
     
     NSDictionary *installedApps = MobileInstallationLookup(options);
     
@@ -22,6 +22,8 @@ NSArray * get_application_list(BOOL sort) {
         NSString *scinfo=[appPath stringByAppendingPathComponent:@"SC_Info"];
         
         NSString *displayName=[appI objectForKey:@"CFBundleDisplayName"];
+        
+        NSString *executableName = [appI objectForKey:@"CFBundleExecutable"];
         
         if (displayName==nil) {
             displayName=[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""];
@@ -41,7 +43,7 @@ NSArray * get_application_list(BOOL sort) {
         
         if (scinfoExist)
         {
-            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationBaseDirectory":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID}];
+            CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationBaseDirectory":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationExecutableName":executableName}];
             
             [returnArray addObject:app];
         }

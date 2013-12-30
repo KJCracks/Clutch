@@ -16,7 +16,14 @@
 #include <mach-o/loader.h>
 #include <mach-o/arch.h>
 
-//void sha1(uint8_t *hash, uint8_t *data, size_t size);
+#define CPUTYPE_32 0xc000000
+#define CPUTYPE_64 0xc000001
+
+NSString* sinf_file;
+NSString* supp_file;
+NSString* supf_file;
+
+void sha1(uint8_t *hash, uint8_t *data, size_t size);
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
 char buffer[4096];
 struct BlobIndex {

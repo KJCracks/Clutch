@@ -54,9 +54,9 @@ NSString* install_and_crack(NSString* ipa, NSString* binary, NSString* outbinary
     [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:binaryPath error:nil];
     VERBOSE("setted attributes!");
     
-    CABinary* binary = [[CABinary alloc] init];
+    //CABinary* binary = [[CABinary alloc] init];
     
-    crack_binary(binaryPath, outbinary, &error);
+    //crack_binary(binaryPath, outbinary, &error);
     [[NSFileManager defaultManager] removeItemAtPath:location error:nil];
     return location;
 }

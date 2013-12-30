@@ -177,6 +177,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     
     struct fat_header* fh  = (struct fat_header*) (buffer);
     
+    //64-bit thin
     if (fh->magic == MH_MAGIC_64)
     {
         
@@ -205,6 +206,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         }
         return YES;
     }
+    //32bit thin
     else if (fh->magic == MH_MAGIC) {
         struct mach_header *mh32 = (struct mach_header *)fh;
         
@@ -242,7 +244,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         
         return YES;
     }
-    
+    //fat
     else if (fh->magic == FAT_CIGAM) {
         
         NSMutableArray *stripHeaders = [NSMutableArray new];
@@ -258,23 +260,24 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         NSUInteger i = archCount;
         
         for (; i-- > 0; arch++) {
-            
-            cpu_type_t cputype    = CFSwapInt32(arch->cputype);
-            cpu_subtype_t cpusubtype = CFSwapInt32(arch->cpusubtype);
-            
-            DebugLog(@"arch[%lu] %@",(unsigned long)i,[self readable_cpusubtype:cpusubtype]);
-            
-            if ((cputype == CPU_TYPE_ARM64)&&(local_cputype != CPU_TYPE_ARM64)) {
-                DebugLog(@"Can't crack 64bit on 32bit device, stripping");
-                [stripHeaders addObject:[NSNumber numberWithUnsignedInteger:arch->cpusubtype]];
+            switch ([CADevice compatibleWith:arch]) {
+                case COMPATIBLE: {
+#warning todo - implement crack
+                    //go ahead and crack
+                    break;
+                    
+                }
+                case NOT_COMPATIBLE: {
+                    [stripHeaders addObject:[NSNumber numberWithUnsignedInteger:arch->cpusubtype]];
+                    break;
+                }
+                case COMPATIBLE_STRIP: {
+                    break;
+                }
+                case COMPATIBLE_SWAP: {
+                    break;
+                }
             }
-            
-            if ((local_cputype == CPU_TYPE_ARM) && (cpusubtype>local_arch)) {
-                DebugLog(@"Can't crack %@ on %@ device, stripping",[self readable_cpusubtype:cpusubtype],[self readable_cpusubtype:local_cputype]);
-                [stripHeaders addObject:[NSNumber numberWithUnsignedInteger:arch->cpusubtype]];
-            }
-            
-            
         }
         
         struct fat_arch lipo;

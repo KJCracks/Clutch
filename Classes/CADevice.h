@@ -9,13 +9,20 @@
 #import <UIKit/UIKit.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
-#include <mach-o/dyld.h>
-//#include <mach-o/arch.h>
+#import <mach-o/fat.h>
 #import "out.h"
+
+typedef enum {
+    COMPATIBLE,
+    COMPATIBLE_SWAP,
+    COMPATIBLE_STRIP,
+    NOT_COMPATIBLE
+} ArchCompatibility;
 
 @interface CADevice : NSObject
 
 + (cpu_type_t)cpu_type;
 + (cpu_subtype_t)cpu_subtype;
++ (ArchCompatibility)compatibleWith:(struct fat_arch*) arch;
 
 @end

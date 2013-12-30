@@ -7,9 +7,9 @@
 //
 
 #import "CADevice.h"
-#import <unistd.h>
 #import "out.h"
 
+#import "stuff.h"
 
 @implementation CADevice
 
@@ -39,10 +39,10 @@
     });
     return local_cpu_subtype;
 }
+
 + (ArchCompatibility)compatibleWith:(struct fat_arch*) arch {
     cpu_type_t cputype = CFSwapInt32(arch->cputype);
     cpu_subtype_t cpusubtype = CFSwapInt32(arch->cpusubtype);
-    
     
     if ((cpusubtype != [self cpu_subtype]) || (cputype != [self cpu_type])) {
         //not same, definitely swap or no

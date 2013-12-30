@@ -94,6 +94,7 @@
 		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
 		BC871C8917E7165A00048636 /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clutch_Prefix.pch; sourceTree = "<group>"; };
+		F473DA551871E77400AF3C59 /* stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stuff.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +146,7 @@
 				BC871C7E17E7122500048636 /* sha1.h */,
 				41E0DF09123752D30068268F /* Configuration.h */,
 				41E0DF0A123752D30068268F /* Configuration.m */,
+				F473DA551871E77400AF3C59 /* stuff.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

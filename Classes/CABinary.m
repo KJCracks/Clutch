@@ -7,51 +7,24 @@
 //
 
 #import "CABinary.h"
-
-#import "sha1.h"
-#import <dlfcn.h>
-#import <unistd.h>
-#import <mach/mach_traps.h>
-#import <mach/mach.h>
-#include <spawn.h>
-#include <mach-o/dyld.h>
-#include <dlfcn.h>
-
-
-#define OVERDRIVE_DYLIB_CURRENT_VER 0x20000
-#define OVERDRIVE_DYLIB_COMPATIBILITY_VERSION 0x20000
-
-#define LC_ENCRYPTION_INFO_64 0x2C
-
-#define MH_PIE 0x200000
-
-#define CSSLOT_CODEDIRECTORY 0
-
-#define PT_TRACE_ME 0
-
 #import "CADevice.h"
+#import "sha1.h"
+#import "stuff.h"
 
 #define local_arch [CADevice cpu_subtype]
 
 #define local_cputype [CADevice cpu_type]
-
-#ifdef __LP64__
-typedef vm_region_basic_info_data_64_t vm_region_basic_info_data;
-typedef vm_region_info_64_t vm_region_info;
-#define VM_REGION_BASIC_INFO_COUNT_ VM_REGION_BASIC_INFO_COUNT_64
-
-#else
-
-typedef vm_region_basic_info_data_t vm_region_basic_info_data;
-typedef vm_region_info_t vm_region_info;
-#define VM_REGION_BASIC_INFO_COUNT_ VM_REGION_BASIC_INFO_COUNT
-#endif
 
 @interface CABinary ()
 {
     NSString *binaryPath;
     BOOL credit;
     NSString *OVERDRIVE_DYLIB_PATH;
+    
+    NSString* sinf_file;
+    NSString* supp_file;
+    NSString* supf_file;
+    
 }
 @end
 
@@ -1135,7 +1108,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
                         overdrive_dyld->dylib.name.ptr = (char *) sizeof(struct dylib_command);
 #endif
                         char *p = (char *) overdrive_dyld + overdrive_dyld->dylib.name.offset;
-                        strncpy(p, OVERDRIVE_DYLIB_PATH, sizeof(OVERDRIVE_DYLIB_PATH));
+                        strncpy(p, OVERDRIVE_DYLIB_PATH.UTF8String, OVERDRIVE_DYLIB_PATH.length);
                     }
                 }
 				header = FALSE;

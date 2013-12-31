@@ -368,13 +368,35 @@
                         [stripHeaders addObject:archValue];
                         break;
                     }
-                    case COMPATIBLE_STRIP: {
+                    /*case COMPATIBLE_STRIP: {
                         DEBUG("arch compatible with device, but strip");
                         compatibleArch = arch;
                         break;
-                    }
+                    }*/
                     case COMPATIBLE_SWAP: {
                         DEBUG("arch compatible with device, but swap");
+                        
+                        NSString* stripPath = [self swapArch:(NSInteger)arch->cpusubtype];
+                        if (stripPath == NULL) {
+                            ERROR(@"error stripping binary!");
+                            return false;
+                        }
+                        
+                        FILE* stripBinary = fopen([stripPath UTF8String], "r+");
+                        
+                        if (![self dumpOrigFile:stripBinary withLocation:stripPath toFile:newbinary withArch:*arch])
+                        {
+                            // Dumping failed
+                            
+                            DebugLog(@"Cannot crack stripped arm%u portion of binary.", CFSwapInt32(arch->cpusubtype));
+                            
+                            //*error = @"Cannot crack unswapped portion of binary.";
+                            fclose(newbinary); // close the new binary stream
+                            fclose(oldbinary); // close the old binary stream
+                            [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
+                            return NO;
+                        }
+                        [self swapBack:stripPath];
                         compatibleArch = arch;
                         break;
                     }
@@ -1145,7 +1167,7 @@
     return workingPath;
 }
 
-- (void)swapBack:(NSString *)path baseDir:(NSString *)baseDirectory baseName:(NSString *)baseName
+- (void)swapBack:(NSString *)path
 {
     [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
     [[NSFileManager defaultManager] removeItemAtPath:sinfPath error:NULL];

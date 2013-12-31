@@ -62,9 +62,9 @@
             }
         }
         
-        if (self.cpu_type == CPU_TYPE_ARM64)
+        /*if (self.cpu_type == CPU_TYPE_ARM64)
             return COMPATIBLE_STRIP;
-        else
+        else*/
             return COMPATIBLE_SWAP;
     }
     

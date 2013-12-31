@@ -27,9 +27,9 @@
     BOOL credit;
     NSString *OVERDRIVE_DYLIB_PATH;
     
-    NSString* sinf_file;
-    NSString* supp_file;
-    NSString* supf_file;
+    NSString* sinfPath;
+    NSString* suppPath;
+    NSString* supfPath;
 }
 @end
 
@@ -583,7 +583,7 @@
 			memory_object_name_t object;
 			vm_region_basic_info_data_t info;
 			//mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT;
-            mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
+            mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_UNIV;
 			mach_vm_address_t region_start = 0;
 			mach_vm_size_t region_size = 0;
 			vm_region_flavor_t flavor = VM_REGION_BASIC_INFO;
@@ -894,7 +894,7 @@
             // perform checks on vm regions
             memory_object_name_t object;
             vm_region_basic_info_data_t info;
-            mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64; // 32/64bit :P
+            mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_UNIV; // 32/64bit :P
             mach_vm_address_t region_start = 0;
             mach_vm_size_t region_size = 0;
             vm_region_flavor_t flavor = VM_REGION_BASIC_INFO;
@@ -1053,24 +1053,30 @@
 	return TRUE;
 }
 
-- (NSString *)swapArch:(NSUInteger) swaparch
+- (NSString *)swapArch:(cpu_subtype_t) swaparch
 {
+    
+  #warning dunno if it's OK, need to check
+    
     NSString *workingPath = oldbinaryPath;
-    NSString *baseName = [oldbinaryPath lastPathComponent]; // get the basename (name of the binary)
-	NSString *baseDirectory = [NSString stringWithFormat:@"%@/", [oldbinaryPath stringByDeletingLastPathComponent]]; // get the base directory
+    
+    NSString *baseName = [workingPath lastPathComponent];
+    
+    NSString *baseDirectory = [NSString stringWithFormat:@"%@/", [workingPath stringByDeletingLastPathComponent]];
     
     char swapBuffer[4096];
-    if (local_arch == OSSwapInt32(swaparch)) {
-        DebugLog(@"UH HELLRO PLIS");
+    DebugLog(@"##### SWAPPING ARCH #####");
+    DebugLog(@"local arch %@", [self readable_cpusubtype:local_arch]);
+    
+    if (local_arch == swaparch) {
+        NSLog(@"UH HELLRO PLIS");
         return NULL;
     }
     
-    NSString* suffix = [self readable_cpusubtype:OSSwapInt32(swaparch)];
+    NSString* suffix = [NSString stringWithFormat:@"%@_lwork", [self readable_cpusubtype:OSSwapInt32(swaparch)]];
+    workingPath = [NSString stringWithFormat:@"%@_%@", workingPath, suffix]; // assign new path
     
-    NSString *orig_old_path = workingPath; // save old binary path
-    
-    workingPath = [workingPath stringByAppendingFormat:@"_%@_lwork", suffix]; // new binary path
-    [[NSFileManager defaultManager] copyItemAtPath:orig_old_path toPath:workingPath error: NULL];
+    [[NSFileManager defaultManager] copyItemAtPath:oldbinaryPath toPath:workingPath error: NULL];
     
     FILE* swapbinary = fopen([workingPath UTF8String], "r+");
     
@@ -1078,78 +1084,75 @@
     fread(&swapBuffer, sizeof(swapBuffer), 1, swapbinary);
     struct fat_header* swapfh = (struct fat_header*) (swapBuffer);
     
-    
-    //moveItemAtPath:orig_old_path toPath:binaryPath error:NULL];
-    // swap the architectures
-    
-    bool swap1 = FALSE, swap2 = FALSE;
     int i;
     
-    
-    struct fat_arch *swap_arch = (struct fat_arch *) &swapfh[1];
-    
-    DebugLog(@"arch arch arch ok ok");
+    struct fat_arch *arch = (struct fat_arch *) &swapfh[1];
+    cpu_type_t swap_cputype;
+    cpu_subtype_t largest_cpusubtype = 0;
+    NSLog(@"arch arch arch ok ok");
     
     for (i = CFSwapInt32(swapfh->nfat_arch); i--;) {
-        
-        DebugLog(@"swap_arch->cpusubtype %u %u",swap_arch->cpusubtype,CFSwapInt32(swap_arch->cpusubtype));
-        
-        DebugLog(@"swaparch %lu %u",(unsigned long)swaparch,OSSwapInt32(swaparch));
-        
-        if (CFSwapInt32(swap_arch->cpusubtype) == local_arch) {
-            
-            swap_arch->cpusubtype = (uint32_t)swaparch;
-            DebugLog(@"swap: Found local arch");
-            swap1 = TRUE;
+        if (arch->cpusubtype == swaparch) {
+            DebugLog(@"found arch to swap! %u", OSSwapInt32(swaparch));
+            swap_cputype = arch->cputype;
         }
-        else if (swap_arch->cpusubtype == swaparch) {
-            
-            //shit code >___<
-            if (local_cputype == CPU_TYPE_ARM64) {
-                swap_arch->cpusubtype = CPU_SUBTYPE_ARM64_ALL;
-            }else{
-                swap_arch->cpusubtype = local_arch;
+        if (arch->cpusubtype > largest_cpusubtype) {
+            largest_cpusubtype = arch->cpusubtype;
+        }
+        arch++;
+    }
+    DebugLog(@"largest_cpusubtype: %u", CFSwapInt32(largest_cpusubtype));
+    
+    arch = (struct fat_arch *) &swapfh[1];
+    
+    for (i = CFSwapInt32(swapfh->nfat_arch); i--;) {
+        if (arch->cpusubtype == largest_cpusubtype) {
+            if (swap_cputype != arch->cputype) {
+                DebugLog(@"ERROR: cputypes to swap are incompatible!");
+                return false;
             }
-            
-            
-            DebugLog(@"swap: swapped arch %u %u",swap_arch->cpusubtype, CFSwapInt32(swap_arch->cpusubtype));
-            swap2 = TRUE;
-            
+            arch->cpusubtype = swaparch;
+            DebugLog(@"swapp swapp: replaced %u's cpusubtype to %u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(swaparch));
         }
-        swap_arch++;
+        else if (arch->cpusubtype == swaparch) {
+            arch->cpusubtype = largest_cpusubtype;
+            DebugLog(@"swap swap: replaced %u's cpusubtype to %u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(largest_cpusubtype));
+        }
+        arch++;
     }
     
+    //move the SC_Info keys
     
-    // move the SC_Info keys
     NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
-    sinf_file = [NSString stringWithFormat:@"%@_%@_lwork.sinf", scinfo_prefix, suffix];
-    supp_file = [NSString stringWithFormat:@"%@_%@_lwork.supp", scinfo_prefix, suffix];
-    DebugLog(@"sinf file yo %@", sinf_file);
-    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:sinf_file error:NULL];
-    [[NSFileManager defaultManager] moveItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:supp_file error:NULL];
     
-    if (swap1 && swap2) {
-        DebugLog(@"swap: Swapped both architectures");
+    sinfPath = [NSString stringWithFormat:@"%@_%@.sinf", scinfo_prefix, suffix];
+    suppPath = [NSString stringWithFormat:@"%@_%@.supp", scinfo_prefix, suffix];
+    supfPath = [NSString stringWithFormat:@"%@_%@.supf", scinfo_prefix, suffix];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[scinfo_prefix stringByAppendingString:@".supf"]]) {
+        [[NSFileManager defaultManager] copyItemAtPath:[scinfo_prefix stringByAppendingString:@".supf"] toPath:supfPath error:NULL];
     }
+    [[NSFileManager defaultManager] copyItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:sinfPath error:NULL];
+    [[NSFileManager defaultManager] copyItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:suppPath error:NULL];
     
     fseek(swapbinary, 0, SEEK_SET);
     fwrite(swapBuffer, sizeof(swapBuffer), 1, swapbinary);
-    DebugLog(@"swap: Wrote new arch info");
-    fclose(swapbinary);
-    return workingPath;
     
+    DebugLog(@"swap: Wrote new arch info");
+    
+    fclose(swapbinary);
+    
+    return workingPath;
 }
 
 - (void)swapBack:(NSString *)path baseDir:(NSString *)baseDirectory baseName:(NSString *)baseName
 {
     [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
-    //moveItemAtPath:binaryPath toPath:orig_old_path error:NULL];
-    
-    //move SC_Info back
-    NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
-    [[NSFileManager defaultManager] moveItemAtPath:sinf_file toPath:[scinfo_prefix stringByAppendingString:@".sinf"] error:NULL];
-    [[NSFileManager defaultManager] moveItemAtPath:supp_file toPath:[scinfo_prefix stringByAppendingString:@".supp"] error:NULL];
-    DebugLog(@"DEBUG: Moving sinf_file %@ to %@", sinf_file, [scinfo_prefix stringByAppendingString:@".sinf"]);
+    [[NSFileManager defaultManager] removeItemAtPath:sinfPath error:NULL];
+    [[NSFileManager defaultManager] removeItemAtPath:suppPath error:NULL];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:supfPath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:supfPath error:NULL];
+    }
 }
 
 @end

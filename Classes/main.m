@@ -1,8 +1,20 @@
-/* This program is free software. It comes without any warranty, to
- * the extent permitted by applicable law. You can redistribute it
- * and/or modify it under the terms of the Do What The Fuck You Want
- * To Public License, Version 2, as published by Sam Hocevar. See
- * http://www.wtfpl.net/ for more details. */
+/*
+ Clutch - much fast app cracker
+ Copyright (C) 2013 Kim-Jong-Cracks
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+ 
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  Introducing Clutch, the fastest and most advanced cracking utility for the iPhone, iPod Touch, and iPad.
@@ -151,7 +163,7 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
             [failures addObject:app];
         }
         
-        [NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
+        //[NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
         
     }
     return 0;

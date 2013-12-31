@@ -10,6 +10,12 @@
 #import "out.h"
 #import "Prefs.h"
 
+#include <mach-o/fat.h>
+#include <mach-o/loader.h>
+#include <mach-o/dyld.h>
+#include <mach-o/arch.h>
+
+
 @interface CABinary : NSObject
 {
     @public
@@ -17,5 +23,6 @@
 }
 - (id)initWithBinary:(NSString *)path;
 - (BOOL)crackBinaryToFile:(NSString *)path error:(NSError **)error;
+- (BOOL)dumpOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch;
 
 @end

@@ -22,6 +22,8 @@
 //print C objects
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define DebugLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+
+#   define ERROR(M, ...) fprintf(stderr, "\033[0;32mERROR\033[0m | %s \n", [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #else
 #   define DEBUG(M, ...)
 #   define NSLog(...)

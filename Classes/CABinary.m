@@ -126,6 +126,83 @@
     return _cpusubtype;
 }
 
+- (NSString *)stripArch:(cpu_subtype_t)keep_arch
+{
+    NSString *baseName = [oldbinaryPath lastPathComponent]; // get the basename (name of the binary)
+	NSString *baseDirectory = [NSString stringWithFormat:@"%@/", [oldbinaryPath stringByDeletingLastPathComponent]];
+    
+    DebugLog(@"##### STRIPPING ARCH #####");
+    NSString* suffix = [NSString stringWithFormat:@"arm%u_lwork", CFSwapInt32(keep_arch)];
+    NSString *lipoPath = [NSString stringWithFormat:@"%@_%@", oldbinaryPath, suffix]; // assign a new lipo path
+    DebugLog(@"lipo path %s", [lipoPath UTF8String]);
+    [[NSFileManager defaultManager] copyItemAtPath:oldbinaryPath toPath:lipoPath error: NULL];
+    FILE *lipoOut = fopen([lipoPath UTF8String], "r+"); // prepare the file stream
+    char stripBuffer[4096];
+    fseek(lipoOut, SEEK_SET, 0);
+    fread(&stripBuffer, sizeof(buffer), 1, lipoOut);
+    struct fat_header* fh = (struct fat_header*) (stripBuffer);
+    struct fat_arch* arch = (struct fat_arch *) &fh[1];
+    struct fat_arch copy;
+    BOOL foundarch = FALSE;
+    
+    fseek(lipoOut, 8, SEEK_SET); //skip nfat_arch and bin_magic
+    
+    for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+        if (arch->cpusubtype == keep_arch) {
+            DebugLog(@"found arch to keep %u! Storing it", CFSwapInt32(keep_arch));
+            foundarch = TRUE;
+            fread(&copy, sizeof(struct fat_arch), 1, lipoOut);
+        }
+        else {
+            fseek(lipoOut, sizeof(struct fat_arch), SEEK_CUR);
+        }
+        arch++;
+    }
+    if (!foundarch) {
+        DebugLog(@"error: could not find arch to keep!");
+        int *p = NULL;
+        *p = 1;
+        return false;
+    }
+    fseek(lipoOut, 8, SEEK_SET);
+    fwrite(&copy, sizeof(struct fat_arch), 1, lipoOut);
+    char data[20];
+    memset(data,'\0',sizeof(data));
+    for (int i = 0; i < (CFSwapInt32(fh->nfat_arch) - 1); i++) {
+        DebugLog(@"blanking arch! %u", i);
+        fwrite(data, sizeof(data), 1, lipoOut);
+    }
+    
+    //change nfat_arch
+    DebugLog(@"changing nfat_arch");
+    
+    //fseek(lipoOut, 4, SEEK_SET); //bin_magic
+    //fread(&bin_nfat_arch, 4, 1, lipoOut); // get the number of fat architectures in the file
+    //VERBOSE("DEBUG: number of architectures %u", CFSwapInt32(bin_nfat_arch));
+    uint32_t bin_nfat_arch = 0x1000000;
+    
+    DebugLog(@"number of architectures %u", CFSwapInt32(bin_nfat_arch));
+    fseek(lipoOut, 4, SEEK_SET); //bin_magic
+    fwrite(&bin_nfat_arch, 4, 1, lipoOut);
+    
+    DebugLog(@"Written new header to binary!");
+    fclose(lipoOut);
+    DebugLog(@"copying sc_info files!");
+    NSString *scinfo_prefix = [baseDirectory stringByAppendingFormat:@"SC_Info/%@", baseName];
+    sinfPath = [NSString stringWithFormat:@"%@_%@.sinf", scinfo_prefix, suffix];
+    suppPath = [NSString stringWithFormat:@"%@_%@.supp", scinfo_prefix, suffix];
+    supfPath = [NSString stringWithFormat:@"%@_%@.supf", scinfo_prefix, suffix];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[scinfo_prefix stringByAppendingString:@".supf"]]) {
+        [[NSFileManager defaultManager] copyItemAtPath:[scinfo_prefix stringByAppendingString:@".supf"] toPath:supfPath error:NULL];
+    }
+    NSLog(@"sinf file yo %@", sinfPath);
+    [[NSFileManager defaultManager] copyItemAtPath:[scinfo_prefix stringByAppendingString:@".sinf"] toPath:sinfPath error:NULL];
+    [[NSFileManager defaultManager] copyItemAtPath:[scinfo_prefix stringByAppendingString:@".supp"] toPath:suppPath error:NULL];
+    
+    return lipoPath;
+}
+
 - (void) removeArchitecture:(struct fat_arch*) removeArch {
     struct fat_arch *lowerArch;
     fpos_t upperArchpos, lowerArchpos;
@@ -376,7 +453,7 @@
                     case COMPATIBLE_SWAP: {
                         DEBUG("arch compatible with device, but swap");
                         
-                        NSString* stripPath = [self swapArch:(NSInteger)arch->cpusubtype];
+                        NSString* stripPath = [self swapArch:arch->cpusubtype];
                         if (stripPath == NULL) {
                             ERROR(@"error stripping binary!");
                             return false;

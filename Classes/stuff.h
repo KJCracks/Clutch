@@ -20,12 +20,11 @@
 #import <unistd.h>
 #import <spawn.h>
 
-#define CPUTYPE_32 0xc000000
-#define CPUTYPE_64 0xc000001
-
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
+
 char buffer[4096];
+
 struct BlobIndex {
 	uint32_t type;
 	uint32_t offset;
@@ -57,14 +56,6 @@ struct CodeDirectory {
 	uint8_t pageSize;
 	uint32_t spare2;
     
-};
-
-enum CAArch {
-    CAArchARMv6 = 6,
-    CAArchARMv7 = 9,
-    CAArchARMv7s = 11,
-    CAArchARM64v8 = 8,
-    CAArchUnknown = -1
 };
 
 extern kern_return_t mach_vm_region

@@ -21,8 +21,8 @@
     @public
        BOOL overdriveEnabled;
 }
+
 - (id)initWithBinary:(NSString *)path;
 - (BOOL)crackBinaryToFile:(NSString *)path error:(NSError **)error;
-- (BOOL)dumpOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch;
 
 @end

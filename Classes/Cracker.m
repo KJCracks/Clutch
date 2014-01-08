@@ -225,11 +225,12 @@ static NSString * genRandStringLength(int len) {
     _ipapath = ipapath;
     return ipapath;
 }
+
 -(BOOL) execute {
     //1. dump binary
     NSError* error;
     if (![_binary crackBinaryToFile:_tempBinaryPath error:&error]) {
-        DebugLog(@"error: could not crack binary");
+        DebugLog(@"Failed to crack %@ with error: %@",_app.applicationDisplayName,error.localizedDescription);
         return NO;
     }
     

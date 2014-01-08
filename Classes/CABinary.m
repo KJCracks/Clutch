@@ -11,7 +11,6 @@
 #import "sha1.h"
 #import "stuff.h"
 
-
 #define local_arch [CADevice cpu_subtype]
 
 #define local_cputype [CADevice cpu_type]
@@ -39,7 +38,6 @@
 {
     return nil;
 }
-
 
 -(NSString *) genRandStringLength: (int) len {
     
@@ -300,7 +298,7 @@
 }
 
 
-- (BOOL)crackBinaryToFile:(NSString *)finalPath error:(NSError *__autoreleasing *)error {
+- (BOOL)crackBinaryToFile:(NSString *)finalPath error:(NSError * __autoreleasing *)error {
     newbinaryPath = finalPath;
     DebugLog(@"attempting to crack binary to file! finalpath %@", finalPath);
     DebugLog(@"DEBUG: binary path %@", oldbinaryPath);
@@ -323,7 +321,7 @@
             fclose(newbinary);
         }
         
-        //*error = [NSString stringWithFormat:@"[crack_binary] Error opening file: %s.\n", strerror(errno)];
+        *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Error opening file: %s.\n", strerror(errno)]}];
         return NO;
     }
     
@@ -345,11 +343,13 @@
             if (local_cputype == CPU_TYPE_ARM)
             {
                 DebugLog(@"Can't crack 64bit on 32bit device");
+                *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Can't crack 64bit on 32bit device"}];
                 return NO;
             }
             
             if (mh64->cpusubtype != local_arch) {
                 DebugLog(@"Can't crack %u on %u device",mh64->cpusubtype,local_arch);
+                *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Can't crack %u on %u device",mh64->cpusubtype,local_arch]}];
                 return NO;
             }
             
@@ -357,8 +357,10 @@
                 
                 // Dumping failed
                 DebugLog(@"Failed to dump %@",[self readable_cpusubtype:mh64->cpusubtype]);
+                *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to dump %@",[self readable_cpusubtype:mh64->cpusubtype]]}];
                 return NO;
             }
+            *error = nil;
             return YES;
             break;
         }
@@ -389,6 +391,7 @@
             
             if ((!godMode32)&&(mh32->cpusubtype>local_arch)) {
                 DebugLog(@"Can't crack 32bit(%u) on 32bit(%u) device",mh32->cpusubtype,local_arch);
+                *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Can't crack 32bit(%@) on 32bit(%@) device",[self readable_cpusubtype:mh32->cpusubtype],[self readable_cpusubtype:local_arch]]}];
                 return NO;
             }
             
@@ -396,9 +399,10 @@
             {
                 // Dumping failed
                 DebugLog(@"Failed to dump %@",[self readable_cpusubtype:mh32->cpusubtype]);
+                *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to dump %@",[self readable_cpusubtype:mh32->cpusubtype]]}];
                 return NO;
             }
-            
+            *error = nil;
             return YES;
             break;
         }
@@ -439,12 +443,13 @@
                         {
                             // Dumping failed
                             
-                            DebugLog(@"Cannot crack unswapped arm%u portion of binary.", CFSwapInt32(arch->cpusubtype));
+                            DebugLog(@"Cannot crack unswapped %@ portion of binary.", [self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]);
                             
                             //*error = @"Cannot crack unswapped portion of binary.";
                             fclose(newbinary); // close the new binary stream
                             fclose(oldbinary); // close the old binary stream
                             [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
+                            *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
                             return NO;
                         }
                         compatibleArch = arch;
@@ -474,7 +479,8 @@
                         
                         if (stripPath == NULL) {
                             ERROR(@"error stripping/swapping binary!");
-                            return false;
+                            *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Error stripping/swapping binary!"}];
+                            return NO;
                         }
                         
                         FILE* stripBinary = fopen([stripPath UTF8String], "r+");
@@ -483,12 +489,14 @@
                         {
                             // Dumping failed
                             
-                            DebugLog(@"Cannot crack stripped arm%u portion of binary.", CFSwapInt32(arch->cpusubtype));
+                            DebugLog(@"Cannot crack stripped %@ portion of binary.", [self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]);
                             
                             //*error = @"Cannot crack unswapped portion of binary.";
                             fclose(newbinary); // close the new binary stream
                             fclose(oldbinary); // close the old binary stream
                             [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
+                            *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack stripped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
+
                             return NO;
                         }
                         [self swapBack:stripPath];
@@ -500,9 +508,12 @@
                     DEBUG("only one architecture left!? strip");
                     if (![self lipoBinary:compatibleArch]) {
                         ERROR(@"Could not lipo binary");
-                        return false;
+                        *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Could not lipo binary"}];
+
+                        return NO;
                     }
-                    return true;
+                    *error = nil;
+                    return YES;
                 }
                 arch++;
             }
@@ -518,7 +529,8 @@
             break;
         }
     }
-    return true;
+    *error = nil;
+    return YES;
 }
 
 
@@ -1172,9 +1184,6 @@
 
 - (NSString *)swapArch:(cpu_subtype_t) swaparch
 {
-    
-  #warning dunno if it's OK, need to check
-    
     NSString *workingPath = oldbinaryPath;
     
     NSString *baseName = [workingPath lastPathComponent];

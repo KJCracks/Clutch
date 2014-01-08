@@ -57,7 +57,7 @@
                 return NOT_COMPATIBLE;
             }
             else if (self.cpu_type == CPU_TYPE_ARM) {
-                DEBUG("Can't crack 64bit arch on this device! skipping");
+                DEBUG("Can't crack 64bit arch on 32bit device! skipping");
                 return NOT_COMPATIBLE;
             }
         }

@@ -204,7 +204,7 @@
 - (void) removeArchitecture:(struct fat_arch*) removeArch {
     struct fat_arch *lowerArch;
     fpos_t upperArchpos, lowerArchpos;
-    NSString *lipoPath = [NSString stringWithFormat:@"arm%@_l", newbinaryPath]; // assign a new lipo path
+    NSString *lipoPath = [NSString stringWithFormat:@"%@_%@_l", newbinaryPath,[self readable_cpusubtype:CFSwapInt32(removeArch->cpusubtype)]]; // assign a new lipo path
     [[NSFileManager defaultManager] copyItemAtPath:newbinaryPath toPath:lipoPath error: NULL];
     FILE *lipoOut = fopen([lipoPath UTF8String], "r+"); // prepare the file stream
     char stripBuffer[4096];
@@ -434,6 +434,7 @@
             //loop + crack
             for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
                 DEBUG("currently cracking arch %u", CFSwapInt32(arch->cpusubtype));
+                
                 switch ([CADevice compatibleWith:arch]) {
                     case COMPATIBLE: {
                         DEBUG("arch compatible with device!");

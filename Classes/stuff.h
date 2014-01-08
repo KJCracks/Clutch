@@ -113,5 +113,5 @@ typedef vm_region_info_64_t vm_region_info;
 
 typedef vm_region_basic_info_data_t vm_region_basic_info_data;
 typedef vm_region_info_t vm_region_info;
-#define VM_REGION_BASIC_INFO_COUNT_UNIV VM_REGION_BASIC_INFO_COUNT
+#define VM_REGION_BASIC_INFO_COUNT_UNIV VM_REGION_BASIC_INFO_COUNT_64
 #endif

@@ -12,7 +12,10 @@
 	<true/>
 	<key>application-identifier</key>
 	<string>us.hackulo.Clutch</string>
-	<key>New item</key>
-	<true/>
+	<key>com.apple.private.mobileinstall.allowedSPI</key>
+        <array>
+                <string>Uninstall</string>
+                <string>Install</string>
+        </array>
 </dict>
 </plist>

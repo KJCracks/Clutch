@@ -17,8 +17,8 @@
 		AD2790D61870580000A4FD11 /* CADevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D21870580000A4FD11 /* CADevice.m */; };
 		AD3014691871514D00E06315 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3014681871514D00E06315 /* Cracker.m */; };
 		AD30146D18715EF800E06315 /* Packager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD30146C18715EF800E06315 /* Packager.m */; };
+		AD61315C187D23FC00B94378 /* Install.m in Sources */ = {isa = PBXBuildFile; fileRef = AD61315B187D23FC00B94378 /* Install.m */; };
 		ADAA367E1870606D0029AF7D /* Prefs.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA367D1870606D0029AF7D /* Prefs.m */; };
-		ADBFE260180D46FA00CEDD9A /* install.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBFE25F180D46FA00CEDD9A /* install.m */; };
 		ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */; };
 		ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC617ECA8A7005282CE /* make_vms.com */; };
 		ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */; };
@@ -63,11 +63,11 @@
 		AD30146A1871517400E06315 /* Cracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cracker.h; sourceTree = "<group>"; };
 		AD30146B18715EF800E06315 /* Packager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packager.h; sourceTree = "<group>"; };
 		AD30146C18715EF800E06315 /* Packager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packager.m; sourceTree = "<group>"; };
+		AD61315A187D23FC00B94378 /* Install.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Install.h; sourceTree = "<group>"; };
+		AD61315B187D23FC00B94378 /* Install.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Install.m; sourceTree = "<group>"; };
 		ADAA367C1870606D0029AF7D /* Prefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefs.h; sourceTree = "<group>"; };
 		ADAA367D1870606D0029AF7D /* Prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Prefs.m; sourceTree = "<group>"; };
 		ADAA367F187125220029AF7D /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
-		ADBFE25E180D46FA00CEDD9A /* install.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = install.h; sourceTree = "<group>"; };
-		ADBFE25F180D46FA00CEDD9A /* install.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = install.m; sourceTree = "<group>"; };
 		ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLogUnzip; sourceTree = "<group>"; };
 		ADC68CC117ECA8A7005282CE /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		ADC68CC217ECA8A7005282CE /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
@@ -144,11 +144,11 @@
 				F473DA791872300800AF3C59 /* izip.m */,
 				ADC68CBF17ECA8A7005282CE /* minizip */,
 				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
+				AD61315A187D23FC00B94378 /* Install.h */,
+				AD61315B187D23FC00B94378 /* Install.m */,
 				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
 				AD130669186E6A9800DFE220 /* locale.m */,
 				AD13066B186E6AAF00DFE220 /* locale.h */,
-				ADBFE25E180D46FA00CEDD9A /* install.h */,
-				ADBFE25F180D46FA00CEDD9A /* install.m */,
 				ADAA367F187125220029AF7D /* main.h */,
 				BC871C7917E7122500048636 /* out.h */,
 				BC871C7A17E7122500048636 /* out.m */,
@@ -327,6 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD61315C187D23FC00B94378 /* Install.m in Sources */,
 				41E0DF0B123752D30068268F /* Configuration.m in Sources */,
 				AD2790D61870580000A4FD11 /* CADevice.m in Sources */,
 				AD2790D31870580000A4FD11 /* CAApplication.m in Sources */,
@@ -342,7 +343,6 @@
 				ADAA367E1870606D0029AF7D /* Prefs.m in Sources */,
 				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,
 				AD13066A186E6A9800DFE220 /* locale.m in Sources */,
-				ADBFE260180D46FA00CEDD9A /* install.m in Sources */,
 				F473DA76187223EE00AF3C59 /* imetadata.m in Sources */,
 				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
 				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,

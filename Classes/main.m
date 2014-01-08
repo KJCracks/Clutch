@@ -21,7 +21,7 @@
  
  Created by dissident at Hackulo.us (<http://hackulo.us/>)
  Credit: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
-  ___ _       _       _
+ ___ _       _       _
  / __\ |_   _| |_ ___| |__
  / /  | | | | | __/ __| '_ \
  / /___| | |_| | || (__| | | |
@@ -56,6 +56,7 @@
 #import "Cracker.h"
 #import "Packager.h"
 #import <sys/time.h>
+#import  "Install.h"
 
 #import "Foundation/Foundation.h"
 
@@ -264,7 +265,7 @@ int cmd_flush_cache(void)
 
 int cmd_list_applications(NSArray *list)
 {
-
+    
     int index = 1;
     
     printf("\n");
@@ -301,74 +302,85 @@ int main(int argc, const char *argv[])
     // this line gives me
     NSArray *arguments = [[NSProcessInfo processInfo] arguments];
     
-    int cnt = (int)[arguments count];
-    
-    for(int idx = 0;idx < cnt; idx++)
+    for(int idx = 0;idx < argc; idx++)
     {
         // Process each command line option
         NSString *arg = [arguments objectAtIndex:idx];
         
-        if([arg isEqualToString:@"/usr/bin/Clutch"] && [arguments count] == 1)
-        {
-            // show help & list applications
-            cmd_help();
-            NSArray *apps = [[CAApplicationsController sharedInstance] installedApps];
-            
-            if (apps == nil)
+        DebugLog(@"cli arg %@", arg);
+        if([arg isEqualToString:@"/usr/bin/Clutch"]) {
+            NSString* arg1 = [arguments objectAtIndex:1];
+            if([arg1 isEqualToString:@"-a"])
             {
-                printf("Error finding applications!\n");
-            } else if ([apps count] == 0)
+                // Crack all applications
+                ret = cmd_crack_all();
+            }
+            else if([arg1 isEqualToString:@"-u"])
             {
-                printf("No encrypted applications found\n");
-            } else
+                // Crack updated applications
+                ret = cmd_crack_updated();
+            }
+            else if([arg1 isEqualToString:@"-f"])
             {
-                cmd_list_applications(apps);
+                // Flush caches
+                ret = cmd_flush_cache();
+            }
+            else if([arg1 isEqualToString:@"-v"])
+            {
+                // Display version string
+                ret = cmd_version();
+            }
+            /*else if([arg isEqualToString:@"-x"])
+             {
+             // Crack specific executable
+             
+             // Get path argument
+             idx++;
+             if(idx>=cnt)
+             {
+             printf("-x requires a 'path' argument");
+             return 1;
+             }
+             NSString *path = [arguments objectAtIndex:idx];
+             
+             ret = cmd_crack_exe(path);
+             }*/
+            else if([arg1 isEqualToString:@"-h"] || [arg1 isEqualToString:@"-?"])
+            {
+                // Display help
+                ret = cmd_help();
+            }
+            else if([arg1 isEqualToString:@"-i"]) {
+                DEBUG("install yo yoy yo swag");
+                NSString* ipapath = [NSString stringWithFormat:@"%s", argv[2]];
+                NSString *binary =[NSString stringWithFormat:@"%s", argv[3]];
+                NSLog(@"ipapath %@", ipapath);
+                Install* installer = [[Install alloc] initWithIPA:ipapath withBinary:binary];
+                [installer installIPA];
+                return 0;
+                
+            }
+            else if ([arguments count] == 1)
+            {
+                // show help & list applications
+                //cmd_help();
+                NSArray *apps = [[CAApplicationsController sharedInstance] installedApps];
+                
+                if (apps == nil)
+                {
+                    printf("Error finding applications!\n");
+                } else if ([apps count] == 0)
+                {
+                    printf("No encrypted applications found\n");
+                } else
+                {
+                    cmd_list_applications(apps);
+                }
+                
+                break;
             }
             
-            break;
         }
-        
-        if([arg isEqualToString:@"-a"])
-        {
-            // Crack all applications
-            ret = cmd_crack_all();
-        }
-        else if([arg isEqualToString:@"-u"])
-        {
-            // Crack updated applications
-            ret = cmd_crack_updated();
-        }
-        else if([arg isEqualToString:@"-f"])
-        {
-            // Flush caches
-            ret = cmd_flush_cache();
-        }
-        else if([arg isEqualToString:@"-v"])
-        {
-            // Display version string
-            ret = cmd_version();
-        }
-        else if([arg isEqualToString:@"-x"])
-        {
-            // Crack specific executable
-            
-            // Get path argument
-            idx++;
-            if(idx>=cnt)
-            {
-                printf("-x requires a 'path' argument");
-                return 1;
-            }
-            NSString *path = [arguments objectAtIndex:idx];
-            
-            ret = cmd_crack_exe(path);
-        }
-        else if([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-?"])
-        {
-            // Display help
-            ret = cmd_help();
-        }
-        //else if ([arg isEqualToString:@""])
         else
         {
             if (argc > 1) {
@@ -391,7 +403,7 @@ int main(int argc, const char *argv[])
             }
             // Unknown command line option
             printf ("unknown option '%s'\n", [arg UTF8String]);
-            return 1;
+            //return 1;
         }
     }
     

@@ -153,6 +153,8 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
         Cracker *cracker = [[Cracker alloc] init];
         [cracker prepareFromInstalledApp:app];
         
+        NSString* ipapath = [cracker generateIPAPath];
+        
         
         if([cracker execute])
         {
@@ -162,7 +164,7 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
         {
             [failures addObject:app];
         }
-        
+        printf("\nIPA Path: %s\n", [ipapath UTF8String]);
         //[NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
         
     }

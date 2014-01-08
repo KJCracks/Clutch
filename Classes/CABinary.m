@@ -206,7 +206,7 @@
 - (void) removeArchitecture:(struct fat_arch*) removeArch {
     struct fat_arch *lowerArch;
     fpos_t upperArchpos, lowerArchpos;
-    NSString *lipoPath = [NSString stringWithFormat:@"%@_l", newbinaryPath]; // assign a new lipo path
+    NSString *lipoPath = [NSString stringWithFormat:@"arm%@_l", newbinaryPath]; // assign a new lipo path
     [[NSFileManager defaultManager] copyItemAtPath:newbinaryPath toPath:lipoPath error: NULL];
     FILE *lipoOut = fopen([lipoPath UTF8String], "r+"); // prepare the file stream
     char stripBuffer[4096];
@@ -404,6 +404,7 @@
         }
         //FAT
         case FAT_CIGAM: {
+            BOOL has64 = FALSE;
             NSMutableArray *stripHeaders = [NSMutableArray new];
             
             NSUInteger archCount = CFSwapInt32(fh->nfat_arch);
@@ -413,6 +414,17 @@
             DebugLog(@"FAT binary detected");
             
             DebugLog(@"nfat_arch %lu",(unsigned long)archCount);
+            
+            for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+                if (CFSwapInt32(arch->cputype) == CPU_TYPE_ARM64) {
+                    DEBUG("64bit arch detected!");
+                    has64 = TRUE;
+                    break;
+                }
+                DEBUG("arch arch subtype %u", arch->cputype);
+                arch++;
+            }
+            arch = (struct fat_arch *) &fh[1];
             
             struct fat_arch* compatibleArch;
             //loop + crack
@@ -452,10 +464,16 @@
                     }*/
                     case COMPATIBLE_SWAP: {
                         DEBUG("arch compatible with device, but swap");
+                        NSString* stripPath;
+                        if (has64) {
+                            stripPath = [self stripArch:arch->cpusubtype];
+                        }
+                        else {
+                            stripPath = [self swapArch:arch->cpusubtype];
+                        }
                         
-                        NSString* stripPath = [self swapArch:arch->cpusubtype];
                         if (stripPath == NULL) {
-                            ERROR(@"error stripping binary!");
+                            ERROR(@"error stripping/swapping binary!");
                             return false;
                         }
                         

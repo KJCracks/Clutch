@@ -1,6 +1,6 @@
 #import "izip.h"
 
-void zip(ZipArchive *archiver, NSString *folder,int compressionLevel) {
+void zip(ZipArchive *archiver, NSString *folder, NSString* payloadPath, int compressionLevel) {
     BOOL isDir=NO;
     NSArray *subpaths=nil;
     NSUInteger total = 0;
@@ -17,8 +17,9 @@ void zip(ZipArchive *archiver, NSString *folder,int compressionLevel) {
     for(NSString *path in subpaths){
         // Only add it if it's not a directory. ZipArchive will take care of those.
         NSString *longPath = [folder stringByAppendingPathComponent:path];
+        NSLog(@"longpath %@ %@", longPath, path);
         if([fileManager fileExistsAtPath:longPath isDirectory:&isDir] && !isDir){
-            [archiver addFileToZip:longPath newname:path compressionLevel:compressionLevel];
+            [archiver addFileToZip:longPath newname:[payloadPath stringByAppendingPathComponent:path] compressionLevel:compressionLevel];
         }
     }
     return;

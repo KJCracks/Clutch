@@ -11,6 +11,8 @@
 #import "out.h"
 #import "imetadata.h"
 #import "scinfo.h"
+#import "izip.h"
+#import "ZipArchive.h"
 
 #import "Packager.h"
 
@@ -100,6 +102,20 @@ static BOOL copyFile(NSString *infile, NSString *outfile)
     return YES;
 }
 
+static ZipArchive * createZip(NSString *file) {
+    ZipArchive *archiver = [[ZipArchive alloc] init];
+    
+    if (!file) {
+        DEBUG("File string is nil");
+        
+        return nil;
+    }
+    
+    [archiver CreateZipFile2:file];
+    
+    return archiver;
+}
+
 -(BOOL)crackBinary {
     
 }
@@ -165,6 +181,7 @@ static NSString * genRandStringLength(int len) {
     return randomString;
 }
 
+
 // prepareFromInstalledApp
 // set up application cracking from an installed application
 
@@ -197,6 +214,17 @@ static NSString * genRandStringLength(int len) {
     return (!_binary)?NO:YES;
 }
 
+-(NSString*) generateIPAPath {
+    NSString* ipapath;
+    NSString *crackerName = [[Prefs sharedInstance] objectForKey:@"crackerName"];
+    if (crackerName == nil) {
+        crackerName = @"no-name-cracker";
+    }
+    
+    ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@-(%@).ipa", _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+    _ipapath = ipapath;
+    return ipapath;
+}
 -(BOOL) execute {
     //1. dump binary
     NSError* error;
@@ -208,6 +236,7 @@ static NSString * genRandStringLength(int len) {
    return [self packageIPA];
     
 }
+
 -(BOOL)packageIPA {
 
     NSString *crackerName = [[Prefs sharedInstance] objectForKey:@"crackerName"];
@@ -220,7 +249,7 @@ static NSString * genRandStringLength(int len) {
         generateMetadata([_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"]);
     }
     
-    {
+    
     NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];
     
     DebugLog(@"Creating fake SC_Info data...");
@@ -244,11 +273,15 @@ static NSString * genRandStringLength(int len) {
     fwrite(supp, suppsize, 1, supph);
     fclose(supph);
     free(supp);
-    }
-        
-#warning TODO - zip not implemented
-
     
+    NOTIFY("Compressing original application (native zip) (1/2)...");
+    ZipArchive *archiver = createZip(_ipapath);
+    zip_original(archiver, _app.applicationContainer, _app.applicationExecutableName, _ipapath, 0);
+    stop_bar();
+    NOTIFY("Compressing second cracked application (native zip) (2/2)...");
+    zip(archiver, _workingDir, [NSString stringWithFormat:@"Payload/%@.app/", _app.applicationName], 0);
+    stop_bar();
+    [archiver CloseZipFile2];
     
     return NO;
 }

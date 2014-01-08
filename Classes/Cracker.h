@@ -22,6 +22,7 @@
     
     @public
         NSString *_workingDir;
+        NSString *_ipapath;
 }
 
 -(id)init;
@@ -32,5 +33,6 @@
 -(NSString *)getAppDescription;
 -(NSString *)getOutputFolder;
 -(BOOL)execute;
+-(NSString*) generateIPAPath;
 
 @end

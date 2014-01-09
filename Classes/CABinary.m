@@ -201,9 +201,9 @@
     return lipoPath;
 }
 
-- (void) removeArchitecture:(struct fat_arch*) removeArch {
-    struct fat_arch *lowerArch;
-    fpos_t upperArchpos, lowerArchpos;
+- (BOOL) removeArchitecture:(struct fat_arch*) removeArch {
+    fpos_t upperArchpos = 0, lowerArchpos = 0;
+    char archBuffer[20];
     NSString *lipoPath = [NSString stringWithFormat:@"%@_%@_l", newbinaryPath,[self readable_cpusubtype:CFSwapInt32(removeArch->cpusubtype)]]; // assign a new lipo path
     [[NSFileManager defaultManager] copyItemAtPath:newbinaryPath toPath:lipoPath error: NULL];
     FILE *lipoOut = fopen([lipoPath UTF8String], "r+"); // prepare the file stream
@@ -214,32 +214,65 @@
     struct fat_arch* arch = (struct fat_arch *) &fh[1];
     
     fseek(lipoOut, 8, SEEK_SET); //skip nfat_arch and bin_magic
-    
+    BOOL strip_is_last = false;
+    DEBUG("searching for copyindex");
     for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
-        //swap the one we want to strip with the next one below it
-        if (arch == removeArch) {
-            DEBUG("found the upperArch we want to copy!");
+        DEBUG("index %u, nfat_arch %u", i, CFSwapInt32(fh->nfat_arch));
+        if (CFSwapInt32(arch->cpusubtype) == CFSwapInt32(removeArch)) {
+            
+            DEBUG("found the upperArch we want to remove!");
             fgetpos(lipoOut, &upperArchpos);
             
-        }
-         else if (i == (CFSwapInt32(fh->nfat_arch)) - 1) {
-            DEBUG("found the lowerArch we want to copy!");
-            fgetpos(lipoOut, &lowerArchpos);
-            lowerArch = arch;
+            //check the index of the arch to remove
+            if ((i+1) == CFSwapInt32(fh->nfat_arch)) {
+                //it's at the bottom
+                DEBUG("at the bottom!! capitalist scums");
+                strip_is_last = true;
+            }
+            else {
+                DEBUG("hola");
+            }
         }
         fseek(lipoOut, sizeof(struct fat_arch), SEEK_CUR);
         arch++;
     }
+    if (!strip_is_last) {
+        DEBUG("strip is not last!")
+        fseek(lipoOut, 8, SEEK_SET); //skip nfat_arch and bin_magic! reset yo
+        arch = (struct fat_arch *) &fh[1];
+        
+        for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
+            //swap the one we want to strip with the next one below it
+            DebugLog(@"## iterating archs %u removearch:%u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(removeArch));
+            if (i == (CFSwapInt32(fh->nfat_arch)) - 1) {
+                DEBUG("found the lowerArch we want to copy!");
+                fgetpos(lipoOut, &lowerArchpos);
+            }
+            fseek(lipoOut, sizeof(struct fat_arch), SEEK_CUR);
+            arch++;
+        }
+        if ((upperArchpos == 0) || (lowerArchpos == 0)) {
+            ERROR(@"could not find swap swap swap!");
+            return false;
+        }
+        //go to the lower arch location
+        fseek(lipoOut, lowerArchpos, SEEK_SET);
+        fread(&archBuffer, sizeof(archBuffer), 1, lipoOut);
+        DEBUG("upperArchpos %lld, lowerArchpos %lld", upperArchpos, lowerArchpos);
+        //write the lower arch data to the upper arch poistion
+        //DEBUG("lowerArch cpusubtype %u cputype %u", CFSwapInt32(lowerArch->cpusubtype), CFSwapInt32(lowerArch->cputype));
+        fseek(lipoOut, upperArchpos, SEEK_SET);
+        fwrite(&archBuffer, sizeof(archBuffer), 1, lipoOut);
+        //blank the lower arch position
+        
+        fseek(lipoOut, lowerArchpos, SEEK_SET);
+    }
+    else {
+        fseek(lipoOut, upperArchpos, SEEK_SET);
+    }
     
-    //go to the upper arch location
-    fseek(lipoOut, upperArchpos, SEEK_SET);
-    //write the lower arch data to the upper arch poistion
-    fwrite(&lowerArch, sizeof(struct fat_arch), 1, lipoOut);
-    //blank the lower arch position
-    fseek(lipoOut, lowerArch, SEEK_SET);
-    char data[20];
-    memset(data,'\0',sizeof(data));
-    fwrite(&data, sizeof(data), 1, lipoOut);
+    memset(archBuffer,'\0',sizeof(archBuffer));
+    fwrite(&archBuffer, sizeof(archBuffer), 1, lipoOut);
     
     //change nfat_arch
     
@@ -259,6 +292,7 @@
     
     [[NSFileManager defaultManager] removeItemAtPath:newbinaryPath error:NULL];
     [[NSFileManager defaultManager] moveItemAtPath:lipoPath toPath:newbinaryPath error:NULL];
+    return true;
 }
 
 -(BOOL) lipoBinary:(struct fat_arch*) arch {

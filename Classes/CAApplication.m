@@ -165,6 +165,11 @@ NSInteger diff_ms(struct timeval t1, struct timeval t2)
     return image;
 }
 
+- (NSDictionary *)dictionaryRepresentation
+{
+    return dictRep;
+}
+
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, appName: %@, bundleID: %@>",NSStringFromClass([self class]),self,self.applicationName,self.applicationBundleID];
 }

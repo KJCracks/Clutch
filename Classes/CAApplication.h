@@ -41,6 +41,8 @@
 - (UIImage *)applicationIcon;
 - (NSData *)applicationSINF;
 
+- (NSDictionary *)dictionaryRepresentation;
+
 - (void)crackWithDelegate:(id <CAApplicationDelegate>)delegate additionalLibs:(NSArray *)libs;
 
 @end

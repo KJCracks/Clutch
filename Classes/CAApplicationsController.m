@@ -2,6 +2,8 @@
 #import "MobileInstallation.h"
 #import "out.h"
 
+#define applistCachePath @"/etc/applist-cache.clutch"
+
 NSArray * get_application_list(BOOL sort) {
     
     NSMutableArray *returnArray = [NSMutableArray new];
@@ -58,6 +60,16 @@ NSArray * get_application_list(BOOL sort) {
         [returnArray sortUsingDescriptors:sortDescriptors];
     }
     
+    //caching is good
+    NSMutableArray *cacheArray = [NSMutableArray new];
+    for (CAApplication *app in returnArray) {
+        [cacheArray addObject:[app dictionaryRepresentation]];
+    }
+    
+    if (cacheArray.count>0) {
+        [cacheArray writeToFile:applistCachePath atomically:YES];
+    }
+    
 	return (NSArray *) returnArray;
 }
 
@@ -75,6 +87,31 @@ NSArray * get_application_list(BOOL sort) {
 
 - (NSArray *)installedApps
 {
+    if ([NSFileManager.defaultManager fileExistsAtPath:applistCachePath])
+    {
+        //check mod. date;
+        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:applistCachePath error:nil];
+        
+        NSUInteger modifTime = (NSUInteger)[[attributes fileModificationDate] timeIntervalSince1970]; //mins yo
+        NSUInteger currentTime = (NSUInteger)[[NSDate date] timeIntervalSince1970]/60; //mins yo
+        
+        if ((currentTime-modifTime) > 5) {
+            return get_application_list(YES);
+        }
+
+        NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
+        
+        NSMutableArray *appsArray = [NSMutableArray new];
+        
+        for (NSDictionary *appInfo in cachedAppsInfo) {
+            CAApplication *app = [[CAApplication alloc]initWithAppInfo:appInfo];
+            [appsArray addObject:app];
+        }
+        
+        return appsArray;
+        
+    }
+    
     return get_application_list(YES);
 }
 

@@ -218,7 +218,7 @@
     DEBUG("searching for copyindex");
     for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
         DEBUG("index %u, nfat_arch %u", i, CFSwapInt32(fh->nfat_arch));
-        if (CFSwapInt32(arch->cpusubtype) == CFSwapInt32(removeArch)) {
+        if (CFSwapInt32(arch->cpusubtype) == CFSwapInt32(removeArch->cpusubtype)) {
             
             DEBUG("found the upperArch we want to remove!");
             fgetpos(lipoOut, &upperArchpos);
@@ -243,7 +243,7 @@
         
         for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
             //swap the one we want to strip with the next one below it
-            DebugLog(@"## iterating archs %u removearch:%u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(removeArch));
+            DebugLog(@"## iterating archs %u removearch:%u", CFSwapInt32(arch->cpusubtype), CFSwapInt32(removeArch->cpusubtype));
             if (i == (CFSwapInt32(fh->nfat_arch)) - 1) {
                 DEBUG("found the lowerArch we want to copy!");
                 fgetpos(lipoOut, &lowerArchpos);

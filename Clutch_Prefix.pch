@@ -5,3 +5,13 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 #endif
+
+/*
+ * Configuration
+ */
+
+#define CLUTCH_TITLE "Clutch"
+#define CLUTCH_VERSION "v2.0"
+#define CLUTCH_RELEASE "ALPHA 2"
+#define CLUTCH_BUILD 14001
+#define CLUTCH_DEV 1

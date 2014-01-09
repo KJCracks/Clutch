@@ -36,7 +36,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#import  "main.h"
 #import "Configuration.h"
 #import "CAApplicationsController.h"
 #import "install.h"
@@ -48,13 +47,7 @@
 #import "Foundation/Foundation.h"
 
 
-/*
- * Configuration
- */
-
-#define CLUTCH_TITLE "Clutch"
-#define CLUTCH_VERSION "v2.0"
-#define CLUTCH_RELEASE "ALPHA 2"
+int compression_level;
 
 /*
  * Prototypes
@@ -73,7 +66,6 @@ int cmd_list_applications(NSArray *list);
 /*
  * Commands
  */
-
 
 int cmd_version(void)
 {

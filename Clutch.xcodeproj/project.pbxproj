@@ -67,7 +67,6 @@
 		AD61315B187D23FC00B94378 /* Install.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Install.m; sourceTree = "<group>"; };
 		ADAA367C1870606D0029AF7D /* Prefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefs.h; sourceTree = "<group>"; };
 		ADAA367D1870606D0029AF7D /* Prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Prefs.m; sourceTree = "<group>"; };
-		ADAA367F187125220029AF7D /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLogUnzip; sourceTree = "<group>"; };
 		ADC68CC117ECA8A7005282CE /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		ADC68CC217ECA8A7005282CE /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
@@ -149,7 +148,6 @@
 				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
 				AD130669186E6A9800DFE220 /* locale.m */,
 				AD13066B186E6AAF00DFE220 /* locale.h */,
-				ADAA367F187125220029AF7D /* main.h */,
 				BC871C7917E7122500048636 /* out.h */,
 				BC871C7A17E7122500048636 /* out.m */,
 				BC871C7B17E7122500048636 /* scinfo.h */,

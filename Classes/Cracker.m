@@ -154,6 +154,9 @@ static NSString * genRandStringLength(int len) {
     _binaryPath = [[app.applicationContainer stringByAppendingPathComponent:app.appDirectory] stringByAppendingPathComponent:app.applicationExecutableName];
     
     _binary = [[CABinary alloc] initWithBinary:_binaryPath];
+    
+    _binary->overdriveEnabled = [[Prefs sharedInstance] boolForKey:@"useOverdrive"];
+    
     DebugLog(@"binaryPath: %@", _binaryPath);
     return (!_binary)?NO:YES;
 }
@@ -239,6 +242,22 @@ static NSString * genRandStringLength(int len) {
         generateMetadata([_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"]);
     }
     
+    if ([[Prefs sharedInstance] boolForKey:@"useOverdrive"]) {
+        
+        NSMutableCharacterSet *charactersToRemove = [NSMutableCharacterSet alphanumericCharacterSet];
+        
+        [charactersToRemove formUnionWithCharacterSet:[NSMutableCharacterSet nonBaseCharacterSet]];
+        
+        NSString *trimmedReplacement =
+        [[[[Prefs sharedInstance] objectForKey:@"crackerName"] componentsSeparatedByCharactersInSet:[charactersToRemove invertedSet]]
+         componentsJoinedByString:@""];
+
+        
+        NSString * OVERDRIVE_DYLIB_PATH = [NSString stringWithFormat:@"%@.dylib",[[Prefs sharedInstance] boolForKey:@"creditFile"]? trimmedReplacement :@"overdrive"];
+        
+        [[NSFileManager defaultManager] copyItemAtPath:@"/etc/clutch/overdrive.dylib" toPath:[_workingDir stringByAppendingPathComponent:OVERDRIVE_DYLIB_PATH] error:NULL];
+        
+    }
     
     NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];
     

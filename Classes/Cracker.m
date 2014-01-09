@@ -2,9 +2,6 @@
 //  Cracker.m
 //  Clutch
 //
-//  Created by DilDog on 12/22/13.
-//
-//
 
 #import "Cracker.h"
 #import "CAApplication.h"
@@ -116,60 +113,7 @@ static ZipArchive * createZip(NSString *file) {
     return archiver;
 }
 
--(BOOL)crackBinary {
-    
-}
 
-// createPartialCopy
-// copies only the files required for cracking an application to a staging area
-
--(BOOL)createPartialCopy:(NSString *)outdir withApplicationDir:(NSString *)appdir withMainExecutable:(NSString *)mainexe
-{
-    // Create output directory
-    if(!forceCreateDirectory(outdir))
-    {
-        return NO;
-    }
-    
-    // XXX: This, only if necessary: Get sandbox folder
-    //NSString *topleveldir=[appdir stringByDeletingLastPathComponent];
-    //NSString *appdirprefix=[appdir lastPathComponent];
-    
-    // Get top level .app folder
-    NSString *topleveldir=[appdir copy];
-    
-    // Files required for cracking
-    NSMutableArray *files=[[NSMutableArray alloc] init];
-    [files addObject:@"_CodeSignature/CodeResources"];
-    [files addObject:[NSString stringWithFormat:@"SC_Info/%@.sinf", mainexe]];
-    [files addObject:[NSString stringWithFormat:@"SC_Info/%@.supp", mainexe]];
-    [files addObject:mainexe];
-    
-    //XXX:[files addObject:[NSString stringWithFormat:@"%@/_CodeSignature/CodeResources", appdirprefix]];
-    //XXX:[files addObject:[NSString stringWithFormat:@"%@/SC_Info/%@.sinf", appdirprefix, mainexe]];
-    //XXX:[files addObject:[NSString stringWithFormat:@"%@/SC_Info/%@.supp", appdirprefix, mainexe]];
-    //XXX:[files addObject:[NSString stringWithFormat:@"%@/%@", appdirprefix, mainexe]];
-    //XXX:[files addObject:[NSString stringWithFormat:@"%@/Info.plist", appdirprefix];
-    //XXX:[files addObject:@"iTunesMetadata.plist"];
-    //XXX:[files addObject:@"iTunesArtwork"];
-    
-    NSEnumerator *e = [files objectEnumerator];
-    NSString *file;
-    while(file = [e nextObject])
-    {
-        if(!copyFile([NSString stringWithFormat:@"%@/%@", topleveldir, file],
-                     [NSString stringWithFormat:@"%@/%@", outdir, file]))
-        {
-            forceRemoveDirectory(outdir);
-            return NO;
-        }
-    }
-    
-    [topleveldir release];
-    [files release];
-    
-    return YES;
-}
 static NSString * genRandStringLength(int len) {
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -228,17 +172,62 @@ static NSString * genRandStringLength(int len) {
 
 -(BOOL) execute {
     //1. dump binary
-    NSError* error;
-    if (![_binary crackBinaryToFile:_tempBinaryPath error:&error]) {
-        DebugLog(@"Failed to crack %@ with error: %@",_app.applicationDisplayName,error.localizedDescription);
-        return NO;
-    }
+    __block NSError* error;
+    __block BOOL* crackOk;
     
-   return [self packageIPA];
     
+    iZip* zip = [[iZip alloc] initWithCracker:self];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+
+    NSBlockOperation *crackOperation = [NSBlockOperation blockOperationWithBlock:^{
+        NSError* _error;
+        DebugLog(@"beginning crack operation");
+        if (![_binary crackBinaryToFile:_tempBinaryPath error:&_error]) {
+            DebugLog(@"Failed to crack %@ with error: %@",_app.applicationDisplayName,error.localizedDescription);
+            crackOk = FALSE;
+            error = _error;
+        }
+        crackOk = TRUE;
+        DebugLog(@"crack operation ok!");
+    }];
+   
+    NSBlockOperation *zipOriginalOperation = [[NSBlockOperation alloc] init];
+    __block __weak NSBlockOperation *zipOriginalweakOperation = zipOriginalOperation;
+    
+    [zipOriginalOperation addExecutionBlock:^{
+        DebugLog(@"beginning zip operation");
+        [zip zipOriginal:zipOriginalweakOperation];
+        DebugLog(@"zip original ok");
+    }];
+    
+    
+    NSOperation *zipCrackedOperation = [NSBlockOperation blockOperationWithBlock:^{
+        //check if crack was successful
+        if (crackOk) {
+            [self packageIPA];
+            DebugLog(@"package IPA ok");
+            [zip zipCracked];
+            DebugLog(@"zip cracked ok");
+            [zip->_archiver CloseZipFile2];
+        }
+        else {
+            //stop the original zip
+            //delete stuff
+            //bye
+            DebugLog(@"crack was not ok, welp");
+        }
+    }];
+    [zipCrackedOperation addDependency:crackOperation];
+    [zipCrackedOperation addDependency:zipOriginalOperation];
+    
+    [queue addOperation:zipCrackedOperation];
+    [queue addOperation:crackOperation];
+    [queue addOperation:zipOriginalOperation];
+    [queue waitUntilAllOperationsAreFinished];
+    return true;
 }
 
--(BOOL)packageIPA {
+-(void)packageIPA {
 
     NSString *crackerName = [[Prefs sharedInstance] objectForKey:@"crackerName"];
     if (crackerName == nil) {
@@ -274,24 +263,6 @@ static NSString * genRandStringLength(int len) {
     fwrite(supp, suppsize, 1, supph);
     fclose(supph);
     free(supp);
-    
-    NOTIFY("Compressing original application (native zip) (1/2)...");
-    ZipArchive *archiver = createZip(_ipapath);
-    zip_original(archiver, _app.applicationContainer, _app.applicationExecutableName, _ipapath, 0);
-    stop_bar();
-    NOTIFY("Compressing second cracked application (native zip) (2/2)...");
-    zip(archiver, _workingDir, [NSString stringWithFormat:@"Payload/%@.app/", _app.applicationName], 0);
-    stop_bar();
-    [archiver CloseZipFile2];
-    
-    return NO;
-}
--(BOOL)prepareFromSpecificExecutable:(NSString *)exepath returnDescription:(NSMutableString *)description
-{
-    // Create the app description
-    _appDescription=[NSString stringWithFormat:@"%@",exepath];
-    
-    return YES;
 }
 
 -(NSString *)getAppDescription

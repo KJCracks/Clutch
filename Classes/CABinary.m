@@ -338,6 +338,7 @@
     DebugLog(@"DEBUG: binary path %@", oldbinaryPath);
     
     if (![[NSFileManager defaultManager] copyItemAtPath:oldbinaryPath toPath:finalPath error:NULL]) {
+        DebugLog(@"could not copy item!");
         return NO;
     }
 

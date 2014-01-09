@@ -12,6 +12,7 @@
 
 @interface Cracker : NSObject
 {
+    @public
     NSString *_appDescription;
     NSString *_finaldir;
     NSString *_baselinedir;
@@ -19,10 +20,8 @@
     NSString *_binaryPath;
     CABinary *_binary;
     CAApplication *_app;
-    
-    @public
-        NSString *_workingDir;
-        NSString *_ipapath;
+    NSString *_workingDir;
+    NSString *_ipapath;
 }
 
 -(id)init;

@@ -1,20 +1,8 @@
-/*
- Clutch - much fast app cracker
- Copyright (C) 2013 Kim-Jong-Cracks
- 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License as
- published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
- 
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+/* This program is free software. It comes without any warranty, to
+ * the extent permitted by applicable law. You can redistribute it
+ * and/or modify it under the terms of the Do What The Fuck You Want
+ * To Public License, Version 2, as published by Sam Hocevar. See
+ * http://www.wtfpl.net/ for more details. */
 
 /*
  Introducing Clutch, the fastest and most advanced cracking utility for the iPhone, iPod Touch, and iPad.
@@ -56,7 +44,6 @@
 #import "Cracker.h"
 #import "Packager.h"
 #import <sys/time.h>
-#import  "Install.h"
 
 #import "Foundation/Foundation.h"
 
@@ -153,10 +140,9 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
         printf("Currently cracking %s\n", app.applicationName.UTF8String);
         Cracker *cracker = [[Cracker alloc] init];
         [cracker prepareFromInstalledApp:app];
-        
         NSString* ipapath = [cracker generateIPAPath];
         
-        
+        DebugLog(@"CRACKED SUCCESSFULY!! %@", ipapath);
         if([cracker execute])
         {
             [successes addObject:app];
@@ -165,8 +151,6 @@ int iterate_crack(NSArray *apps, NSMutableArray *successes, NSMutableArray *fail
         {
             [failures addObject:app];
         }
-        printf("\nIPA Path: %s\n", [ipapath UTF8String]);
-        //[NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
         
     }
     return 0;
@@ -251,8 +235,6 @@ int cmd_crack_exe(NSString *path)
     [failures release];
     [successes release];
     
-    [NSFileManager.defaultManager removeItemAtPath:cracker->_workingDir error:nil];
-    
     return ret;
 }
 
@@ -302,85 +284,74 @@ int main(int argc, const char *argv[])
     // this line gives me
     NSArray *arguments = [[NSProcessInfo processInfo] arguments];
     
-    for(int idx = 0;idx < argc; idx++)
+    int cnt = (int)[arguments count];
+    
+    for(int idx = 0;idx < cnt; idx++)
     {
         // Process each command line option
         NSString *arg = [arguments objectAtIndex:idx];
         
-        DebugLog(@"cli arg %@", arg);
-        if([arg isEqualToString:@"/usr/bin/Clutch"]) {
-            NSString* arg1 = [arguments objectAtIndex:1];
-            if([arg1 isEqualToString:@"-a"])
+        if([arg isEqualToString:@"/usr/bin/Clutch"] && [arguments count] == 1)
+        {
+            // show help & list applications
+            cmd_help();
+            NSArray *apps = [[CAApplicationsController sharedInstance] installedApps];
+            
+            if (apps == nil)
             {
-                // Crack all applications
-                ret = cmd_crack_all();
-            }
-            else if([arg1 isEqualToString:@"-u"])
+                printf("Error finding applications!\n");
+            } else if ([apps count] == 0)
             {
-                // Crack updated applications
-                ret = cmd_crack_updated();
-            }
-            else if([arg1 isEqualToString:@"-f"])
+                printf("No encrypted applications found\n");
+            } else
             {
-                // Flush caches
-                ret = cmd_flush_cache();
-            }
-            else if([arg1 isEqualToString:@"-v"])
-            {
-                // Display version string
-                ret = cmd_version();
-            }
-            /*else if([arg isEqualToString:@"-x"])
-             {
-             // Crack specific executable
-             
-             // Get path argument
-             idx++;
-             if(idx>=cnt)
-             {
-             printf("-x requires a 'path' argument");
-             return 1;
-             }
-             NSString *path = [arguments objectAtIndex:idx];
-             
-             ret = cmd_crack_exe(path);
-             }*/
-            else if([arg1 isEqualToString:@"-h"] || [arg1 isEqualToString:@"-?"])
-            {
-                // Display help
-                ret = cmd_help();
-            }
-            else if([arg1 isEqualToString:@"-i"]) {
-                DEBUG("install yo yoy yo swag");
-                NSString* ipapath = [NSString stringWithFormat:@"%s", argv[2]];
-                NSString *binary =[NSString stringWithFormat:@"%s", argv[3]];
-                NSLog(@"ipapath %@", ipapath);
-                Install* installer = [[Install alloc] initWithIPA:ipapath withBinary:binary];
-                [installer installIPA];
-                return 0;
-                
-            }
-            else if ([arguments count] == 1)
-            {
-                // show help & list applications
-                //cmd_help();
-                NSArray *apps = [[CAApplicationsController sharedInstance] installedApps];
-                
-                if (apps == nil)
-                {
-                    printf("Error finding applications!\n");
-                } else if ([apps count] == 0)
-                {
-                    printf("No encrypted applications found\n");
-                } else
-                {
-                    cmd_list_applications(apps);
-                }
-                
-                break;
+                cmd_list_applications(apps);
             }
             
+            break;
         }
+        
+        if([arg isEqualToString:@"-a"])
+        {
+            // Crack all applications
+            ret = cmd_crack_all();
+        }
+        else if([arg isEqualToString:@"-u"])
+        {
+            // Crack updated applications
+            ret = cmd_crack_updated();
+        }
+        else if([arg isEqualToString:@"-f"])
+        {
+            // Flush caches
+            ret = cmd_flush_cache();
+        }
+        else if([arg isEqualToString:@"-v"])
+        {
+            // Display version string
+            ret = cmd_version();
+        }
+        else if([arg isEqualToString:@"-x"])
+        {
+            // Crack specific executable
+            
+            // Get path argument
+            idx++;
+            if(idx>=cnt)
+            {
+                printf("-x requires a 'path' argument");
+                return 1;
+            }
+            NSString *path = [arguments objectAtIndex:idx];
+            
+            ret = cmd_crack_exe(path);
+        }
+        else if([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-?"])
+        {
+            // Display help
+            ret = cmd_help();
+        }
+        //else if ([arg isEqualToString:@""])
         else
         {
             if (argc > 1) {
@@ -403,7 +374,7 @@ int main(int argc, const char *argv[])
             }
             // Unknown command line option
             printf ("unknown option '%s'\n", [arg UTF8String]);
-            //return 1;
+            return 1;
         }
     }
     

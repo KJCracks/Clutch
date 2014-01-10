@@ -29,6 +29,8 @@ Licenses
 [ZipArchive](https://github.com/mattconnolly/ZipArchive/) by Matt Connolly, Edward Patel, et al.<br />
 [MiniZip](http://www.winimage.com/zLibDll/minizip.html) by Gilles Vollant adn Mathias Svensson.
 
+Clutch is released under the GNU Affero General Public License (http://www.gnu.org/licenses/agpl-3.0.html)
+
 Thanks
 ------------
 *Clutch* woudn't be what it is without these people:

@@ -62,7 +62,7 @@
     if (self = [super init]) {
         oldbinaryPath = thePath;
         overdriveEnabled = NO;
-        credit = [[Prefs sharedInstance] boolForKey:@"creditFile"];
+        credit = [[Prefs sharedInstance] creditFile];
         
         NSMutableCharacterSet *charactersToRemove = [NSMutableCharacterSet alphanumericCharacterSet];
         
@@ -72,7 +72,7 @@
         NSCharacterSet *charactersToRemove1 = [charactersToRemove invertedSet];
         
         NSString *trimmedReplacement =
-        [[[[Prefs sharedInstance] objectForKey:@"crackerName"] componentsSeparatedByCharactersInSet:charactersToRemove1]
+        [[[[Prefs sharedInstance] crackerName] componentsSeparatedByCharactersInSet:charactersToRemove1]
          componentsJoinedByString:@""];
         
         OVERDRIVE_DYLIB_PATH = [[NSString alloc]initWithFormat:@"@executable_path/%@.dylib",credit? trimmedReplacement : @"overdrive"]; //credit protection FTW

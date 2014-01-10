@@ -176,7 +176,7 @@ static NSString * genRandStringLength(int len) {
 -(BOOL) execute {
     //1. dump binary
     __block NSError* error;
-    __block BOOL* crackOk;
+    __block BOOL* crackOk, *zipComplete = false;
     
     
     iZip* zip = [[iZip alloc] initWithCracker:self];
@@ -192,6 +192,7 @@ static NSString * genRandStringLength(int len) {
         }
         crackOk = TRUE;
         DebugLog(@"crack operation ok!");
+        printf("\nwaiting for zip thread\n");
     }];
    
     NSBlockOperation *zipOriginalOperation = [[NSBlockOperation alloc] init];
@@ -199,8 +200,14 @@ static NSString * genRandStringLength(int len) {
     
     [zipOriginalOperation addExecutionBlock:^{
         DebugLog(@"beginning zip operation");
-        [zip zipOriginal:zipOriginalweakOperation];
+        if ([[Prefs sharedInstance] useNativeZip]) {
+            [zip zipOriginal:zipOriginalweakOperation];
+        }
+        else {
+            [zip zipOriginalOld:zipOriginalweakOperation];
+        }
         DebugLog(@"zip original ok");
+        zipComplete = true;
     }];
     
     

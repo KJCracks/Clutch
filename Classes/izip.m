@@ -31,7 +31,10 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     }
     return self;
 }
-
+- (void) zipOriginalOld:(NSOperation*) operation {
+    NSString* compressionArguments = [NSString stringWithFormat:@"-%u", [[Prefs sharedInstance] compressionLevel]];
+    system([[NSString stringWithFormat:@"cd %@; zip %@ -u -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", _cracker->_workingDir, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName] UTF8String]);
+}
 - (void) zipOriginal:(NSOperation*) operation {
     NSString* folder = _cracker->_app.applicationContainer;
     NSString* binary = _cracker->_app.applicationExecutableName;

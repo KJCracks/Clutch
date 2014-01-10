@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#import "Configuration.h"
 
 // print something verbose
 //#define VERBOSE(x) if ([[ClutchConfiguration getValue:@"VerboseLogging"] isEqualToString:@"YES"]) { progress_event(x); };

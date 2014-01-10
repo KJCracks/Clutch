@@ -56,8 +56,9 @@
         minimumOSVersion = info[@"MinimumOSVersion"];
 
         applicationIcon = [self getApplicationIcon];
-        
-        dictRep = info;
+        NSMutableDictionary* copy = [[NSMutableDictionary alloc] initWithDictionary:info];
+        [copy removeObjectForKey:@"ApplicationSINF"]; //slow
+        dictRep = copy;
         isCracking = NO;
     }
     return self;

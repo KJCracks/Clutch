@@ -166,11 +166,12 @@ static NSString * genRandStringLength(int len) {
     NSString* ipapath;
     NSString *crackerName = [[Prefs sharedInstance] crackerName];
     
+     NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Prefs sharedInstance] ipaDirectory]];
     if ([[Prefs sharedInstance] addMinOS]) {
-        ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@-iOS%@-(Clutch-%@).ipa", _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
+        ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
     else {
-        ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@-(Clutch-%@).ipa", _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+        ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
     _ipapath = ipapath;
     return ipapath;

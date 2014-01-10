@@ -13,7 +13,7 @@
 
 #import "Packager.h"
 
-@interface Cracker ()
+@interface Cracker () 
 
 @end
 
@@ -141,7 +141,8 @@ static NSString * genRandStringLength(int len) {
     
     
     // Create working directory
-    _workingDir = [NSString stringWithFormat:@"%@%@/Payload/%@", @"/tmp/clutch_", genRandStringLength(8), app.appDirectory];
+    _tempPath = [NSString stringWithFormat:@"%@%@", @"/tmp/clutch_", genRandStringLength(8)];
+    _workingDir = [NSString stringWithFormat:@"%@/Payload/%@", _tempPath, app.appDirectory];
     DebugLog(@"temporary directory %@", _workingDir);
     if (![[NSFileManager defaultManager] createDirectoryAtPath:_workingDir withIntermediateDirectories:YES attributes:@{NSFileOwnerAccountName:@"mobile",NSFileGroupOwnerAccountName:@"mobile"} error:NULL]) {
         
@@ -155,7 +156,7 @@ static NSString * genRandStringLength(int len) {
     
     _binary = [[CABinary alloc] initWithBinary:_binaryPath];
     
-    _binary->overdriveEnabled = [[Prefs sharedInstance] boolForKey:@"useOverdrive"];
+    _binary->overdriveEnabled = [[Prefs sharedInstance] useOverdrive];
     
     DebugLog(@"binaryPath: %@", _binaryPath);
     return (!_binary)?NO:YES;
@@ -163,12 +164,14 @@ static NSString * genRandStringLength(int len) {
 
 -(NSString*) generateIPAPath {
     NSString* ipapath;
-    NSString *crackerName = [[Prefs sharedInstance] objectForKey:@"crackerName"];
-    if (crackerName == nil) {
-        crackerName = @"no-name-cracker";
-    }
+    NSString *crackerName = [[Prefs sharedInstance] crackerName];
     
-    ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@-(%@).ipa", _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+    if ([[Prefs sharedInstance] addMinOS]) {
+        ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@-iOS%@-(Clutch-%@).ipa", _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
+    }
+    else {
+        ipapath = [NSString stringWithFormat:@"/var/root/Documents/Cracked/%@-v%@-%@-(Clutch-%@).ipa", _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+    }
     _ipapath = ipapath;
     return ipapath;
 }
@@ -201,10 +204,20 @@ static NSString * genRandStringLength(int len) {
     [zipOriginalOperation addExecutionBlock:^{
         DebugLog(@"beginning zip operation");
         if ([[Prefs sharedInstance] useNativeZip]) {
+            DebugLog(@"using native zip");
             [zip zipOriginal:zipOriginalweakOperation];
         }
         else {
-            [zip zipOriginalOld:zipOriginalweakOperation];
+            DebugLog(@"using old zip");
+            NSString* zipDir = [NSString stringWithFormat:@"%@%@/", @"/tmp/clutch_", genRandStringLength(8)];
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:zipDir withIntermediateDirectories:YES attributes:@{NSFileOwnerAccountName:@"mobile",NSFileGroupOwnerAccountName:@"mobile"} error:NULL]) {
+                DebugLog(@"could not create directory, huh?!");
+            }
+            DebugLog(@"container yo %@ %@", _app.applicationContainer, zipDir);
+            [[NSFileManager defaultManager] createSymbolicLinkAtPath:[zipDir stringByAppendingString:@"Payload"] withDestinationPath:_app.applicationContainer error:NULL];
+            
+            [zip zipOriginalOld:zipOriginalweakOperation withZipLocation:zipDir];
+            [[NSFileManager defaultManager] removeItemAtPath:zipDir error:nil];
         }
         DebugLog(@"zip original ok");
         zipComplete = true;
@@ -219,6 +232,8 @@ static NSString * genRandStringLength(int len) {
             [zip zipCracked];
             DebugLog(@"zip cracked ok");
             [zip->_archiver CloseZipFile2];
+            //clean up
+            [[NSFileManager defaultManager] removeItemAtPath:_tempPath error:nil];
         }
         else {
             //stop the original zip
@@ -238,29 +253,26 @@ static NSString * genRandStringLength(int len) {
 }
 
 -(void)packageIPA {
-
-    NSString *crackerName = [[Prefs sharedInstance] objectForKey:@"crackerName"];
-    if (crackerName == nil) {
-        crackerName = @"no-name-cracker";
-    }
     
-    if (![[Prefs sharedInstance] boolForKey:@"removeMetadata"])
+    NSString* crackerName = [[Prefs sharedInstance] crackerName];
+    
+    if (![[Prefs sharedInstance] removeMetadata])
     {
         generateMetadata([_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"]);
     }
     
-    if ([[Prefs sharedInstance] boolForKey:@"useOverdrive"]) {
+    if ([[Prefs sharedInstance] useOverdrive]) {
         
         NSMutableCharacterSet *charactersToRemove = [NSMutableCharacterSet alphanumericCharacterSet];
         
         [charactersToRemove formUnionWithCharacterSet:[NSMutableCharacterSet nonBaseCharacterSet]];
         
         NSString *trimmedReplacement =
-        [[[[Prefs sharedInstance] objectForKey:@"crackerName"] componentsSeparatedByCharactersInSet:[charactersToRemove invertedSet]]
+        [[[[Prefs sharedInstance] crackerName] componentsSeparatedByCharactersInSet:[charactersToRemove invertedSet]]
          componentsJoinedByString:@""];
 
         
-        NSString * OVERDRIVE_DYLIB_PATH = [NSString stringWithFormat:@"%@.dylib",[[Prefs sharedInstance] boolForKey:@"creditFile"]? trimmedReplacement :@"overdrive"];
+        NSString * OVERDRIVE_DYLIB_PATH = [NSString stringWithFormat:@"%@.dylib",[[Prefs sharedInstance] creditFile]? trimmedReplacement :@"overdrive"];
         
         [[NSFileManager defaultManager] copyItemAtPath:@"/etc/clutch/overdrive.dylib" toPath:[_workingDir stringByAppendingPathComponent:OVERDRIVE_DYLIB_PATH] error:NULL];
         

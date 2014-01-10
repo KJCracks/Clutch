@@ -12,6 +12,7 @@
 
 @interface Cracker : NSObject
 {
+    NSString* _tempPath;
     @public
     NSString *_appDescription;
     NSString *_finaldir;

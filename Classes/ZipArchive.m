@@ -558,6 +558,14 @@
 	return date;
 }
 
+-(BOOL) openZipFile2:(NSString*) zipFile
+{
+    _zipFile = zipOpen( (const char*)[zipFile UTF8String], APPEND_STATUS_ADDINZIP);
+    if( !_zipFile )
+        return NO;
+    return YES;
+}
+
 
 @end
 

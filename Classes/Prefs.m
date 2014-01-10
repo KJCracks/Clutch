@@ -72,7 +72,11 @@
     return [self boolForKey:@"UseOverdrive"];
 }
 -(NSString*) crackerName {
-    return [self objectForKey:@"CrackerName"];
+    NSString *crackerName = [self objectForKey:@"CrackerName"];
+    if (crackerName == nil) {
+        crackerName = @"no-name-cracker";
+    }
+    return crackerName;
 }
 -(BOOL) removeMetadata {
     return [self boolForKey:@"RemoveMetadata"];
@@ -88,6 +92,9 @@
 }
 - (BOOL) addMinOS {
     return [self boolForKey:@"AddMinOS"];
+}
+- (BOOL) creditFile {
+    return [self boolForKey:@"CreditFile"];
 }
 - (BOOL) useNativeZip {
     return [self boolForKey:@"UseNativeZip"];
@@ -137,27 +144,27 @@
     
     for (NSString* key in supportDictionary) {
         
-        DEBUG("objectForKey: supportDictionary %s", [key UTF8String]);
+        //DEBUG("objectForKey: supportDictionary %s", [key UTF8String]);
         NSDictionary* supportEntry = [supportDictionary objectForKey:key];
         if ([[supportEntry objectForKey:@"enabled"] isEqualToString:@"NO"]) {
-            DebugLog(@"Not enabled entry %@\n", key);
+            //DebugLog(@"Not enabled entry %@\n", key);
             continue;
         }
-        DEBUG("objectForKey: supportEntry");
+        //DEBUG("objectForKey: supportEntry");
         support = [supportEntry objectForKey:@"support"];
         defaultValue = [_dict objectForKey:key];
         if (defaultValue == nil) {
-            DEBUG("objectForKey: defaultValue");
+            //DEBUG("objectForKey: defaultValue");
             defaultValue = [supportEntry objectForKey:@"default"];
         }
         
-        DebugLog(@"%@\n - %@ (%@) ", key, support, defaultValue);
+        NSPrint(@"%@\n - %@ (%@) ", key, support, defaultValue);
         read = malloc (MAX_NAME_SZ);
         fgets(read, MAX_NAME_SZ, stdin);
         read[strlen(read) - 1] = '\0';
         NSString* input = [NSString stringWithUTF8String:read];
-        DebugLog(@"input omg %@", input);
-        DebugLog(@"value omg %@,", defaultValue);
+        //DebugLog(@"input omg %@", input);
+        //DebugLog(@"value omg %@,", defaultValue);
         if (read[0] != '\0') {
             if ([[defaultValue lowercaseString] hasPrefix:@"y"] || [[defaultValue lowercaseString] hasPrefix:@"n"]) {
                 if ([[input lowercaseString] hasPrefix:@"y"]) {
@@ -180,7 +187,7 @@
             [tempDict setValue:input forKey:key];
         }
         else {
-            DebugLog(@"Using default value..\n");
+           printf("Using default value..\n");
         }
         free(read);
     }

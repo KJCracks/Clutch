@@ -33,4 +33,5 @@
 - (NSString*) metadataEmail;
 - (NSString*) ipaDirectory;
 - (BOOL) useNativeZip;
+- (BOOL) creditFile;
 @end

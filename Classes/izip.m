@@ -25,17 +25,21 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         _cracker = cracker;
         zip_cracked = FALSE;
         zip_original = FALSE;
-        _archiver = [[ZipArchive alloc] init];
-        [_archiver CreateZipFile2:_cracker->_ipapath];
         NSLog(@"created IPAPAth %@", _cracker->_ipapath);
     }
     return self;
 }
-- (void) zipOriginalOld:(NSOperation*) operation {
+- (void) zipOriginalOld:(NSOperation*) operation withZipLocation:(NSString*) location {
     NSString* compressionArguments = [NSString stringWithFormat:@"-%u", [[Prefs sharedInstance] compressionLevel]];
-    system([[NSString stringWithFormat:@"cd %@; zip %@ -u -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", _cracker->_workingDir, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName] UTF8String]);
+    system([[NSString stringWithFormat:@"cd %@; zip %@ -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", location, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName] UTF8String]);
+    DebugLog(@"zip command: %@", [NSString stringWithFormat:@"cd %@; zip %@ -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", location, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName]);
+
 }
 - (void) zipOriginal:(NSOperation*) operation {
+    if (_archiver == nil) {
+        _archiver = [[ZipArchive alloc] init];
+        [_archiver CreateZipFile2:_cracker->_ipapath];
+    }
     NSString* folder = _cracker->_app.applicationContainer;
     NSString* binary = _cracker->_app.applicationExecutableName;
     int compressionLevel = 0;
@@ -103,6 +107,10 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
 }
 
 - (void) zipCracked {
+    if (_archiver == nil) {
+        _archiver = [[ZipArchive alloc] init];
+        [_archiver openZipFile2:_cracker->_ipapath];
+    }
     NSString* folder = _cracker->_workingDir;
     NSString* payloadPath = [NSString stringWithFormat:@"Payload/%@.app/", _cracker->_app.applicationName];
     int compressionLevel = 0;

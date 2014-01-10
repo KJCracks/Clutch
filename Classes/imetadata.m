@@ -26,7 +26,7 @@ void generateMetadata(NSString *origPath,NSString *output)
     NSString *fake_email;
     NSDate *fake_purchase_date = [NSDate dateWithTimeIntervalSince1970:1251313938];
     
-    if (nil == (fake_email = [[Prefs sharedInstance] objectForKey:@"MetadataEmail"])) {
+    if (nil == (fake_email = [[Prefs sharedInstance] metadataEmail])) {
         fake_email = @"steve@rim.jobs";
     }
     

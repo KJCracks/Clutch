@@ -272,7 +272,6 @@ static NSString * genRandStringLength(int len) {
         [[[[Prefs sharedInstance] crackerName] componentsSeparatedByCharactersInSet:[charactersToRemove invertedSet]]
          componentsJoinedByString:@""];
 
-        
         NSString * OVERDRIVE_DYLIB_PATH = [NSString stringWithFormat:@"%@.dylib",[[Prefs sharedInstance] creditFile]? trimmedReplacement :@"overdrive"];
         
         [[NSFileManager defaultManager] copyItemAtPath:@"/etc/clutch/overdrive.dylib" toPath:[_workingDir stringByAppendingPathComponent:OVERDRIVE_DYLIB_PATH] error:NULL];

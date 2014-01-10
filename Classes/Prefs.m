@@ -106,7 +106,11 @@
     return [self objectForKey:@"MetadataPurchasDate"];
 }
 - (NSString*) ipaDirectory {
-    return [self objectForKey:@"IPADirectory"];
+    NSString *dir = [self objectForKey:@"IPADirectory"];
+    if (dir == nil) {
+        dir = @"/User/Documents/Cracked";
+    }
+    return dir;
 }
 
 

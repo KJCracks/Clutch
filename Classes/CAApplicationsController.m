@@ -1,6 +1,7 @@
 #import "CAApplicationsController.h"
 #import "MobileInstallation.h"
 #import "out.h"
+#import "Prefs.h"
 
 #define applistCachePath @"/etc/applist-cache.clutch"
 
@@ -117,7 +118,7 @@ NSArray * get_application_list(BOOL sort) {
 
 - (NSArray *)crackedApps
 {
-    NSString *crackedPath = @"/var/root/Documents/Cracked";
+    NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Prefs sharedInstance] ipaDirectory]];
     NSArray *array=[[NSArray alloc]initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:crackedPath error:nil]];
     NSMutableArray *paths=[[NSMutableArray alloc]init];
     for (int i=0; i<array.count; i++) {

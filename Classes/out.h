@@ -16,6 +16,7 @@
 
 #define NSPrint(M, ...) fprintf(stderr, "%s \n", [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
+#define CLUTCH_DEBUG 1
 
 #ifdef CLUTCH_DEBUG
 #   define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one

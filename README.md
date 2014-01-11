@@ -6,7 +6,7 @@ Works with all devices, iOS versions, architecture types, with most binaries.
 
 Usage
 ------------
-Current development version: *Clutch 1.4-git1*
+Current development version: *Clutch 1.4-git2*
 
 *Clutch* [flags] [application name] [...]
 

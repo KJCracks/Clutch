@@ -49,7 +49,8 @@ typedef enum {
 
 typedef enum {
     en,
-    zh //chinese
+    zh, //chinese
+    de //german
 } Lang;
 
 
@@ -132,6 +133,48 @@ static NSString * const zh_locale[] = {
     [COMPLETE_APPS_CRACKED] = @"\n完成破解的应用:\n",
     [COMPLETE_APPS_FAILED] = @"\n破解失败的应用:\n",
     [COMPLETE_TOTAL] = @"\n成功总计: \033[0;32m%u\033[0m   失败总计: \033[0;32m%u\033[0m ",
+};
+
+
+static NSString * const de_locale[] = {
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Du benutzt eine Clutch-Entwicklungsversion, überprüfe auf Updates...",
+    [CLUTCH_DEV_UP_TO_DATE] = @"Die Version von Clutch ist aktuell!",
+    
+    [CRACKING_APPNAME] = @"Cracke %@...",
+    [CRACKING_CREATE_WORKING_DIR] = @"Erstelle Arbeitsverzeichnis...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"Führe erste Analyse durch...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"Führe das Cracken des preflights durch...",
+    
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"Binary erhalten: Analysiere Ladebefehle",
+    [DUMPING_OBTAIN_PTRACE] = @"Binary erhalten: Erhalte ptrace handle",
+    [DUMPING_FORKING] = @"Binary erhalten: Pieksen um zu starten",
+    [DUMPING_FORK_SUCCESS] = @"Binary erhalten: Erfolgreich gepiekst",
+    [DUMPING_OBTAIN_MACH_PORT] = @"Binary erhalten: Erhalte den mach port",
+    [DUMPING_CODE_RESIGN] = @"Binary erhalten: Bereite den Code-Resign vor",
+    [DUMPING_PREPARE_DUMP] = @"Binary erhalten: Bereite das eigentliche Erhalten vor",
+    [DUMPING_ASLR_ENABLED] = @"Binary erhalten: ASLR aktiviert, identifiziere dumping-Verzeichnis manuell",
+    [DUMPING_PERFORM_DUMP] = @"Binary erhalten: Führe den Dump durch",
+    [DUMPING_PATCH_CRYPTID] = @"Binary erhalten: Cryptid gepatched",
+    [DUMPING_NEW_CHECKSUM] = @"Binary erhalten: Schreibe neue checksum-Daten",
+    
+    [SWAP_CRACKING_PORTION] = @"Tauschen: Cracke momentan armv%u portion",
+    
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Binary erhalten: Mach header gepatched (Overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Binary erhalten: Maxprot gepatched (Overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Binary erhalten: Cryptid gepatched (Overdrive)",
+    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Binary erhalten: Hänge Overdrive-DYLIB an (Overdrive)",
+    
+    [PACKAGING_WAITING_ZIP] = @"Zusammenpacken: Warte auf den zip-thread",
+    [PACKAGING_FAILED_KILL_ZIP] = @"Zusammenpacken: Crack fehlgeschlagen, eliminiere zip-thread",
+    [PACKAGING_ITUNESMETADATA] = @"Zusammenpacken: Zensiere die iTunesMetadata-Datei",
+    [PACKAGING_IPA] = @"Zusammenpacken: Komprimiere die IPA",
+    [PACKAGING_COMPRESSION_LEVEL] = @"Zusammenpacken: Kompressionslevel ist %u",
+    
+    [COMPLETE_ELAPSED_TIME] = @"Vergangene Zeit: %ums",
+    [COMPLETE_APPS_CRACKED] = @"\nApplikationen gecracked:\n",
+    [COMPLETE_APPS_FAILED] = @"\nApplikationen, die fehlgeschlagen sind:\n",
+    [COMPLETE_TOTAL] = @"\nInsgesamt erfolgreich: \033[0;32m%u\033[0m Insgesamt fehlgeschlagen: \033[0;32m%u\033[0m ",
+    
 };
 
 

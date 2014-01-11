@@ -30,6 +30,8 @@ NSString* msg(Message message) {
         case zh:
             return zh_locale[message];
             break;
+        case de:
+            return de_locale[message];
     }
 }
 
@@ -65,6 +67,10 @@ NSString* msg(Message message) {
         if ([[defaultLang lowercaseString] hasPrefix:@"zh"]) {
             //chinese
             lang = zh;
+        }
+        if ([[defaultLang lowercaseString] hasPrefix:@"de"]) {
+            //german
+            lang = de;
         }
         else {
             lang = en;

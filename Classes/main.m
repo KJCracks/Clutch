@@ -184,9 +184,10 @@ int main(int argc, char *argv[]) {
         printf("two \n");
         NSString *outbinary = [NSString stringWithUTF8String:argv[4]];
         printf("three \n");
-        //install_and_crack(ipa, binary, outbinary);
-        
-        //printf("location %s\n", [location UTF8String]);
+        Install* install = [[Install alloc] initWithIPA:ipa withBinary:binary];
+        [install installIPA];
+        DebugLog(@"install ipa ok!");
+        [install crackWithOutBinary:outbinary];
         
     }
     else if (strncmp(argv[1], "-h", 2) == 0) {

@@ -10,6 +10,7 @@
 #import "scinfo.h"
 #import "izip.h"
 #import "ZipArchive.h"
+#import "API.h"
 
 #import "Packager.h"
 
@@ -204,11 +205,18 @@ static NSString * genRandStringLength(int len) {
         }
        
     }];
+    
+    NSBlockOperation *apiBlockOperation = [NSBlockOperation blockOperationWithBlock:^{
+        API* api = [[API alloc] initWithApp:_app];
+        [api setObject:_ipapath forKey:@"IPAPAth"];
+        [api setEnvironmentArgs];
+    }];
    
     NSBlockOperation *zipOriginalOperation = [[NSBlockOperation alloc] init];
     __block __weak NSBlockOperation *zipOriginalweakOperation = zipOriginalOperation;
     
     [zipOriginalOperation addExecutionBlock:^{
+        
         DebugLog(@"beginning zip operation");
         if ([[Prefs sharedInstance] useNativeZip]) {
             DebugLog(@"using native zip");
@@ -242,7 +250,6 @@ static NSString * genRandStringLength(int len) {
             [zip->_archiver CloseZipFile2];
             //clean up
             MSG(PACKAGING_COMPRESSION_LEVEL);
-            
         }
         else {
             //stop the original zip
@@ -255,7 +262,9 @@ static NSString * genRandStringLength(int len) {
     }];
     [zipCrackedOperation addDependency:crackOperation];
     [zipCrackedOperation addDependency:zipOriginalOperation];
+    [zipCrackedOperation addDependency:apiBlockOperation];
     
+    [queue addOperation:apiBlockOperation];
     [queue addOperation:zipCrackedOperation];
     [queue addOperation:crackOperation];
     [queue addOperation:zipOriginalOperation];

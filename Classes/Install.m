@@ -59,9 +59,11 @@ static NSString* generateUuidString() {
     [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:binaryPath error:nil];
     printf("setted attributes!\n");
 }
--(void) crack {
+-(void) crackWithOutBinary:(NSString*)outbinary {
     CABinary* binary = [[CABinary alloc] initWithBinary:_binaryPath];
-    [binary crackBinaryToFile:@"/tmp/crackedBinary" error:nil];
+    DebugLog(@"outbinary %@", outbinary);
+    [binary crackBinaryToFile:outbinary error:nil];
+    DebugLog(@"apparently crack was ok!?");
 }
 
 @end

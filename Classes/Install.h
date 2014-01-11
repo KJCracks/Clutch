@@ -15,7 +15,7 @@
 
 - (instancetype)initWithIPA:(NSString*)ipaPath withBinary:(NSString*)binary;
 - (void) installIPA;
--(void) crack;
+-(void) crackWithOutBinary:(NSString*)outbinary;
 
 
 @end

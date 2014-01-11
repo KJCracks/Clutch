@@ -1,5 +1,6 @@
 #import "ZipArchive.h"
 #import "Cracker.h"
+#import "NSTask.h"
 
 void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSString* zip,int compressionLevel);
 void zip(ZipArchive *archiver, NSString *folder, NSString* payloadPath, int compressionLevel);
@@ -11,6 +12,7 @@ void zip(ZipArchive *archiver, NSString *folder, NSString* payloadPath, int comp
     Cracker* _cracker;
     @public
     ZipArchive* _archiver;
+    NSTask* _zipTask;
 }
 - (instancetype)initWithCracker:(Cracker*) cracker;
 - (void) zipOriginal:(NSOperation*)operation;

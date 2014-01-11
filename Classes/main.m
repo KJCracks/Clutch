@@ -53,9 +53,23 @@ BOOL check_version() {
     }
     return TRUE;
 }
-
+static NSString* get_compare_with() {
+    static NSString* compare;
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        if ([[[Prefs sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"]) {
+            compare = @"RealUniqueID";
+        }
+        else if ([[Prefs sharedInstance] boolForKey:@"ListWithDisplayName"]) {
+            compare = @"ApplicationDisplayName";
+        }
+        else {
+            compare = @"ApplicationName";
+        }
+    });
+    return compare;
+}
 int main(int argc, char *argv[]) {
-    int compression_level = -1;
     struct timeval start,end;
     gettimeofday(&start, NULL);
     
@@ -80,6 +94,7 @@ int main(int argc, char *argv[]) {
     printf("Clutch %s%s\n", CLUTCH_VERSION, CLUTCH_RELEASE);
     
 	if (argc < 2) {
+        
 		NSArray *applist = [[CAApplicationsController sharedInstance] installedApps];
 		if (applist == NULL) {
 			printf("There are no encrypted applications on this device.\n");
@@ -94,13 +109,14 @@ int main(int argc, char *argv[]) {
 		if ([[Prefs sharedInstance] numberBasedMenu]) {
 			printf("\n");
 		}
-		
+		NSString* comparedValue;
 		while (app = [e nextObject]) {
+            comparedValue = [app->_info objectForKey:get_compare_with()];
 			if ([[Prefs sharedInstance] numberBasedMenu]) {
-				printf("%d) \033[1;3%dm%s\033[0m \n", cindex, 5 + ((cindex + 1) % 2), [app.applicationName UTF8String]);
+				printf("%d) \033[1;3%dm%s\033[0m \n", cindex, 5 + ((cindex + 1) % 2), [comparedValue UTF8String]);
                 cindex++;
 			} else {
-				printf("\033[1;3%dm%s\033[0m ", 5 + ((cindex + 1) % 2), [app.applicationName UTF8String]);
+				printf("\033[1;3%dm%s\033[0m ", 5 + ((cindex + 1) % 2), [comparedValue UTF8String]);
                 cindex++;
 			}
             
@@ -185,9 +201,11 @@ int main(int argc, char *argv[]) {
 		for (int i = 1; i<argc; i++) {
 			NSEnumerator *e = [applist objectEnumerator];
 			int cindex = 0;
+            NSString* comparedValue;
 			while (app = [e nextObject]) {
 				cindex++;
-				if (!numberMenu && ([app.applicationName caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame)) {
+                comparedValue = [app->_info objectForKey:get_compare_with()];
+				if (!numberMenu && ([comparedValue caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame)) {
                 inCrackRoutine:
 					cracked = TRUE;
 					printf("Cracking %s...\n", [app.applicationName UTF8String]);

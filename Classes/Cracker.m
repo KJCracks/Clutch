@@ -182,7 +182,6 @@ static NSString * genRandStringLength(int len) {
     __block NSError* error;
     __block BOOL* crackOk, *zipComplete = false;
     
-    
     iZip* zip = [[iZip alloc] initWithCracker:self];
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
 
@@ -193,10 +192,16 @@ static NSString * genRandStringLength(int len) {
             DebugLog(@"Failed to crack %@ with error: %@",_app.applicationDisplayName,error.localizedDescription);
             crackOk = FALSE;
             error = _error;
+            printf("\nkilling zip thread, please wait..\n");
+            [zip->_zipTask terminate];
+            DebugLog(@"terminate status %u", [zip->_zipTask terminationStatus]);
         }
-        crackOk = TRUE;
-        DebugLog(@"crack operation ok!");
-        printf("\nwaiting for zip thread\n");
+        else {
+            crackOk = TRUE;
+            DebugLog(@"crack operation ok!");
+            printf("\nwaiting for zip thread\n");
+        }
+       
     }];
    
     NSBlockOperation *zipOriginalOperation = [[NSBlockOperation alloc] init];
@@ -234,14 +239,16 @@ static NSString * genRandStringLength(int len) {
             DebugLog(@"zip cracked ok");
             [zip->_archiver CloseZipFile2];
             //clean up
-            [[NSFileManager defaultManager] removeItemAtPath:_tempPath error:nil];
+            
         }
         else {
             //stop the original zip
             //delete stuff
             //bye
             DebugLog(@"crack was not ok, welp");
+            [[NSFileManager defaultManager] removeItemAtPath:_ipapath error:nil];
         }
+        [[NSFileManager defaultManager] removeItemAtPath:_tempPath error:nil];
     }];
     [zipCrackedOperation addDependency:crackOperation];
     [zipCrackedOperation addDependency:zipOriginalOperation];
@@ -250,7 +257,7 @@ static NSString * genRandStringLength(int len) {
     [queue addOperation:crackOperation];
     [queue addOperation:zipOriginalOperation];
     [queue waitUntilAllOperationsAreFinished];
-    return true;
+    return crackOk;
 }
 
 -(void)packageIPA {

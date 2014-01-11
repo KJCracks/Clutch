@@ -30,10 +30,19 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     return self;
 }
 - (void) zipOriginalOld:(NSOperation*) operation withZipLocation:(NSString*) location {
+    _zipTask = [[NSTask alloc] init];
+    [_zipTask setLaunchPath:@"/bin/bash"];
+    
     NSString* compressionArguments = [NSString stringWithFormat:@"-%u", [[Prefs sharedInstance] compressionLevel]];
-    system([[NSString stringWithFormat:@"cd %@; zip %@ -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", location, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName] UTF8String]);
-    DebugLog(@"zip command: %@", [NSString stringWithFormat:@"cd %@; zip %@ -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", location, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName]);
-
+    NSString* args = [NSString stringWithFormat:@"cd %@; zip %@ -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", location, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName];
+    if (![args writeToFile:@"/tmp/clutch-zip" atomically:YES encoding:NSUTF8StringEncoding error:nil]) {
+        DebugLog(@"could not write shell script to file, weird!");
+    }
+    NSArray* argArray = [[NSArray alloc] initWithObjects:@"/tmp/clutch-zip", nil];
+    [_zipTask setArguments:argArray];
+    [_zipTask launch];
+    [_zipTask waitUntilExit];
+   
 }
 - (void) zipOriginal:(NSOperation*) operation {
     if (_archiver == nil) {

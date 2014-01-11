@@ -41,29 +41,26 @@
 }
 
 - (void)setObject:(id)value forKey:(NSString *)defaultName{
-    NSMutableDictionary *dict=[[NSMutableDictionary alloc]initWithContentsOfFile:prefsPath];
-    if (dict==nil) {
-        dict=[NSMutableDictionary new];
+    if (_dict==nil) {
+        _dict=[NSMutableDictionary new];
     }
     if (value==nil)
     {
-        [dict removeObjectForKey:defaultName];
+        [_dict removeObjectForKey:defaultName];
     }
     else
     {
-        [dict setObject:value forKey:defaultName];
+        [_dict setObject:value forKey:defaultName];
     }
-    [dict writeToFile:prefsPath atomically:YES];
+    [_dict writeToFile:prefsPath atomically:YES];
 }
 
 - (BOOL)boolForKey:(NSString *)defaultName{
-    NSDictionary *dict=[NSDictionary dictionaryWithContentsOfFile:prefsPath];
-    return [[dict objectForKey:defaultName]boolValue];
+    return [[_dict objectForKey:defaultName]boolValue];
 }
 
 - (id)objectForKey:(NSString *)defaultName{
-    NSDictionary *dict=[NSDictionary dictionaryWithContentsOfFile:prefsPath];
-   return [dict objectForKey:defaultName];
+   return [_dict objectForKey:defaultName];
 }
 
 
@@ -181,6 +178,11 @@
                     free(read);
                     continue;
                 }
+                else if ([[input lowercaseString] hasPrefix:@"directory"]) {
+                    [tempDict setValue:@"DIRECTORY" forKey:key];
+                    free(read);
+                    continue;
+                }
                 
                 else {
                     DebugLog(@"error: invalid input\n");
@@ -197,6 +199,7 @@
     }
     _dict = tempDict;
     [_dict writeToFile:prefsPath atomically:YES];
+    printf("\nSaving configuration settings..\n");
 }
 
 

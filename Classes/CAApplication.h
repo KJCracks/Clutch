@@ -25,6 +25,7 @@
 @public
     BOOL isCracking;
     NSDictionary *progress;
+    NSDictionary* _info;
 }
 
 - (instancetype)initWithAppInfo:(NSDictionary *)info;

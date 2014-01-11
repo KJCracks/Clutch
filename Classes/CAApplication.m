@@ -60,6 +60,7 @@
         [copy removeObjectForKey:@"ApplicationSINF"]; //slow
         dictRep = copy;
         isCracking = NO;
+        _info = info;
     }
     return self;
 }

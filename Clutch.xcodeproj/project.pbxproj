@@ -84,6 +84,7 @@
 		ADC68CD317ECA8A7005282CE /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		ADC6C4841871A48D0073C40B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		ADC6C4871871A7260073C40B /* MobileInstallation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileInstallation.framework; path = System/Library/PrivateFrameworks/MobileInstallation.framework; sourceTree = SDKROOT; };
+		ADC8A6E71880E77E0063B6BD /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		BC871C7817E7122500048636 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BC871C7917E7122500048636 /* out.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = out.h; sourceTree = "<group>"; };
 		BC871C7A17E7122500048636 /* out.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = out.m; sourceTree = "<group>"; };
@@ -152,6 +153,7 @@
 				BC871C7D17E7122500048636 /* sha1.c */,
 				BC871C7E17E7122500048636 /* sha1.h */,
 				F473DA551871E77400AF3C59 /* stuff.h */,
+				ADC8A6E71880E77E0063B6BD /* NSTask.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

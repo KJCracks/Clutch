@@ -346,6 +346,8 @@
     DEBUG("basedir ok");
     // open streams from both files
     
+    MSG(CRACKING_PERFORMING_ANALYSIS);
+    
 	oldbinary = fopen([oldbinaryPath UTF8String], "r+");
 	newbinary = fopen([finalPath UTF8String], "r+");
     DEBUG("open ok");
@@ -367,6 +369,7 @@
     struct fat_header* fh  = (struct fat_header*) (buffer);
     
     switch (fh->magic) {
+        MSG(CRACKING_PERFORMING_PREFLIGHT);
         //64-bit thin
         case MH_MAGIC_64: {
             struct mach_header_64 *mh64 = (struct mach_header_64 *)fh;
@@ -604,7 +607,7 @@
 	BOOL foundStartText = FALSE;
 	uint64_t __text_start = 0;
 	uint64_t __text_size = 0;
-    VERBOSE("dumping binary: analyzing load commands");
+    MSG(DUMPING_ANALYZE_LOAD_COMMAND);
     
 	fread(&mach, sizeof(struct mach_header_64), 1, target); // read mach header to get number of load commands
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
@@ -655,14 +658,15 @@
 	mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 	uint32_t begin;
 	
-    VERBOSE("dumping binary: obtaining ptrace handle");
+    //VERBOSE("dumping binary: obtaining ptrace handle");
+    MSG(DUMPING_OBTAIN_PTRACE);
     
 	// open handle to dylib loader
 	void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW);
 	// load ptrace library into handle
 	ptrace_ptr_t ptrace = dlsym(handle, "ptrace");
 	// begin the forking process
-    VERBOSE("dumping binary: forking to begin tracing");
+    MSG(DUMPING_FORKING);
     
 	if ((pid = fork()) == 0) {
 		// it worked! the magic is in allowing the process to trace before execl.
@@ -685,7 +689,8 @@
 				return FALSE;
 		} while (!WIFSTOPPED( status ));
 		
-        VERBOSE("dumping binary: obtaining mach port");
+        //VERBOSE("dumping binary: obtaining mach port");
+        MSG(DUMPING_OBTAIN_MACH_PORT);
         
 		// open mach port to the other process
 		if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
@@ -694,8 +699,9 @@
 			return FALSE;
 		}
 		
-        VERBOSE("dumping binary: preparing code resign");
-        
+        //VERBOSE("dumping binary: preparing code resign");
+        MSG(DUMPING_CODE_RESIGN);
+
 		codesignblob = malloc(ldid.datasize);
 		fseek(target, top + ldid.dataoff, SEEK_SET); // seek to the codesign blob
 		fread(codesignblob, ldid.datasize, 1, target); // read the whole codesign blob
@@ -724,7 +730,8 @@
 		uint8_t buf_d[0x1000]; // create a single page buffer
 		uint8_t *buf = &buf_d[0]; // store the location of the buffer
 		
-        VERBOSE("dumping binary: preparing to dump");
+        //VERBOSE("dumping binary: preparing to dump");
+        MSG(DUMPING_PREPARE_DUMP);
         
 		// we should only have to write and perform checksums on data that changes
 		uint32_t togo = crypt.cryptsize + crypt.cryptoff;
@@ -743,7 +750,9 @@
 		// binary after cracking) we instead manually identify the vm regions which
 		// contain the header and subsequent decrypted executable code.
 		if (mach.flags & MH_PIE) {
-            VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
+            //VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
+            MSG(DUMPING_ASLR_ENABLED);
+            
 			// perform checks on vm regions
 			memory_object_name_t object;
 			vm_region_basic_info_data_t info;
@@ -782,7 +791,8 @@
         uint32_t overdrive_size = sizeof(OVERDRIVE_DYLIB_PATH) + sizeof(struct dylib_command);
         overdrive_size += sizeof(long) - (overdrive_size % sizeof(long)); // load commands like to be aligned by long
         
-        VERBOSE("dumping binary: performing dump");
+        //VERBOSE("dumping binary: performing dump");
+         MSG(DUMPING_PERFORM_DUMP);
         
 		while (togo > 0) {
             // get a percentage for the progress bar
@@ -804,7 +814,8 @@
                         // prepare the mach header for the new load command (overdrive dylib)
                         ((struct mach_header *)buf)->ncmds += 1;
                         ((struct mach_header *)buf)->sizeofcmds += overdrive_size;
-                        VERBOSE("dumping binary: patched mach header (overdrive)");
+                        //VERBOSE("dumping binary: patched mach header (overdrive)");
+                        MSG(DUMPING_OVERDRIVE_PATCH_HEADER);
                     }
                 }
                 // iterate over the header (or resume iteration)
@@ -826,7 +837,10 @@
                     if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                         struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
                         newcrypt->cryptid = 0; // change the cryptid to 0
-                        VERBOSE("dumping binary: patched cryptid");
+                        
+                        MSG(DUMPING_PATCH_CRYPTID);
+                        
+                        //VERBOSE("dumping binary: patched cryptid");
                     } else if (l_cmd->cmd == LC_SEGMENT) {
                         //printf("lc segemn yo\n");
                         struct segment_command *newseg = (struct segment_command *) curloc;
@@ -836,7 +850,8 @@
                                 // maxprot so that overdrive can change the __TEXT protection &
                                 // cryptid in realtime
                                 newseg->maxprot |= VM_PROT_ALL;
-                                VERBOSE("dumping binary: patched maxprot (overdrive)");
+                                MSG(DUMPING_OVERDRIVE_PATCH_MAXPROT);
+                                //VERBOSE("dumping binary: patched maxprot (overdrive)");
                             }
                         }
                     }
@@ -854,7 +869,8 @@
                 if (overdriveEnabled) {
                     // add the overdrive dylib as long as we have room
                     if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
-                        VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
+                        MSG(DUMPING_OVERDRIVE_ATTACH_DYLIB);
+                        //VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;
                         overdrive_dyld->cmdsize = overdrive_size;
@@ -879,8 +895,9 @@
 			pages_d += 1; // increase the amount of completed pages
 		}
         
-        VERBOSE("dumping binary: writing new checksum");
-		
+        //VERBOSE("dumping binary: writing new checksum");
+		MSG(DUMPING_NEW_CHECKSUM);
+        
 		// nice! now let's write the new checksum data
 		fseek(target, begin + CFSwapInt32(directory.hashOffset), SEEK_SET); // go to the hash offset
 		fwrite(checksum, 20*pages_d, 1, target); // write the hashes (ONLY for the amount of pages modified)
@@ -915,7 +932,8 @@
 	uint64_t __text_start = 0;
 	uint64_t __text_size = 0;
     DEBUG("32bit dumping, offset %u", top);
-    VERBOSE("dumping binary: analyzing load commands");
+    //VERBOSE("dumping binary: analyzing load commands");
+    MSG(DUMPING_ANALYZE_LOAD_COMMAND);
 	fread(&mach, sizeof(struct mach_header), 1, target); // read mach header to get number of load commands
     
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
@@ -964,14 +982,16 @@
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 	uint32_t begin;
 	
-    VERBOSE("dumping binary: obtaining ptrace handle");
+    //VERBOSE("dumping binary: obtaining ptrace handle");
+    MSG(DUMPING_OBTAIN_PTRACE);
     
 	// open handle to dylib loader
 	void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW);
 	// load ptrace library into handle
 	ptrace_ptr_t ptrace = dlsym(handle, "ptrace");
 	// begin the forking process
-    VERBOSE("dumping binary: forking to begin tracing");
+    //VERBOSE("dumping binary: forking to begin tracing");
+    MSG(DUMPING_FORKING);
     
 	if ((pid = fork()) == 0) {
 		// it worked! the magic is in allowing the process to trace before execl.
@@ -979,7 +999,7 @@
 		// execl stops the process before this is capable
 		// PT_DENY_ATTACH was never meant to be good security, only a minor roadblock
         
-        VERBOSE("dumping binary: successfully forked");
+        MSG(DUMPING_FORK_SUCCESS);
 		
 		ptrace(PT_TRACE_ME, 0, 0, 0); // trace
 		execl([originPath UTF8String], "", (char *) 0); // import binary memory into executable space
@@ -996,7 +1016,8 @@
 				return FALSE;
 		} while (!WIFSTOPPED( status ));
 		
-        VERBOSE("dumping binary: obtaining mach port");
+        //VERBOSE("dumping binary: obtaining mach port");
+        MSG(DUMPING_OBTAIN_MACH_PORT);
         
 		// open mach port to the other process
 		if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
@@ -1005,7 +1026,8 @@
 			return FALSE;
 		}
 		
-        VERBOSE("dumping binary: preparing code resign");
+        //VERBOSE("dumping binary: preparing code resign");
+        MSG(DUMPING_CODE_RESIGN);
         
 		codesignblob = malloc(ldid.datasize);
 		fseek(target, top + ldid.dataoff, SEEK_SET); // seek to the codesign blob
@@ -1035,7 +1057,8 @@
 		uint8_t buf_d[0x1000]; // create a single page buffer
 		uint8_t *buf = &buf_d[0]; // store the location of the buffer
 		
-        VERBOSE("dumping binary: preparing to dump");
+        //VERBOSE("dumping binary: preparing to dump");
+        MSG(DUMPING_PREPARE_DUMP);
         
 		// we should only have to write and perform checksums on data that changes
 		uint32_t togo = crypt.cryptsize + crypt.cryptoff;
@@ -1055,7 +1078,8 @@
 		// contain the header and subsequent decrypted executable code.
         
 		if (mach.flags & MH_PIE) {
-            VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
+            //VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
+            MSG(DUMPING_ASLR_ENABLED);
             // perform checks on vm regions
             memory_object_name_t object;
             vm_region_basic_info_data_t info;
@@ -1095,7 +1119,7 @@
         uint32_t overdrive_size = sizeof(OVERDRIVE_DYLIB_PATH) + sizeof(struct dylib_command);
         overdrive_size += sizeof(long) - (overdrive_size % sizeof(long)); // load commands like to be aligned by long
         
-        VERBOSE("dumping binary: performing dump");
+        MSG(DUMPING_PERFORM_DUMP);
         
 		while (togo > 0) {
             // get a percentage for the progress bar
@@ -1128,7 +1152,8 @@
                         // prepare the mach header for the new load command (overdrive dylib)
                         ((struct mach_header *)buf)->ncmds += 1;
                         ((struct mach_header *)buf)->sizeofcmds += overdrive_size;
-                        VERBOSE("dumping binary: patched mach header (overdrive)");
+                        //VERBOSE("dumping binary: patched mach header (overdrive)");
+                         MSG(DUMPING_OVERDRIVE_PATCH_HEADER);
                     }
                 }
                 // iterate over the header (or resume iteration)
@@ -1150,7 +1175,8 @@
                     if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                         struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
                         newcrypt->cryptid = 0; // change the cryptid to 0
-                        VERBOSE("dumping binary: patched cryptid");
+                        //VERBOSE("dumping binary: patched cryptid");
+                        MSG(DUMPING_PATCH_CRYPTID);
                     } else if (l_cmd->cmd == LC_SEGMENT) {
                         //printf("lc segemn yo\n");
                         struct segment_command *newseg = (struct segment_command *) curloc;
@@ -1160,7 +1186,9 @@
                                 // maxprot so that overdrive can change the __TEXT protection &
                                 // cryptid in realtime
                                 newseg->maxprot |= VM_PROT_ALL;
-                                VERBOSE("dumping binary: patched maxprot (overdrive)");
+                                //VERBOSE("dumping binary: patched maxprot (overdrive)");
+                                MSG(DUMPING_OVERDRIVE_PATCH_MAXPROT);
+
                             }
                         }
                     }
@@ -1178,7 +1206,8 @@
                 if (overdriveEnabled) {
                     // add the overdrive dylib as long as we have room
                     if ((int8_t*)(curloc + overdrive_size) < (int8_t*)(buf + 0x1000)) {
-                        VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
+                        //VERBOSE("dumping binary: attaching overdrive DYLIB (overdrive)");
+                        MSG(DUMPING_OVERDRIVE_ATTACH_DYLIB);
                         struct dylib_command *overdrive_dyld = (struct dylib_command *) curloc;
                         overdrive_dyld->cmd = LC_LOAD_DYLIB;
                         overdrive_dyld->cmdsize = overdrive_size;
@@ -1205,8 +1234,9 @@
 			pages_d += 1; // increase the amount of completed pages
 		}
         
-        VERBOSE("dumping binary: writing new checksum");
-		
+        //VERBOSE("dumping binary: writing new checksum");
+		MSG(DUMPING_NEW_CHECKSUM);
+        
 		// nice! now let's write the new checksum data
 		fseek(target, begin + CFSwapInt32(directory.hashOffset), SEEK_SET); // go to the hash offset
 		fwrite(checksum, 20*pages_d, 1, target); // write the hashes (ONLY for the amount of pages modified)

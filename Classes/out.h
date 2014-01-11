@@ -16,10 +16,11 @@
 
 #define NSPrint(M, ...) fprintf(stderr, "%s \n", [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
-#ifdef CLUTCH_DEV
+
+#ifdef CLUTCH_DEBUG
 #   define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
-//#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | " M "\n", FILE_NAME, __LINE__, ##__VA_ARGS__); //
-#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s | " M "\n", FILE_NAME, ##__VA_ARGS__); 
+#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | " M "\n", FILE_NAME, __LINE__, ##__VA_ARGS__); //
+//#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s | " M "\n", FILE_NAME, ##__VA_ARGS__);
 //print C objects
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define DebugLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
@@ -27,7 +28,9 @@
 #   define ERROR(M, ...) fprintf(stderr, "\033[0;32mERROR\033[0m | %s \n", [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #else
 #   define DEBUG(M, ...)
+#   define DebugLog(M, ...)
 #   define NSLog(...)
+#   define ERROR(M, ...)
 #endif
 
 int determine_screen_width (void);

@@ -144,6 +144,7 @@ static NSString * genRandStringLength(int len) {
     _tempPath = [NSString stringWithFormat:@"%@%@", @"/tmp/clutch_", genRandStringLength(8)];
     _workingDir = [NSString stringWithFormat:@"%@/Payload/%@", _tempPath, app.appDirectory];
     DebugLog(@"temporary directory %@", _workingDir);
+    MSG(CRACKING_CREATE_WORKING_DIR);
     if (![[NSFileManager defaultManager] createDirectoryAtPath:_workingDir withIntermediateDirectories:YES attributes:@{NSFileOwnerAccountName:@"mobile",NSFileGroupOwnerAccountName:@"mobile"} error:NULL]) {
         
         printf("error: Could not create working directory\n");
@@ -192,14 +193,14 @@ static NSString * genRandStringLength(int len) {
             DebugLog(@"Failed to crack %@ with error: %@",_app.applicationDisplayName,error.localizedDescription);
             crackOk = FALSE;
             error = _error;
-            printf("\nkilling zip thread, please wait..\n");
+            MSG(PACKAGING_FAILED_KILL_ZIP);
             [zip->_zipTask terminate];
             DebugLog(@"terminate status %u", [zip->_zipTask terminationStatus]);
         }
         else {
             crackOk = TRUE;
             DebugLog(@"crack operation ok!");
-            printf("\nwaiting for zip thread\n");
+            MSG(PACKAGING_WAITING_ZIP);
         }
        
     }];
@@ -233,12 +234,14 @@ static NSString * genRandStringLength(int len) {
     NSOperation *zipCrackedOperation = [NSBlockOperation blockOperationWithBlock:^{
         //check if crack was successful
         if (crackOk) {
+            MSG(PACKAGING_IPA);
             [self packageIPA];
             DebugLog(@"package IPA ok");
             [zip zipCracked];
             DebugLog(@"zip cracked ok");
             [zip->_archiver CloseZipFile2];
             //clean up
+            MSG(PACKAGING_COMPRESSION_LEVEL);
             
         }
         else {
@@ -284,7 +287,7 @@ static NSString * genRandStringLength(int len) {
         [[NSFileManager defaultManager] copyItemAtPath:@"/etc/clutch/overdrive.dylib" toPath:[_workingDir stringByAppendingPathComponent:OVERDRIVE_DYLIB_PATH] error:NULL];
         
     }
-    
+    MSG(PACKAGING_ITUNESMETADATA);
     NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];
     
     DebugLog(@"Creating fake SC_Info data...");

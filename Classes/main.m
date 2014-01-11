@@ -72,17 +72,23 @@ static NSString* get_compare_with() {
 int main(int argc, char *argv[]) {
     struct timeval start,end;
     gettimeofday(&start, NULL);
-    
+    [[Localization sharedInstance] checkCache];
     int retVal = 0;
     if (CLUTCH_DEV == 1) {
-        printf("You're using a Clutch development build, checking for updates..\n");
+        MSG(CLUTCH_DEV_CHECK_UPDATE);
         if (!check_version()) {
             return retVal;
         }
     }
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    //NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	if (getuid() != 0) {
+        if ([Localization sharedInstance]->setuidPerformed) {
+            //setuid to root needs chown:root, dumb users won't udnerstand
+            printf("Localization cache obtained, please re-run Clutch\n");
+            printf("已获取本地化缓存, 请重新运行\n");
+            goto endMain;
+        }
 		printf("You must be root to use Clutch.\n");
 		goto endMain;
 	}
@@ -140,7 +146,8 @@ int main(int argc, char *argv[]) {
 		NSString *ipapath;
         
 		while (app = [e nextObject]) {
-			printf("Cracking %s...\n", [app.applicationName UTF8String]);
+			//printf("Cracking %s...\n", [app.applicationName UTF8String]);
+            MSG(CRACKING_APPNAME, app.applicationName);
             
             Cracker *cracker = [[Cracker alloc] init];
             [cracker prepareFromInstalledApp:app];
@@ -208,8 +215,8 @@ int main(int argc, char *argv[]) {
 				if (!numberMenu && ([comparedValue caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame)) {
                 inCrackRoutine:
 					cracked = TRUE;
-					printf("Cracking %s...\n", [app.applicationName UTF8String]);
-                    
+					//printf("Cracking %s...\n", [app.applicationName UTF8String]);
+                    MSG(CRACKING_APPNAME, app.applicationName);
                     
                     Cracker *cracker = [[Cracker alloc] init];
                     [cracker prepareFromInstalledApp:app];
@@ -238,26 +245,30 @@ int main(int argc, char *argv[]) {
     
     if (crack) {
         int dif = diff_ms(end,start);
-        printf("\nelapsed time: %dms\n", dif);
+        //printf("\nelapsed time: %dms\n", dif);
+        MSG(COMPLETE_ELAPSED_TIME, dif);
     }
     
-    printf("\nApplications Cracked: \n");
+    //printf("\nApplications Cracked: \n");
+    MSG(COMPLETE_APPS_CRACKED);
     
     for (int i = 0; i < [successfulCracks count]; i++) {
         printf("\033[0;32m%s\033[0m\n", [successfulCracks[i] UTF8String]);
     }
     
-    printf("\nApplications that Failed:\n");
+    //printf("\nApplications that Failed:\n");
+    MSG(COMPLETE_APPS_FAILED);
     
     for (int i = 0; i < [failedCracks count]; i++) {
         printf("\033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
     }
     
-    printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
+    //printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
+    MSG(COMPLETE_TOTAL, (int)[successfulCracks count], (int)[failedCracks count]);
 	
 endMain:
 	return retVal;
-    [pool release];
+    //[pool release];
 help:
     printf("%s\n", CLUTCH_VERSION);
     printf("Clutch Help\n");
@@ -269,7 +280,7 @@ help:
     printf("-v          Shows version\n");
     printf("\n");
     
-    [pool release];
+    //[pool release];
 }
 
 

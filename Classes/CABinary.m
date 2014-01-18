@@ -1277,7 +1277,7 @@
     struct fat_header* swapfh = (struct fat_header*) (swapBuffer);
     
     int i;
-    
+
     struct fat_arch *arch = (struct fat_arch *) &swapfh[1];
     cpu_type_t swap_cputype;
     cpu_subtype_t largest_cpusubtype = 0;

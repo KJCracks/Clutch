@@ -50,7 +50,9 @@ typedef enum {
 typedef enum {
     en,
     zh, //chinese
-    de //german
+    de, //german
+    fr, //french
+    rs, //serbian
 } Lang;
 
 
@@ -177,6 +179,87 @@ static NSString * const de_locale[] = {
     
 };
 
+
+static NSString * const fr_locale[] = {
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Vous utilisez une version de développement de Clutch, vérification des mises à jour...",
+    [CLUTCH_DEV_UP_TO_DATE] = @"Votre version de Clutch est à jour !",
+    
+    [CRACKING_APPNAME] = @"Craquage %@...",
+    [CRACKING_CREATE_WORKING_DIR] = @"Création du répertoire de travail...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"Exécute une première analyse...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"Exécution du craquage de pré-installation...",
+    
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"Dumping du binaire: analyse du chargement des commandes",
+    [DUMPING_OBTAIN_PTRACE] = @"Dumping du binaire: Récupération du traitement de ptrace",
+    [DUMPING_FORKING] = @"Dumping du binaire: bifurcation pour commencer à tracer",
+    [DUMPING_FORK_SUCCESS] = @"Dumping du binaire: bifurcation réussie",
+    [DUMPING_OBTAIN_MACH_PORT] = @"Dumping du binaire: Obtention du port correspondant",
+    [DUMPING_CODE_RESIGN] = @"Dumping du binaire: préparation du code",
+    [DUMPING_PREPARE_DUMP] = @"Dumping du binaire: préparation du vidage",
+    [DUMPING_ASLR_ENABLED] = @"Dumping du binaire: ASLR activé, identification de l'emplacement de vidage dynamique",
+    [DUMPING_PERFORM_DUMP] = @"Dumping du binaire: exécution du vidage",
+    [DUMPING_PATCH_CRYPTID] = @"Dumping du binaire: cryptid patché",
+    [DUMPING_NEW_CHECKSUM] = @" Dumping du binaire: écriture de la nouvelle somme de contrôle",
+    
+    [SWAP_CRACKING_PORTION] = @"swap: craquage de la partie armv%u",
+    
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Dumping du binaire: patchage de l'en-tête correspondante (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Dumping du binaire: patch maxprot (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Dumping du binaire: patch cryptid (overdrive)",
+    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Dumping du binaire: attache overdrive DYLIB (overdrive)",
+    
+    [PACKAGING_WAITING_ZIP] = @"Package: patienter pendant la création du zip",
+    [PACKAGING_FAILED_KILL_ZIP] = @"Package: le crack a échoué, suppression de la création du zip",
+    [PACKAGING_ITUNESMETADATA] = @"Package: censure d'iTunesMetadata",
+    [PACKAGING_IPA] = @"Package: Compression de l'IPA",
+    [PACKAGING_COMPRESSION_LEVEL] = @"Package: Compression de niveau %u",
+    
+    [COMPLETE_ELAPSED_TIME] = @"Temps écoulé: %ums",
+    [COMPLETE_APPS_CRACKED] = @"\nApplications crackées:\n",
+    [COMPLETE_APPS_FAILED] = @"\nApplications ratées:\n",
+    [COMPLETE_TOTAL] = @"\nNombre de succès: \033[0;32m%u\033[0m   Nombre d'échoués: \033[0;32m%u\033[0m ",
+    
+};
+
+static NSString * const rs_locale[] = {
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Koristite beta verziju Clutch, proveravam aûuriranja",
+    [CLUTCH_DEV_UP_TO_DATE] = @"Vaöa verzija Clutch je najnovija!",
+	
+    [CRACKING_APPNAME] = @"Crackujem %@...",
+    [CRACKING_CREATE_WORKING_DIR] = @"Pravim direktorijum za rad...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"Izvröavam poËetne analize...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"Izvröavam provere pred poËetak crackovanja...",
+	
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"izbacujem binary: Analiziram komande pri uËitavanju",
+    [DUMPING_OBTAIN_PTRACE] = @"izbacujem binary: uzimam ptrace handle",
+    [DUMPING_FORKING] = @"izbacujem binary: forkujem da zapoËnem traûenje",
+    [DUMPING_FORK_SUCCESS] = @"izbacujem binary: forkovanje uspeöno",
+    [DUMPING_OBTAIN_MACH_PORT] = @"izbacujem binary: uzimam mach port",
+    [DUMPING_CODE_RESIGN] = @"izbacujem binary: spremam potpisivanje koda",
+    [DUMPING_PREPARE_DUMP] = @"izbacujem binary: spremam se za izbacivanje",
+    [DUMPING_ASLR_ENABLED] = @"izbacujem binary: ASLR omoguÊen, dinamiËki identifikujem lokaciju izbacivanja",
+    [DUMPING_PERFORM_DUMP] = @"izbacujem binary: izvröavam izbacivanje",
+    [DUMPING_PATCH_CRYPTID] = @"izbacujem binary: cryptid je zakrpljen",
+    [DUMPING_NEW_CHECKSUM] = @"izbacujem binary: piöem novi checksum",
+	
+    [SWAP_CRACKING_PORTION] = @"izmenjujem: trenutno crackujem armv%u deo",
+    
+	[DUMPING_OVERDRIVE_PATCH_HEADER] = @"izbacujem binary: mach header zakrpljen (overdrive)",
+	[DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"izbacujem binary: maxprot zakrpljen (overdrive)",
+	[DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"izbacujem binary: cryptid zakrpljen (overdrive)",
+	[DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"izbacujem binary: vezujem overdrive DYLIB (overdrive)",
+    
+	[PACKAGING_WAITING_ZIP] = @"pakujem: Ëekam zip thread",
+	[PACKAGING_FAILED_KILL_ZIP] = @"pakujem: crackovanje neuspeöno, ubijam zip thread",
+	[PACKAGING_ITUNESMETADATA] = @"pakujem: cenzuriöem iTunesMetadata",
+	[PACKAGING_IPA] = @"pakujem: kompresujem IPA",
+	[PACKAGING_COMPRESSION_LEVEL] = @"pakujem: nivo kompresije %u",
+    
+	[COMPLETE_ELAPSED_TIME] = @"utroöeno vreme» %ums",
+	[COMPLETE_APPS_CRACKED] = @"\nUspeöno:\n",
+	[COMPLETE_APPS_FAILED] = @"\nBezuspeöno:\n",
+	[COMPLETE_TOTAL] = @"\nUkupno uspeöno: \033[0;32m%u\033[0m   Ukupno bezuspeöno: \033[0;32m%u\033[0m ",
+};
 
 /*
  

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		AD0C2E6018894D33007BCBB5 /* YOPAPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */; };
 		AD13066A186E6A9800DFE220 /* locale.m in Sources */ = {isa = PBXBuildFile; fileRef = AD130669186E6A9800DFE220 /* locale.m */; };
 		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
 		AD2790D31870580000A4FD11 /* CAApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CC187057FF00A4FD11 /* CAApplication.m */; };
@@ -44,6 +45,8 @@
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD0C2E5E18894D33007BCBB5 /* YOPAPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YOPAPackage.h; sourceTree = "<group>"; };
+		AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YOPAPackage.m; sourceTree = "<group>"; };
 		AD130669186E6A9800DFE220 /* locale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = locale.m; sourceTree = "<group>"; };
 		AD13066B186E6AAF00DFE220 /* locale.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = locale.h; sourceTree = "<group>"; };
 		AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -141,6 +144,8 @@
 				AD2790D21870580000A4FD11 /* CADevice.m */,
 				AD30146A1871517400E06315 /* Cracker.h */,
 				AD3014681871514D00E06315 /* Cracker.m */,
+				AD0C2E5E18894D33007BCBB5 /* YOPAPackage.h */,
+				AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */,
 				F473DA77187223F900AF3C59 /* imetadata.h */,
 				F473DA75187223EE00AF3C59 /* imetadata.m */,
 				AD30146B18715EF800E06315 /* Packager.h */,
@@ -334,6 +339,7 @@
 			files = (
 				ADC8A6ED188170000063B6BD /* API.m in Sources */,
 				AD61315C187D23FC00B94378 /* Install.m in Sources */,
+				AD0C2E6018894D33007BCBB5 /* YOPAPackage.m in Sources */,
 				AD2790D61870580000A4FD11 /* CADevice.m in Sources */,
 				AD2790D31870580000A4FD11 /* CAApplication.m in Sources */,
 				ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */,

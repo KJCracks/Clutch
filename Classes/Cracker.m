@@ -11,6 +11,7 @@
 #import "izip.h"
 #import "ZipArchive.h"
 #import "API.h"
+#import "YOPAPackage.h"
 
 #import "Packager.h"
 
@@ -165,18 +166,18 @@ static NSString * genRandStringLength(int len) {
 }
 
 -(NSString*) generateIPAPath {
-    NSString* ipapath;
     NSString *crackerName = [[Prefs sharedInstance] crackerName];
     
      NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Prefs sharedInstance] ipaDirectory]];
     if ([[Prefs sharedInstance] addMinOS]) {
-        ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
+        _ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
+        _yopaPath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).7z.yopa.ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
     else {
-        ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+        _ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
+         _yopaPath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).7z.yopa.ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
-    _ipapath = ipapath;
-    return ipapath;
+    return _ipapath;
 }
 
 -(BOOL) execute {
@@ -185,6 +186,13 @@ static NSString * genRandStringLength(int len) {
     __block BOOL* crackOk, *zipComplete = false;
     
     iZip* zip = [[iZip alloc] initWithCracker:self];
+    if (!_yopaEnabled) {
+        [zip setCompressionLevel:[[Prefs sharedInstance] compressionLevel]];
+    }
+    else {
+        [zip setCompressionLevel:0];
+    }
+    
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
 
     NSBlockOperation *crackOperation = [NSBlockOperation blockOperationWithBlock:^{
@@ -249,7 +257,12 @@ static NSString * genRandStringLength(int len) {
             DebugLog(@"zip cracked ok");
             [zip->_archiver CloseZipFile2];
             //clean up
-            MSG(PACKAGING_COMPRESSION_LEVEL);
+            MSG(PACKAGING_COMPRESSION_LEVEL, zip->_compressionLevel);
+            
+            if (_yopaEnabled) {
+                DebugLog(@"YOPA enabled, generating YOPA file..");
+                [self packageYOPA];
+            }
         }
         else {
             //stop the original zip
@@ -270,6 +283,13 @@ static NSString * genRandStringLength(int len) {
     [queue addOperation:zipOriginalOperation];
     [queue waitUntilAllOperationsAreFinished];
     return crackOk;
+}
+
+-(void)packageYOPA {
+    YOPAPackage* package = [[YOPAPackage alloc] initWithIPAPath:_ipapath];
+    DebugLog(@"compressing to 7zip");
+    [package compressToPackage:_yopaPath withCompressionType:SEVENZIP_COMPRESSION];
+    [package addHeaders];
 }
 
 -(void)packageIPA {
@@ -332,5 +352,8 @@ static NSString * genRandStringLength(int len) {
     return _finaldir;
 }
 
+-(void)yopaEnabled:(BOOL) dunno {
+    _yopaEnabled = dunno;
+}
 
 @end

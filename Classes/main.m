@@ -49,7 +49,8 @@ BOOL check_version() {
         printf("Your current version of Clutch %u is outdated!\nPlease get the latest version %u!\n", CLUTCH_BUILD, build_version);
         return FALSE;
     } else {
-        printf("Your version of Clutch is up to date!\n");
+        //printf("Your version of Clutch is up to date!\n");
+        MSG(CLUTCH_DEV_UP_TO_DATE);
     }
     return TRUE;
 }
@@ -205,8 +206,12 @@ int main(int argc, char *argv[]) {
     		
 		NSString *ipapath;
 		CAApplication* app;
-		BOOL cracked = FALSE;
+		BOOL cracked = false, yopa_enabled = false;
 		for (int i = 1; i<argc; i++) {
+            if (!strcmp(argv[i], "--yopa")) {
+                printf("YOPA is enabled.\n");
+                yopa_enabled = true;
+            }
 			NSEnumerator *e = [applist objectEnumerator];
 			int cindex = 0;
             NSString* comparedValue;
@@ -220,7 +225,11 @@ int main(int argc, char *argv[]) {
                     MSG(CRACKING_APPNAME, app.applicationName);
                     
                     Cracker *cracker = [[Cracker alloc] init];
+                    
                     [cracker prepareFromInstalledApp:app];
+                    
+                    [cracker yopaEnabled:yopa_enabled];
+                    
                     ipapath = [cracker generateIPAPath];
                     
                     if ([cracker execute]) {

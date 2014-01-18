@@ -23,6 +23,8 @@
     CAApplication *_app;
     NSString *_workingDir;
     NSString *_ipapath;
+    NSString *_yopaPath;
+    BOOL* _yopaEnabled;
 }
 
 -(id)init;
@@ -34,5 +36,6 @@
 -(NSString *)getOutputFolder;
 -(BOOL)execute;
 -(NSString*) generateIPAPath;
+-(void)yopaEnabled:(BOOL) dunno;
 
 @end

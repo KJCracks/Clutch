@@ -68,9 +68,17 @@ NSString* msg(Message message) {
             //chinese
             lang = zh;
         }
-        if ([[defaultLang lowercaseString] hasPrefix:@"de"]) {
+        else if ([[defaultLang lowercaseString] hasPrefix:@"de"]) {
             //german
             lang = de;
+        }
+        else if ([[defaultLang lowercaseString] hasPrefix:@"fr"]) {
+            //french
+            lang = fr;
+        }
+        else if ([[defaultLang lowercaseString] hasPrefix:@"rs"]) {
+            //serbian
+            lang = rs;
         }
         else {
             lang = en;

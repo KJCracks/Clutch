@@ -33,7 +33,7 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     _zipTask = [[NSTask alloc] init];
     [_zipTask setLaunchPath:@"/bin/bash"];
     
-    NSString* compressionArguments = [NSString stringWithFormat:@"-%u", [[Prefs sharedInstance] compressionLevel]];
+    NSString* compressionArguments = [NSString stringWithFormat:@"-%u", _compressionLevel];
     NSString* args = [NSString stringWithFormat:@"cd %@; zip %@ -y -r -n .jpg:.JPG:.jpeg:.png:.PNG:.gif:.GIF:.Z:.gz:.zip:.zoo:.arc:.lzh:.rar:.arj:.mp3:.mp4:.m4a:.m4v:.ogg:.ogv:.avi:.flac:.aac \"%@\" Payload/* -x Payload/iTunesArtwork Payload/iTunesMetadata.plist \"Payload/Documents/*\" \"Payload/Library/*\" \"Payload/tmp/*\" \"Payload/*/%@\" \"Payload/*/SC_Info/*\" 2>&1> /dev/null", location, compressionArguments, _cracker->_ipapath, _cracker->_app.applicationExecutableName];
     if (![args writeToFile:@"/tmp/clutch-zip" atomically:YES encoding:NSUTF8StringEncoding error:nil]) {
         DebugLog(@"could not write shell script to file, weird!");
@@ -51,7 +51,6 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     }
     NSString* folder = _cracker->_app.applicationContainer;
     NSString* binary = _cracker->_app.applicationExecutableName;
-    int compressionLevel = 0;
     BOOL isDir=NO;
     NSMutableArray *subpaths=nil;
     NSUInteger total = 0;
@@ -107,7 +106,7 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         
         if([fileManager fileExistsAtPath:longPath isDirectory:&isDir] && !isDir){
             
-            [_archiver addFileToZip:longPath newname:[NSString stringWithFormat:@"Payload/%@", path] compressionLevel:compressionLevel];
+            [_archiver addFileToZip:longPath newname:[NSString stringWithFormat:@"Payload/%@", path] compressionLevel:_compressionLevel];
             
         }
     }
@@ -145,6 +144,9 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         }
     }
     return;
+}
+- (void) setCompressionLevel:(int) level {
+    _compressionLevel = level;
 }
 
 @end

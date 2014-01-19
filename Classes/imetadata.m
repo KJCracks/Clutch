@@ -30,7 +30,6 @@ void generateMetadata(NSString *origPath,NSString *output)
         fake_email = @"steve@rim.jobs";
     }
     
-    fake_purchase_date = [NSDate date];
     
     NSMutableDictionary *metadataPlist = [NSMutableDictionary dictionaryWithContentsOfFile:origPath];
     

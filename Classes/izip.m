@@ -42,6 +42,8 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     [_zipTask setArguments:argArray];
     [_zipTask launch];
     [_zipTask waitUntilExit];
+    
+    [argArray release];
    
 }
 - (void) zipOriginal:(NSOperation*) operation {
@@ -53,7 +55,7 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     NSString* binary = _cracker->_app.applicationExecutableName;
     BOOL isDir=NO;
     NSMutableArray *subpaths=nil;
-    NSUInteger total = 0;
+    //NSUInteger total = 0; DEAD_STORE
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:folder isDirectory:&isDir] && isDir){
         
@@ -87,9 +89,11 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
             
             
             [subpaths addObject:aNewPath];
+            
+            [aNewPath release];
         }
         
-        total = [subpaths count];
+        //total = [subpaths count]; DEAD_STORE
         
     }
     
@@ -110,6 +114,9 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
             
         }
     }
+    
+    [subpaths release];
+    
     return;
     
 }
@@ -124,14 +131,14 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     int compressionLevel = 0;
     BOOL isDir=NO;
     NSArray *subpaths=nil;
-    NSUInteger total = 0;
+    //NSUInteger total = 0; DEAD_STORE
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     BOOL exists = [fileManager fileExistsAtPath:folder isDirectory:&isDir];
     
     if (exists && isDir){
         subpaths = [fileManager subpathsAtPath:folder];
-        total = [subpaths count];
+        //total = [subpaths count]; DEAD_STORE
     }
     
     

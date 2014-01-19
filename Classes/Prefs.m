@@ -137,8 +137,9 @@
     NSDictionary* supportDictionary = [NSDictionary dictionaryWithContentsOfFile:@"/var/lib/clutch/support.plist"];
     NSMutableDictionary* tempDict = [NSMutableDictionary dictionaryWithDictionary:_dict];
     NSString* support, *defaultValue;
-    char *read;
-    if (read == NULL) {
+    
+    char *read = "Mem?"; // probably a better way to do this
+    if (!read) {
         printf ("No memory\n");
         return;
     }

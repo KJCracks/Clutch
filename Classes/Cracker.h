@@ -27,13 +27,14 @@
     BOOL* _yopaEnabled;
 }
 
+//-(BOOL)createFullCopyOfContents:(NSString *)outdir withAppBaseDir:(NSString *)appdir;
+//-(BOOL)createPartialCopy:(NSString *)outdir withApplicationDir:(NSString *)appdir withMainExecutable:(NSString *)mainexe;
+//-(BOOL)prepareFromSpecificExecutable:(NSString *)exepath returnDescription:(NSMutableString *)description;
+//-(NSString *)getAppDescription;
+//-(NSString *)getOutputFolder;
+
 -(id)init;
--(BOOL)createFullCopyOfContents:(NSString *)outdir withAppBaseDir:(NSString *)appdir;
--(BOOL)createPartialCopy:(NSString *)outdir withApplicationDir:(NSString *)appdir withMainExecutable:(NSString *)mainexe;
 -(BOOL)prepareFromInstalledApp:(CAApplication*)app;
--(BOOL)prepareFromSpecificExecutable:(NSString *)exepath returnDescription:(NSMutableString *)description;
--(NSString *)getAppDescription;
--(NSString *)getOutputFolder;
 -(BOOL)execute;
 -(NSString*) generateIPAPath;
 -(void)yopaEnabled:(BOOL) dunno;

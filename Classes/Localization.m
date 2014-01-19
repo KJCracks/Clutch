@@ -89,10 +89,15 @@ NSString* msg(Message message) {
 -(void)checkCache {
     
     if ([_preferredLang count] == 0) {
-        setuid(501); //setuid as mobile, get language
-        _preferredLang = [NSLocale preferredLanguages];
-        [_preferredLang writeToFile:langCacheTmp atomically:YES];
-        setuidPerformed = true;
+        int ret = setuid(501); //setuid as mobile, get language
+        if (ret == 0)
+        {
+            // Security broooo
+            _preferredLang = [NSLocale preferredLanguages];
+            [_preferredLang writeToFile:langCacheTmp atomically:YES];
+            setuidPerformed = true;
+            
+        }
     }
 }
 

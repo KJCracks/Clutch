@@ -79,7 +79,7 @@ void print_bar(void) {
     if (bar_percent < 0) {
         // do not draw the percentage
         if (strlen(bar_msg) > (width - 5)) {
-            strncpy(bar_msg + width - 5, "...", 4);
+            strncpy(bar_msg + width - 5, "...", 4); // buffer overflow gg dissident
         }
         printf("%s", bar_msg);
         fflush(stdout);

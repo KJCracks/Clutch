@@ -40,7 +40,7 @@ static NSString* generateUuidString() {
 }
 
 -(void) installIPA {
-    bool exists = TRUE;;
+    BOOL exists = TRUE;
     while (exists == TRUE) {
         _installedPath = [NSString stringWithFormat:@"/var/mobile/Applications/%@", generateUuidString()];
         if (![[NSFileManager defaultManager] fileExistsAtPath:_installedPath isDirectory:YES]) {
@@ -53,17 +53,24 @@ static NSString* generateUuidString() {
     [zip UnzipOpenFile:_ipaPath];
     [zip UnzipFileTo:_installedPath overWrite:YES];
     
+    [zip release];
+    
     NSString* binaryPath = [NSString stringWithFormat:@"%@/%@", _installedPath, _binaryPath];
     NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithShort:0775], NSFilePosixPermissions, nil];
     
     [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:binaryPath error:nil];
-    printf("setted attributes!\n");
+    [attributes release];
+    
+    printf("set attributes!\n");
 }
--(void) crackWithOutBinary:(NSString*)outbinary {
+
+- (void)crackWithOutBinary:(NSString*)outbinary {
     CABinary* binary = [[CABinary alloc] initWithBinary:_binaryPath];
     DebugLog(@"outbinary %@", outbinary);
     [binary crackBinaryToFile:outbinary error:nil];
     DebugLog(@"apparently crack was ok!?");
+    
+    [binary release];
 }
 
 @end

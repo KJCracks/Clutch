@@ -44,7 +44,11 @@ BOOL check_version() {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://kjcracks.github.io/Clutch/current_build"] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
     NSURLResponse* response = [[NSURLResponse alloc] init];
     NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-    int build_version = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] intValue];
+    NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    int build_version = [dataString intValue];
+    
+    [dataString release];
+    
     if (build_version > CLUTCH_BUILD) {
         printf("Your current version of Clutch %u is outdated!\nPlease get the latest version %u!\n", CLUTCH_BUILD, build_version);
         return FALSE;
@@ -206,7 +210,8 @@ int main(int argc, char *argv[]) {
     		
 		NSString *ipapath;
 		CAApplication* app;
-		BOOL cracked = false, yopa_enabled = false;
+		//BOOL cracked = FALSE, yopa_enabled = FALSE;
+        BOOL yopa_enabled = FALSE;
 		for (int i = 1; i<argc; i++) {
             if (!strcmp(argv[i], "--yopa")) {
                 printf("YOPA is enabled.\n");
@@ -220,7 +225,7 @@ int main(int argc, char *argv[]) {
                 comparedValue = [app->_info objectForKey:get_compare_with()];
 				if (!numberMenu && ([comparedValue caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame)) {
                 inCrackRoutine:
-					cracked = TRUE;
+					//cracked = TRUE; DEAD_STORE
 					//printf("Cracking %s...\n", [app.applicationName UTF8String]);
                     MSG(CRACKING_APPNAME, app.applicationName);
                     
@@ -242,6 +247,7 @@ int main(int argc, char *argv[]) {
                         [failedCracks addObject:app.applicationName];
                         printf("Failed.\n");
                     }
+                    [cracker release];
 					break;
 				} else {
 					if (numberMenu && (0 == strcmp([[NSString stringWithFormat:@"%d", cindex] UTF8String], argv[i]))) {
@@ -249,7 +255,7 @@ int main(int argc, char *argv[]) {
 					}
 				}
 			}
-			cracked = FALSE;
+			//cracked = FALSE; DEAD_STORE
 		}
 	}
     
@@ -275,6 +281,9 @@ int main(int argc, char *argv[]) {
     
     //printf("\nTotal Success: \033[0;32m%lu\033[0m Total Failed: \033[0;33m%lu\033[0m\n\n", (unsigned long)[successfulCracks count], (unsigned long)[failedCracks count]);
     MSG(COMPLETE_TOTAL, (int)[successfulCracks count], (int)[failedCracks count]);
+    
+    [successfulCracks release];
+    [failedCracks release];
 	
 endMain:
 	return retVal;

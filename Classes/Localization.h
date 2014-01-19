@@ -221,7 +221,7 @@ static NSString * const fr_locale[] = {
     
 };
 
-static NSString * const rs_locale[] = {
+static NSString * const hr_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"Koristite beta verziju Clutch, proveravam ažuriranja",
     [CLUTCH_DEV_UP_TO_DATE] = @"Vaša verzija Clutch je najnovija!",
 	

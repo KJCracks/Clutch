@@ -32,6 +32,12 @@ NSString* msg(Message message) {
             break;
         case de:
             return de_locale[message];
+			break;
+		case fr:
+			return fr_locale[message];
+			break;
+		case hr:
+			return hr_locale[message];
     }
 }
 
@@ -76,9 +82,9 @@ NSString* msg(Message message) {
             //french
             lang = fr;
         }
-        else if ([[defaultLang lowercaseString] hasPrefix:@"rs"]) {
-            //serbian
-            lang = rs;
+        else if ([[defaultLang lowercaseString] hasPrefix:@"hr"]) {
+            //serbian/croatian
+            lang = hr;
         }
         else {
             lang = en;

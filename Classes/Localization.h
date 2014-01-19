@@ -52,7 +52,7 @@ typedef enum {
     zh, //chinese
     de, //german
     fr, //french
-    rs, //serbian
+    hr, //serbian/croatian
 } Lang;
 
 
@@ -222,25 +222,25 @@ static NSString * const fr_locale[] = {
 };
 
 static NSString * const rs_locale[] = {
-    [CLUTCH_DEV_CHECK_UPDATE] = @"Koristite beta verziju Clutch, proveravam aûuriranja",
-    [CLUTCH_DEV_UP_TO_DATE] = @"Vaöa verzija Clutch je najnovija!",
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Koristite beta verziju Clutch, proveravam ažuriranja",
+    [CLUTCH_DEV_UP_TO_DATE] = @"Vaša verzija Clutch je najnovija!",
 	
     [CRACKING_APPNAME] = @"Crackujem %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Pravim direktorijum za rad...",
-    [CRACKING_PERFORMING_ANALYSIS] = @"Izvröavam poËetne analize...",
-    [CRACKING_PERFORMING_PREFLIGHT] = @"Izvröavam provere pred poËetak crackovanja...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"Izvršavam početne analize...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"Izvršavam provere pred početak crackovanja...",
 	
-    [DUMPING_ANALYZE_LOAD_COMMAND] = @"izbacujem binary: Analiziram komande pri uËitavanju",
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"izbacujem binary: Analiziram komande pri učitavanju",
     [DUMPING_OBTAIN_PTRACE] = @"izbacujem binary: uzimam ptrace handle",
-    [DUMPING_FORKING] = @"izbacujem binary: forkujem da zapoËnem traûenje",
-    [DUMPING_FORK_SUCCESS] = @"izbacujem binary: forkovanje uspeöno",
+    [DUMPING_FORKING] = @"izbacujem binary: forkujem da započnem traženje",
+    [DUMPING_FORK_SUCCESS] = @"izbacujem binary: forkovanje uspešno",
     [DUMPING_OBTAIN_MACH_PORT] = @"izbacujem binary: uzimam mach port",
     [DUMPING_CODE_RESIGN] = @"izbacujem binary: spremam potpisivanje koda",
     [DUMPING_PREPARE_DUMP] = @"izbacujem binary: spremam se za izbacivanje",
-    [DUMPING_ASLR_ENABLED] = @"izbacujem binary: ASLR omoguÊen, dinamiËki identifikujem lokaciju izbacivanja",
-    [DUMPING_PERFORM_DUMP] = @"izbacujem binary: izvröavam izbacivanje",
+    [DUMPING_ASLR_ENABLED] = @"izbacujem binary: ASLR omogućen, dinamički identifikujem lokaciju izbacivanja",
+    [DUMPING_PERFORM_DUMP] = @"izbacujem binary: izvršavam izbacivanje",
     [DUMPING_PATCH_CRYPTID] = @"izbacujem binary: cryptid je zakrpljen",
-    [DUMPING_NEW_CHECKSUM] = @"izbacujem binary: piöem novi checksum",
+    [DUMPING_NEW_CHECKSUM] = @"izbacujem binary: pišem novi checksum",
 	
     [SWAP_CRACKING_PORTION] = @"izmenjujem: trenutno crackujem armv%u deo",
     
@@ -249,16 +249,16 @@ static NSString * const rs_locale[] = {
 	[DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"izbacujem binary: cryptid zakrpljen (overdrive)",
 	[DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"izbacujem binary: vezujem overdrive DYLIB (overdrive)",
     
-	[PACKAGING_WAITING_ZIP] = @"pakujem: Ëekam zip thread",
+	[PACKAGING_WAITING_ZIP] = @"pakujem: čekam zip thread",
 	[PACKAGING_FAILED_KILL_ZIP] = @"pakujem: crackovanje neuspeöno, ubijam zip thread",
-	[PACKAGING_ITUNESMETADATA] = @"pakujem: cenzuriöem iTunesMetadata",
+	[PACKAGING_ITUNESMETADATA] = @"pakujem: cenzurišem iTunesMetadata",
 	[PACKAGING_IPA] = @"pakujem: kompresujem IPA",
 	[PACKAGING_COMPRESSION_LEVEL] = @"pakujem: nivo kompresije %u",
     
-	[COMPLETE_ELAPSED_TIME] = @"utroöeno vreme» %ums",
-	[COMPLETE_APPS_CRACKED] = @"\nUspeöno:\n",
-	[COMPLETE_APPS_FAILED] = @"\nBezuspeöno:\n",
-	[COMPLETE_TOTAL] = @"\nUkupno uspeöno: \033[0;32m%u\033[0m   Ukupno bezuspeöno: \033[0;32m%u\033[0m ",
+	[COMPLETE_ELAPSED_TIME] = @"utrošeno vreme» %ums",
+	[COMPLETE_APPS_CRACKED] = @"\nUspešno:\n",
+	[COMPLETE_APPS_FAILED] = @"\nBezuspešno:\n",
+	[COMPLETE_TOTAL] = @"\nUkupno uspešno: \033[0;32m%u\033[0m   Ukupno bezuspešno: \033[0;32m%u\033[0m ",
 };
 
 /*

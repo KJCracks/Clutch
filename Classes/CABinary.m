@@ -158,8 +158,6 @@
     }
     if (!foundarch) {
         DebugLog(@"error: could not find arch to keep!");
-        int *p = NULL;
-        *p = 1;
         return false;
     }
     fseek(lipoOut, 8, SEEK_SET);
@@ -447,7 +445,7 @@
         //FAT
         case FAT_CIGAM: {
             BOOL has64 = FALSE;
-            NSMutableArray *stripHeaders = [NSMutableArray new];
+            NSMutableArray *stripHeaders = [[NSMutableArray alloc] init];
             
             NSUInteger archCount = CFSwapInt32(fh->nfat_arch);
             
@@ -468,7 +466,7 @@
             }
             arch = (struct fat_arch *) &fh[1];
             
-            struct fat_arch* compatibleArch;
+            struct fat_arch* compatibleArch = 0;
             //loop + crack
             for (int i = 0; i < CFSwapInt32(fh->nfat_arch); i++) {
                 DEBUG("currently cracking arch %u", CFSwapInt32(arch->cpusubtype));
@@ -488,7 +486,12 @@
                             fclose(newbinary); // close the new binary stream
                             fclose(oldbinary); // close the old binary stream
                             [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
-                            *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
+                            
+    
+                            if (error != NULL) *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
+                            
+                            [stripHeaders release];
+                            
                             return NO;
                         }
                         compatibleArch = arch;
@@ -518,7 +521,9 @@
                         
                         if (stripPath == NULL) {
                             ERROR(@"error stripping/swapping binary!");
-                            *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Error stripping/swapping binary!"}];
+                            if (error != NULL) *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Error stripping/swapping binary!"}];
+                            
+                            [stripHeaders release];
                             return NO;
                         }
                         
@@ -534,8 +539,9 @@
                             fclose(newbinary); // close the new binary stream
                             fclose(oldbinary); // close the old binary stream
                             [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
-                            *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack stripped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
+                            if (error != NULL) *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack stripped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
 
+                            [stripHeaders release];
                             return NO;
                         }
                         [self swapBack:stripPath];
@@ -545,13 +551,23 @@
                 }
                 if ((archCount - [stripHeaders count]) == 1) {
                     DEBUG("only one architecture left!? strip");
-                    if (![self lipoBinary:compatibleArch]) {
-                        ERROR(@"Could not lipo binary");
-                        *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Could not lipo binary"}];
-
-                        return NO;
+                    if (compatibleArch != NULL) {
+                        BOOL lipoSuccess = [self lipoBinary:compatibleArch];
+                        
+                        if (!lipoSuccess) {
+                            ERROR(@"Could not lipo binary");
+                            if (error != NULL) *error = [NSError errorWithDomain:@"CABinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Could not lipo binary"}];
+                            
+                            [stripHeaders release];
+                            
+                            return NO;
+                        }
                     }
-                    *error = nil;
+                    
+                    if (error != NULL) *error = nil;
+                    
+                    [stripHeaders release];
+                    
                     return YES;
                 }
                 arch++;
@@ -565,10 +581,11 @@
                     [self removeArchitecture:stripArch];
                 }
             }
+            [stripHeaders release];
             break;
         }
     }
-    *error = nil;
+    if (error != NULL) *error = nil;
     return YES;
 }
 
@@ -606,7 +623,7 @@
 	BOOL foundSignature = FALSE;
 	BOOL foundStartText = FALSE;
 	uint64_t __text_start = 0;
-	uint64_t __text_size = 0;
+	//uint64_t __text_size = 0;
     MSG(DUMPING_ANALYZE_LOAD_COMMAND);
     
 	fread(&mach, sizeof(struct mach_header_64), 1, target); // read mach header to get number of load commands
@@ -633,7 +650,7 @@
                 foundStartText = TRUE;
                 VERBOSE("found start text");
                 __text_start = __text.vmaddr;
-                __text_size = __text.vmsize;
+                //__text_size = __text.vmsize; // This has been a dead store since Clutch 1.0 I think
                 
             }
             fseek(target, l_cmd.cmdsize - sizeof(struct segment_command_64), SEEK_CUR);
@@ -719,8 +736,9 @@
 		}
 		
 		free(codesignblob); // free the codesign blob
-		
-		uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
+        
+        uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
+        
 		if (pages == 0) {
 			kill(pid, SIGKILL); // kill the fork
 			return FALSE;
@@ -930,7 +948,7 @@
 	BOOL foundSignature = FALSE;
 	BOOL foundStartText = FALSE;
 	uint64_t __text_start = 0;
-	uint64_t __text_size = 0;
+	//uint64_t __text_size = 0;
     DEBUG("32bit dumping, offset %u", top);
     //VERBOSE("dumping binary: analyzing load commands");
     MSG(DUMPING_ANALYZE_LOAD_COMMAND);
@@ -957,7 +975,7 @@
 			if (strncmp(__text.segname, "__TEXT", 6) == 0) {
 				foundStartText = TRUE;
 				__text_start = __text.vmaddr;
-				__text_size = __text.vmsize;
+				//__text_size = __text.vmsize; This has been a dead store since Clutch 1.0 I think
 			}
 			fseek(target, l_cmd.cmdsize - sizeof(struct segment_command), SEEK_CUR);
 		} else {
@@ -1048,6 +1066,7 @@
 		free(codesignblob); // free the codesign blob
 		
 		uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
+        
 		if (pages == 0) {
 			kill(pid, SIGKILL); // kill the fork
 			return FALSE;
@@ -1279,7 +1298,7 @@
     int i;
 
     struct fat_arch *arch = (struct fat_arch *) &swapfh[1];
-    cpu_type_t swap_cputype;
+    cpu_type_t swap_cputype = 0;
     cpu_subtype_t largest_cpusubtype = 0;
     NSLog(@"arch arch arch ok ok");
     

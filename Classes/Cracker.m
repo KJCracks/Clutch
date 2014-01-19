@@ -107,6 +107,7 @@ static ZipArchive * createZip(NSString *file) {
     if (!file) {
         DEBUG("File string is nil");
         
+        [archiver release];
         return nil;
     }
     
@@ -218,6 +219,7 @@ static NSString * genRandStringLength(int len) {
         API* api = [[API alloc] initWithApp:_app];
         [api setObject:_ipapath forKey:@"IPAPAth"];
         [api setEnvironmentArgs];
+        [api release];
     }];
    
     NSBlockOperation *zipOriginalOperation = [[NSBlockOperation alloc] init];
@@ -282,6 +284,8 @@ static NSString * genRandStringLength(int len) {
     [queue addOperation:crackOperation];
     [queue addOperation:zipOriginalOperation];
     [queue waitUntilAllOperationsAreFinished];
+    
+    [queue release];
     return crackOk;
 }
 
@@ -290,6 +294,8 @@ static NSString * genRandStringLength(int len) {
     DebugLog(@"compressing to 7zip");
     [package compressToPackage:_yopaPath withCompressionType:SEVENZIP_COMPRESSION];
     [package addHeaders];
+    
+    [package release];
 }
 
 -(void)packageIPA {

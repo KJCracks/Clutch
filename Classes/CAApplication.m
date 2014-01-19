@@ -138,7 +138,7 @@ NSInteger diff__ms(struct timeval t1, struct timeval t2)
         iconPaths = [infoDictionary objectForKey:@"Icon files"];
     }
     
-    UIImage *image;
+    UIImage *image = [[[UIImage alloc] init] autorelease];
     
     for (int i = 0; i < [iconPaths count]; i++) {
         
@@ -160,7 +160,7 @@ NSInteger diff__ms(struct timeval t1, struct timeval t2)
         }
     }
     
-    if (image ==nil) {
+    if (image == NULL) {
         image = [UIImage imageNamed:@"DefaultIcon"];
     }
     

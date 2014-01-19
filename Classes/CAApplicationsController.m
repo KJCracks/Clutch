@@ -7,7 +7,7 @@
 
 NSArray * get_application_list(BOOL sort) {
     
-    NSMutableArray *returnArray = [NSMutableArray new];
+    NSMutableArray *returnArray = [[[NSMutableArray alloc] init] autorelease];
     
     NSDictionary* options = @{@"ApplicationType":@"User",@"ReturnAttributes":@[@"CFBundleShortVersionString",@"CFBundleVersion",@"Path",@"CFBundleDisplayName",@"CFBundleExecutable",@"ApplicationSINF",@"MinimumOSVersion"]};
     
@@ -46,6 +46,8 @@ NSArray * get_application_list(BOOL sort) {
             CAApplication *app=[[CAApplication alloc]initWithAppInfo:@{@"ApplicationContainer":container,@"ApplicationDirectory":appPath,@"ApplicationDisplayName":displayName,@"ApplicationName":[[appPath lastPathComponent]stringByReplacingOccurrencesOfString:@".app" withString:@""],@"RealUniqueID":[container lastPathComponent],@"ApplicationBasename":[appPath lastPathComponent],@"ApplicationVersion":version,@"ApplicationBundleID":bundleID,@"ApplicationSINF":SINF,@"ApplicationExecutableName":executableName,@"MinimumOSVersion":minimumOSVersion}];
             
             [returnArray addObject:app];
+            
+            [app release];
         }
     }
 	
@@ -70,6 +72,8 @@ NSArray * get_application_list(BOOL sort) {
     if (cacheArray.count>0) {
         [cacheArray writeToFile:applistCachePath atomically:YES];
     }
+    
+    [cacheArray release];
     
 	return (NSArray *) returnArray;
 }
@@ -102,11 +106,12 @@ NSArray * get_application_list(BOOL sort) {
 
         NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
         
-        NSMutableArray *appsArray = [NSMutableArray new];
+        NSMutableArray *appsArray = [[NSMutableArray new] autorelease];
         
         for (NSDictionary *appInfo in cachedAppsInfo) {
             CAApplication *app = [[CAApplication alloc]initWithAppInfo:appInfo];
             [appsArray addObject:app];
+            [app release];
         }
         
         return appsArray;
@@ -120,12 +125,15 @@ NSArray * get_application_list(BOOL sort) {
 {
     NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Prefs sharedInstance] ipaDirectory]];
     NSArray *array=[[NSArray alloc]initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:crackedPath error:nil]];
-    NSMutableArray *paths=[[NSMutableArray alloc]init];
+    NSMutableArray *paths=[[[NSMutableArray alloc] init] autorelease];
     for (int i=0; i<array.count; i++) {
         if (![[array[i] pathExtension] caseInsensitiveCompare:@"ipa"])
             [paths addObject:array[i]];
     }
-    return [paths copy];
+    
+    [array release];
+    
+    return paths;
 }
 
 @end

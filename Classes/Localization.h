@@ -10,6 +10,11 @@ typedef enum {
     
     CLUTCH_DEV_CHECK_UPDATE,
     CLUTCH_DEV_UP_TO_DATE,
+    CLUTCH_DEV_NOT_UP_TO_DATE, // Added 19th Jan
+    CLUTCH_PERMISSION_ERROR, // Added 19th Jan
+    CLUTCH_NO_APPLICATIONS, // Added 19th Jan
+    CLUTCH_CRACKING_ALL, // Added 19th Jan
+    CLUTCH_ENABLED_YOPA, // Added 19th Jan
     
     CRACKING_APPNAME,
     CRACKING_CREATE_WORKING_DIR,
@@ -59,6 +64,11 @@ typedef enum {
 static NSString * const en_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"You're using a Clutch development build, checking for updates..",
     [CLUTCH_DEV_UP_TO_DATE] = @"Your version of Clutch is up to date!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"Your current version of Clutch is outdated!\nPlease get the latest version!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"You must be root to use Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"There are no encrypted applications on this device.",
+    [CLUTCH_CRACKING_ALL] = @"Cracking all encrypted applications on this device.",
+    [CLUTCH_ENABLED_YOPA] = @"YOPA is enabled.",
     
     [CRACKING_APPNAME] = @"Cracking %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Creating working directory...",
@@ -100,6 +110,12 @@ static NSString * const en_locale[] = {
 static NSString * const zh_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"您正使用Clutch 的开发版本，正在检查更新...",
     [CLUTCH_DEV_UP_TO_DATE] = @"您的Clutch 是最新版!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
+    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
+    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
+
     
     [CRACKING_APPNAME] = @"正在破解 %@",
     [CRACKING_CREATE_WORKING_DIR] = @"正在创建工作目录...",
@@ -141,6 +157,11 @@ static NSString * const zh_locale[] = {
 static NSString * const de_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"Du benutzt eine Clutch-Entwicklungsversion, überprüfe auf Updates...",
     [CLUTCH_DEV_UP_TO_DATE] = @"Die Version von Clutch ist aktuell!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
+    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
+    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
     
     [CRACKING_APPNAME] = @"Cracke %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Erstelle Arbeitsverzeichnis...",
@@ -183,6 +204,11 @@ static NSString * const de_locale[] = {
 static NSString * const fr_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"Vous utilisez une version de développement de Clutch, vérification des mises à jour...",
     [CLUTCH_DEV_UP_TO_DATE] = @"Votre version de Clutch est à jour !",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
+    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
+    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
     
     [CRACKING_APPNAME] = @"Craquage %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Création du répertoire de travail...",
@@ -224,6 +250,11 @@ static NSString * const fr_locale[] = {
 static NSString * const hr_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"Koristite beta verziju Clutch, proveravam ažuriranja",
     [CLUTCH_DEV_UP_TO_DATE] = @"Vaša verzija Clutch je najnovija!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
+    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
+    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
 	
     [CRACKING_APPNAME] = @"Crackujem %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Pravim direktorijum za rad...",
@@ -268,6 +299,11 @@ static NSString * const hr_locale[] = {
  static NSString * const template_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"",
     [CLUTCH_DEV_UP_TO_DATE] = @"",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"",
+    [CLUTCH_PERMISSION_ERROR] = @"",
+    [CLUTCH_NO_APPLICATIONS] = @"",
+    [CLUTCH_CRACKING_ALL] = @"",
+    [CLUTCH_ENABLED_YOPA] = @"",
     [CRACKING_APPNAME] = @"",
     [CRACKING_CREATE_WORKING_DIR] = @"",
     [CRACKING_PERFORMING_ANALYSIS] = @"",
@@ -285,21 +321,21 @@ static NSString * const hr_locale[] = {
     [DUMPING_NEW_CHECKSUM] = @"",
     [SWAP_CRACKING_PORTION] = @"",
  
- [DUMPING_OVERDRIVE_PATCH_HEADER] = @"",
- [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"",
- [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"",
- [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"",
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"",
+    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"",
+    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"",
+    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"",
  
- [PACKAGING_WAITING_ZIP] = @"",
- [PACKAGING_FAILED_KILL_ZIP] = @"",
- [PACKAGING_ITUNESMETADATA] = @"",
- [PACKAGING_IPA] = @"",
- [PACKAGING_COMPRESSION_LEVEL] = @"",
+    [PACKAGING_WAITING_ZIP] = @"",
+    [PACKAGING_FAILED_KILL_ZIP] = @"",
+    [PACKAGING_ITUNESMETADATA] = @"",
+    [PACKAGING_IPA] = @"",
+    [PACKAGING_COMPRESSION_LEVEL] = @"",
  
- [COMPLETE_ELAPSED_TIME] = @"",
- [COMPLETE_APPS_CRACKED] = @"",
- [COMPLETE_APPS_FAILED] = @"",
- [COMPLETE_TOTAL] = @"",
+    [COMPLETE_ELAPSED_TIME] = @"",
+    [COMPLETE_APPS_CRACKED] = @"",
+    [COMPLETE_APPS_FAILED] = @"",
+    [COMPLETE_TOTAL] = @"",
 };*/
 
 

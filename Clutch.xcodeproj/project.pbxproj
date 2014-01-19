@@ -98,7 +98,7 @@
 		BC871C7D17E7122500048636 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
-		BC871C8917E7165A00048636 /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Clutch_Prefix.pch; sourceTree = "<group>"; };
+		E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clutch_Prefix.pch; path = Resources/Clutch_Prefix.pch; sourceTree = "<group>"; };
 		F473DA551871E77400AF3C59 /* stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stuff.h; sourceTree = "<group>"; };
 		F473DA75187223EE00AF3C59 /* imetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imetadata.m; sourceTree = "<group>"; };
 		F473DA77187223F900AF3C59 /* imetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = imetadata.h; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BC871C8917E7165A00048636 /* Clutch_Prefix.pch */,
+				E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */,
 				BC871C8717E7126F00048636 /* Clutch-Info.plist */,
 			);
 			name = Resources;
@@ -369,7 +369,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Clutch_Prefix.pch;
+				GCC_PREFIX_HEADER = Resources/Clutch_Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Clutch-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -390,7 +390,7 @@
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Clutch_Prefix.pch;
+				GCC_PREFIX_HEADER = Resources/Clutch_Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Clutch-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

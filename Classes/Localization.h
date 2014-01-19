@@ -250,7 +250,7 @@ static NSString * const rs_locale[] = {
 	[DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"izbacujem binary: vezujem overdrive DYLIB (overdrive)",
     
 	[PACKAGING_WAITING_ZIP] = @"pakujem: čekam zip thread",
-	[PACKAGING_FAILED_KILL_ZIP] = @"pakujem: crackovanje neuspeöno, ubijam zip thread",
+	[PACKAGING_FAILED_KILL_ZIP] = @"pakujem: crackovanje neuspešno, ubijam zip thread",
 	[PACKAGING_ITUNESMETADATA] = @"pakujem: cenzurišem iTunesMetadata",
 	[PACKAGING_IPA] = @"pakujem: kompresujem IPA",
 	[PACKAGING_COMPRESSION_LEVEL] = @"pakujem: nivo kompresije %u",

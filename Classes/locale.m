@@ -1,7 +1,10 @@
 enum
 {
     LANG_EN,
-    LANG_ZH
+    LANG_ZH,
+	LANG_DE,
+	LANG_FR,
+	LANG_HR
 };
 
 enum

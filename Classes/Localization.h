@@ -6,8 +6,6 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    
-    
     CLUTCH_DEV_CHECK_UPDATE,
     CLUTCH_DEV_UP_TO_DATE,
     CLUTCH_DEV_NOT_UP_TO_DATE, // Added 19th Jan
@@ -127,8 +125,13 @@ static NSString * const zh_locale[] = {
     [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
     [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
     [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
-
     
+    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
+    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
+    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
+    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
     [CRACKING_APPNAME] = @"正在破解 %@",
     [CRACKING_CREATE_WORKING_DIR] = @"正在创建工作目录...",
     [CRACKING_PERFORMING_ANALYSIS] = @"正在进行初始化解析...",
@@ -175,6 +178,12 @@ static NSString * const de_locale[] = {
     [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
     [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
     
+    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
+    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
+    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
+    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
     [CRACKING_APPNAME] = @"Cracke %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Erstelle Arbeitsverzeichnis...",
     [CRACKING_PERFORMING_ANALYSIS] = @"Führe erste Analyse durch...",
@@ -222,6 +231,12 @@ static NSString * const fr_locale[] = {
     [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
     [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
     
+    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
+    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
+    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
+    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
     [CRACKING_APPNAME] = @"Craquage %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Création du répertoire de travail...",
     [CRACKING_PERFORMING_ANALYSIS] = @"Exécute une première analyse...",
@@ -268,6 +283,12 @@ static NSString * const hr_locale[] = {
     [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
     [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
 	
+    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
+    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
+    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
+    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
     [CRACKING_APPNAME] = @"Crackujem %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Pravim direktorijum za rad...",
     [CRACKING_PERFORMING_ANALYSIS] = @"Izvršavam početne analize...",
@@ -316,10 +337,18 @@ static NSString * const hr_locale[] = {
     [CLUTCH_NO_APPLICATIONS] = @"",
     [CLUTCH_CRACKING_ALL] = @"",
     [CLUTCH_ENABLED_YOPA] = @"",
+    
+    [CONFIG_DOWNLOADING_FILES] = @"",
+    [CONFIG_NO_MEMORY] = @"",
+    [CONFIG_SAVING] = @"",
+    [CONFIG_USING_DEFAULT] = @"",
+ 
+    [CRACKING_DIRECTORY_ERROR] = @"",
     [CRACKING_APPNAME] = @"",
     [CRACKING_CREATE_WORKING_DIR] = @"",
     [CRACKING_PERFORMING_ANALYSIS] = @"",
     [CRACKING_PERFORMING_PREFLIGHT] = @"",
+    
     [DUMPING_ANALYZE_LOAD_COMMAND] = @"",
     [DUMPING_OBTAIN_PTRACE] = @"",
     [DUMPING_FORKING] = @"",

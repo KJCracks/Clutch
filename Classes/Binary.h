@@ -1,11 +1,3 @@
-//
-//  CABinary.h
-//  CrackAddict
-//
-//  Created by Zorro on 13/11/13.
-//  Copyright (c) 2013 AppAddict. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "out.h"
 #import "Preferences.h"
@@ -16,7 +8,7 @@
 #include <mach-o/arch.h>
 
 
-@interface CABinary : NSObject
+@interface Binary : NSObject
 {
     @public
        BOOL overdriveEnabled;

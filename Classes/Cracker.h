@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CABinary.h"
+#import "Binary.h"
 #import "Application.h"
 
 @interface Cracker : NSObject
@@ -19,7 +19,7 @@
     NSString *_baselinedir;
     NSString *_tempBinaryPath;
     NSString *_binaryPath;
-    CABinary *_binary;
+    Binary *_binary;
     Application *_app;
     NSString *_workingDir;
     NSString *_ipapath;

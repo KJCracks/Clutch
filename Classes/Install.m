@@ -9,7 +9,7 @@
 #import "Install.h"
 #import "MobileInstallation.h"
 #import "ZipArchive.h"
-#import "CABinary.h"
+#import "Binary.h"
 
 @implementation Install : NSObject 
 
@@ -77,7 +77,7 @@ static NSString* generateUuidString()
 
 - (void)crackWithOutBinary:(NSString*)outbinary
 {
-    CABinary* binary = [[CABinary alloc] initWithBinary:_binaryPath];
+    Binary* binary = [[Binary alloc] initWithBinary:_binaryPath];
     
     DEBUG(@"outbinary %@", outbinary);
     

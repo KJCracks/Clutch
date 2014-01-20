@@ -12,7 +12,7 @@
 		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
 		AD2790D31870580000A4FD11 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CC187057FF00A4FD11 /* Application.m */; };
 		AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CE187057FF00A4FD11 /* ApplicationLister.m */; };
-		AD2790D51870580000A4FD11 /* CABinary.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D01870580000A4FD11 /* CABinary.m */; };
+		AD2790D51870580000A4FD11 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D01870580000A4FD11 /* Binary.m */; };
 		AD2790D61870580000A4FD11 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D21870580000A4FD11 /* Device.m */; };
 		AD3014691871514D00E06315 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3014681871514D00E06315 /* Cracker.m */; };
 		AD61315C187D23FC00B94378 /* Install.m in Sources */ = {isa = PBXBuildFile; fileRef = AD61315B187D23FC00B94378 /* Install.m */; };
@@ -50,8 +50,8 @@
 		AD2790CC187057FF00A4FD11 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
 		AD2790CD187057FF00A4FD11 /* ApplicationLister.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ApplicationLister.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		AD2790CE187057FF00A4FD11 /* ApplicationLister.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationLister.m; sourceTree = "<group>"; };
-		AD2790CF1870580000A4FD11 /* CABinary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CABinary.h; sourceTree = "<group>"; };
-		AD2790D01870580000A4FD11 /* CABinary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CABinary.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		AD2790CF1870580000A4FD11 /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
+		AD2790D01870580000A4FD11 /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Binary.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AD2790D11870580000A4FD11 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
 		AD2790D21870580000A4FD11 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
 		AD2790D718705BBB00A4FD11 /* MobileInstallation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MobileInstallation.h; path = Classes/MobileInstallation.h; sourceTree = "<group>"; };
@@ -129,8 +129,8 @@
 				AD2790CC187057FF00A4FD11 /* Application.m */,
 				AD2790CD187057FF00A4FD11 /* ApplicationLister.h */,
 				AD2790CE187057FF00A4FD11 /* ApplicationLister.m */,
-				AD2790CF1870580000A4FD11 /* CABinary.h */,
-				AD2790D01870580000A4FD11 /* CABinary.m */,
+				AD2790CF1870580000A4FD11 /* Binary.h */,
+				AD2790D01870580000A4FD11 /* Binary.m */,
 				AD2790D11870580000A4FD11 /* Device.h */,
 				AD2790D21870580000A4FD11 /* Device.m */,
 				AD30146A1871517400E06315 /* Cracker.h */,
@@ -344,7 +344,7 @@
 				BC871C8217E7122500048636 /* main.m in Sources */,
 				BC871C8317E7122500048636 /* out.m in Sources */,
 				F473DA7A1872300800AF3C59 /* izip.m in Sources */,
-				AD2790D51870580000A4FD11 /* CABinary.m in Sources */,
+				AD2790D51870580000A4FD11 /* Binary.m in Sources */,
 				BC871C8417E7122500048636 /* scinfo.m in Sources */,
 				BC871C8517E7122500048636 /* sha1.c in Sources */,
 				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,

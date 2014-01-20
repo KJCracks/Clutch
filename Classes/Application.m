@@ -7,7 +7,7 @@
 //
 
 #import "Application.h"
-#import "CABinary.h"
+#import "Binary.h"
 
 @interface Application ()
 {

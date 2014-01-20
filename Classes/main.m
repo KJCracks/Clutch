@@ -52,7 +52,7 @@
 
 #import "ApplicationLister.h"
 #import "install.h"
-#import "CABinary.h"
+#import "Binary.h"
 #import "Cracker.h"
 #import "Localization.h"
 #import "Constants.h"
@@ -137,20 +137,23 @@ static NSString* get_compare_with()
 
 void print_results()
 {
-    if (successfulCracks && successfulCracks.count > 0)
+    NSLog(@"Succ: %@, Fail: %@", successfulCracks, failedCracks);
+    if (successfulCracks.count > 0)
     {
         MSG(COMPLETE_APPS_CRACKED);
         
-        for (int i = 0; i < [successfulCracks count]; i++) {
+        for (int i = 0; i < [successfulCracks count]; i++)
+        {
             printf("\033[0;32m%s\033[0m\n", [successfulCracks[i] UTF8String]);
         }
     }
     
-    if (failedCracks && failedCracks.count > 0)
+    if (failedCracks.count > 0)
     {
         MSG(COMPLETE_APPS_FAILED);
         
-        for (int i = 0; i < [failedCracks count]; i++) {
+        for (int i = 0; i < [failedCracks count]; i++)
+        {
             printf("\033[0;32m%s\033[0m\n", [failedCracks[i] UTF8String]);
         }
     }
@@ -328,15 +331,13 @@ int main(int argc, char *argv[])
         
         [[Localization sharedInstance] checkCache];
         
-        NSMutableArray *successfulCracks = [[NSMutableArray alloc] init];
-        NSMutableArray *failedCracks = [[NSMutableArray alloc] init];
+        NSMutableArray *successfulCracks = [[[NSMutableArray alloc] init] autorelease];
+        NSMutableArray *failedCracks = [[[NSMutableArray alloc] init] autorelease];
         
         cmd_version();
         
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
         NSArray *applist = [[ApplicationLister sharedInstance] installedApps];
-        
-        NSLog(@"ags: %@", arguments);
         
         if (applist == NULL)
         {
@@ -366,14 +367,20 @@ int main(int argc, char *argv[])
                 [[NSFileManager defaultManager] removeItemAtPath:@"/var/cache/clutch.plist" error:NULL];
                 
                 printf("Done.");
+                
+                goto endMain;
             }
             else if ([arg isEqualToString:@"-v"] || [arg isEqualToString:@"-version"])
             {
                 cmd_version();
+                
+                goto endMain;
             }
             else if ([arg isEqualToString:@"-c"] || [arg isEqualToString:@"-C"] || [arg isEqualToString:@"-config"])
             {
                 [[Preferences sharedInstance] setupConfig];
+                
+                goto endMain;
             }
             else if ([arg isEqualToString:@"-i"] || [arg isEqualToString:@"-install"])
             {
@@ -389,6 +396,8 @@ int main(int argc, char *argv[])
             else if ([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-help"])
             {
                 cmd_help();
+                
+                goto endMain;
             }
             else if ([arg isEqualToString:@"--yopa"])
             {
@@ -442,12 +451,14 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        
+        //print_results();
     
         goto endMain;
         
 endMain:
-        [successfulCracks release];
-        [failedCracks release];
+        //[successfulCracks release];
+        //[failedCracks release];
         return retVal;
     }
 }

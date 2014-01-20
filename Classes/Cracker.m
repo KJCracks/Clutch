@@ -167,7 +167,7 @@ static NSString * genRandStringLength(int len)
         
     _binaryPath = [[app.applicationContainer stringByAppendingPathComponent:app.appDirectory] stringByAppendingPathComponent:app.applicationExecutableName];
     
-    _binary = [[CABinary alloc] initWithBinary:_binaryPath];
+    _binary = [[Binary alloc] initWithBinary:_binaryPath];
     
     _binary->overdriveEnabled = [[Preferences sharedInstance] useOverdrive];
     

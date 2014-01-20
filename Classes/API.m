@@ -5,7 +5,7 @@
 //
 
 #import "API.h"
-#import "CAApplication.h"
+#import "Application.h"
 #import "out.h"
 
 #define sourcePath @"/tmp/clutch.source"
@@ -15,36 +15,48 @@ void run_getenv (const char * name)
     char * value;
     
     value = getenv (name);
-    if (! value) {
+
+    if (! value)
+    {
         printf ("'%s' is not set.\n", name);
     }
-    else {
+    else
+    {
         printf ("%s = %s\n", name, value);
     }
 }
+
 @implementation API
 
-- (id)initWithApp:(CAApplication*) app
+- (id)initWithApp:(Application*) app
 {
     self = [super init];
+
     if (self)
     {
         _dict = [[NSMutableDictionary alloc] initWithDictionary:app->_info];
     }
+    
     return self;
 }
 
--(void)setEnvironmentArgs {
+-(void)setEnvironmentArgs
+{
     [_dict removeObjectForKey:@"ApplicationSINF"];
     NSString* source = @"";
-    for (NSString* key in _dict) {
+    
+    for (NSString* key in _dict)
+    {
         NSString* line = [NSString stringWithFormat:@"\n%@=\"%@\"", key, [_dict objectForKey:key]];
         source = [source stringByAppendingString:line];
-        //DebugLog(@"line %@", line);
+        //DEBUG(@"line %@", line);
     }
+    
     [source writeToFile:sourcePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
--(void)setObject:(NSString*)obj forKey:(NSString*)key {
+
+-(void)setObject:(NSString*)obj forKey:(NSString*)key
+{
     [_dict setObject:obj forKey:key];
 }
 

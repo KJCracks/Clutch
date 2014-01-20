@@ -2,17 +2,8 @@
 // Prefix header for all source files of the 'Clutch' target in the 'Clutch' project
 //
 
+// Please don't add much here, instead import per file - this helps show dependancies and increases code portability
+
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
-    #import "Localization.h"
 #endif
-
-/*
- * Configuration
- */
-
-#define CLUTCH_TITLE "Clutch"
-#define CLUTCH_VERSION "1.4"
-#define CLUTCH_RELEASE "git-4"
-#define CLUTCH_BUILD 14004
-#define CLUTCH_DEV 1

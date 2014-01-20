@@ -50,12 +50,12 @@
 #include <unistd.h>
 #import <sys/time.h>
 
-#import "CAApplicationsController.h"
+#import "ApplicationLister.h"
 #import "install.h"
 #import "CABinary.h"
 #import "Cracker.h"
-#import "Packager.h"
 #import "Localization.h"
+#import "Constants.h"
 
 /*
  * Protypes
@@ -64,6 +64,7 @@
 BOOL crack = FALSE;
 BOOL readCompression;
 struct timeval start, end;
+int yopa_enabled;
 
 NSMutableArray *successfulCracks;
 NSMutableArray *failedCracks;
@@ -77,7 +78,7 @@ void cmd_version();
 void cmd_help();
 void cmd_list_applications(NSArray *applications);
 int cmd_crack_all(NSArray *applications);
-int cmd_crack_app(CAApplication *app, int yopa_enabled);
+int cmd_crack_app(Application *app, int yopa_enabled);
 
 
 /*
@@ -119,11 +120,11 @@ static NSString* get_compare_with()
     static NSString* compare;
     static dispatch_once_t pred;
     dispatch_once(&pred, ^{
-        if ([[[Prefs sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
+        if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
         {
             compare = @"RealUniqueID";
         }
-        else if ([[Prefs sharedInstance] boolForKey:@"ListWithDisplayName"]) {
+        else if ([[Preferences sharedInstance] boolForKey:@"ListWithDisplayName"]) {
             compare = @"ApplicationDisplayName";
         }
         else {
@@ -165,7 +166,6 @@ void cmd_version()
 
 void cmd_help()
 {
-    cmd_version();
     printf("Clutch Help\n");
     printf("----------------------\n");
     printf("-c          Runs configuration utility\n");
@@ -179,11 +179,11 @@ void cmd_help()
 void cmd_list_applications(NSArray *applications)
 {
     NSEnumerator *e = [applications objectEnumerator];
-    CAApplication* app;
+    Application* app;
     
     int cindex = 1;
     
-    if ([[Prefs sharedInstance] numberBasedMenu])
+    if ([[Preferences sharedInstance] numberBasedMenu])
     {
         printf("\n");
     }
@@ -194,7 +194,7 @@ void cmd_list_applications(NSArray *applications)
     {
         comparedValue = [app->_info objectForKey:get_compare_with()];
         
-        if ([[Prefs sharedInstance] numberBasedMenu])
+        if ([[Preferences sharedInstance] numberBasedMenu])
         {
             printf("%d) \033[1;3%dm%s\033[0m \n", cindex, 5 + ((cindex + 1) % 2), [comparedValue UTF8String]);
             cindex++;
@@ -215,7 +215,7 @@ int cmd_crack_all(NSArray *applications)
     
     MSG(CLUTCH_CRACKING_ALL);
     
-    CAApplication* app;
+    Application* app;
     
     NSString *ipapath;
     
@@ -249,7 +249,7 @@ int cmd_crack_all(NSArray *applications)
     return 0;
 }
 
-int cmd_crack_app(CAApplication *app, int yopa_enabled)
+int cmd_crack_app(Application *app, int yopa_enabled)
 {
     MSG(CRACKING_APPNAME, app.applicationName);
     
@@ -271,8 +271,9 @@ int cmd_crack_app(CAApplication *app, int yopa_enabled)
         [cracker release];
         
         int dif = diff_ms(end,start);
+        float sec = ((dif + 500.0f) / 1000.0f);
 
-        MSG(COMPLETE_ELAPSED_TIME, dif);
+        MSG(COMPLETE_ELAPSED_TIME, sec);
         
         return 0;
     }
@@ -333,7 +334,9 @@ int main(int argc, char *argv[])
         cmd_version();
         
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-        NSArray *applist = [[CAApplicationsController sharedInstance] installedApps];
+        NSArray *applist = [[ApplicationLister sharedInstance] installedApps];
+        
+        NSLog(@"ags: %@", arguments);
         
         if (applist == NULL)
         {
@@ -370,7 +373,7 @@ int main(int argc, char *argv[])
             }
             else if ([arg isEqualToString:@"-c"] || [arg isEqualToString:@"-C"] || [arg isEqualToString:@"-config"])
             {
-                [[Prefs sharedInstance] setupConfig];
+                [[Preferences sharedInstance] setupConfig];
             }
             else if ([arg isEqualToString:@"-i"] || [arg isEqualToString:@"-install"])
             {
@@ -387,59 +390,53 @@ int main(int argc, char *argv[])
             {
                 cmd_help();
             }
+            else if ([arg isEqualToString:@"--yopa"])
+            {
+                MSG(CLUTCH_ENABLED_YOPA);
+                yopa_enabled = 1;
+            }
             else
             {
-                BOOL numberMenu = [[Prefs sharedInstance] numberBasedMenu];
-                
-                CAApplication *app;
-                
-                int yopa_enabled = 0;
+                if ([arg isEqualToString:@"/usr/bin/Clutch"])
+                {
+                    continue;
+                }
                 
                 for (int i = 1; i < arguments.count; i++)
                 {
-                    if ([arguments[i] isEqualToString:@"--yopa"])
+                    if ([[Preferences sharedInstance] numberBasedMenu])
                     {
-                        MSG(CLUTCH_ENABLED_YOPA);
-                        yopa_enabled = 1;
-                    }
-                    
-                    NSEnumerator *e = [applist objectEnumerator];
-
-                    int cindex = 0;
-                    NSString* comparedValue;
-                    
-                    while (app = [e nextObject])
-                    {
-                        cindex++;
+                        Application* app = applist[i];
                         
-                        comparedValue = [app->_info objectForKey:get_compare_with()];
+                        int success = cmd_crack_app(app, yopa_enabled);
                         
-                        if (!numberMenu && ([comparedValue caseInsensitiveCompare:[NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding]] == NSOrderedSame))
+                        if (success == 1)
                         {
+                            // Error handle
+                        }
+                    }
+                    else
+                    {
+                        Application *app;
                         
-                            int success = cmd_crack_app(app, yopa_enabled);
+                        for (int i = 0; i < applist.count; i++)
+                        {
+                            Application *compareApp = applist[i];
+                            NSString *compareName = compareApp.applicationName;
                             
-                            if (success == 1)
+                            if ([compareName isEqualToString:arg])
                             {
-                                // Shit went wrong
-                            }
-                            else
-                            {
-                                // Shit went right
-                            }
-                            
-                            break;
-                            
-                        } else {
-                            if (numberMenu && (0 == strcmp([[NSString stringWithFormat:@"%d", cindex] UTF8String], argv[i])))
-                            {
-                                int success = cmd_crack_app(app, yopa_enabled);
+                                app = compareApp;
                                 
-                                if (success == 1)
-                                {
-                                    // Shit went wrong
-                                }
+                                break;
                             }
+                        }
+                        
+                        int success = cmd_crack_app(app, yopa_enabled);
+                        
+                        if (success == 1)
+                        {
+                            // Error handle
                         }
                     }
                 }

@@ -10,14 +10,13 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		AD0C2E6018894D33007BCBB5 /* YOPAPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */; };
 		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
-		AD2790D31870580000A4FD11 /* CAApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CC187057FF00A4FD11 /* CAApplication.m */; };
-		AD2790D41870580000A4FD11 /* CAApplicationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CE187057FF00A4FD11 /* CAApplicationsController.m */; };
+		AD2790D31870580000A4FD11 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CC187057FF00A4FD11 /* Application.m */; };
+		AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CE187057FF00A4FD11 /* ApplicationLister.m */; };
 		AD2790D51870580000A4FD11 /* CABinary.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D01870580000A4FD11 /* CABinary.m */; };
-		AD2790D61870580000A4FD11 /* CADevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D21870580000A4FD11 /* CADevice.m */; };
+		AD2790D61870580000A4FD11 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D21870580000A4FD11 /* Device.m */; };
 		AD3014691871514D00E06315 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3014681871514D00E06315 /* Cracker.m */; };
-		AD30146D18715EF800E06315 /* Packager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD30146C18715EF800E06315 /* Packager.m */; };
 		AD61315C187D23FC00B94378 /* Install.m in Sources */ = {isa = PBXBuildFile; fileRef = AD61315B187D23FC00B94378 /* Install.m */; };
-		ADAA367E1870606D0029AF7D /* Prefs.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA367D1870606D0029AF7D /* Prefs.m */; };
+		ADAA367E1870606D0029AF7D /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA367D1870606D0029AF7D /* Preferences.m */; };
 		ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */; };
 		ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC617ECA8A7005282CE /* make_vms.com */; };
 		ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */; };
@@ -36,7 +35,6 @@
 		BC871C8417E7122500048636 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7C17E7122500048636 /* scinfo.m */; };
 		BC871C8517E7122500048636 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7D17E7122500048636 /* sha1.c */; };
 		BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC871C8717E7126F00048636 /* Clutch-Info.plist */; };
-		F473DA76187223EE00AF3C59 /* imetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA75187223EE00AF3C59 /* imetadata.m */; };
 		F473DA7A1872300800AF3C59 /* izip.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA791872300800AF3C59 /* izip.m */; };
 /* End PBXBuildFile section */
 
@@ -48,23 +46,21 @@
 		AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AD2019F717E576D100BF9F6C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AD201A0517EC908800BF9F6C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		AD2790CB187057FF00A4FD11 /* CAApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAApplication.h; sourceTree = "<group>"; };
-		AD2790CC187057FF00A4FD11 /* CAApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CAApplication.m; sourceTree = "<group>"; };
-		AD2790CD187057FF00A4FD11 /* CAApplicationsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAApplicationsController.h; sourceTree = "<group>"; };
-		AD2790CE187057FF00A4FD11 /* CAApplicationsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CAApplicationsController.m; sourceTree = "<group>"; };
+		AD2790CB187057FF00A4FD11 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		AD2790CC187057FF00A4FD11 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		AD2790CD187057FF00A4FD11 /* ApplicationLister.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ApplicationLister.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		AD2790CE187057FF00A4FD11 /* ApplicationLister.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationLister.m; sourceTree = "<group>"; };
 		AD2790CF1870580000A4FD11 /* CABinary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CABinary.h; sourceTree = "<group>"; };
-		AD2790D01870580000A4FD11 /* CABinary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CABinary.m; sourceTree = "<group>"; };
-		AD2790D11870580000A4FD11 /* CADevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADevice.h; sourceTree = "<group>"; };
-		AD2790D21870580000A4FD11 /* CADevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CADevice.m; sourceTree = "<group>"; };
+		AD2790D01870580000A4FD11 /* CABinary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CABinary.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		AD2790D11870580000A4FD11 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
+		AD2790D21870580000A4FD11 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
 		AD2790D718705BBB00A4FD11 /* MobileInstallation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MobileInstallation.h; path = Classes/MobileInstallation.h; sourceTree = "<group>"; };
-		AD3014681871514D00E06315 /* Cracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cracker.m; sourceTree = "<group>"; };
+		AD3014681871514D00E06315 /* Cracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Cracker.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AD30146A1871517400E06315 /* Cracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cracker.h; sourceTree = "<group>"; };
-		AD30146B18715EF800E06315 /* Packager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packager.h; sourceTree = "<group>"; };
-		AD30146C18715EF800E06315 /* Packager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packager.m; sourceTree = "<group>"; };
 		AD61315A187D23FC00B94378 /* Install.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Install.h; sourceTree = "<group>"; };
 		AD61315B187D23FC00B94378 /* Install.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Install.m; sourceTree = "<group>"; };
-		ADAA367C1870606D0029AF7D /* Prefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefs.h; sourceTree = "<group>"; };
-		ADAA367D1870606D0029AF7D /* Prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Prefs.m; sourceTree = "<group>"; };
+		ADAA367C1870606D0029AF7D /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
+		ADAA367D1870606D0029AF7D /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
 		ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLogUnzip; sourceTree = "<group>"; };
 		ADC68CC117ECA8A7005282CE /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		ADC68CC217ECA8A7005282CE /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
@@ -85,11 +81,11 @@
 		ADC68CD317ECA8A7005282CE /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		ADC6C4841871A48D0073C40B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		ADC6C4871871A7260073C40B /* MobileInstallation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileInstallation.framework; path = System/Library/PrivateFrameworks/MobileInstallation.framework; sourceTree = SDKROOT; };
-		ADC8A6E71880E77E0063B6BD /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
+		ADC8A6E71880E77E0063B6BD /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSTask.h; path = Classes/NSTask.h; sourceTree = "<group>"; };
 		ADC8A6E81880FAA30063B6BD /* Localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Localization.h; sourceTree = "<group>"; };
 		ADC8A6E91880FAA30063B6BD /* Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Localization.m; sourceTree = "<group>"; };
 		ADC8A6EB188170000063B6BD /* API.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = API.h; sourceTree = "<group>"; };
-		ADC8A6EC188170000063B6BD /* API.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = API.m; sourceTree = "<group>"; };
+		ADC8A6EC188170000063B6BD /* API.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = API.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		BC871C7817E7122500048636 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BC871C7917E7122500048636 /* out.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = out.h; sourceTree = "<group>"; };
 		BC871C7A17E7122500048636 /* out.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = out.m; sourceTree = "<group>"; };
@@ -99,9 +95,7 @@
 		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
 		E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clutch_Prefix.pch; path = Resources/Clutch_Prefix.pch; sourceTree = "<group>"; };
-		F473DA551871E77400AF3C59 /* stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stuff.h; sourceTree = "<group>"; };
-		F473DA75187223EE00AF3C59 /* imetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imetadata.m; sourceTree = "<group>"; };
-		F473DA77187223F900AF3C59 /* imetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = imetadata.h; sourceTree = "<group>"; };
+		F473DA551871E77400AF3C59 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		F473DA781872300800AF3C59 /* izip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = izip.h; sourceTree = "<group>"; };
 		F473DA791872300800AF3C59 /* izip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = izip.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,42 +118,34 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E9ABBFB8188D4154000B442F /* sha1 */,
+				E9ABBFB7188D3F29000B442F /* ZipArchive */,
 				AD30146718714C3D00E06315 /* CLI */,
-				ADAA367C1870606D0029AF7D /* Prefs.h */,
-				ADAA367D1870606D0029AF7D /* Prefs.m */,
+				ADAA367C1870606D0029AF7D /* Preferences.h */,
+				ADAA367D1870606D0029AF7D /* Preferences.m */,
 				ADC8A6E81880FAA30063B6BD /* Localization.h */,
 				ADC8A6E91880FAA30063B6BD /* Localization.m */,
-				AD2790CB187057FF00A4FD11 /* CAApplication.h */,
-				AD2790CC187057FF00A4FD11 /* CAApplication.m */,
-				AD2790CD187057FF00A4FD11 /* CAApplicationsController.h */,
-				AD2790CE187057FF00A4FD11 /* CAApplicationsController.m */,
+				AD2790CB187057FF00A4FD11 /* Application.h */,
+				AD2790CC187057FF00A4FD11 /* Application.m */,
+				AD2790CD187057FF00A4FD11 /* ApplicationLister.h */,
+				AD2790CE187057FF00A4FD11 /* ApplicationLister.m */,
 				AD2790CF1870580000A4FD11 /* CABinary.h */,
 				AD2790D01870580000A4FD11 /* CABinary.m */,
-				AD2790D11870580000A4FD11 /* CADevice.h */,
-				AD2790D21870580000A4FD11 /* CADevice.m */,
+				AD2790D11870580000A4FD11 /* Device.h */,
+				AD2790D21870580000A4FD11 /* Device.m */,
 				AD30146A1871517400E06315 /* Cracker.h */,
 				AD3014681871514D00E06315 /* Cracker.m */,
 				AD0C2E5E18894D33007BCBB5 /* YOPAPackage.h */,
 				AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */,
-				F473DA77187223F900AF3C59 /* imetadata.h */,
-				F473DA75187223EE00AF3C59 /* imetadata.m */,
-				AD30146B18715EF800E06315 /* Packager.h */,
-				AD30146C18715EF800E06315 /* Packager.m */,
 				F473DA781872300800AF3C59 /* izip.h */,
 				F473DA791872300800AF3C59 /* izip.m */,
-				ADC68CBF17ECA8A7005282CE /* minizip */,
-				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
 				AD61315A187D23FC00B94378 /* Install.h */,
 				AD61315B187D23FC00B94378 /* Install.m */,
-				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
 				BC871C7917E7122500048636 /* out.h */,
 				BC871C7A17E7122500048636 /* out.m */,
 				BC871C7B17E7122500048636 /* scinfo.h */,
 				BC871C7C17E7122500048636 /* scinfo.m */,
-				BC871C7D17E7122500048636 /* sha1.c */,
-				BC871C7E17E7122500048636 /* sha1.h */,
-				F473DA551871E77400AF3C59 /* stuff.h */,
-				ADC8A6E71880E77E0063B6BD /* NSTask.h */,
+				F473DA551871E77400AF3C59 /* Constants.h */,
 				ADC8A6EB188170000063B6BD /* API.h */,
 				ADC8A6EC188170000063B6BD /* API.m */,
 			);
@@ -189,6 +175,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				ADC8A6E71880E77E0063B6BD /* NSTask.h */,
 				AD2790D718705BBB00A4FD11 /* MobileInstallation.h */,
 			);
 			name = "Other Sources";
@@ -245,6 +232,25 @@
 				ADC68CD117ECA8A7005282CE /* zip.h */,
 			);
 			path = minizip;
+			sourceTree = "<group>";
+		};
+		E9ABBFB7188D3F29000B442F /* ZipArchive */ = {
+			isa = PBXGroup;
+			children = (
+				ADC68CBF17ECA8A7005282CE /* minizip */,
+				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
+				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
+			);
+			name = ZipArchive;
+			sourceTree = "<group>";
+		};
+		E9ABBFB8188D4154000B442F /* sha1 */ = {
+			isa = PBXGroup;
+			children = (
+				BC871C7D17E7122500048636 /* sha1.c */,
+				BC871C7E17E7122500048636 /* sha1.h */,
+			);
+			name = sha1;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -331,10 +337,10 @@
 				ADC8A6ED188170000063B6BD /* API.m in Sources */,
 				AD61315C187D23FC00B94378 /* Install.m in Sources */,
 				AD0C2E6018894D33007BCBB5 /* YOPAPackage.m in Sources */,
-				AD2790D61870580000A4FD11 /* CADevice.m in Sources */,
-				AD2790D31870580000A4FD11 /* CAApplication.m in Sources */,
+				AD2790D61870580000A4FD11 /* Device.m in Sources */,
+				AD2790D31870580000A4FD11 /* Application.m in Sources */,
 				ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */,
-				AD2790D41870580000A4FD11 /* CAApplicationsController.m in Sources */,
+				AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */,
 				BC871C8217E7122500048636 /* main.m in Sources */,
 				BC871C8317E7122500048636 /* out.m in Sources */,
 				F473DA7A1872300800AF3C59 /* izip.m in Sources */,
@@ -343,13 +349,11 @@
 				BC871C8517E7122500048636 /* sha1.c in Sources */,
 				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,
 				ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */,
-				ADAA367E1870606D0029AF7D /* Prefs.m in Sources */,
+				ADAA367E1870606D0029AF7D /* Preferences.m in Sources */,
 				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,
-				F473DA76187223EE00AF3C59 /* imetadata.m in Sources */,
 				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
 				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,
 				AD3014691871514D00E06315 /* Cracker.m in Sources */,
-				AD30146D18715EF800E06315 /* Packager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

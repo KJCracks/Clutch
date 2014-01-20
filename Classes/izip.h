@@ -15,6 +15,7 @@ void zip(ZipArchive *archiver, NSString *folder, NSString* payloadPath, int comp
     NSTask* _zipTask;
     int _compressionLevel;
 }
+
 - (instancetype)initWithCracker:(Cracker*) cracker;
 - (void) zipOriginal:(NSOperation*)operation;
 - (void) zipCracked;

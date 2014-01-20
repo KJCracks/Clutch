@@ -1,5 +1,3 @@
-
-
 #define YOPA_MAGIC 0xf00dface
 
 #define ZIP_COMPRESSION 0

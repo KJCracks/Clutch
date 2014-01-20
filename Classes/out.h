@@ -6,10 +6,11 @@
 #include <math.h>
 
 // print something verbose
-//#define VERBOSE(x) if ([[ClutchConfiguration getValue:@"VerboseLogging"] isEqualToString:@"YES"]) { progress_event(x); };
 #define VERBOSE(x) { progress_event(x); };
+
 // output some data
 #define NOTIFY(x) progress_message(x);
+
 // update percentage of currently running task
 #define PERCENT(x) progress_percent(x);
 
@@ -20,17 +21,13 @@
 
 #ifdef CLUTCH_DEBUG
 #   define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
-#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | " M "\n", FILE_NAME, __LINE__, ##__VA_ARGS__); //
-//#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s | " M "\n", FILE_NAME, ##__VA_ARGS__);
-//print C objects
+#
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#   define DebugLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-
+#   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define ERROR(M, ...) fprintf(stderr, "\033[0;32mERROR\033[0m | %s \n", [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #else
 #   define DEBUG(M, ...)
-#   define DebugLog(M, ...)
-#   define NSLog(...)
+#   define NSLog(M, ...)
 #   define ERROR(M, ...)
 #endif
 

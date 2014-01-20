@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "out.h"
-#import "Prefs.h"
+#import "Preferences.h"
 
 #include <mach-o/fat.h>
 #include <mach-o/loader.h>

@@ -16,6 +16,12 @@ typedef enum {
     CLUTCH_CRACKING_ALL, // Added 19th Jan
     CLUTCH_ENABLED_YOPA, // Added 19th Jan
     
+    CONFIG_DOWNLOADING_FILES, // Added 20th Jan
+    CONFIG_NO_MEMORY, // Added 20th Jan
+    CONFIG_SAVING, // Added 20th Jan
+    CONFIG_USING_DEFAULT, // Added 20th Jan
+    
+    CRACKING_DIRECTORY_ERROR, // Added 20th Jan
     CRACKING_APPNAME,
     CRACKING_CREATE_WORKING_DIR,
     CRACKING_PERFORMING_ANALYSIS,
@@ -70,6 +76,12 @@ static NSString * const en_locale[] = {
     [CLUTCH_CRACKING_ALL] = @"Cracking all encrypted applications on this device.",
     [CLUTCH_ENABLED_YOPA] = @"YOPA is enabled.",
     
+    [CONFIG_DOWNLOADING_FILES] = @"Downloading config files...",
+    [CONFIG_NO_MEMORY] = @"No memory",
+    [CONFIG_SAVING] = @"Saving configuration settings...",
+    [CONFIG_USING_DEFAULT] = @"Using default value...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"error: could not create working directory.",
     [CRACKING_APPNAME] = @"Cracking %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Creating working directory...",
     [CRACKING_PERFORMING_ANALYSIS] = @"Performing initial analysis...",
@@ -77,7 +89,7 @@ static NSString * const en_locale[] = {
     
     [DUMPING_ANALYZE_LOAD_COMMAND] = @"dumping binary: analyzing load commands",
     [DUMPING_OBTAIN_PTRACE] = @"dumping binary: obtaining ptrace handle",
-    [DUMPING_FORKING] = @" umping binary: forking to begin tracing",
+    [DUMPING_FORKING] = @"dumping binary: forking to begin tracing",
     [DUMPING_FORK_SUCCESS] = @"dumping binary: successfully forked",
     [DUMPING_OBTAIN_MACH_PORT] = @"dumping binary: obtaining mach port",
     [DUMPING_CODE_RESIGN] = @"dumping binary: preparing code resign",
@@ -100,7 +112,7 @@ static NSString * const en_locale[] = {
     [PACKAGING_IPA] = @"packaging: compressing IPA",
     [PACKAGING_COMPRESSION_LEVEL] = @"packaging: compression level %u",
     
-    [COMPLETE_ELAPSED_TIME] = @"elapsed time: %ums",
+    [COMPLETE_ELAPSED_TIME] = @"elapsed time: %.02fs",
     [COMPLETE_APPS_CRACKED] = @"\nApplications cracked:\n",
     [COMPLETE_APPS_FAILED] = @"\nApplications that failed:\n",
     [COMPLETE_TOTAL] = @"\nTotal success: \033[0;32m%u\033[0m   Total failed: \033[0;32m%u\033[0m ",

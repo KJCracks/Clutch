@@ -172,18 +172,18 @@ static NSString * const zh_locale[] = {
 static NSString * const de_locale[] = {
 	[CLUTCH_DEV_CHECK_UPDATE] = @"Du benutzt eine Clutch-Entwicklungsversion, überprüfe auf Updates...",
 	[CLUTCH_DEV_UP_TO_DATE] = @"Die Version von Clutch ist aktuell!",
-
 	[CLUTCH_DEV_NOT_UP_TO_DATE] = @"Dein Clutch ist outdated!\nBitte lade dir die neuste Version herunter!\n",
 	[CLUTCH_PERMISSION_ERROR] = @"Du musst als root eingeloggt seien um Clutch zu nutzen.",
 	[CLUTCH_NO_APPLICATIONS] = @"Es gibt keine encrypteten Applikationen auf diesem Gerät.",
 	[CLUTCH_CRACKING_ALL] = @"Cracke alle encrypteten Applikation.",
 	[CLUTCH_ENABLED_YOPA] = @"YOPA ist aktiviert.",
+	
 	[CONFIG_DOWNLOADING_FILES] = @"Lade die Knofigurationsdaten herunter...",
 	[CONFIG_NO_MEMORY] = @"Kein freier Speicher.",
 	[CONFIG_SAVING] = @"Speichere Konfigurationsdaten...",
 	[CONFIG_USING_DEFAULT] = @"Benutze Voreinstellungen...",
-	[CRACKING_DIRECTORY_ERROR] = @"Fehler: Konnte keinen Arbeitsordner erstellen.",
 
+	[CRACKING_DIRECTORY_ERROR] = @"Fehler: Konnte keinen Arbeitsordner erstellen.",
 	[CRACKING_APPNAME] = @"Cracke %@...",
 	[CRACKING_CREATE_WORKING_DIR] = @"Erstelle Arbeitsverzeichnis...",
 	[CRACKING_PERFORMING_ANALYSIS] = @"Führe erste Analyse durch...",

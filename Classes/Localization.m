@@ -38,6 +38,7 @@ NSString* msg(Message message) {
 			break;
 		case hr:
 			return hr_locale[message];
+            break;
     }
 }
 

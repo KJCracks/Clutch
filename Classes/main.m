@@ -137,7 +137,6 @@ static NSString* get_compare_with()
 
 void print_results()
 {
-    NSLog(@"Succ: %@, Fail: %@", successfulCracks, failedCracks);
     if (successfulCracks.count > 0)
     {
         MSG(COMPLETE_APPS_CRACKED);
@@ -249,6 +248,8 @@ int cmd_crack_all(NSArray *applications)
         }
     }
     
+    print_results();
+    
     return 0;
 }
 
@@ -278,6 +279,8 @@ int cmd_crack_app(Application *app, int yopa_enabled)
 
         MSG(COMPLETE_ELAPSED_TIME, sec);
         
+        print_results();
+        
         return 0;
     }
     else
@@ -287,6 +290,8 @@ int cmd_crack_app(Application *app, int yopa_enabled)
         printf("Failed.\n");
         
         [cracker release];
+        
+        print_results();
         
         return 1;
     }
@@ -331,13 +336,13 @@ int main(int argc, char *argv[])
         
         [[Localization sharedInstance] checkCache];
         
-        NSMutableArray *successfulCracks = [[[NSMutableArray alloc] init] autorelease];
-        NSMutableArray *failedCracks = [[[NSMutableArray alloc] init] autorelease];
+        successfulCracks = [[[NSMutableArray alloc] init] autorelease];
+        failedCracks = [[[NSMutableArray alloc] init] autorelease];
         
         cmd_version();
         
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-        NSArray *applist = [[ApplicationLister sharedInstance] installedApps];
+        NSMutableArray *applist = [[ApplicationLister sharedInstance] installedApps];
         
         if (applist == NULL)
         {
@@ -415,7 +420,8 @@ int main(int argc, char *argv[])
                 {
                     if ([[Preferences sharedInstance] numberBasedMenu])
                     {
-                        Application* app = applist[i];
+                        int number = [arg intValue] - 1;
+                        Application* app = applist[number];
                         
                         int success = cmd_crack_app(app, yopa_enabled);
                         
@@ -426,39 +432,39 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        Application *app;
-                        
-                        for (int i = 0; i < applist.count; i++)
+                        for (Application *app in applist)
                         {
-                            Application *compareApp = applist[i];
-                            NSString *compareName = compareApp.applicationName;
-                            
-                            if ([compareName isEqualToString:arg])
+                            if ([[Preferences sharedInstance] listWithDisplayName])
                             {
-                                app = compareApp;
-                                
-                                break;
+                                if ([app.applicationDisplayName isEqualToString:arg])
+                                {
+                                    int success = cmd_crack_app(app, yopa_enabled);
+                                    
+                                    if (success == 1)
+                                    {
+                                        // Error handle
+                                    }
+                                }
                             }
-                        }
-                        
-                        int success = cmd_crack_app(app, yopa_enabled);
-                        
-                        if (success == 1)
-                        {
-                            // Error handle
+                            else if ([app.applicationName isEqualToString:arg])
+                            {
+                                // Crack mans app
+                                int success = cmd_crack_app(app, yopa_enabled);
+                                
+                                if (success == 1)
+                                {
+                                    // Error handle
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        
-        //print_results();
     
         goto endMain;
         
 endMain:
-        //[successfulCracks release];
-        //[failedCracks release];
         return retVal;
     }
 }

@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
         cmd_version();
         
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-        NSMutableArray *applist = [[ApplicationLister sharedInstance] installedApps];
+        NSArray *applist = [[ApplicationLister sharedInstance] installedApps];
         
         if (applist == NULL)
         {
@@ -352,11 +352,12 @@ int main(int argc, char *argv[])
             goto endMain;
         }
         
+        
         for (int i = 0; i < arguments.count; i++)
         {
             NSString *arg = arguments[i];
             
-            if (arguments.count == 1 && [arg isEqualToString:@"/usr/bin/Clutch"])
+            if (arguments.count == 1 && [arg isEqualToString:arguments[0]])
             {
                 // User just typed `Clutch` list applications
                 cmd_list_applications(applist);
@@ -412,7 +413,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                if ([arg isEqualToString:@"/usr/bin/Clutch"])
+                if ([arg isEqualToString:arguments[0]])
                 {
                     continue;
                 }

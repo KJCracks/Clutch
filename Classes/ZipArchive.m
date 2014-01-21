@@ -131,12 +131,12 @@
 			uint flags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
             NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ;
 			NSDateComponents* dc = [currCalendar components:flags fromDate:fileDate];
-			zipInfo.tmz_date.tm_sec = [dc second];
-			zipInfo.tmz_date.tm_min = [dc minute];
-			zipInfo.tmz_date.tm_hour = [dc hour];
-			zipInfo.tmz_date.tm_mday = [dc day];
-			zipInfo.tmz_date.tm_mon = [dc month] - 1;
-			zipInfo.tmz_date.tm_year = [dc year];
+			zipInfo.tmz_date.tm_sec = (unsigned int)[dc second];
+			zipInfo.tmz_date.tm_min = (unsigned int)[dc minute];
+			zipInfo.tmz_date.tm_hour = (unsigned int)[dc hour];
+			zipInfo.tmz_date.tm_mday = (unsigned int)[dc day];
+			zipInfo.tmz_date.tm_mon = (unsigned int)[dc month] - 1;
+			zipInfo.tmz_date.tm_year = (unsigned int)[dc year];
 		}
 	}
     

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		AD0C2E6018894D33007BCBB5 /* YOPAPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */; };
 		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
 		AD2790D31870580000A4FD11 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CC187057FF00A4FD11 /* Application.m */; };
 		AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CE187057FF00A4FD11 /* ApplicationLister.m */; };
@@ -30,6 +29,9 @@
 		ADC6C4881871A7260073C40B /* MobileInstallation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADC6C4871871A7260073C40B /* MobileInstallation.framework */; };
 		ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC8A6E91880FAA30063B6BD /* Localization.m */; };
 		ADC8A6ED188170000063B6BD /* API.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC8A6EC188170000063B6BD /* API.m */; };
+		ADD601EE188E6D1200DD1156 /* CRC32.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD601E9188E6D1200DD1156 /* CRC32.m */; };
+		ADD601EF188E6D1200DD1156 /* YOPAPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD601EB188E6D1200DD1156 /* YOPAPackage.m */; };
+		ADD601F0188E6D1200DD1156 /* YOPASegment.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD601ED188E6D1200DD1156 /* YOPASegment.m */; };
 		BC871C8217E7122500048636 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7817E7122500048636 /* main.m */; };
 		BC871C8317E7122500048636 /* out.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7A17E7122500048636 /* out.m */; };
 		BC871C8417E7122500048636 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7C17E7122500048636 /* scinfo.m */; };
@@ -41,8 +43,6 @@
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD0C2E5E18894D33007BCBB5 /* YOPAPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YOPAPackage.h; sourceTree = "<group>"; };
-		AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YOPAPackage.m; sourceTree = "<group>"; };
 		AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AD2019F717E576D100BF9F6C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AD201A0517EC908800BF9F6C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -86,6 +86,12 @@
 		ADC8A6E91880FAA30063B6BD /* Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Localization.m; sourceTree = "<group>"; };
 		ADC8A6EB188170000063B6BD /* API.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = API.h; sourceTree = "<group>"; };
 		ADC8A6EC188170000063B6BD /* API.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = API.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		ADD601E8188E6D1200DD1156 /* CRC32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRC32.h; sourceTree = "<group>"; };
+		ADD601E9188E6D1200DD1156 /* CRC32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRC32.m; sourceTree = "<group>"; };
+		ADD601EA188E6D1200DD1156 /* YOPAPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YOPAPackage.h; sourceTree = "<group>"; };
+		ADD601EB188E6D1200DD1156 /* YOPAPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YOPAPackage.m; sourceTree = "<group>"; };
+		ADD601EC188E6D1200DD1156 /* YOPASegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YOPASegment.h; sourceTree = "<group>"; };
+		ADD601ED188E6D1200DD1156 /* YOPASegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YOPASegment.m; sourceTree = "<group>"; };
 		BC871C7817E7122500048636 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BC871C7917E7122500048636 /* out.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = out.h; sourceTree = "<group>"; };
 		BC871C7A17E7122500048636 /* out.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = out.m; sourceTree = "<group>"; };
@@ -118,6 +124,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				ADD601E7188E6D1200DD1156 /* yopa-package */,
 				E9ABBFB8188D4154000B442F /* sha1 */,
 				E9ABBFB7188D3F29000B442F /* ZipArchive */,
 				AD30146718714C3D00E06315 /* CLI */,
@@ -135,8 +142,6 @@
 				AD2790D21870580000A4FD11 /* Device.m */,
 				AD30146A1871517400E06315 /* Cracker.h */,
 				AD3014681871514D00E06315 /* Cracker.m */,
-				AD0C2E5E18894D33007BCBB5 /* YOPAPackage.h */,
-				AD0C2E5F18894D33007BCBB5 /* YOPAPackage.m */,
 				F473DA781872300800AF3C59 /* izip.h */,
 				F473DA791872300800AF3C59 /* izip.m */,
 				AD61315A187D23FC00B94378 /* Install.h */,
@@ -233,6 +238,20 @@
 			);
 			path = minizip;
 			sourceTree = "<group>";
+		};
+		ADD601E7188E6D1200DD1156 /* yopa-package */ = {
+			isa = PBXGroup;
+			children = (
+				ADD601E8188E6D1200DD1156 /* CRC32.h */,
+				ADD601E9188E6D1200DD1156 /* CRC32.m */,
+				ADD601EA188E6D1200DD1156 /* YOPAPackage.h */,
+				ADD601EB188E6D1200DD1156 /* YOPAPackage.m */,
+				ADD601EC188E6D1200DD1156 /* YOPASegment.h */,
+				ADD601ED188E6D1200DD1156 /* YOPASegment.m */,
+			);
+			name = "yopa-package";
+			path = "Libraries/yopa-package";
+			sourceTree = SOURCE_ROOT;
 		};
 		E9ABBFB7188D3F29000B442F /* ZipArchive */ = {
 			isa = PBXGroup;
@@ -336,17 +355,19 @@
 			files = (
 				ADC8A6ED188170000063B6BD /* API.m in Sources */,
 				AD61315C187D23FC00B94378 /* Install.m in Sources */,
-				AD0C2E6018894D33007BCBB5 /* YOPAPackage.m in Sources */,
 				AD2790D61870580000A4FD11 /* Device.m in Sources */,
 				AD2790D31870580000A4FD11 /* Application.m in Sources */,
 				ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */,
 				AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */,
 				BC871C8217E7122500048636 /* main.m in Sources */,
+				ADD601EF188E6D1200DD1156 /* YOPAPackage.m in Sources */,
+				ADD601EE188E6D1200DD1156 /* CRC32.m in Sources */,
 				BC871C8317E7122500048636 /* out.m in Sources */,
 				F473DA7A1872300800AF3C59 /* izip.m in Sources */,
 				AD2790D51870580000A4FD11 /* Binary.m in Sources */,
 				BC871C8417E7122500048636 /* scinfo.m in Sources */,
 				BC871C8517E7122500048636 /* sha1.c in Sources */,
+				ADD601F0188E6D1200DD1156 /* YOPASegment.m in Sources */,
 				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,
 				ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */,
 				ADAA367E1870606D0029AF7D /* Preferences.m in Sources */,

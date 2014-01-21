@@ -170,55 +170,55 @@ static NSString * const zh_locale[] = {
 
 
 static NSString * const de_locale[] = {
-    [CLUTCH_DEV_CHECK_UPDATE] = @"Du benutzt eine Clutch-Entwicklungsversion, überprüfe auf Updates...",
-    [CLUTCH_DEV_UP_TO_DATE] = @"Die Version von Clutch ist aktuell!",
-    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
-    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
-    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
-    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
-    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
-    
-    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
-    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
-    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
-    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
-    
-    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
-    [CRACKING_APPNAME] = @"Cracke %@...",
-    [CRACKING_CREATE_WORKING_DIR] = @"Erstelle Arbeitsverzeichnis...",
-    [CRACKING_PERFORMING_ANALYSIS] = @"Führe erste Analyse durch...",
-    [CRACKING_PERFORMING_PREFLIGHT] = @"Führe das Cracken des preflights durch...",
-    
-    [DUMPING_ANALYZE_LOAD_COMMAND] = @"Binary erhalten: Analysiere Ladebefehle",
-    [DUMPING_OBTAIN_PTRACE] = @"Binary erhalten: Erhalte ptrace handle",
-    [DUMPING_FORKING] = @"Binary erhalten: Pieksen um zu starten",
-    [DUMPING_FORK_SUCCESS] = @"Binary erhalten: Erfolgreich gepiekst",
-    [DUMPING_OBTAIN_MACH_PORT] = @"Binary erhalten: Erhalte den mach port",
-    [DUMPING_CODE_RESIGN] = @"Binary erhalten: Bereite den Code-Resign vor",
-    [DUMPING_PREPARE_DUMP] = @"Binary erhalten: Bereite das eigentliche Erhalten vor",
-    [DUMPING_ASLR_ENABLED] = @"Binary erhalten: ASLR aktiviert, identifiziere dumping-Verzeichnis manuell",
-    [DUMPING_PERFORM_DUMP] = @"Binary erhalten: Führe den Dump durch",
-    [DUMPING_PATCH_CRYPTID] = @"Binary erhalten: Cryptid gepatched",
-    [DUMPING_NEW_CHECKSUM] = @"Binary erhalten: Schreibe neue checksum-Daten",
-    
-    [SWAP_CRACKING_PORTION] = @"Tauschen: Cracke momentan armv%u portion",
-    
-    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Binary erhalten: Mach header gepatched (Overdrive)",
-    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Binary erhalten: Maxprot gepatched (Overdrive)",
-    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Binary erhalten: Cryptid gepatched (Overdrive)",
-    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Binary erhalten: Hänge Overdrive-DYLIB an (Overdrive)",
-    
-    [PACKAGING_WAITING_ZIP] = @"Zusammenpacken: Warte auf den zip-thread",
-    [PACKAGING_FAILED_KILL_ZIP] = @"Zusammenpacken: Crack fehlgeschlagen, eliminiere zip-thread",
-    [PACKAGING_ITUNESMETADATA] = @"Zusammenpacken: Zensiere die iTunesMetadata-Datei",
-    [PACKAGING_IPA] = @"Zusammenpacken: Komprimiere die IPA",
-    [PACKAGING_COMPRESSION_LEVEL] = @"Zusammenpacken: Kompressionslevel ist %u",
-    
-    [COMPLETE_ELAPSED_TIME] = @"Vergangene Zeit: %ums",
-    [COMPLETE_APPS_CRACKED] = @"\nApplikationen gecracked:\n",
-    [COMPLETE_APPS_FAILED] = @"\nApplikationen, die fehlgeschlagen sind:\n",
-    [COMPLETE_TOTAL] = @"\nInsgesamt erfolgreich: \033[0;32m%u\033[0m Insgesamt fehlgeschlagen: \033[0;32m%u\033[0m ",
-    
+	[CLUTCH_DEV_CHECK_UPDATE] = @"Du benutzt eine Clutch-Entwicklungsversion, überprüfe auf Updates...",
+	[CLUTCH_DEV_UP_TO_DATE] = @"Die Version von Clutch ist aktuell!",
+	[CLUTCH_DEV_NOT_UP_TO_DATE] = @"Dein Clutch ist outdated!\nBitte lade dir die neuste Version herunter!\n",
+	[CLUTCH_PERMISSION_ERROR] = @"Du musst als root eingeloggt seien um Clutch zu nutzen.",
+	[CLUTCH_NO_APPLICATIONS] = @"Es gibt keine encrypteten Applikationen auf diesem Gerät.",
+	[CLUTCH_CRACKING_ALL] = @"Cracke alle encrypteten Applikation.",
+	[CLUTCH_ENABLED_YOPA] = @"YOPA ist aktiviert.",
+	
+	[CONFIG_DOWNLOADING_FILES] = @"Lade die Knofigurationsdaten herunter...",
+	[CONFIG_NO_MEMORY] = @"Kein freier Speicher.",
+	[CONFIG_SAVING] = @"Speichere Konfigurationsdaten...",
+	[CONFIG_USING_DEFAULT] = @"Benutze Voreinstellungen...",
+
+	[CRACKING_DIRECTORY_ERROR] = @"Fehler: Konnte keinen Arbeitsordner erstellen.",
+	[CRACKING_APPNAME] = @"Cracke %@...",
+	[CRACKING_CREATE_WORKING_DIR] = @"Erstelle Arbeitsverzeichnis...",
+	[CRACKING_PERFORMING_ANALYSIS] = @"Führe erste Analyse durch...",
+	[CRACKING_PERFORMING_PREFLIGHT] = @"Führe das Cracken des preflights durch...",
+
+	[DUMPING_ANALYZE_LOAD_COMMAND] = @"Binary erhalten: Analysiere Ladebefehle",
+	[DUMPING_OBTAIN_PTRACE] = @"Binary erhalten: Erhalte ptrace handle",
+	[DUMPING_FORKING] = @"Binary erhalten: Pieksen um zu starten",
+	[DUMPING_FORK_SUCCESS] = @"Binary erhalten: Erfolgreich gepiekst",
+	[DUMPING_OBTAIN_MACH_PORT] = @"Binary erhalten: Erhalte den mach port",
+	[DUMPING_CODE_RESIGN] = @"Binary erhalten: Bereite den Code-Resign vor",
+	[DUMPING_PREPARE_DUMP] = @"Binary erhalten: Bereite das eigentliche Erhalten vor",
+	[DUMPING_ASLR_ENABLED] = @"Binary erhalten: ASLR aktiviert, identifiziere dumping-Verzeichnis manuell",
+	[DUMPING_PERFORM_DUMP] = @"Binary erhalten: Führe den Dump durch",
+	[DUMPING_PATCH_CRYPTID] = @"Binary erhalten: Cryptid gepatched",
+	[DUMPING_NEW_CHECKSUM] = @"Binary erhalten: Schreibe neue checksum-Daten",
+
+	[SWAP_CRACKING_PORTION] = @"Tauschen: Cracke momentan armv%u portion",
+
+	[DUMPING_OVERDRIVE_PATCH_HEADER] = @"Binary erhalten: Mach header gepatched (Overdrive)",
+	[DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Binary erhalten: Maxprot gepatched (Overdrive)",
+	[DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Binary erhalten: Cryptid gepatched (Overdrive)",
+	[DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Binary erhalten: Hänge Overdrive-DYLIB an (Overdrive)",
+
+	[PACKAGING_WAITING_ZIP] = @"Zusammenpacken: Warte auf den zip-thread",
+	[PACKAGING_FAILED_KILL_ZIP] = @"Zusammenpacken: Crack fehlgeschlagen, eliminiere zip-thread",
+	[PACKAGING_ITUNESMETADATA] = @"Zusammenpacken: Zensiere die iTunesMetadata-Datei",
+	[PACKAGING_IPA] = @"Zusammenpacken: Komprimiere die IPA",
+	[PACKAGING_COMPRESSION_LEVEL] = @"Zusammenpacken: Kompressionslevel ist %u",
+
+	[COMPLETE_ELAPSED_TIME] = @"Vergangene Zeit: %ums",
+	[COMPLETE_APPS_CRACKED] = @"\nApplikationen gecracked:\n",
+	[COMPLETE_APPS_FAILED] = @"\nApplikationen, die fehlgeschlagen sind:\n",
+	[COMPLETE_TOTAL] = @"\nInsgesamt erfolgreich: \033[0;32m%u\033[0m Insgesamt fehlgeschlagen: \033[0;32m%u\033[0m ",
+  
 };
 
 
@@ -277,18 +277,18 @@ static NSString * const fr_locale[] = {
 static NSString * const hr_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"Koristite beta verziju Clutch, proveravam ažuriranja",
     [CLUTCH_DEV_UP_TO_DATE] = @"Vaša verzija Clutch je najnovija!",
-    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
-    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
-    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
-    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
-    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"Vaša trenutna verzija Clutch nije najnovija!\nMolimo Vas preuzmite najnoviju verziju!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"Morate biti root korisnik da biste koristili Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"Ne postoje enkriptovane aplikacije na Vašem uređaju.",
+    [CLUTCH_CRACKING_ALL] = @"Crackujem sve enkriptovane aplikacije.",
+    [CLUTCH_ENABLED_YOPA] = @"YOPA je omogućen.",
 	
-    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
-    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
-    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
-    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    [CONFIG_DOWNLOADING_FILES] = @"Preuzimam fajlove za konfigurisanje...",
+    [CONFIG_NO_MEMORY] = @"Nema memorije",
+    [CONFIG_SAVING] = @"Čuvam podešene konfiguracije...",
+    [CONFIG_USING_DEFAULT] = @"Koristim podrazumevanu vrednost...",
     
-    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
+    [CRACKING_DIRECTORY_ERROR] = @"greška: ne mogu da napravim direktorijum za rad.",
     [CRACKING_APPNAME] = @"Crackujem %@...",
     [CRACKING_CREATE_WORKING_DIR] = @"Pravim direktorijum za rad...",
     [CRACKING_PERFORMING_ANALYSIS] = @"Izvršavam početne analize...",
@@ -360,7 +360,8 @@ static NSString * const hr_locale[] = {
     [DUMPING_PERFORM_DUMP] = @"",
     [DUMPING_PATCH_CRYPTID] = @"",
     [DUMPING_NEW_CHECKSUM] = @"",
-    [SWAP_CRACKING_PORTION] = @"",
+    
+	[SWAP_CRACKING_PORTION] = @"",
  
     [DUMPING_OVERDRIVE_PATCH_HEADER] = @"",
     [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"",

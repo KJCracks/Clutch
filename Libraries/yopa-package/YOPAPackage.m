@@ -23,8 +23,9 @@ static NSString * genRandStringLength(int len) {
 - (id)initWithPackagePath:(NSString*) packagePath {
     if (self = [super init]) {
         _packagePath = packagePath;
-        _segments = [[NSArray alloc] init];
+        _segments = [[NSMutableArray alloc] init];
         _package = fopen([packagePath UTF8String], "w+");
+        fseek(_package, 0, SEEK_SET);
         
     }
     return self;
@@ -139,31 +140,40 @@ static NSString * genRandStringLength(int len) {
     }
 }
 
--(void)writeSegments {
-    uint32_t segment_magic = YOPA_SEGMENT_MAGIC;
-    for (YOPASegment* segment in _segments) {
-        //get current length/offset of package
-        segment->_offset = (uint32_t) ftell(_package);
-       
-        //copy into final package
-        [self copyFromSegment:segment];
-        fseek(_package, 0, SEEK_END);
-        
-        //write segment header
-        struct yopa_segment segment_header = [segment getSegmentHeader];
-        fwrite(&segment_header, sizeof(struct yopa_segment), 1, _package);
-        
-        //write segment magic
-        fwrite(&segment_magic, sizeof(uint32_t), 1, _package);
-        
-    }
+-(void)addSegment:(YOPASegment *)segment {
+    [_segments addObject:segment];
+    [self writeSegment:segment];
 }
+
+-(void)writeSegment:(YOPASegment*) segment {
+    uint32_t segment_magic = YOPA_SEGMENT_MAGIC;
+    DEBUG(@"currently writing segment: %@", segment->_packagePath);
+    
+    //get current length/offset of package
+    segment->_offset = (uint32_t) ftell(_package);
+    
+    DEBUG(@"segment offset %u", CFSwapInt32(segment->_offset));
+    
+    //copy into final package
+    [self copyFromSegment:segment];
+    fseek(_package, 0, SEEK_END);
+    
+    //write segment header
+    struct yopa_segment segment_header = [segment getSegmentHeader];
+    fwrite(&segment_header, sizeof(struct yopa_segment), 1, _package);
+    
+    //write segment magic
+    fwrite(&segment_magic, sizeof(uint32_t), 1, _package);
+    
+}
+
 
 - (void)writeHeader
 {
     int i = 0;
     for (YOPASegment* segment in _segments) {
         _header.segment_offsets[i] = segment->_offset + segment->_size;
+        DEBUG(@"yopa segment (%u) offset: %u", i, CFSwapInt32(_header.segment_offsets[i]));
         i++;
     }
     
@@ -175,7 +185,7 @@ static NSString * genRandStringLength(int len) {
     
     DEBUG(@"write header ok");
     
-    uint32_t yopa_magic = YOPA_FAT_PACKAGE;
+    uint32_t yopa_magic = YOPA_HEADER_MAGIC;
     
     fwrite(&yopa_magic, sizeof(yopa_magic), 1, _package); //write magic
     

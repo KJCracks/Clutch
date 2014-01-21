@@ -418,8 +418,12 @@ int main(int argc, char *argv[])
                     continue;
                 }
                 
+                DEBUG(@"yolo swag");
+                
                 for (int i = 1; i < arguments.count; i++)
                 {
+                    DEBUG(@"hi %u", i);
+                    NSString* _arg = arguments[i];
                     if ([[Preferences sharedInstance] numberBasedMenu])
                     {
                         int number = [arg intValue] - 1;
@@ -438,7 +442,7 @@ int main(int argc, char *argv[])
                         {
                             if ([[Preferences sharedInstance] listWithDisplayName])
                             {
-                                if ([app.applicationDisplayName isEqualToString:arg])
+                                if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame)
                                 {
                                     int success = cmd_crack_app(app, yopa_enabled);
                                     
@@ -448,7 +452,7 @@ int main(int argc, char *argv[])
                                     }
                                 }
                             }
-                            else if ([app.applicationName isEqualToString:arg])
+                            else if ([app.applicationName caseInsensitiveCompare:_arg] == NSOrderedSame)
                             {
                                 // Crack mans app
                                 int success = cmd_crack_app(app, yopa_enabled);

@@ -33,11 +33,12 @@ NSString* msg(Message message) {
         case de:
             return de_locale[message];
 			break;
-		case fr:
+        case fr:
 			return fr_locale[message];
 			break;
 		case hr:
 			return hr_locale[message];
+            break;
     }
 }
 

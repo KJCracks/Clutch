@@ -42,7 +42,7 @@ struct yopa_header {
     NSString* _packagePath;
     FILE* _package;
     struct yopa_header _header;
-    NSArray* _segments;
+    NSMutableArray* _segments;
     NSString* _tmpDir;
 }
 
@@ -52,5 +52,5 @@ struct yopa_header {
 - (NSString*)getTempDir;
 
 - (void)addSegment:(YOPASegment*)segment;
-
+- (void)writeHeader;
 @end

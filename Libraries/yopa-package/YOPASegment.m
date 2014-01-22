@@ -33,6 +33,7 @@
         NSLog(@"error: app bundle too long");
     }
     strncpy(header.app_bundle, _app_bundle.UTF8String, 100);
+    DEBUG(@"app bundle %@", _app_bundle);
     return header;
 }
 

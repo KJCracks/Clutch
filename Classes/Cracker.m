@@ -335,14 +335,36 @@ static NSString * genRandStringLength(int len)
     return crackOk;
 }
 
+-(void)compressIPAto7z:(NSString*)packagePath {
+    DEBUG(@"7zip compression");
+    DEBUG(@"%@", [NSString stringWithFormat:@"7z a \"%@\" \"%@\"", packagePath, _ipapath]);
+    system([[NSString stringWithFormat:@"7z a \"%@\" \"%@\"", packagePath, _ipapath] UTF8String]);
+}
+
 -(void)packageYOPA
 {
-    YOPAPackage* package = [[YOPAPackage alloc] initWithIPAPath:_ipapath];
+    
+    YOPAPackage* package = [[YOPAPackage alloc] initWithPackagePath:_yopaPath];
+    
+    //default zip segment
+    YOPASegment* ipaSegment = [[YOPASegment alloc] initWithNormalPackage:_ipapath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID];
     
     DEBUG(@"compressing to 7zip");
     
-    [package compressToPackage:_yopaPath withCompressionType:SEVENZIP_COMPRESSION];
-    [package addHeaders];
+    NSString* tmp7z = [_tempPath stringByAppendingPathComponent:@"tmp.7z"];
+    
+    [self compressIPAto7z:tmp7z];
+    
+    YOPASegment* sevenZipSegment = [[YOPASegment alloc] initWithNormalPackage:tmp7z withCompressionType:SEVENZIP_COMPRESSION withBundleName:_app.applicationBundleID];
+    
+     DEBUG(@"adding segments");
+    
+    [package addSegment:ipaSegment];
+    [package addSegment:sevenZipSegment];
+    
+    
+    DEBUG(@"adding header");
+    [package writeHeader];
     
     [package release];
 }

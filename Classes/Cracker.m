@@ -351,9 +351,22 @@ static NSString * genRandStringLength(int len)
 {
     NSString* crackerName = [[Preferences sharedInstance] crackerName];
     
-    if (![[Preferences sharedInstance] removeMetadata])
+    if ([[Preferences sharedInstance] removeMetadata])
     {
+        MSG(PACKAGING_ITUNESMETADATA);
+        DEBUG(@"Generating fake iTunesMetadata");
         generateMetadata([_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"]);
+    }
+    else
+    {
+        NSError *err;
+        DEBUG(@"Moving iTunesMetadata");
+        [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"iTunesMetadata.plist"] error:&err];
+        
+        if (err)
+        {
+            NSLog(@"%@", err.localizedDescription);
+        }
     }
     
     if ([[Preferences sharedInstance] useOverdrive])
@@ -372,7 +385,8 @@ static NSString * genRandStringLength(int len)
         
     }
     
-    MSG(PACKAGING_ITUNESMETADATA);
+    DEBUG(@"Copying iTunesArtwork");
+    [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingString:@"iTunesArtwork"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesArtwork"] error:nil];
     
     NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];
     

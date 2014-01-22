@@ -37,6 +37,8 @@
 		BC871C8417E7122500048636 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7C17E7122500048636 /* scinfo.m */; };
 		BC871C8517E7122500048636 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7D17E7122500048636 /* sha1.c */; };
 		BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC871C8717E7126F00048636 /* Clutch-Info.plist */; };
+		E9F95EC7188FF5C60002EBAC /* Packager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F95EC6188FF5C60002EBAC /* Packager.m */; };
+		E9F95ED0189001C40002EBAC /* libarchive.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F95ECF189001C40002EBAC /* libarchive.dylib */; };
 		F473DA7A1872300800AF3C59 /* izip.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA791872300800AF3C59 /* izip.m */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +103,11 @@
 		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
 		E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clutch_Prefix.pch; path = Resources/Clutch_Prefix.pch; sourceTree = "<group>"; };
+		E9F95EC5188FF5C60002EBAC /* Packager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packager.h; sourceTree = "<group>"; };
+		E9F95EC6188FF5C60002EBAC /* Packager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packager.m; sourceTree = "<group>"; };
+		E9F95ECF189001C40002EBAC /* libarchive.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libarchive.dylib; path = usr/lib/libarchive.dylib; sourceTree = SDKROOT; };
+		E9F95ED1189001CF0002EBAC /* archive_entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive_entry.h; sourceTree = "<group>"; };
+		E9F95ED2189001F40002EBAC /* archive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive.h; sourceTree = "<group>"; };
 		F473DA551871E77400AF3C59 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		F473DA781872300800AF3C59 /* izip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = izip.h; sourceTree = "<group>"; };
 		F473DA791872300800AF3C59 /* izip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = izip.m; sourceTree = "<group>"; };
@@ -111,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9F95ED0189001C40002EBAC /* libarchive.dylib in Frameworks */,
 				ADC6C4881871A7260073C40B /* MobileInstallation.framework in Frameworks */,
 				ADC6C4851871A48D0073C40B /* UIKit.framework in Frameworks */,
 				AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */,
@@ -124,6 +132,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E9F95ED2189001F40002EBAC /* archive.h */,
+				E9F95ED1189001CF0002EBAC /* archive_entry.h */,
 				ADD601E7188E6D1200DD1156 /* yopa-package */,
 				E9ABBFB8188D4154000B442F /* sha1 */,
 				E9ABBFB7188D3F29000B442F /* ZipArchive */,
@@ -153,6 +163,8 @@
 				F473DA551871E77400AF3C59 /* Constants.h */,
 				ADC8A6EB188170000063B6BD /* API.h */,
 				ADC8A6EC188170000063B6BD /* API.m */,
+				E9F95EC5188FF5C60002EBAC /* Packager.h */,
+				E9F95EC6188FF5C60002EBAC /* Packager.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -198,6 +210,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E9F95ECF189001C40002EBAC /* libarchive.dylib */,
 				ADC6C4871871A7260073C40B /* MobileInstallation.framework */,
 				ADC6C4841871A48D0073C40B /* UIKit.framework */,
 				AD201A0517EC908800BF9F6C /* libz.dylib */,
@@ -353,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9F95EC7188FF5C60002EBAC /* Packager.m in Sources */,
 				ADC8A6ED188170000063B6BD /* API.m in Sources */,
 				AD61315C187D23FC00B94378 /* Install.m in Sources */,
 				AD2790D61870580000A4FD11 /* Device.m in Sources */,
@@ -398,7 +412,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Clutch-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"/Users/thomas/Desktop/Clutch-Master",
 				);
 				PRODUCT_NAME = Clutch;
 			};
@@ -419,7 +434,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Clutch-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"/Users/thomas/Desktop/Clutch-Master",
 				);
 				"OTHER_LDFLAGS[arch=*]" = "-all_load";
 				PRODUCT_NAME = Clutch;

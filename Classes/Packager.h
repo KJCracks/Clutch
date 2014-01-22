@@ -2,21 +2,12 @@
 //  Packager.h
 //  Clutch
 //
-//  Created by DilDog on 12/22/13.
+//  Created by Ninja on 22/01/2014.
 //
 //
 
 #import <Foundation/Foundation.h>
 
 @interface Packager : NSObject
-{
-    NSString *_outputPath;
-}
-
-
--(id)init;
--(void)dealloc;
--(NSString *)getOutputPath;
--(BOOL)packFromSource:(NSString *)inputpath withOverlay:(NSString *)overlaypath;
 
 @end

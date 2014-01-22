@@ -2,44 +2,64 @@
 //  Packager.m
 //  Clutch
 //
-//  Created by DilDog on 12/22/13.
+//  Created by Ninja on 22/01/2014.
 //
 //
 
 #import "Packager.h"
+#import "archive.h"
+#import "archive_entry.h"
 
 @implementation Packager
 
-
-- (id)init
+void write_archive(const char *outname, const char **filename)
 {
-    self = [super init];
-    if (self)
+    struct archive *archive = archive_write_new();
+    assert(archive != NULL);
+    
+    struct archive_entry *entry;
+    struct stat st;
+    
+    char buf[8192];
+    int len;
+    int fd;
+    
+    if ((archive_write_set_format_zip(archive) != ARCHIVE_OK) || archive_write_open_filename(archive, "test.zip") != ARCHIVE_OK)
     {
-        _outputPath = NULL;
+        // Error handle
+        NSLog(@"Error creating ZIP object.");
     }
-    return self;
-}
-
--(void)dealloc
-{
-    if(_outputPath)
+    
+    archive_entry_set_pathname(entry, *filename);
+    archive_entry_set_size(entry, len);
+    archive_entry_set_filetype(entry, AE_IFREG);
+    archive_entry_set_perm(entry, 0644);
+    
+    int rc = archive_write_header(archive, entry);
+    
+    archive_entry_free(entry);
+    entry = NULL;
+    
+    if (ARCHIVE_OK != rc)
     {
-        [_outputPath release];
+        // Error handle
+        NSLog(@"error idk");
     }
-    [super dealloc];
+    
+    size_t writtern = archive_write_data(archive, buf, len);
+    
+    if (writtern != len)
+    {
+        // Error handle
+        NSLog(@"Some other error idk");
+    }
+    
+    archive_write_free(archive);
+    
+    
+    
 }
 
-
--(NSString *)getOutputPath
-{
-    return _outputPath;
-}
-
--(BOOL)packFromSource:(NSString *)inputpath withOverlay:(NSString *)overlaypath
-{
-    return YES;
-}
 
 
 @end

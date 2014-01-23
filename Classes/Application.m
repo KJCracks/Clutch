@@ -119,4 +119,8 @@
     return [NSString stringWithFormat:@"<%@: %p, appName: %@, bundleID: %@>",NSStringFromClass([self class]),self,self.applicationName,self.applicationBundleID];
 }
 
+-(NSInteger)appVersion {
+    return [[applicationVersion stringByReplacingOccurrencesOfString:@"." withString:@""] integerValue];
+}
+
 @end

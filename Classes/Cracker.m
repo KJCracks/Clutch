@@ -344,7 +344,7 @@ static NSString * genRandStringLength(int len)
 }
 
 
-void yopainstaller_peer_event_handler(xpc_connection_t peer, xpc_object_t reply)
+void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xpc_object_t reply)
 {
     
     xpc_type_t type = xpc_get_type(reply);
@@ -366,17 +366,41 @@ void yopainstaller_peer_event_handler(xpc_connection_t peer, xpc_object_t reply)
         
         NSString *status = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Status")];
         
-        
         if ([status isEqualToString:@"Complete"]) {
-            xpc_object_t addFiles = xpc_dictionary_get_value(reply, "AddFiles");
-            xpc_object_t remFiles = xpc_dictionary_get_value(reply, "RemoveFiles");
-            NSLog(@"Complete! YAY");
-            xpc_array_apply(addFiles, ^_Bool(size_t index, xpc_object_t value) {
-                NSLog(@"Array value %s", (const char*)value);
-                return true;
-            });
+            NSString* command = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Command")];
+            if ([command isEqualToString:@"SaveVersion"]) {
+                NSLog(@"save version ok");
+            }
+            else if ([command isEqualToString:@"GetVersions"]) {
+                 xpc_object_t versions = xpc_dictionary_get_value(reply, "Versions");
+                cracker->_yopaVersions = [[NSMutableArray alloc] init];
+                 xpc_array_apply(versions, ^_Bool(size_t index, xpc_object_t value) {
+                     [cracker->_yopaVersions addObject:[NSNumber numberWithInt:(int)value]];
+                     return true;
+                 });
+            }
+            else if ([command isEqualToString:@"GetPatchFiles"]) {
+                xpc_object_t diff = xpc_dictionary_get_value(reply, "Diff");
+                xpc_object_t addFiles = xpc_dictionary_get_value(diff, "AddFiles");
+                xpc_object_t remFiles = xpc_dictionary_get_value(diff, "RemoveFiles");
+                NSLog(@"Complete! YAY");
+                cracker->_yopaAddFiles = [[NSMutableArray alloc] init];
+                cracker->_yopaRemFiles = [[NSMutableArray alloc] init];
+                xpc_array_apply(addFiles, ^_Bool(size_t index, xpc_object_t value) {
+                    NSLog(@"Add Array value %s", (const char*)value);
+                    [cracker->_yopaAddFiles addObject:[NSString stringWithUTF8String:(const char*)value]];
+                    return true;
+                });
+                
+                xpc_array_apply(remFiles, ^_Bool(size_t index, xpc_object_t value) {
+                    NSLog(@"Remove Array value %s", (const char*)value);
+                    [cracker->_yopaRemFiles addObject:[NSString stringWithUTF8String:(const char*)value]];
+                    return true;
+                });
+               
+            }
             xpc_connection_cancel(peer);
-            exit(0);
+            
         }
         else if ([status isEqualToString:@"Error"])
         {
@@ -410,7 +434,7 @@ void yopainstaller_peer_event_handler(xpc_connection_t peer, xpc_object_t reply)
     xpc_connection_t c = xpc_connection_create_mach_service("zorro.yopainstalld", NULL, 0);
     
     xpc_connection_set_event_handler(c, ^(xpc_object_t object) {
-        yopainstaller_peer_event_handler(c, object);
+        yopainstalld_peer_event_handler(self, c, object);
     });
     
     xpc_connection_resume(c);
@@ -426,6 +450,54 @@ void yopainstaller_peer_event_handler(xpc_connection_t peer, xpc_object_t reply)
     xpc_release(message);
     
     dispatch_main();
+    
+    
+    // Messages are always dictionaries.
+    message = xpc_dictionary_create(NULL, NULL, 0);
+    xpc_dictionary_set_string(message, "Command", "GetVersions");
+    xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
+    
+    xpc_connection_send_message(c, message);
+    
+    xpc_release(message);
+    
+    dispatch_main();
+    
+    for (NSNumber* version in _yopaVersions) {
+        if ([version isEqualToNumber:_app.appVersion]) {
+            NSLog(@"same version! %@", version);
+            continue;
+            
+            // Messages are always dictionaries.
+            message = xpc_dictionary_create(NULL, NULL, 0);
+            xpc_dictionary_set_string(message, "Command", "GetPatchFiles");
+            xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
+            xpc_dictionary_set_int64(message, "Version", [version intValue]);
+            
+            xpc_connection_send_message(c, message);
+            
+            xpc_release(message);
+            
+            dispatch_main();
+            
+            ZipArchive* archive = [[ZipArchive alloc] init];
+            NSString* archivePath = [_tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", version]];
+            [archive CreateZipFile2:archivePath];
+            for (NSString* file in _yopaAddFiles) {
+                NSLog(@"yopa add file patch %@", file);
+                NSString* longPath = [_workingDir stringByAppendingPathComponent:file];
+                [archive addFileToZip:longPath newname:file compressionLevel:0];
+            }
+            [archive CloseZipFile2];
+            
+            YOPASegment* segment = [[YOPASegment alloc] initWithPatchPackage:archivePath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID withVersion:version];
+            
+            [package addSegment:segment];
+            
+        }
+        
+    }
+    
 
     
     //default zip segment

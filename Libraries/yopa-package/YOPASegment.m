@@ -22,6 +22,20 @@
     return self;
 }
 
+- (id)initWithPatchPackage:(NSString*)packagePath withCompressionType:(int)compressionType withBundleName:(NSString*)bundle withVersion:(NSInteger)version {
+    if (self = [super init]) {
+        _file = fopen(packagePath.UTF8String, "r");
+        fseek(_file, 0, SEEK_END);
+        _size = (uint32_t) ftell(_file);
+        _packagePath = packagePath;
+        _compression_type = compressionType;
+        _app_bundle = bundle;
+        _required_version = version;
+    }
+    return self;
+}
+
+
 - (struct yopa_segment)getSegmentHeader {
     struct yopa_segment header;
     header.compression_type = _compression_type;

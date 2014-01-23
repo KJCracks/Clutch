@@ -25,6 +25,10 @@
     NSString *_ipapath;
     NSString *_yopaPath;
     BOOL* _yopaEnabled;
+    
+    NSMutableArray* _yopaAddFiles;
+    NSMutableArray* _yopaRemFiles;
+    NSMutableArray* _yopaVersions;
 }
 
 -(id)init;

@@ -42,6 +42,7 @@
 - (NSString *)minimumOSVersion;
 - (UIImage *)applicationIcon;
 - (NSData *)applicationSINF;
+- (NSInteger)appVersion;
 
 - (NSDictionary *)dictionaryRepresentation;
 

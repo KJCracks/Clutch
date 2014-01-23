@@ -23,5 +23,6 @@
 
 - (struct yopa_segment)getSegmentHeader;
 - (id)initWithNormalPackage:(NSString*)packagePath withCompressionType:(int)compressionType withBundleName:(NSString*)bundle;
+- (id)initWithPatchPackage:(NSString*)packagePath withCompressionType:(int)compressionType withBundleName:(NSString*)bundle withVersion:(NSInteger)version;
 
 @end

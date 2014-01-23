@@ -14,6 +14,8 @@
 #import "Localization.h"
 #import "Constants.h"
 
+#import <xpc/xpc.h> 
+// ln -s /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr/include/xpc /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/usr/include/xpc
 #import <sys/stat.h>
 #import <sys/types.h>
 #import <utime.h>
@@ -341,10 +343,90 @@ static NSString * genRandStringLength(int len)
     system([[NSString stringWithFormat:@"7z a \"%@\" \"%@\"", packagePath, _ipapath] UTF8String]);
 }
 
+
+void yopainstaller_peer_event_handler(xpc_connection_t peer, xpc_object_t reply)
+{
+    
+    xpc_type_t type = xpc_get_type(reply);
+    if (xpc_get_type(reply) == XPC_TYPE_ERROR) {
+        if (reply == XPC_ERROR_CONNECTION_INVALID)
+        {
+            NSLog(@"DAFUQ JUST HAPPENED. make sure you are r00t");
+            xpc_connection_cancel(peer);
+            exit(0);
+            
+        } else if (reply == XPC_ERROR_TERMINATION_IMMINENT)
+        {
+            NSLog(@"TERMINATOR!!!!!!!");
+            //dunno what to do
+            exit(0);
+        }
+    } else {
+        assert(type == XPC_TYPE_DICTIONARY);
+        
+        NSString *status = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Status")];
+        
+        
+        if ([status isEqualToString:@"Complete"]) {
+            xpc_object_t addFiles = xpc_dictionary_get_value(reply, "AddFiles");
+            xpc_object_t remFiles = xpc_dictionary_get_value(reply, "RemoveFiles");
+            NSLog(@"Complete! YAY");
+            xpc_array_apply(addFiles, ^_Bool(size_t index, xpc_object_t value) {
+                NSLog(@"Array value %s", (const char*)value);
+                return true;
+            });
+            xpc_connection_cancel(peer);
+            exit(0);
+        }
+        else if ([status isEqualToString:@"Error"])
+        {
+            NSString *error = nil;
+            
+            if (xpc_dictionary_get_string(reply, "Error")) {
+                error = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Error")];
+            }
+            
+            NSLog(@"Error %@",error);
+            
+            xpc_connection_cancel(peer);
+            exit(0);
+        }
+        else
+        {
+            NSLog(@"%@",status);
+        }
+        
+    }
+    
+}
+
+
 -(void)packageYOPA
 {
     
     YOPAPackage* package = [[YOPAPackage alloc] initWithPackagePath:_yopaPath];
+    
+    
+    xpc_connection_t c = xpc_connection_create_mach_service("zorro.yopainstalld", NULL, 0);
+    
+    xpc_connection_set_event_handler(c, ^(xpc_object_t object) {
+        yopainstaller_peer_event_handler(c, object);
+    });
+    
+    xpc_connection_resume(c);
+    
+    // Messages are always dictionaries.
+    xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
+    xpc_dictionary_set_string(message, "Command", "SaveVersion");
+    xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
+    //xpc_dictionary_set_int64(message, "Version", 38);
+    
+    xpc_connection_send_message(c, message);
+    
+    xpc_release(message);
+    
+    dispatch_main();
+
     
     //default zip segment
     YOPASegment* ipaSegment = [[YOPASegment alloc] initWithNormalPackage:_ipapath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID];

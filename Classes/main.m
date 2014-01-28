@@ -419,7 +419,10 @@ int main(int argc, char *argv[])
                 }
                 
                 DEBUG(@"yolo swag");
-                
+                int i = 1;
+                if ([arg isEqualToString:@"-k"]) {
+                    
+                }
                 for (int i = 1; i < arguments.count; i++)
                 {
                     DEBUG(@"hi %u", i);
@@ -438,31 +441,37 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
+                        
+                        Application* crackApp;
+                        
                         for (Application *app in applist)
                         {
-                            if ([[Preferences sharedInstance] listWithDisplayName])
+                            
+                            if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
                             {
-                                if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame)
+                                if ([app.applicationDirectory caseInsensitiveCompare:_arg] == NSOrderedSame)
                                 {
-                                    int success = cmd_crack_app(app, yopa_enabled);
-                                    
-                                    if (success == 1)
-                                    {
-                                        // Error handle
-                                    }
+                                    crackApp = app;
+                                    break;
                                 }
                             }
-                            else if ([app.applicationName caseInsensitiveCompare:_arg] == NSOrderedSame)
-                            {
-                                // Crack mans app
-                                int success = cmd_crack_app(app, yopa_enabled);
-                                
-                                if (success == 1)
-                                {
-                                    // Error handle
+                            else if ([[Preferences sharedInstance] boolForKey:@"ListWithDisplayName"]) {
+                                if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame) {
+                                    crackApp = app;
+                                    break;
+                                }
+                                    
+                            }
+                            else {
+                                if ([app.applicationExecutableName caseInsensitiveCompare:_arg] == NSOrderedSame) {
+                                    crackApp = app;
+                                    break;
                                 }
                             }
                         }
+                        
+                        int success = cmd_crack_app(crackApp, yopa_enabled);
+                        
                     }
                 }
             }

@@ -462,38 +462,38 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     xpc_release(message);
     
     dispatch_main();
-    
+
     for (NSNumber* version in _yopaVersions) {
         if ([version isEqualToNumber:_app.appVersion]) {
             NSLog(@"same version! %@", version);
             continue;
+        }
+        
+        // Messages are always dictionaries.
+        message = xpc_dictionary_create(NULL, NULL, 0);
+        xpc_dictionary_set_string(message, "Command", "GetPatchFiles");
+        xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
+        xpc_dictionary_set_int64(message, "Version", [version intValue]);
+        
+        xpc_connection_send_message(c, message);
+        
+        xpc_release(message);
+        
+        dispatch_main();
+        
+        ZipArchive* archive = [[ZipArchive alloc] init];
+        NSString* archivePath = [_tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", version]];
+        [archive CreateZipFile2:archivePath];
+        for (NSString* file in _yopaAddFiles) {
+            NSLog(@"yopa add file patch %@", file);
+            NSString* longPath = [_workingDir stringByAppendingPathComponent:file];
+            [archive addFileToZip:longPath newname:file compressionLevel:0];
             
-            // Messages are always dictionaries.
-            message = xpc_dictionary_create(NULL, NULL, 0);
-            xpc_dictionary_set_string(message, "Command", "GetPatchFiles");
-            xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
-            xpc_dictionary_set_int64(message, "Version", [version intValue]);
-            
-            xpc_connection_send_message(c, message);
-            
-            xpc_release(message);
-            
-            dispatch_main();
-            
-            ZipArchive* archive = [[ZipArchive alloc] init];
-            NSString* archivePath = [_tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", version]];
-            [archive CreateZipFile2:archivePath];
-            for (NSString* file in _yopaAddFiles) {
-                NSLog(@"yopa add file patch %@", file);
-                NSString* longPath = [_workingDir stringByAppendingPathComponent:file];
-                [archive addFileToZip:longPath newname:file compressionLevel:0];
-            }
             [archive CloseZipFile2];
             
             YOPASegment* segment = [[YOPASegment alloc] initWithPatchPackage:archivePath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID withVersion:version];
             
             [package addSegment:segment];
-            
         }
         
     }
@@ -537,11 +537,13 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     {
         NSError *err;
         DEBUG(@"Moving iTunesMetadata");
-        [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"iTunesMetadata.plist"] error:&err];
+        DEBUG(@"copy from %@ to %@", [_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"iTunesMetadata.plist"]);
+        
+        [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"] error:&err];
         
         if (err)
         {
-            NSLog(@"%@", err.localizedDescription);
+            NSLog(@"error moving itunesmetadata %@", err);
         }
     }
     

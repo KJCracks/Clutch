@@ -33,6 +33,7 @@
 
 - (NSString *)appDirectory;
 - (NSString *)applicationContainer;
+- (NSString*) applicationDirectory;
 - (NSString *)applicationBundleID;
 - (NSString *)applicationDisplayName;
 - (NSString *)applicationExecutableName;

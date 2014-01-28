@@ -61,6 +61,10 @@
     return applicationContainer;
 }
 
+- (NSString*) applicationDirectory {
+    return [applicationContainer lastPathComponent];
+}
+
 - (NSString *)applicationDisplayName
 {
     return applicationDisplayName;

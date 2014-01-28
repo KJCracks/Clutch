@@ -143,6 +143,7 @@ static NSString * genRandStringLength(int len)
 // set up application cracking from an installed application
 -(BOOL)prepareFromInstalledApp:(Application*)app
 {
+    DEBUG(@"------Prepairing from Installed App------");
     // Create the app description
     _app = app;
     _appDescription = [NSString stringWithFormat:@"%@: %@ (%@)",
@@ -154,7 +155,7 @@ static NSString * genRandStringLength(int len)
     _tempPath = [NSString stringWithFormat:@"%@%@", @"/tmp/clutch_", genRandStringLength(8)];
     _workingDir = [NSString stringWithFormat:@"%@/Payload/%@", _tempPath, app.appDirectory];
     
-    DEBUG(@"temporary directory %@", _workingDir);
+    DEBUG(@"Temporary Directory: %@", _workingDir);
     MSG(CRACKING_CREATE_WORKING_DIR);
     
     if (![[NSFileManager defaultManager] createDirectoryAtPath:_workingDir withIntermediateDirectories:YES attributes:@{NSFileOwnerAccountName:@"mobile",NSFileGroupOwnerAccountName:@"mobile"} error:NULL])
@@ -165,7 +166,7 @@ static NSString * genRandStringLength(int len)
     
     _tempBinaryPath = [_workingDir stringByAppendingFormat:@"/%@", app.applicationExecutableName];
     
-    DEBUG(@"tempBinaryPath: %@", _tempBinaryPath);
+    DEBUG(@"Temporary Binary Path: %@", _tempBinaryPath);
         
     _binaryPath = [[app.applicationContainer stringByAppendingPathComponent:app.appDirectory] stringByAppendingPathComponent:app.applicationExecutableName];
     
@@ -173,16 +174,19 @@ static NSString * genRandStringLength(int len)
     
     _binary->overdriveEnabled = [[Preferences sharedInstance] useOverdrive];
     
-    DEBUG(@"binaryPath: %@", _binaryPath);
+    DEBUG(@"Binary Path: %@", _binaryPath);
     
-    return (!_binary)?NO:YES;
+    DEBUG(@"-------End Prepairing Installed App-----");
+    
+    return (!_binary) ? NO : YES;
 }
 
 -(NSString*) generateIPAPath
 {
+    DEBUG(@"------Generating Paths------");
     NSString *crackerName = [[Preferences sharedInstance] crackerName];
     
-     NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Preferences sharedInstance] ipaDirectory]];
+    NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Preferences sharedInstance] ipaDirectory]];
     
     if ([[Preferences sharedInstance] addMinOS])
     {
@@ -195,11 +199,18 @@ static NSString * genRandStringLength(int len)
          _yopaPath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).7z.yopa.ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
     
+    DEBUG(_ipapath);
+    
+    DEBUG(@"------End Generating Paths-----");
+    
     return _ipapath;
 }
 
 -(BOOL) execute
 {
+    
+    DEBUG(@"------Executing crack------")
+    
     //1. dump binary
     __block NSError* error;
     __block BOOL* crackOk, *zipComplete = false;
@@ -218,6 +229,7 @@ static NSString * genRandStringLength(int len)
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
 
     NSBlockOperation *crackOperation = [NSBlockOperation blockOperationWithBlock:^{
+        DEBUG(@"------Crack Operation------");
         NSError* _error;
         DEBUG(@"beginning crack operation");
     
@@ -240,6 +252,7 @@ static NSString * genRandStringLength(int len)
          
             DEBUG(@"crack operation ok!");
             MSG(PACKAGING_WAITING_ZIP);
+            DEBUG(@"-----End Crack Op------");
         }
     }];
     
@@ -254,6 +267,7 @@ static NSString * genRandStringLength(int len)
     __block __weak NSBlockOperation *zipOriginalweakOperation = zipOriginalOperation;
     
     [zipOriginalOperation addExecutionBlock:^{
+        DEBUG(@"------Zip Operation------");
         DEBUG(@"beginning zip operation");
         
         if ([[Preferences sharedInstance] useNativeZip])
@@ -282,10 +296,12 @@ static NSString * genRandStringLength(int len)
         
         DEBUG(@"zip original ok");
         zipComplete = true;
+        DEBUG(@"------End Zip Op------");
     }];
     
     
     NSOperation *zipCrackedOperation = [NSBlockOperation blockOperationWithBlock:^{
+        DEBUG(@"------Zip Cracked Op------");
         //check if crack was successful
         if (crackOk)
         {
@@ -320,6 +336,7 @@ static NSString * genRandStringLength(int len)
         }
         
         [[NSFileManager defaultManager] removeItemAtPath:_tempPath error:nil];
+        DEBUG(@"------End Zip Crack Op------");
     }];
     
     [zipCrackedOperation addDependency:crackOperation];
@@ -333,6 +350,8 @@ static NSString * genRandStringLength(int len)
     [queue waitUntilAllOperationsAreFinished];
     
     [queue release];
+    
+    DEBUG(@"------End Execute Crack------");
     
     return crackOk;
 }
@@ -535,16 +554,13 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     }
     else
     {
-        NSError *err;
+        //NSError *err;
         DEBUG(@"Moving iTunesMetadata");
-        DEBUG(@"copy from %@ to %@", [_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"iTunesMetadata.plist"]);
+        DEBUG(@"copy from %@ to %@", [_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"/iTunesMetadata.plist"]);
         
-        [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"] error:&err];
         
-        if (err)
-        {
-            NSLog(@"error moving itunesmetadata %@", err);
-        }
+        [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"] error:nil];
+        
     }
     
     if ([[Preferences sharedInstance] useOverdrive])

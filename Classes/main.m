@@ -171,11 +171,13 @@ void cmd_help()
 {
     printf("Clutch Help\n");
     printf("----------------------\n");
-    printf("-c          Runs configuration utility\n");
-    printf("-a          Cracks all applications\n");
-    printf("-u          Cracks updated applications\n");
-    printf("-f          Clears cache\n");
-    printf("-v          Shows version\n");
+    printf("-c                            Runs configuration utility\n");
+    printf("-a                            Cracks all applications\n");
+    printf("-u                            Cracks updated applications\n");
+    printf("-f                            Clears cache\n");
+    printf("-v                            Shows version\n");
+    printf("-i <IPA> <Binary> <OutBinary> Installs IPA and cracks it\n");
+    printf("--yopa                        Creates a YOPA package\n");
     printf("\n");
 }
 
@@ -365,7 +367,25 @@ int main(int argc, char *argv[])
                 goto endMain;
             }
             
-            if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
+            if ([arg isEqualToString:@"-i"] || [arg isEqualToString:@"-install"])
+            {
+                if (arguments.count < 3)
+                {
+                    printf("%s %s requires 3 arugments (%d found).\n", argv[0], [arg UTF8String], (int)(arguments.count - 2));
+                    
+                    return retVal;
+                }
+                
+                NSString *ipa = arguments[2];
+                NSString *binary = arguments[3];
+                NSString *outbinary = arguments[4];
+                
+                Install *install = [[Install alloc] initWithIPA:ipa withBinary:binary];
+                [install installIPA];
+                [install crackWithOutBinary:outbinary];
+                [install release];
+            }
+             else if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
             {
                 retVal = cmd_crack_all(applist);
             }
@@ -389,17 +409,6 @@ int main(int argc, char *argv[])
                 
                 goto endMain;
             }
-            else if ([arg isEqualToString:@"-i"] || [arg isEqualToString:@"-install"])
-            {
-                NSString *ipa = [NSString stringWithUTF8String:argv[2]];
-                NSString *binary = [NSString stringWithUTF8String:argv[3]];
-                NSString *outbinary = [NSString stringWithUTF8String:argv[4]];
-                
-                Install *install = [[Install alloc] initWithIPA:ipa withBinary:binary];
-                [install installIPA];
-                [install crackWithOutBinary:outbinary];
-                [install release];
-            }
             else if ([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-help"])
             {
                 cmd_help();
@@ -418,14 +427,12 @@ int main(int argc, char *argv[])
                     continue;
                 }
                 
-                DEBUG(@"yolo swag");
-                int i = 1;
                 if ([arg isEqualToString:@"-k"]) {
                     
                 }
+                
                 for (int i = 1; i < arguments.count; i++)
                 {
-                    DEBUG(@"hi %u", i);
                     NSString* _arg = arguments[i];
                     if ([[Preferences sharedInstance] numberBasedMenu])
                     {

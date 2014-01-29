@@ -29,15 +29,19 @@ Current development version: *Clutch 1.4-git8*
 
 *Clutch* [flags] [application name] [...]
 
-`-a`                          Crack all applications<br />
-`-u`                          Cracks updated applications<br />
-`-f`                          Flushes cache<br />
-`-v`                          Shows version<br />
-`-c`                          Runs configuration utility<br />
-`-i <IPA> <BINARY <OUTPATH>`  Installs IPA & cracks it<br />
+* `-a`                          Crack all applications<br />
+* `-u`                          Cracks updated applications<br />
+* `-f`                          Flushes cache<br />
+* `-v`                          Shows version<br />
+* `-c`                          Runs configuration utility<br />
+* `-i <IPA> <BINARY <OUTPATH>`  Installs IPA & cracks it<br />
+* `--yopa`                      Creates a YOPA package<br />
+* `--info`                      Gets info about target<br />
 
-`--yopa`                      Creates a YOPA package<br />
-`--info`                      Gets info about target<br />
+
+You can also set environment variables to change the behviour of *Clutch*
+* `CLUTCH_CONF` Sets path to configuration file<br />
+* `CLUTCH_IGNORE_DEV` Ignores the dev updates<br />
 
 Compiling
 ------------

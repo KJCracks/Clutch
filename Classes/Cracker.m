@@ -5,16 +5,14 @@
 
 #import "Cracker.h"
 #import "Application.h"
-#import "out.h"
 #import "scinfo.h"
 #import "izip.h"
 #import "ZipArchive.h"
 #import "API.h"
 #import "YOPAPackage.h"
 #import "Localization.h"
-#import "Constants.h"
 
-#import <xpc/xpc.h> 
+#import <xpc/xpc.h>
 // ln -s /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr/include/xpc /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/usr/include/xpc
 #import <sys/stat.h>
 #import <sys/types.h>
@@ -462,7 +460,7 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     xpc_connection_t c = xpc_connection_create_mach_service("zorro.yopainstalld", NULL, 0);
     
     xpc_connection_set_event_handler(c, ^(xpc_object_t object) {
-        yopainstalld_peer_event_handler(self, c, object);
+        //yopainstalld_peer_event_handler(self, c, object); //don't need dat?
     });
     
     xpc_connection_resume(c);
@@ -473,23 +471,26 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
     //xpc_dictionary_set_int64(message, "Version", 38);
     
-    xpc_connection_send_message(c, message);
+    xpc_object_t SaveVersionResponse = xpc_connection_send_message_with_reply_sync(c, message);
     
     xpc_release(message);
     
-    dispatch_main();
+    yopainstalld_peer_event_handler(self, c, SaveVersionResponse);
     
-    
+    xpc_release(SaveVersionResponse);
+
     // Messages are always dictionaries.
     message = xpc_dictionary_create(NULL, NULL, 0);
     xpc_dictionary_set_string(message, "Command", "GetVersions");
     xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
     
-    xpc_connection_send_message(c, message);
+    xpc_object_t GetVersionsResponse = xpc_connection_send_message_with_reply_sync(c, message);
     
     xpc_release(message);
     
-    dispatch_main();
+    yopainstalld_peer_event_handler(self, c, GetVersionsResponse);
+    
+    xpc_release(GetVersionsResponse);
 
     for (NSNumber* version in _yopaVersions) {
         if ([version isEqualToNumber:_app.appVersion]) {
@@ -503,11 +504,13 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
         xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
         xpc_dictionary_set_int64(message, "Version", [version intValue]);
         
-        xpc_connection_send_message(c, message);
+        xpc_object_t GetPatchFilesResponse = xpc_connection_send_message_with_reply_sync(c, message);
         
         xpc_release(message);
         
-        dispatch_main();
+        yopainstalld_peer_event_handler(self, c, GetPatchFilesResponse);
+        
+        xpc_release(GetPatchFilesResponse);
         
         ZipArchive* archive = [[ZipArchive alloc] init];
         NSString* archivePath = [_tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", version]];

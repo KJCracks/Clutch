@@ -1,7 +1,6 @@
 #import "Binary.h"
 #import "Device.h"
 #import "sha1.h"
-#import "Constants.h"
 #import "Localization.h"
 #import <sys/stat.h>
 

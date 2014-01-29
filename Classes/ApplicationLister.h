@@ -14,5 +14,6 @@
 
 - (NSArray *)installedApps;
 - (NSArray *)crackedApps;
-
+- (void)saveModifiedAppsCache;
+- (NSArray *)modifiedApps;
 @end

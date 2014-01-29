@@ -12,6 +12,7 @@
 #import "Preferences.h"
 
 #define applistCachePath @"/etc/applist-cache.clutch"
+#define modifiedCachePath @"/etc/modified-cache.clutch"
 
 NSArray * get_application_list(BOOL sort) {
     
@@ -106,6 +107,7 @@ NSArray * get_application_list(BOOL sort) {
     if (cacheArray.count > 0)
     {
         [cacheArray writeToFile:applistCachePath atomically:YES];
+        
     }
     
     [cacheArray release];
@@ -127,6 +129,45 @@ NSArray * get_application_list(BOOL sort) {
     return shared;
 }
 
+- (NSArray *)modifiedApps {
+    NSArray* cache = [self modifiedAppCache];
+    NSArray* apps = get_application_list(YES);
+    NSMutableArray* modifiedApps = [[NSMutableArray alloc] init];
+    for (Application* oldApp in cache) {
+        for (Application* newApp in apps) {
+            if ([oldApp.applicationBundleID isEqualToString:newApp.applicationBundleID]) {
+                if (newApp.appVersion > oldApp.appVersion) {
+                    [modifiedApps addObject:newApp];
+                    NSLog(@"%@ (%ld) %@ (%ld)!", newApp.applicationName, (long)newApp.appVersion, oldApp.applicationName, (long)oldApp.appVersion);
+                }
+                
+            }
+        }
+    }
+    return modifiedApps;
+}
+
+-(void)saveModifiedAppsCache {
+    get_application_list(YES);
+}
+
+- (NSArray*) modifiedAppCache {
+    //check mod. date;
+    
+    NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:modifiedCachePath];
+    
+    NSMutableArray *appsArray = [[NSMutableArray new] autorelease];
+    
+    for (NSDictionary *appInfo in cachedAppsInfo)
+    {
+        Application *app = [[Application alloc]initWithAppInfo:appInfo];
+        [appsArray addObject:app];
+        [app release];
+    }
+    
+    return appsArray;
+    
+}
 - (NSArray *)installedApps
 {
     if ([NSFileManager.defaultManager fileExistsAtPath:applistCachePath])

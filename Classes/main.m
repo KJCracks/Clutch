@@ -183,9 +183,6 @@ void cmd_help()
 
 void cmd_list_applications(NSArray *applications)
 {
-    NSEnumerator *e = [applications objectEnumerator];
-    Application* app;
-    
     int cindex = 1;
     
     if ([[Preferences sharedInstance] numberBasedMenu])
@@ -195,7 +192,7 @@ void cmd_list_applications(NSArray *applications)
     
     NSString* comparedValue;
     
-    while (app = [e nextObject])
+    for (Application* app in applications)
     {
         comparedValue = [app->_info objectForKey:get_compare_with()];
         
@@ -216,16 +213,11 @@ void cmd_list_applications(NSArray *applications)
 
 int cmd_crack_all(NSArray *applications)
 {
-    NSEnumerator *e = [applications objectEnumerator];
-    
     MSG(CLUTCH_CRACKING_ALL);
-    
-    Application* app;
     
     NSString *ipapath;
     
-    while (app = [e nextObject])
-    {
+    for (Application* app in applications) {
         MSG(CRACKING_APPNAME, app.applicationName);
         
         Cracker *cracker = [[Cracker alloc] init];
@@ -345,7 +337,7 @@ int main(int argc, char *argv[])
         cmd_version();
         
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-        NSArray *applist = [[ApplicationLister sharedInstance] installedApps];
+        NSArray *applist;
         
         if (applist == NULL)
         {
@@ -361,6 +353,7 @@ int main(int argc, char *argv[])
             
             if (arguments.count == 1 && [arg isEqualToString:arguments[0]])
             {
+                applist = [[ApplicationLister sharedInstance] installedApps];
                 // User just typed `Clutch` list applications
                 cmd_list_applications(applist);
                 
@@ -387,6 +380,7 @@ int main(int argc, char *argv[])
             }
              else if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
             {
+                applist = [[ApplicationLister sharedInstance] installedApps];
                 retVal = cmd_crack_all(applist);
             }
             else if ([arg isEqualToString:@"-f"] || [arg isEqualToString:@"-flush"])
@@ -409,6 +403,13 @@ int main(int argc, char *argv[])
                 
                 goto endMain;
             }
+            else if ([arg isEqualToString:@"-u"])
+            {
+                //get updated apps only
+                applist = [[ApplicationLister sharedInstance] modifiedApps];
+                printf("\n cracking all updated apps!\n");
+                retVal = cmd_crack_all(applist);
+            }
             else if ([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-help"])
             {
                 cmd_help();
@@ -422,6 +423,7 @@ int main(int argc, char *argv[])
             }
             else
             {
+                applist = [[ApplicationLister sharedInstance] installedApps];
                 if ([arg isEqualToString:arguments[0]])
                 {
                     continue;

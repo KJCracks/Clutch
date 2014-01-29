@@ -509,9 +509,8 @@
                 *error = [NSError errorWithDomain:@"BinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Failed to dump %@",[self readable_cpusubtype:mh32->cpusubtype]]}];
                 return NO;
             }
-            
-            *error = nil;
-            
+            DEBUG(@"crack ok!");
+        
             return YES;
             
             break;

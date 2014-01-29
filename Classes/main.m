@@ -387,6 +387,8 @@ int main(int argc, char *argv[])
                 [install installIPA];
                 [install crackWithOutBinary:outbinary];
                 [install release];
+                goto endMain;
+                
             }
             else if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
             {

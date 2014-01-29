@@ -58,7 +58,7 @@ static NSString* generateUuidString()
         }
     }
     
-    printf("location extract: %s\n", [_installedPath UTF8String]);
+    DEBUG(@"location extract: %s\n", [_installedPath UTF8String]);
     
     ZipArchive* zip = [[ZipArchive alloc] init];
     [zip UnzipOpenFile:_ipaPath];
@@ -72,11 +72,14 @@ static NSString* generateUuidString()
     [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:binaryPath error:nil];
     [attributes release];
     
-    printf("set attributes!\n");
+    _binaryPath = [_installedPath stringByAppendingPathComponent:_binaryPath];
+    DEBUG(@"final binary path %@", _binaryPath);
 }
 
 - (void)crackWithOutBinary:(NSString*)outbinary
 {
+    [[NSFileManager defaultManager] removeItemAtPath:outbinary error:nil];
+    
     Binary* binary = [[Binary alloc] initWithBinary:_binaryPath];
     
     DEBUG(@"outbinary %@", outbinary);
@@ -86,6 +89,8 @@ static NSString* generateUuidString()
     DEBUG(@"apparently crack was ok!?");
     
     [binary release];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:_installedPath error:nil];
 }
 
 @end

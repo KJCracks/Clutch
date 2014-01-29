@@ -13,12 +13,12 @@
  
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /*
-    ___ _       _       _
-   / __\ |_   _| |_ ___| |__
-  / /  | | | | | __/ __| '_ \
+ ___ _       _       _
+ / __\ |_   _| |_ ___| |__
+ / /  | | | | | __/ __| '_ \
  / /___| | |_| | || (__| | | |
  \____/|_|\__,_|\__\___|_| |_|
  
@@ -30,13 +30,13 @@
  
  ttwj - post 1.2.6
  NinjaLikesCheez - post 1.2.6
+ Zorro - fixes, features, code (1.4)
  
  dissident - The original creator of Clutch (pre 1.2.6)
  Nighthawk - Code contributor (pre 1.2.6)
  Rastignac - Inspiration and genius
- TheSexyPenguin - Inspiration
+ TheSexyPenguin - Inspiration (not really)
  dildog - Refactoring and code cleanup (2.0)
- Zorro - fixes, features, code (1.4)
  
  Thanks to: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
  
@@ -57,6 +57,7 @@
 #import "Cracker.h"
 #import "Localization.h"
 #import "Constants.h"
+#import "API.h"
 
 /*
  * Protypes
@@ -65,7 +66,7 @@
 BOOL crack = FALSE;
 BOOL readCompression;
 struct timeval start, end;
-int yopa_enabled;
+int yopa_enabled, get_info;
 
 NSMutableArray *successfulCracks;
 NSMutableArray *failedCracks;
@@ -163,8 +164,8 @@ void print_results()
 
 void cmd_version()
 {
-    printf("%s %s (%s)\n", CLUTCH_TITLE, CLUTCH_VERSION, CLUTCH_RELEASE);
-    printf("---------------------------------\n");
+    fprintf(stderr, "%s %s (%s)\n", CLUTCH_TITLE, CLUTCH_VERSION, CLUTCH_RELEASE);
+    fprintf(stderr, "---------------------------------\n");
 }
 
 void cmd_help()
@@ -271,7 +272,7 @@ int cmd_crack_app(Application *app, int yopa_enabled)
         
         int dif = diff_ms(end,start);
         float sec = ((dif + 500.0f) / 1000.0f);
-
+        
         MSG(COMPLETE_ELAPSED_TIME, sec);
         
         print_results();
@@ -318,13 +319,22 @@ int main(int argc, char *argv[])
         
         if (CLUTCH_DEV == 1)
         {
-            MSG(CLUTCH_DEV_CHECK_UPDATE);
             
-            if (!check_version())
-            {
-                // Clutch needs updating.
-                return retVal;
+            if (![[[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_IGNORE_DEV"] isEqualToString:@"YES"]) {
+                MSG(CLUTCH_DEV_CHECK_UPDATE);
+                
+                if (!check_version())
+                {
+                    // Clutch needs updating.
+                    return retVal;
+                }
             }
+        }
+        
+        NSString* clutch_conf = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_CONF"];
+        if (clutch_conf.length > 0) {
+            printf("\nusing custom configuration..\n");
+            [Preferences setConfigPath:clutch_conf];
         }
         
         gettimeofday(&start, NULL);
@@ -337,12 +347,12 @@ int main(int argc, char *argv[])
         cmd_version();
         
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-        NSArray *applist;
+        NSArray *applist = [[ApplicationLister sharedInstance] installedApps];
         
         if (applist == NULL)
         {
             MSG(CLUTCH_NO_APPLICATIONS);
-        
+            
             goto endMain;
         }
         
@@ -378,7 +388,7 @@ int main(int argc, char *argv[])
                 [install crackWithOutBinary:outbinary];
                 [install release];
             }
-             else if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
+            else if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
             {
                 applist = [[ApplicationLister sharedInstance] installedApps];
                 retVal = cmd_crack_all(applist);
@@ -393,7 +403,7 @@ int main(int argc, char *argv[])
             }
             else if ([arg isEqualToString:@"-v"] || [arg isEqualToString:@"-version"])
             {
-                cmd_version();
+                printf("%u", CLUTCH_BUILD);
                 
                 goto endMain;
             }
@@ -421,74 +431,79 @@ int main(int argc, char *argv[])
                 MSG(CLUTCH_ENABLED_YOPA);
                 yopa_enabled = 1;
             }
-            else
-            {
-                applist = [[ApplicationLister sharedInstance] installedApps];
+            else if ([arg isEqualToString:@"--info"]) {
+                get_info = 1;
+                DEBUG(@"getting info wow");
+            }
+            else {
+                
                 if ([arg isEqualToString:arguments[0]])
                 {
                     continue;
                 }
                 
-                if ([arg isEqualToString:@"-k"]) {
-                    
-                }
-                
-                for (int i = 1; i < arguments.count; i++)
+                NSString* _arg = arg;
+                if ([[Preferences sharedInstance] numberBasedMenu])
                 {
-                    NSString* _arg = arguments[i];
-                    if ([[Preferences sharedInstance] numberBasedMenu])
-                    {
-                        int number = [arg intValue] - 1;
-                        Application* app = applist[number];
-                        
-                        int success = cmd_crack_app(app, yopa_enabled);
-                        
-                        if (success == 1)
-                        {
-                            // Error handle
-                        }
-                    }
-                    else
+                    int number = [arg intValue] - 1;
+                    Application* app = applist[number];
+                    
+                    retVal = cmd_crack_app(app, yopa_enabled);
+                }
+                else
+                {
+                    
+                    Application* crackApp = NULL;
+                    
+                    for (Application *app in applist)
                     {
                         
-                        Application* crackApp;
-                        
-                        for (Application *app in applist)
+                        if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
                         {
-                            
-                            if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
+                            if ([app.applicationDirectory caseInsensitiveCompare:_arg] == NSOrderedSame)
                             {
-                                if ([app.applicationDirectory caseInsensitiveCompare:_arg] == NSOrderedSame)
-                                {
-                                    crackApp = app;
-                                    break;
-                                }
-                            }
-                            else if ([[Preferences sharedInstance] boolForKey:@"ListWithDisplayName"]) {
-                                if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame) {
-                                    crackApp = app;
-                                    break;
-                                }
-                                    
-                            }
-                            else {
-                                if ([app.applicationExecutableName caseInsensitiveCompare:_arg] == NSOrderedSame) {
-                                    crackApp = app;
-                                    break;
-                                }
+                                crackApp = app;
+                                break;
                             }
                         }
-                        
-                        int success = cmd_crack_app(crackApp, yopa_enabled);
-                        
+                        else if ([[Preferences sharedInstance] boolForKey:@"ListWithDisplayName"]) {
+                            if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame) {
+                                crackApp = app;
+                                break;
+                            }
+                            
+                        }
+                        else {
+                            if ([app.applicationExecutableName caseInsensitiveCompare:_arg] == NSOrderedSame) {
+                                crackApp = app;
+                                break;
+                            }
+                        }
                     }
+                    
+                    if (!crackApp) {
+                        printf("error: Could not find application %s!\n\n", [_arg UTF8String]);
+                        retVal = 1;
+                        goto endMain;
+                    }
+                    
+                    if (get_info == 1) {
+                        API* api = [[API alloc] initWithApp:crackApp];
+                        [api setEnvironmentArgs];
+                        [api release];
+                        retVal = 0;
+                        goto endMain;
+                    }
+                    
+                    retVal = cmd_crack_app(crackApp, yopa_enabled);
+                    goto endMain;
                 }
             }
         }
-    
+        
         goto endMain;
         
-endMain:
+    endMain:
         return retVal;
     }
 }

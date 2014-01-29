@@ -235,16 +235,25 @@ static NSString * genRandStringLength(int len)
     
         if (![_binary crackBinaryToFile:_tempBinaryPath error:&_error])
         {
-            DEBUG(@"Failed to crack %@ with error: %@",_app.applicationDisplayName,error.localizedDescription);
-        
+            //causing segfaults, bad.
+            //DEBUG(@"Failed to crack %@ with error: %@",_app.applicationDisplayName, error.localizedDescription);
+            DEBUG(@"Failed to crack %@",_app.applicationDisplayName);
             crackOk = FALSE;
             error = _error;
             
             MSG(PACKAGING_FAILED_KILL_ZIP);
             
+            kill(zip->_zipTask.processIdentifier, SIGKILL);
+            system("killall -9 zip");
+            
             [zip->_zipTask terminate];
             
-            DEBUG(@"terminate status %u", [zip->_zipTask terminationStatus]);
+            @try {
+                DEBUG(@"terminate status %u", [zip->_zipTask terminationStatus]);
+            }
+            @catch (NSException* e) {
+                DEBUG(@"terminate ok, crashing is good (sometimes)");
+            }
         }
         else
         {
@@ -258,7 +267,7 @@ static NSString * genRandStringLength(int len)
     
     NSBlockOperation *apiBlockOperation = [NSBlockOperation blockOperationWithBlock:^{
         API* api = [[API alloc] initWithApp:_app];
-        [api setObject:_ipapath forKey:@"IPAPAth"];
+        [api setObject:_ipapath forKey:@"IPAPath"];
         [api setEnvironmentArgs];
         [api release];
     }];

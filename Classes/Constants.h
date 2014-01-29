@@ -26,8 +26,8 @@
 
 #define CLUTCH_TITLE "Clutch"
 #define CLUTCH_VERSION "1.4"
-#define CLUTCH_RELEASE "git-7"
-#define CLUTCH_BUILD 14005
+#define CLUTCH_RELEASE "git-8"
+#define CLUTCH_BUILD 14008
 #define CLUTCH_DEV 1
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);

@@ -567,10 +567,10 @@
                             //*error = @"Cannot crack unswapped portion of binary.";
                             fclose(newbinary); // close the new binary stream
                             fclose(oldbinary); // close the old binary stream
+                           
                             [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
                             
-    
-                            if (error != NULL) *error = [NSError errorWithDomain:@"BinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype)]]}];
+                            *error = [NSError errorWithDomain:@"BinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype))}];
                             
                             [stripHeaders release];
                             
@@ -919,7 +919,14 @@
 			// move an entire page into memory (we have to move an entire page regardless of whether it's a resultant or not)
 			if((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
                 DEBUG(@"dum_error: %u", err);
-                VERBOSE("dumping binary: failed to dump a page");
+                VERBOSE("dumping binary: failed to dump a page (64)");
+                
+                if (__text_start == 16384) {
+                    printf("\n=================\n");
+                    printf("0x4000 binary detected, please report this app at\nhttp://github.com/KJCracks/Clutch/issues\n");
+                    printf("\n=================\n");
+                }
+                
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill fork
 				return FALSE;
@@ -1256,8 +1263,12 @@
             
             if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
                 
-                VERBOSE("dumping binary: failed to dump a page (32)");
-                
+                printf("dumping binary: failed to dump a page (32)\n");
+                if (__text_start == 0x4000) {
+                    printf("\n=================\n");
+                    printf("0x4000 binary detected, please report this app at\nhttp://github.com/KJCracks/Clutch/issues");
+                    printf("\n=================\n");
+                }
                 free(checksum); // free checksum table
                 kill(pid, SIGKILL); // kill the fork
                 

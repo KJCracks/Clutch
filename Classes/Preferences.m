@@ -12,28 +12,32 @@
 
 #define MAX_NAME_SZ 256
 
+static dispatch_once_t preferences_dispatch = 0;
+NSString* preferences_location = prefsPath;
+
 @implementation Preferences
 
 + (Preferences *) sharedInstance
 {
-    static dispatch_once_t pred;
     static Preferences *shared = nil;
-    
-    dispatch_once(&pred, ^{
-        shared = [Preferences new];
+    dispatch_once(&preferences_dispatch, ^{
+        shared = [[Preferences alloc] init];
     });
     
     return shared;
 }
-
++ (void)setConfigPath:(NSString*)path {
+    preferences_dispatch = 0;
+    preferences_location = path;
+}
 - (id)init
 {
     self = [super init];
     
     if (self)
     {
-        _dict = [[NSMutableDictionary alloc]initWithContentsOfFile:prefsPath];
-       
+        _dict = [[NSMutableDictionary alloc]initWithContentsOfFile:preferences_location];
+        DEBUG(@"preferences_location: %@", preferences_location);
         if (_dict==nil)
         {
             _dict=[NSMutableDictionary new];

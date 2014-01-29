@@ -12,7 +12,6 @@
 #import "Preferences.h"
 
 #define applistCachePath @"/etc/applist-cache.clutch"
-#define modifiedCachePath @"/etc/modified-cache.clutch"
 
 NSArray * get_application_list(BOOL sort) {
     
@@ -75,7 +74,7 @@ NSArray * get_application_list(BOOL sort) {
             
             [returnArray addObject:app];
             
-            [app release];
+            //[app release];
         }
     }
 	
@@ -136,6 +135,7 @@ NSArray * get_application_list(BOOL sort) {
     for (Application* oldApp in cache) {
         for (Application* newApp in apps) {
             if ([oldApp.applicationBundleID isEqualToString:newApp.applicationBundleID]) {
+                DEBUG(@"same bundle id deteced! %@", newApp.applicationBundleID);
                 if (newApp.appVersion > oldApp.appVersion) {
                     [modifiedApps addObject:newApp];
                     NSLog(@"%@ (%ld) %@ (%ld)!", newApp.applicationName, (long)newApp.appVersion, oldApp.applicationName, (long)oldApp.appVersion);
@@ -154,7 +154,7 @@ NSArray * get_application_list(BOOL sort) {
 - (NSArray*) modifiedAppCache {
     //check mod. date;
     
-    NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:modifiedCachePath];
+    NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
     
     NSMutableArray *appsArray = [[NSMutableArray new] autorelease];
     

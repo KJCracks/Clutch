@@ -136,9 +136,9 @@ NSArray * get_application_list(BOOL sort) {
         for (Application* newApp in apps) {
             if ([oldApp.applicationBundleID isEqualToString:newApp.applicationBundleID]) {
                 DEBUG(@"same bundle id deteced! %@", newApp.applicationBundleID);
-                if (newApp.appVersion > oldApp.appVersion) {
+                if (newApp.appVersion != oldApp.appVersion) {
                     [modifiedApps addObject:newApp];
-                    NSLog(@"%@ (%ld) %@ (%ld)!", newApp.applicationName, (long)newApp.appVersion, oldApp.applicationName, (long)oldApp.appVersion);
+                    
                 }
                 
             }

@@ -12,8 +12,8 @@
 
 @interface Cracker : NSObject
 {
-    NSString* _tempPath;
     @public
+    NSString* _tempPath;
     NSString *_appDescription;
     NSString *_finaldir;
     NSString *_baselinedir;

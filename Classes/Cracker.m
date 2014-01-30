@@ -186,6 +186,11 @@ static NSString * genRandStringLength(int len)
     
     NSString *crackedPath = [NSString stringWithFormat:@"%@/", [[Preferences sharedInstance] ipaDirectory]];
     
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[[Preferences sharedInstance] ipaDirectory]]) {
+        DEBUG(@"Creating output directory..");
+        [[NSFileManager defaultManager] createDirectoryAtPath:[[Preferences sharedInstance] ipaDirectory] withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
     if ([[Preferences sharedInstance] addMinOS])
     {
         _ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
@@ -200,6 +205,7 @@ static NSString * genRandStringLength(int len)
     DEBUG(_ipapath);
     
     DEBUG(@"------End Generating Paths-----");
+    
     
     return _ipapath;
 }
@@ -342,7 +348,7 @@ static NSString * genRandStringLength(int len)
             [[NSFileManager defaultManager] removeItemAtPath:_ipapath error:nil];
         }
         
-        [[NSFileManager defaultManager] removeItemAtPath:_tempPath error:nil];
+        //[[NSFileManager defaultManager] removeItemAtPath:_tempPath error:nil];
         DEBUG(@"------End Zip Crack Op------");
     }];
     
@@ -558,6 +564,8 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
 {
     NSString* crackerName = [[Preferences sharedInstance] crackerName];
     
+    DEBUG(@"old metadata %@ %@", [_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"])
+    
     if ([[Preferences sharedInstance] removeMetadata])
     {
         MSG(PACKAGING_ITUNESMETADATA);
@@ -592,6 +600,8 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     }
     
     DEBUG(@"Copying iTunesArtwork");
+    DEBUG(@"copy from %@, to %@", [_app.applicationContainer stringByAppendingString:@"iTunesArtwork"], [[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesArtwork"]);
+    
     [[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingString:@"iTunesArtwork"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesArtwork"] error:nil];
     
     NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];

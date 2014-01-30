@@ -139,36 +139,34 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         _archiver = [[ZipArchive alloc] init];
         [_archiver openZipFile2:_cracker->_ipapath];
     }
-    
-    NSString* folder = _cracker->_workingDir;
-    NSString* payloadPath = [NSString stringWithFormat:@"Payload/%@.app/", _cracker->_app.applicationName];
-    
+       
     int compressionLevel = 0;
     BOOL isDir=NO;
     
     NSArray *subpaths=nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    BOOL exists = [fileManager fileExistsAtPath:folder isDirectory:&isDir];
-    
+    BOOL exists = [fileManager fileExistsAtPath:_cracker->_tempPath isDirectory:&isDir];
+    DEBUG(@"working dir %@", _cracker->_tempPath);
     if (exists && isDir)
     {
-        subpaths = [fileManager subpathsAtPath:folder];
+        subpaths = [fileManager subpathsAtPath:_cracker->_tempPath];
         //total = [subpaths count]; DEAD_STORE
     }
     
     for(NSString *path in subpaths)
     {
         // Only add it if it's not a directory. ZipArchive will take care of those.
-        NSString *longPath = [folder stringByAppendingPathComponent:path];
+        NSString *longPath = [_cracker->_tempPath stringByAppendingPathComponent:path];
         NSLog(@"longpath %@ %@", longPath, path);
         
         if([fileManager fileExistsAtPath:longPath isDirectory:&isDir] && !isDir)
         {
-            [_archiver addFileToZip:longPath newname:[payloadPath stringByAppendingPathComponent:path] compressionLevel:compressionLevel];
+            DEBUG(@"adding file %@", longPath);
+            [_archiver addFileToZip:longPath newname:path compressionLevel:compressionLevel];
         }
     }
-    
+    DEBUG(@"subpaths %@", subpaths);
     return;
 }
 - (void) setCompressionLevel:(int) level

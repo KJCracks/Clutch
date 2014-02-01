@@ -52,6 +52,7 @@
         dictRep = copy;
         isCracking = NO;
         _info = info;
+        
     }
     return self;
 }

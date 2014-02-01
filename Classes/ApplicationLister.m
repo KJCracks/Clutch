@@ -12,6 +12,7 @@
 #import "Preferences.h"
 
 #define applistCachePath @"/etc/applist-cache.clutch"
+#define crackedAppPath @"/etc/cracked.clutch"
 
 NSArray * get_application_list(BOOL sort) {
     
@@ -68,7 +69,7 @@ NSArray * get_application_list(BOOL sort) {
                                                                    @"ApplicationBasename":[appPath lastPathComponent],
                                                                    @"ApplicationVersion":version,
                                                                    @"ApplicationBundleID":bundleID,
-                                                                   @"ApplicationSINF":SINF,
+                                                                   //@"ApplicationSINF":SINF,
                                                                    @"ApplicationExecutableName":executableName,
                                                                    @"MinimumOSVersion":minimumOSVersion}];
             
@@ -129,22 +130,38 @@ NSArray * get_application_list(BOOL sort) {
 }
 
 - (NSArray *)modifiedApps {
-    NSArray* cache = [self modifiedAppCache];
+    NSDictionary* cracked = [self crackedAppsList];
     NSArray* apps = get_application_list(YES);
     NSMutableArray* modifiedApps = [[NSMutableArray alloc] init];
-    for (Application* oldApp in cache) {
-        for (Application* newApp in apps) {
-            if ([oldApp.applicationBundleID isEqualToString:newApp.applicationBundleID]) {
-                DEBUG(@"same bundle id deteced! %@", newApp.applicationBundleID);
-                if (newApp.appVersion != oldApp.appVersion) {
-                    [modifiedApps addObject:newApp];
-                    
-                }
-                
-            }
+    for (Application* app in apps) {
+        NSDictionary* appInfo = [cracked objectForKey:app.applicationBundleID];
+        if (appInfo == nil) {
+            continue;
+        }
+        Application* oldApp = [[Application alloc] initWithAppInfo:appInfo];
+        DEBUG(@"new app version: %ld, %ld", (long)oldApp.appVersion, (long)app.appVersion);
+        if (app.appVersion > oldApp.appVersion) {
+            [modifiedApps addObject:app];
         }
     }
+    DEBUG(@"modified apps array %@", modifiedApps);
     return modifiedApps;
+}
+
+-(void)crackedApp:(Application*) app {
+    DEBUG(@"cracked app ok");
+    DEBUG(@"this crack lol %ld", (long)app.appVersion);
+    NSMutableDictionary* dict = [[NSMutableDictionary alloc] initWithDictionary:[self crackedAppsList]];
+    if (dict == nil) {
+        dict = [[NSMutableDictionary alloc] init];
+    }
+    [dict setObject:app.dictionaryRepresentation forKey:app.applicationBundleID];
+    DEBUG(@"da dict %@", dict);
+    [dict writeToFile:crackedAppPath atomically:YES];
+}
+
+-(NSDictionary*)crackedAppsList {
+    return [[NSDictionary alloc] initWithContentsOfFile:crackedAppPath];
 }
 
 -(void)saveModifiedAppsCache {

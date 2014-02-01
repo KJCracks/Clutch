@@ -158,15 +158,15 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     {
         // Only add it if it's not a directory. ZipArchive will take care of those.
         NSString *longPath = [_cracker->_tempPath stringByAppendingPathComponent:path];
-        NSLog(@"longpath %@ %@", longPath, path);
+        //NSLog(@"longpath %@ %@", longPath, path);
         
         if([fileManager fileExistsAtPath:longPath isDirectory:&isDir] && !isDir)
         {
-            DEBUG(@"adding file %@", longPath);
+            //DEBUG(@"adding file %@", longPath);
             [_archiver addFileToZip:longPath newname:path compressionLevel:compressionLevel];
         }
     }
-    DEBUG(@"subpaths %@", subpaths);
+    //DEBUG(@"subpaths %@", subpaths);
     return;
 }
 - (void) setCompressionLevel:(int) level

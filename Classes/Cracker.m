@@ -11,6 +11,7 @@
 #import "API.h"
 #import "YOPAPackage.h"
 #import "Localization.h"
+#import "ApplicationLister.h"
 
 #import <xpc/xpc.h>
 // ln -s /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr/include/xpc /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/usr/include/xpc
@@ -365,6 +366,10 @@ static NSString * genRandStringLength(int len)
     [queue release];
     
     DEBUG(@"------End Execute Crack------");
+    
+    [[ApplicationLister sharedInstance] crackedApp:_app];
+    
+    DEBUG(@"Saved cracked app info!");
     
     return crackOk;
 }

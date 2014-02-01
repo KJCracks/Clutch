@@ -213,8 +213,6 @@ void cmd_list_applications(NSArray *applications)
 
 int cmd_crack_all(NSArray *applications)
 {
-    MSG(CLUTCH_CRACKING_ALL);
-    
     NSString *ipapath;
     
     for (Application* app in applications) {
@@ -261,6 +259,7 @@ int cmd_crack_app(Application *app, int yopa_enabled)
     if ([cracker execute])
     {
         gettimeofday(&end, NULL);
+        
         
         crack = TRUE;
         
@@ -393,6 +392,7 @@ int main(int argc, char *argv[])
             {
                 applist = [[ApplicationLister sharedInstance] installedApps];
                 retVal = cmd_crack_all(applist);
+                MSG(CLUTCH_CRACKING_ALL);
             }
             else if ([arg isEqualToString:@"-f"] || [arg isEqualToString:@"-flush"])
             {
@@ -418,8 +418,14 @@ int main(int argc, char *argv[])
             {
                 //get updated apps only
                 applist = [[ApplicationLister sharedInstance] modifiedApps];
-                printf("\n cracking all updated apps!\n");
+                if ([applist count] == 0) {
+                    printf("You have no updated apps!\n");
+                    retVal = 0;
+                    goto endMain;
+                }
+                printf("Cracking all updated apps!\n");
                 retVal = cmd_crack_all(applist);
+                goto endMain;
             }
             else if ([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-help"])
             {

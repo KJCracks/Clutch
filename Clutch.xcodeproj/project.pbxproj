@@ -138,6 +138,7 @@
 				E9ABBFB8188D4154000B442F /* sha1 */,
 				E9ABBFB7188D3F29000B442F /* ZipArchive */,
 				AD30146718714C3D00E06315 /* CLI */,
+				BC871C7817E7122500048636 /* main.m */,
 				ADAA367C1870606D0029AF7D /* Preferences.h */,
 				ADAA367D1870606D0029AF7D /* Preferences.m */,
 				ADC8A6E81880FAA30063B6BD /* Localization.h */,
@@ -224,7 +225,6 @@
 		AD30146718714C3D00E06315 /* CLI */ = {
 			isa = PBXGroup;
 			children = (
-				BC871C7817E7122500048636 /* main.m */,
 			);
 			name = CLI;
 			sourceTree = "<group>";

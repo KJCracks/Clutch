@@ -8,6 +8,8 @@
 
 #define local_cputype [Device cpu_type]
 
+#define iOS5 1
+
 @interface Binary ()
 {
     NSString *oldbinaryPath;

@@ -163,7 +163,12 @@ void print_results()
 
 void cmd_version()
 {
-    fprintf(stderr, "%s %s (%s)\n", CLUTCH_TITLE, CLUTCH_VERSION, CLUTCH_RELEASE);
+    if (CLUTCH_DEV == 1) {
+        fprintf(stderr, "%s %s (%s)\n", CLUTCH_TITLE, CLUTCH_VERSION, CLUTCH_RELEASE);
+    }
+    else {
+        fprintf(stderr, "%s %s\n", CLUTCH_TITLE, CLUTCH_VERSION);
+    }
     fprintf(stderr, "---------------------------------\n");
 }
 
@@ -177,7 +182,8 @@ void cmd_help()
     printf("-f                            Clears cache\n");
     printf("-v                            Shows version\n");
     printf("-i <IPA> <Binary> <OutBinary> Installs IPA and cracks it\n");
-    printf("--yopa                        Creates a YOPA package\n");
+    //printf("--yopa                        Creates a YOPA package\n");
+    //printf("-d                            Shows debug messages\n");
     printf("\n");
 }
 
@@ -388,6 +394,9 @@ int main(int argc, char *argv[])
                 goto endMain;
                 
             }
+            //else if ([arg isEqualToString:@"-d"] || [arg isEqualToString:@"-debug"]) {
+               
+            //}
             else if ([arg isEqualToString:@"-a"] || [arg isEqualToString:@"-all"])
             {
                 applist = [[ApplicationLister sharedInstance] installedApps];

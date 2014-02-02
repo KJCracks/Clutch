@@ -26,9 +26,10 @@
 
 #define CLUTCH_TITLE "Clutch"
 #define CLUTCH_VERSION "1.4"
-#define CLUTCH_RELEASE "git-9"
-#define CLUTCH_BUILD 14009
-#define CLUTCH_DEV 1
+#define CLUTCH_RELEASE "git-10"
+#define CLUTCH_BUILD 14010
+#define CLUTCH_DEV 0 //1
+
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);

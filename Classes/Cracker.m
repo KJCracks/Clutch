@@ -142,6 +142,13 @@ static NSString * genRandStringLength(int len)
 // set up application cracking from an installed application
 -(BOOL)prepareFromInstalledApp:(Application*)app
 {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:@"/etc/clutch/overdrive.dylib" isDirectory:nil]) {
+        if ([[Preferences sharedInstance] useOverdrive]) {
+            printf("\nerror: could not find overdrive.dylib at /etc/clutch/overdrive.dylib, disabling overdrive!\n\n");
+            [[Preferences sharedInstance] tempSetObject:@"NO" forKey:@"UseOverdrive"];
+        }
+    }
+    
     DEBUG(@"------Prepairing from Installed App------");
     // Create the app description
     _app = app;
@@ -461,7 +468,6 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     
 }
 
-
 -(void)packageYOPA
 {
     
@@ -571,7 +577,7 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     
     DEBUG(@"old metadata %@ %@", [_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent]stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"])
     
-    if ([[Preferences sharedInstance] removeMetadata])
+    if (([[Preferences sharedInstance] removeMetadata]) || ([[[Preferences sharedInstance] metadataEmail] length] > 0))
     {
         MSG(PACKAGING_ITUNESMETADATA);
         DEBUG(@"Generating fake iTunesMetadata");
@@ -652,6 +658,8 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
 
 void generateMetadata(NSString *origPath,NSString *output)
 {
+    DEBUG(@"generate metdata %@, %@", origPath, output);
+    
     struct stat statbuf_metadata;
     stat(origPath.UTF8String, &statbuf_metadata);
     time_t mst_atime = statbuf_metadata.st_atime;
@@ -729,6 +737,8 @@ void generateMetadata(NSString *origPath,NSString *output)
     }
     
     [metadataPlist removeObjectForKey:@"com.apple.iTunesStore.downloadInfo"];
+    
+    DEBUG(@"metadataplist %@", metadataPlist);
     
     [metadataPlist writeToFile:output atomically:NO];
     

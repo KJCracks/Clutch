@@ -53,7 +53,7 @@ NSString* preferences_location = prefsPath;
     [_dict writeToFile:prefsPath atomically:YES];
 }
 
-- (void)setObject:(id)value forKey:(NSString *)defaultName
+- (void)tempSetObject:(id)value forKey:(NSString *)defaultName
 {
     if (_dict == nil)
     {
@@ -67,10 +67,17 @@ NSString* preferences_location = prefsPath;
     else
     {
         [_dict setObject:value forKey:defaultName];
+        
     }
+    DEBUG(@"da dict %@", _dict);
     
+}
+
+- (void)setObject:(id)value forKey:(NSString *)defaultName {
+    [self tempSetObject:value forKey:defaultName];
     [_dict writeToFile:prefsPath atomically:YES];
 }
+
 
 - (BOOL)boolForKey:(NSString *)defaultName
 {

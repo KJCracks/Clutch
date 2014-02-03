@@ -454,7 +454,7 @@
                 return NO;
             }
             
-            if (![self dump64bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0])
+            if (![self dump64bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0 patchPIE:FALSE])
             {
                 // Dumping failed
                 DEBUG(@"Failed to dump %@",[self readable_cpusubtype:mh64->cpusubtype]);
@@ -503,7 +503,7 @@
                 return NO;
             }
             
-            if (![self dump32bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0])
+            if (![self dump32bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0 patchPIE:false])
             {
                 // Dumping failed
                 DEBUG(@"Failed to dump %@",[self readable_cpusubtype:mh32->cpusubtype]);
@@ -694,16 +694,20 @@
     if (CFSwapInt32(arch.cputype) == CPU_TYPE_ARM64)
     {
         DEBUG(@"currently cracking 64bit portion");
-        return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
+        return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset) patchPIE:FALSE];
     }
     else
     {
         DEBUG(@"currently cracking 32bit portion");
-        return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
+        return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset) patchPIE:FALSE];
     }
+    return true;
 }
 
-- (BOOL)dump64bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top
+                                                                                                                                                
+                                                                                                                                              
+                                                                                                                                                
+- (BOOL)dump64bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top patchPIE:(BOOL) patchPIE
 {
     fseek(target, top, SEEK_SET); // go the top of the target
     
@@ -734,12 +738,12 @@
         if (l_cmd.cmd == LC_ENCRYPTION_INFO_64) { // encryption info?
             fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
             fread(&crypt, sizeof(struct encryption_info_command_64), 1, target);
-            VERBOSE("found cryptid");
+            DEBUG(@"found cryptid");
             foundCrypt = TRUE; // remember that it was found
         } else if (l_cmd.cmd == LC_CODE_SIGNATURE) { // code signature?
             fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
             fread(&ldid, sizeof(struct linkedit_data_command), 1, target);
-            VERBOSE("found code signature");
+            DEBUG(@"found code signature");
             foundSignature = TRUE; // remember that it was found
         } else if (l_cmd.cmd == LC_SEGMENT_64) {
             // some applications, like Skype, have decided to start offsetting the executable image's
@@ -749,7 +753,7 @@
             fread(&__text, sizeof(struct segment_command_64), 1, target);
             if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                 foundStartText = TRUE;
-                VERBOSE("found start text");
+                DEBUG(@"found start text");
                 __text_start = __text.vmaddr;
                 //__text_size = __text.vmsize; // This has been a dead store since Clutch 1.0 I think
                 
@@ -762,12 +766,19 @@
             break;
     }
     
-	
 	// we need to have found both of these
 	if (!foundCrypt || !foundSignature || !foundStartText) {
         VERBOSE("dumping binary: some load commands were not found");
 		return FALSE;
 	}
+    
+    if (patchPIE) {
+        printf("patching pie\n");
+        MSG(DUMPING_ASLR_ENABLED);
+        mach.flags &= ~MH_PIE;
+        fseek(origin, top, SEEK_SET);
+        fwrite(&mach, sizeof(struct mach_header), 1, origin);
+    }
 	
 	pid_t pid; // store the process ID of the fork
 	mach_port_t port; // mach port used for moving virtual memory
@@ -868,7 +879,7 @@
 		// (which is slow, requires resigning, and requires reverting to the original
 		// binary after cracking) we instead manually identify the vm regions which
 		// contain the header and subsequent decrypted executable code.
-		if (mach.flags & MH_PIE) {
+		if ((mach.flags & MH_PIE) && (!patchPIE)) {
             //VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
             MSG(DUMPING_ASLR_ENABLED);
             
@@ -923,12 +934,16 @@
                 
                 if (__text_start == 16384) {
                     printf("\n=================\n");
-                    printf("0x4000 binary detected, please report this app at\nhttp://github.com/KJCracks/Clutch/issues\n");
-                    printf("\n=================\n");
+                    printf("0x4000 binary detected, attempting to remove MH_PIE flag");
+                    printf("\n=================\n\n");
+                    free(checksum); // free checksum table
+                    kill(pid, SIGKILL); // kill fork
+                    return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:top patchPIE:true];
                 }
                 
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill fork
+                
 				return FALSE;
 			}
 			
@@ -1036,9 +1051,9 @@
 	return TRUE;
 
 }
-
-- (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top {
-
+                                                                                                                                                
+- (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top patchPIE:(BOOL) patchPIE {
+    DEBUG(@"32bit dumping!!!");
     fseek(target, top, SEEK_SET); // go the top of the target
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;
@@ -1065,15 +1080,17 @@
     
 	for (int lc_index = 0; lc_index < mach.ncmds; lc_index++) { // iterate over each load command
 		fread(&l_cmd, sizeof(struct load_command), 1, target); // read load command from binary
-        //DEBUG(@"command %u", l_cmd.cmd);
+        DEBUG(@"command %u", l_cmd.cmd);
 		if (l_cmd.cmd == LC_ENCRYPTION_INFO) { // encryption info?
 			fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
 			fread(&crypt, sizeof(struct encryption_info_command), 1, target);
 			foundCrypt = TRUE; // remember that it was found
+            DEBUG(@"found encryption info");
 		} else if (l_cmd.cmd == LC_CODE_SIGNATURE) { // code signature?
 			fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
 			fread(&ldid, sizeof(struct linkedit_data_command), 1, target);
 			foundSignature = TRUE; // remember that it was found
+            DEBUG(@"found code signature");
 		} else if (l_cmd.cmd == LC_SEGMENT) {
 			// some applications, like Skype, have decided to start offsetting the executable image's
 			// vm regions by substantial amounts for no apparant reason. this will find the vmaddr of
@@ -1087,6 +1104,7 @@
 				//__text_size = __text.vmsize; This has been a dead store since Clutch 1.0 I think
 			}
 			fseek(target, l_cmd.cmdsize - sizeof(struct segment_command), SEEK_CUR);
+            DEBUG(@"found segment");
 		} else {
 			fseek(target, l_cmd.cmdsize - sizeof(struct load_command), SEEK_CUR); // seek over the load command
 		}
@@ -1100,6 +1118,14 @@
         VERBOSE("dumping binary: some load commands were not found");
 		return FALSE;
 	}
+    
+    if (patchPIE) {
+        printf("patching pie\n");
+        MSG(DUMPING_ASLR_ENABLED);
+        mach.flags &= ~MH_PIE;
+        fseek(origin, top, SEEK_SET);
+        fwrite(&mach, sizeof(struct mach_header), 1, origin);
+    }
 	
 	pid_t pid; // store the process ID of the fork
 	mach_port_t port; // mach port used for moving virtual memory
@@ -1205,7 +1231,7 @@
 		// binary after cracking) we instead manually identify the vm regions which
 		// contain the header and subsequent decrypted executable code.
         
-		if (mach.flags & MH_PIE) {
+		if ((mach.flags & MH_PIE) && (!patchPIE)) {
             //VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
             MSG(DUMPING_ASLR_ENABLED);
             // perform checks on vm regions
@@ -1266,8 +1292,11 @@
                 printf("dumping binary: failed to dump a page (32)\n");
                 if (__text_start == 0x4000) {
                     printf("\n=================\n");
-                    printf("0x4000 binary detected, please report this app at\nhttp://github.com/KJCracks/Clutch/issues");
-                    printf("\n=================\n");
+                    printf("0x4000 binary detected, attempting to remove MH_PIE flag");
+                    printf("\n=================\n\n");
+                    free(checksum); // free checksum table
+                    kill(pid, SIGKILL); // kill the fork
+                    return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:top patchPIE:true];
                 }
                 free(checksum); // free checksum table
                 kill(pid, SIGKILL); // kill the fork

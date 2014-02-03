@@ -156,7 +156,7 @@ NSArray * get_application_list(BOOL sort) {
         dict = [[NSMutableDictionary alloc] init];
     }
     [dict setObject:app.dictionaryRepresentation forKey:app.applicationBundleID];
-    DEBUG(@"da dict %@", dict);
+    //DEBUG(@"da dict %@", dict);
     [dict writeToFile:crackedAppPath atomically:YES];
 }
 

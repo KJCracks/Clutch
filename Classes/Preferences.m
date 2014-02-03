@@ -69,7 +69,7 @@ NSString* preferences_location = prefsPath;
         [_dict setObject:value forKey:defaultName];
         
     }
-    DEBUG(@"da dict %@", _dict);
+    //DEBUG(@"da dict %@", _dict);
     
 }
 

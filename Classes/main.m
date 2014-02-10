@@ -245,6 +245,8 @@ int cmd_crack_all(NSArray *applications)
             
             [failedCracks addObject:app.applicationName];
         }
+        
+        [cracker release];
     }
     
     print_results();

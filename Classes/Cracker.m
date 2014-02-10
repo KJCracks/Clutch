@@ -448,13 +448,11 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
         }
         else if ([status isEqualToString:@"Error"])
         {
-            NSString *error = nil;
             
             if (xpc_dictionary_get_string(reply, "Error")) {
-                error = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Error")];
+                //NSString *error = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Error")];
+                NSLog(@"Error %@", [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Error")]);
             }
-            
-            NSLog(@"Error %@",error);
             
             xpc_connection_cancel(peer);
             exit(0);
@@ -542,7 +540,10 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
             YOPASegment* segment = [[YOPASegment alloc] initWithPatchPackage:archivePath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID withVersion:version];
             
             [package addSegment:segment];
+            [segment release];
         }
+        
+        [archive release];
         
     }
     
@@ -562,7 +563,9 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
      DEBUG(@"adding segments");
     
     [package addSegment:ipaSegment];
+    [ipaSegment release];
     [package addSegment:sevenZipSegment];
+    [sevenZipSegment release];
     
     
     DEBUG(@"adding header");

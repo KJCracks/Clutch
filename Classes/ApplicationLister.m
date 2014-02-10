@@ -75,7 +75,7 @@ NSArray * get_application_list(BOOL sort) {
             
             [returnArray addObject:app];
             
-            //[app release];
+            [app release];
         }
     }
 	
@@ -143,9 +143,10 @@ NSArray * get_application_list(BOOL sort) {
         if (app.appVersion > oldApp.appVersion) {
             [modifiedApps addObject:app];
         }
+        [oldApp release];
     }
     DEBUG(@"modified apps array %@", modifiedApps);
-    return modifiedApps;
+    return [modifiedApps autorelease];
 }
 
 -(void)crackedApp:(Application*) app {
@@ -158,10 +159,12 @@ NSArray * get_application_list(BOOL sort) {
     [dict setObject:app.dictionaryRepresentation forKey:app.applicationBundleID];
     //DEBUG(@"da dict %@", dict);
     [dict writeToFile:crackedAppPath atomically:YES];
+    
+    [dict release];
 }
 
 -(NSDictionary*)crackedAppsList {
-    return [[NSDictionary alloc] initWithContentsOfFile:crackedAppPath];
+    return [[[NSDictionary alloc] initWithContentsOfFile:crackedAppPath] autorelease];
 }
 
 -(void)saveModifiedAppsCache {

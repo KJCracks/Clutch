@@ -570,7 +570,7 @@
                            
                             [[NSFileManager defaultManager] removeItemAtPath:finalPath error:NULL]; // delete the new binary
                             
-                            *error = [NSError errorWithDomain:@"BinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype))}];
+                            if (error != NULL) *error = [NSError errorWithDomain:@"BinaryDumpError" code:-1 userInfo:@{NSLocalizedDescriptionKey:NSLocalizedString(@"Cannot crack unswapped %@ portion of binary.",[self readable_cpusubtype:CFSwapInt32(arch->cpusubtype))}];
                             
                             [stripHeaders release];
                             

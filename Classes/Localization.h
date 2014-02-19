@@ -58,10 +58,11 @@ typedef enum {
 
 typedef enum {
     en,
-    zh, //chinese
-    de, //german
-    fr, //french
-    hr, //serbian/croatian
+    zh, // chinese
+    de, // german
+    fr, // french
+    hr, // serbian/croatian
+    ru  // russian
 } Lang;
 
 
@@ -326,6 +327,7 @@ static NSString * const hr_locale[] = {
 };
 
 
+// Translator: OdNairy
 static NSString * const ru_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"Вы используете версию для разработчиков, подождите, идёт проверка обновлений..",
     [CLUTCH_DEV_UP_TO_DATE] = @"У вас самая последняя версия Clutch!",

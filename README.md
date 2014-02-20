@@ -39,7 +39,7 @@ Current development version: *Clutch 1.4-git8*
 * `--info`                      Gets info about target<br />
 
 
-You can also set environment variables to change the behviour of *Clutch*
+You can also set environment variables to change the behaviour of *Clutch*
 * `CLUTCH_CONF` Sets path to configuration file<br />
 * `CLUTCH_IGNORE_DEV` Ignores the dev updates<br />
 
@@ -65,6 +65,6 @@ TODO
 
 
 
-(c) Kim Jong-Cracks 1819-2013
+(c) Kim Jong-Cracks 1819-2014
 
 

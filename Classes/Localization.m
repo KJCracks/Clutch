@@ -24,9 +24,6 @@ NSString* msg(Message message) {
 
 -(NSString*) valueWithMessage:(Message)message {
     switch ([self defaultLang]) {
-        case en:
-            return en_locale[message];
-            break;
         case zh:
             return zh_locale[message];
             break;
@@ -39,6 +36,12 @@ NSString* msg(Message message) {
 		case hr:
 			return hr_locale[message];
             break;
+        case ru:
+            return ru_locale[message];
+            break;
+        case en:
+        default:
+            return en_locale[message];
     }
 }
 
@@ -72,20 +75,24 @@ NSString* msg(Message message) {
     dispatch_once(&pred, ^{
         defaultLang = [_preferredLang objectAtIndex:0];
         if ([[defaultLang lowercaseString] hasPrefix:@"zh"]) {
-            //chinese
+            // chinese
             lang = zh;
         }
         else if ([[defaultLang lowercaseString] hasPrefix:@"de"]) {
-            //german
+            // german
             lang = de;
         }
         else if ([[defaultLang lowercaseString] hasPrefix:@"fr"]) {
-            //french
+            // french
             lang = fr;
         }
         else if ([[defaultLang lowercaseString] hasPrefix:@"hr"]) {
-            //serbian/croatian
+            // serbian/croatian
             lang = hr;
+        }
+        else if ([[defaultLang lowercaseString] hasPrefix:@"ru"]){
+            // russian
+            lang = ru;
         }
         else {
             lang = en;

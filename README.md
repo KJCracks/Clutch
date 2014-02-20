@@ -35,6 +35,7 @@ Current development version: *Clutch 1.4-git8*
 * `-v`                          Shows version<br />
 * `-c`                          Runs configuration utility<br />
 * `-i <IPA> <BINARY <OUTPATH>`  Installs IPA & cracks it<br />
+* `-e <InBinary> <OutBinary>`   Cracks specific already-installed executable or one that has been scp'd to the device.
 * `--yopa`                      Creates a YOPA package<br />
 * `--info`                      Gets info about target<br />
 

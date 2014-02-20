@@ -18,11 +18,9 @@ void write_archive(const char *outname, const char **filename)
     assert(archive != NULL);
     
     struct archive_entry *entry;
-    struct stat st;
-    
+
     char buf[8192];
     int len;
-    int fd;
     
     if ((archive_write_set_format_zip(archive) != ARCHIVE_OK) || archive_write_open_filename(archive, "test.zip") != ARCHIVE_OK)
     {

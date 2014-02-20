@@ -3,4 +3,4 @@
     url = https://github.com/mattconnolly/ZipArchive.git
 [submodule "yopa-package"]
     path = yopa-package
-    url = git@github.com:KJCracks/yopa-package.git
+    url = https://github.com/KJCracks/yopa-package.git

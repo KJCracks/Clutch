@@ -341,11 +341,11 @@ static NSString * genRandStringLength(int len)
             //clean up
             MSG(PACKAGING_COMPRESSION_LEVEL, zip->_compressionLevel);
             
-            if (_yopaEnabled)
+            /*if (_yopaEnabled)
             {
                 DEBUG(@"YOPA enabled, generating YOPA file..");
                 [self packageYOPA];
-            }
+            }*/
         }
         else
         {

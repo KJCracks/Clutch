@@ -500,22 +500,24 @@ int main(int argc, char *argv[])
                     continue;
                 }
                 
-                NSString* _arg = arg;
-                if ([[Preferences sharedInstance] numberBasedMenu])
+                if ([arg intValue] != 0)
                 {
-                    int number = [arg intValue] - 1;
-                    Application* app = applist[number];
+                    if ([[Preferences sharedInstance] numberBasedMenu])
+                    {
+                        int number = [arg intValue] - 1;
+                        Application *app = applist[number];
                     
-                    retVal = cmd_crack_app(app, yopa_enabled);
+                        retVal = cmd_crack_app(app, yopa_enabled);
+                        printf("continuing after int crack");
+                    }
                 }
                 else
                 {
-                    
+                    NSString* _arg = arg;
                     Application* crackApp = NULL;
                     
                     for (Application *app in applist)
                     {
-                        
                         if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
                         {
                             if ([app.applicationDirectory caseInsensitiveCompare:_arg] == NSOrderedSame)
@@ -531,7 +533,7 @@ int main(int argc, char *argv[])
                                 crackApp = app;
                                 break;
                             }
-                            
+                        
                         }
                         else
                         {
@@ -542,7 +544,7 @@ int main(int argc, char *argv[])
                             }
                         }
                     }
-                    
+                
                     if (!crackApp)
                     {
                         printf("error: Could not find application %s!\n\n", [_arg UTF8String]);

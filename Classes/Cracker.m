@@ -341,11 +341,11 @@ static NSString * genRandStringLength(int len)
             //clean up
             MSG(PACKAGING_COMPRESSION_LEVEL, zip->_compressionLevel);
             
-            /*if (_yopaEnabled)
+            if (_yopaEnabled)
             {
                 DEBUG(@"YOPA enabled, generating YOPA file..");
                 [self packageYOPA];
-            }*/
+            }
         }
         else
         {
@@ -724,12 +724,15 @@ void generateMetadata(NSString *origPath,NSString *output)
                                       @"", @"bundleShortVersionString",
                                       @"", @"product-type",
                                       @"", @"is-purchased-redownload",
-                                      @"", @"asset-info", nil];
+                                      @"", @"asset-info",
+                                      @"", @"bundleDisplayName",
+                                      nil];
         for (id plistItem in metadataPlist)
         {
             if (([noCensorList objectForKey:plistItem] == nil) && ([censorList objectForKey:plistItem] == nil))
             {
                 printf("\033[0;37;41mwarning: iTunesMetadata.plist item named '\033[1;37;41m%s\033[0;37;41m' is unrecognized\033[0m\n", [plistItem UTF8String]);
+                printf("\033[0;37;41mwarning: please report this to the devs so we can add it to our list.\033[0m\n");
             }
         }
     }

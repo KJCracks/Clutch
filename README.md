@@ -18,14 +18,14 @@
      Nighthawk - Code contributor (pre 1.2.6)
      Rastignac - Inspiration and genius
      TheSexyPenguin - Inspiration (not really)
-     dildog - Refactoring and code cleanup (2.0)
+     dildog - Refactoring and code cleanup (Clean up, refactoring, new features)
  
      Thanks to: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
 
 
 Usage
 ------------
-Current development version: *Clutch 1.4-git8*
+Current development version: *Clutch 1.4.3*
 
 *Clutch* [flags] [application name] [...]
 

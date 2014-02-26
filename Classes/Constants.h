@@ -25,9 +25,9 @@
  */
 
 #define CLUTCH_TITLE "Clutch"
-#define CLUTCH_VERSION "1.4.1"
-#define CLUTCH_RELEASE "git-11"
-#define CLUTCH_BUILD 14011
+#define CLUTCH_VERSION "1.4.3"
+#define CLUTCH_RELEASE "git-2"
+#define CLUTCH_BUILD 14302
 #define CLUTCH_DEV 0 //1
 
 

@@ -69,6 +69,39 @@ struct CodeDirectory {
     
 };
 
+struct BlobIndex64 {
+	uint64_t type;
+	uint64_t offset;
+};
+
+struct Blob64 {
+	uint64_t magic;
+	uint64_t length;
+};
+
+struct SuperBlob64 {
+	struct Blob64 blob;
+	uint64_t count;
+	struct BlobIndex64 index[];
+};
+
+struct CodeDirectory64 {
+	struct Blob64 blob;
+	uint64_t version;
+	uint64_t flags;
+	uint64_t hashOffset;
+	uint64_t identOffset;
+	uint64_t nSpecialSlots;
+	uint64_t nCodeSlots;
+	uint64_t codeLimit;
+	uint16_t hashSize;
+	uint16_t hashType;
+	uint16_t spare1;
+	uint16_t pageSize;
+	uint64_t spare2;
+    
+};
+
 extern kern_return_t mach_vm_region
 (
  vm_map_t target_task,

@@ -195,7 +195,7 @@
     fseek(lipoOut, 4, SEEK_SET); //bin_magic
     fwrite(&bin_nfat_arch, 4, 1, lipoOut);
     
-    DEBUG(@"Written new header to binary!");
+    DEBUG(@"Wrote new header to binary!");
     
     fclose(lipoOut);
     
@@ -721,8 +721,8 @@
 	struct load_command l_cmd; // generic load command
 	struct segment_command_64 __text; // __TEXT segment
 	
-	struct SuperBlob *codesignblob; // codesign blob pointer
-	struct CodeDirectory directory; // codesign directory index
+	struct SuperBlob64 *codesignblob; // codesign blob pointer
+	struct CodeDirectory64 directory; // codesign directory index
 	
 	BOOL foundCrypt = FALSE;
 	BOOL foundSignature = FALSE;
@@ -785,7 +785,7 @@
 	kern_return_t err; // any kernel return codes
 	int status; // status of the wait
 	mach_vm_size_t local_size = 0; // amount of data moved into the buffer
-	uint32_t begin;
+	uint64_t begin;
 	
     //VERBOSE("dumping binary: obtaining ptrace handle");
     MSG(DUMPING_OBTAIN_PTRACE);
@@ -830,17 +830,21 @@
 		
         //VERBOSE("dumping binary: preparing code resign");
         MSG(DUMPING_CODE_RESIGN);
+        
+#warning Does this need to be updated for 64-bit as well?
+        
+        DEBUG(@"64-bit code resign");
 
 		codesignblob = malloc(ldid.datasize);
 		fseek(target, top + ldid.dataoff, SEEK_SET); // seek to the codesign blob
 		fread(codesignblob, ldid.datasize, 1, target); // read the whole codesign blob
-		uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
+		uint64_t countBlobs = CFSwapInt64(codesignblob->count); // how many indexes?
 		
 		// iterate through each index
-		for (uint32_t index = 0; index < countBlobs; index++) {
-			if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) { // is this the code directory?
+		for (uint64_t index = 0; index < countBlobs; index++) {
+			if (CFSwapInt64(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) { // is this the code directory?
 				// we'll find the hash metadata in here
-				begin = top + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
+				begin = top + ldid.dataoff + CFSwapInt64(codesignblob->index[index].offset); // store the top of the codesign directory blob
 				fseek(target, begin, SEEK_SET); // seek to the beginning of the blob
 				fread(&directory, sizeof(struct CodeDirectory), 1, target); // read the blob
 				break; // break (we don't need anything from this the superblob anymore)
@@ -849,10 +853,11 @@
 		
 		free(codesignblob); // free the codesign blob
         
-        uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
+        uint64_t pages = CFSwapInt64(directory.nCodeSlots); // get the amount of codeslots
         
 		if (pages == 0) {
 			kill(pid, SIGKILL); // kill the fork
+            DEBUG(@"pages == 0");
 			return FALSE;
 		}
 		
@@ -893,18 +898,25 @@
 			vm_region_flavor_t flavor = VM_REGION_BASIC_INFO;
 			err = 0;
 			
-			while (err == KERN_SUCCESS) {
+			while (err == KERN_SUCCESS)
+            {
 				err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
 				DEBUG(@"64-bit Region Size: %llu %u", region_size, crypt.cryptsize);
                 
-                if (region_size == crypt.cryptsize) {
+                if (region_size == crypt.cryptsize)
+                {
+                    DEBUG(@"region_size == cryptsize");
 					break;
 				}
+                
 				__text_start = region_start;
 				region_start += region_size;
 				region_size	= 0;
-			}
-			if (err != KERN_SUCCESS) {
+                
+            }
+            
+			if (err != KERN_SUCCESS)
+            {
                 DEBUG(@"mach_vm_error: %u", err);
 				free(checksum);
 				kill(pid, SIGKILL);

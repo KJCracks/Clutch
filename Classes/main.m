@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
                         Application *app = applist[number];
                     
                         retVal = cmd_crack_app(app, yopa_enabled);
-                        printf("continuing after int crack");
+                        //printf("continuing after int crack");
                     }
                 }
                 else

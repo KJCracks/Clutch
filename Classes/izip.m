@@ -140,7 +140,6 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         [_archiver openZipFile2:_cracker->_ipapath];
     }
        
-    int compressionLevel = 0;
     BOOL isDir=NO;
     
     NSArray *subpaths=nil;
@@ -163,7 +162,7 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         if([fileManager fileExistsAtPath:longPath isDirectory:&isDir] && !isDir)
         {
             //DEBUG(@"adding file %@", longPath);
-            [_archiver addFileToZip:longPath newname:path compressionLevel:compressionLevel];
+            [_archiver addFileToZip:longPath newname:path compressionLevel:_compressionLevel];
         }
     }
     //DEBUG(@"subpaths %@", subpaths);

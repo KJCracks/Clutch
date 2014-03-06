@@ -18,14 +18,14 @@
      Nighthawk - Code contributor (pre 1.2.6)
      Rastignac - Inspiration and genius
      TheSexyPenguin - Inspiration (not really)
-     dildog - Refactoring and code cleanup (2.0)
+     dildog - Refactoring and code cleanup (Clean up, refactoring, new features)
  
      Thanks to: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
 
 
 Usage
 ------------
-Current development version: *Clutch 1.4-git8*
+Current development version: *Clutch 1.4.3*
 
 *Clutch* [flags] [application name] [...]
 
@@ -35,11 +35,12 @@ Current development version: *Clutch 1.4-git8*
 * `-v`                          Shows version<br />
 * `-c`                          Runs configuration utility<br />
 * `-i <IPA> <BINARY <OUTPATH>`  Installs IPA & cracks it<br />
+* `-e <InBinary> <OutBinary>`   Cracks specific already-installed executable or one that has been scp'd to the device.
 * `--yopa`                      Creates a YOPA package<br />
 * `--info`                      Gets info about target<br />
 
 
-You can also set environment variables to change the behviour of *Clutch*
+You can also set environment variables to change the behaviour of *Clutch*
 * `CLUTCH_CONF` Sets path to configuration file<br />
 * `CLUTCH_IGNORE_DEV` Ignores the dev updates<br />
 
@@ -65,6 +66,6 @@ TODO
 
 
 
-(c) Kim Jong-Cracks 1819-2013
+(c) Kim Jong-Cracks 1819-2014
 
 

@@ -25,9 +25,9 @@
  */
 
 #define CLUTCH_TITLE "Clutch"
-#define CLUTCH_VERSION "1.4.1"
-#define CLUTCH_RELEASE "git-11"
-#define CLUTCH_BUILD 14011
+#define CLUTCH_VERSION "1.4.3"
+#define CLUTCH_RELEASE "git-2"
+#define CLUTCH_BUILD 14302
 #define CLUTCH_DEV 0 //1
 
 
@@ -66,6 +66,39 @@ struct CodeDirectory {
 	uint8_t spare1;
 	uint8_t pageSize;
 	uint32_t spare2;
+    
+};
+
+struct BlobIndex64 {
+	uint64_t type;
+	uint64_t offset;
+};
+
+struct Blob64 {
+	uint64_t magic;
+	uint64_t length;
+};
+
+struct SuperBlob64 {
+	struct Blob64 blob;
+	uint64_t count;
+	struct BlobIndex64 index[];
+};
+
+struct CodeDirectory64 {
+	struct Blob64 blob;
+	uint64_t version;
+	uint64_t flags;
+	uint64_t hashOffset;
+	uint64_t identOffset;
+	uint64_t nSpecialSlots;
+	uint64_t nCodeSlots;
+	uint64_t codeLimit;
+	uint16_t hashSize;
+	uint16_t hashType;
+	uint16_t spare1;
+	uint16_t pageSize;
+	uint64_t spare2;
     
 };
 

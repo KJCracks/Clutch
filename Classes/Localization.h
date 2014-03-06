@@ -58,10 +58,11 @@ typedef enum {
 
 typedef enum {
     en,
-    zh, //chinese
-    de, //german
-    fr, //french
-    hr, //serbian/croatian
+    zh, // chinese
+    de, // german
+    fr, // french
+    hr, // serbian/croatian
+    ru  // russian
 } Lang;
 
 
@@ -323,6 +324,60 @@ static NSString * const hr_locale[] = {
 	[COMPLETE_APPS_CRACKED] = @"\nUspešno:\n",
 	[COMPLETE_APPS_FAILED] = @"\nBezuspešno:\n",
 	[COMPLETE_TOTAL] = @"\nUkupno uspešno: \033[0;32m%u\033[0m   Ukupno bezuspešno: \033[0;32m%u\033[0m ",
+};
+
+
+// Translator: OdNairy
+static NSString * const ru_locale[] = {
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Вы используете версию для разработчиков, подождите, идёт проверка обновлений..",
+    [CLUTCH_DEV_UP_TO_DATE] = @"У вас самая последняя версия Clutch!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"Ваша версия Clutch устарела!\nПожалуйста, обновите Clutch!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"Для работы Clutch необходимы root-права",
+    [CLUTCH_NO_APPLICATIONS] = @"Необнаружено зашифрованных приложений на этом устройстве.",
+    [CLUTCH_CRACKING_ALL] = @"Идёт взлом всех зашифрованных приложений на этом устровстве.",
+    [CLUTCH_ENABLED_YOPA] = @"YOPA активирован.",
+    
+    [CONFIG_DOWNLOADING_FILES] = @"Скачиваются файлы конфигурации...",
+    [CONFIG_NO_MEMORY] = @"Недостаточно памяти",
+    [CONFIG_SAVING] = @"Сохраняю файлы конфигурации...",
+    [CONFIG_USING_DEFAULT] = @"Будет использовано значение по-умолчанию...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"Ошибка: невозможно создать рабочую директорию.",
+    [CRACKING_APPNAME] = @"Взламываю %@...",
+    [CRACKING_CREATE_WORKING_DIR] = @"Создаю рабочую директорию...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"Выполняю первоначальный анализ...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"Выполняю подготовку к взлому...",
+    
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"Дамп бинарного файла: анализ команд загрузки",
+    [DUMPING_OBTAIN_PTRACE] = @"Дамп бинарного файла: обход ptrace-хендлера",
+    [DUMPING_FORKING] = @"Дамп бинарного файла: клонирование перед началом трасировки",
+    [DUMPING_FORK_SUCCESS] = @"Дамп бинарного файла: клонирование успешно завершено",
+    [DUMPING_OBTAIN_MACH_PORT] = @"Дамп бинарного файла: захват mach port",
+    [DUMPING_CODE_RESIGN] = @"Дамп бинарного файла: подготовка к переподпики приложения",
+    [DUMPING_PREPARE_DUMP] = @"Дамп бинарного файла: подготовка к дампу",
+    [DUMPING_ASLR_ENABLED] = @"Дамп бинарного файла: ASLR включён, определяем место для дампа динамически",
+    [DUMPING_PERFORM_DUMP] = @"Дамп бинарного файла: выполняется дамп",
+    [DUMPING_PATCH_CRYPTID] = @"Дамп бинарного файла: изменён cryptid",
+    [DUMPING_NEW_CHECKSUM] = @" Дамп бинарного файла: запись новой чек-суммы",
+    
+    [SWAP_CRACKING_PORTION] = @"swap: идёт взлом armv%u архитектуры",
+    
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Дамп бинарного файла: изменён mach header (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Дамп бинарного файла: изменён maxprot (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Дамп бинарного файла: изменён cryptid (overdrive)",
+    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Дамп бинарного файла: добавлен overdrive DYLIB (overdrive)",
+    
+    [PACKAGING_WAITING_ZIP] = @"Сборка: ожидаем завершения архивирования",
+    [PACKAGING_FAILED_KILL_ZIP] = @"Сборка: взлом приложения не удался, останавливаем поток архивирования",
+    [PACKAGING_ITUNESMETADATA] = @"Сборка: игнорируем iTunesMetadata",
+    [PACKAGING_IPA] = @"Сборка: архивирование IPA-файла",
+    [PACKAGING_COMPRESSION_LEVEL] = @"Сборка: выбран уровень компрессии %u",
+    
+    [COMPLETE_ELAPSED_TIME] = @"Затрачено времени: %.02fs",
+    [COMPLETE_APPS_CRACKED] = @"\nВзломанные приложения:\n",
+    [COMPLETE_APPS_FAILED] = @"\nНеудачные взломы:\n",
+    [COMPLETE_TOTAL] = @"\nУдачные взломы: \033[0;32m%u\033[0m   Неудачные взломы: \033[0;32m%u\033[0m ",
+    
 };
 
 /*

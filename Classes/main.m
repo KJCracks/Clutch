@@ -80,6 +80,7 @@ void cmd_help();
 void cmd_list_applications(NSArray *applications);
 int cmd_crack_all(NSArray *applications);
 int cmd_crack_app(Application *app, int yopa_enabled);
+int cmd_crack_specific_binary(NSString *inbinary, NSString *outbinary);
 
 
 /*
@@ -182,6 +183,9 @@ void cmd_help()
     printf("-f                            Clears cache\n");
     printf("-v                            Shows version\n");
     printf("-i <IPA> <Binary> <OutBinary> Installs IPA and cracks it\n");
+    printf("-e <InBinary> <OutBinary>     Cracks specific already-installed\n"
+           "                              executable or one that has been\n"
+           "                              scp'd to the device. (advanced usage)\n");
     //printf("--yopa                        Creates a YOPA package\n");
     //printf("-d                            Shows debug messages\n");
     printf("\n");
@@ -245,12 +249,35 @@ int cmd_crack_all(NSArray *applications)
             
             [failedCracks addObject:app.applicationName];
         }
+        
+        [cracker release];
     }
     
     print_results();
     
     return 0;
 }
+
+int cmd_crack_specific_binary(NSString *inbinary, NSString *outbinary)
+{
+    MSG(CRACKING_APPNAME, inbinary);
+    
+    [[NSFileManager defaultManager] removeItemAtPath:outbinary error:nil];
+    
+    Binary* binary = [[Binary alloc] initWithBinary:inbinary];
+    
+    DEBUG(@"outbinary %@", outbinary);
+    
+    [binary crackBinaryToFile:outbinary error:nil];
+    
+    DEBUG(@"apparently crack was ok!?");
+    
+    [binary release];
+    
+    print_results();
+    return 0;
+}
+
 
 int cmd_crack_app(Application *app, int yopa_enabled)
 {
@@ -356,8 +383,6 @@ int main(int argc, char *argv[])
         if (applist == NULL)
         {
             MSG(CLUTCH_NO_APPLICATIONS);
-            
-            goto endMain;
         }
         
         
@@ -378,7 +403,7 @@ int main(int argc, char *argv[])
             {
                 if (arguments.count < 3)
                 {
-                    printf("%s %s requires 3 arugments (%d found).\n", argv[0], [arg UTF8String], (int)(arguments.count - 2));
+                    printf("%s %s requires 3 arguments (%d found).\n", argv[0], [arg UTF8String], (int)(arguments.count - 2));
                     
                     return retVal;
                 }
@@ -427,15 +452,31 @@ int main(int argc, char *argv[])
             {
                 //get updated apps only
                 applist = [[ApplicationLister sharedInstance] modifiedApps];
-                if ([applist count] == 0) {
+                if ([applist count] == 0)
+                {
                     printf("You have no updated apps!\n");
                     retVal = 0;
                     goto endMain;
                 }
+                
                 printf("Cracking all updated apps!\n");
                 retVal = cmd_crack_all(applist);
                 goto endMain;
             }
+            else if ([arg isEqualToString:@"-e"])
+            {
+                if (arguments.count != 4)
+                {
+                    printf("%s %s requires 2 arguments (%d found).\n", argv[0], [arg UTF8String], (int)(arguments.count - 2));
+                    return retVal;
+                }
+                
+                NSString *binary = arguments[2];
+                NSString *outbinary = arguments[3];
+                retVal = cmd_crack_specific_binary(binary, outbinary);
+                goto endMain;
+            }
+
             else if ([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-help"])
             {
                 cmd_help();
@@ -447,33 +488,36 @@ int main(int argc, char *argv[])
                 MSG(CLUTCH_ENABLED_YOPA);
                 yopa_enabled = 1;
             }
-            else if ([arg isEqualToString:@"--info"]) {
+            else if ([arg isEqualToString:@"--info"])
+            {
                 get_info = 1;
                 DEBUG(@"getting info wow");
             }
-            else {
-                
+            else
+            {
                 if ([arg isEqualToString:arguments[0]])
                 {
                     continue;
                 }
                 
-                NSString* _arg = arg;
-                if ([[Preferences sharedInstance] numberBasedMenu])
+                if ([arg intValue] != 0)
                 {
-                    int number = [arg intValue] - 1;
-                    Application* app = applist[number];
+                    if ([[Preferences sharedInstance] numberBasedMenu])
+                    {
+                        int number = [arg intValue] - 1;
+                        Application *app = applist[number];
                     
-                    retVal = cmd_crack_app(app, yopa_enabled);
+                        retVal = cmd_crack_app(app, yopa_enabled);
+                        //printf("continuing after int crack");
+                    }
                 }
                 else
                 {
-                    
+                    NSString* _arg = arg;
                     Application* crackApp = NULL;
                     
                     for (Application *app in applist)
                     {
-                        
                         if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
                         {
                             if ([app.applicationDirectory caseInsensitiveCompare:_arg] == NSOrderedSame)
@@ -482,28 +526,34 @@ int main(int argc, char *argv[])
                                 break;
                             }
                         }
-                        else if ([[Preferences sharedInstance] boolForKey:@"ListWithDisplayName"]) {
-                            if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame) {
+                        else if ([[Preferences sharedInstance] boolForKey:@"ListWithDisplayName"])
+                        {
+                            if ([app.applicationDisplayName caseInsensitiveCompare:_arg] == NSOrderedSame)
+                            {
                                 crackApp = app;
                                 break;
                             }
-                            
+                        
                         }
-                        else {
-                            if ([app.applicationExecutableName caseInsensitiveCompare:_arg] == NSOrderedSame) {
+                        else
+                        {
+                            if ([app.applicationExecutableName caseInsensitiveCompare:_arg] == NSOrderedSame)
+                            {
                                 crackApp = app;
                                 break;
                             }
                         }
                     }
-                    
-                    if (!crackApp) {
+                
+                    if (!crackApp)
+                    {
                         printf("error: Could not find application %s!\n\n", [_arg UTF8String]);
                         retVal = 1;
                         goto endMain;
                     }
                     
-                    if (get_info == 1) {
+                    if (get_info == 1)
+                    {
                         API* api = [[API alloc] initWithApp:crackApp];
                         [api setEnvironmentArgs];
                         [api release];

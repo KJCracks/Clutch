@@ -43,6 +43,10 @@ Current development version: *Clutch 1.4.3*
 You can also set environment variables to change the behaviour of *Clutch*
 * `CLUTCH_CONF` Sets path to configuration file<br />
 * `CLUTCH_IGNORE_DEV` Ignores the dev updates<br />
+* `CLUTCH_COMPRESSION_LEVEL` Sets compression level (1-9)<br />
+* `CLUTCH_CRACKER_NAME` Sets cracker name<br />
+* `CLUTCH_NATIVE_ZIP` Sets if native zip will be used<br />
+* `CLUTCH_METADATA_EMAIL` Sets metadata email<br />
 
 Compiling
 ------------

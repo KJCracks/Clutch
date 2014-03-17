@@ -26,10 +26,12 @@ NSString* preferences_location = prefsPath;
     
     return shared;
 }
+
 + (void)setConfigPath:(NSString*)path {
     preferences_dispatch = 0;
     preferences_location = path;
 }
+
 - (id)init
 {
     self = [super init];
@@ -38,6 +40,7 @@ NSString* preferences_location = prefsPath;
     {
         _dict = [[NSMutableDictionary alloc]initWithContentsOfFile:preferences_location];
         DEBUG(@"preferences_location: %@", preferences_location);
+        DEBUG(@"%@", _dict);
         if (_dict==nil)
         {
             _dict=[NSMutableDictionary new];
@@ -69,7 +72,7 @@ NSString* preferences_location = prefsPath;
         [_dict setObject:value forKey:defaultName];
         
     }
-    //DEBUG(@"da dict %@", _dict);
+    DEBUG(@"da dict %@", _dict);
     
 }
 
@@ -273,7 +276,5 @@ NSString* preferences_location = prefsPath;
     
     MSG(CONFIG_SAVING);
 }
-
-
 
 @end

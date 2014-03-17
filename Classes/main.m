@@ -362,11 +362,50 @@ int main(int argc, char *argv[])
             }
         }
         
+        
+        // Export Options
+        
+        NSString *compression_level = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_COMPRESSION_LEVEL"];
+        
+        if (compression_level.intValue != 0 && compression_level.intValue < 10)
+        {
+            printf("\nusing custom compression level...\n");
+            [[Preferences sharedInstance] tempSetObject:compression_level forKey:@"CompressionLevel"];
+        }
+        
         NSString* clutch_conf = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_CONF"];
-        if (clutch_conf.length > 0) {
-            printf("\nusing custom configuration..\n");
+        
+        if (clutch_conf.length > 0)
+        {
+            printf("\nusing custom configuration...\n");
             [Preferences setConfigPath:clutch_conf];
         }
+        
+        NSString *crackerName = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_CRACKER_NAME"];
+        
+        if (crackerName.length > 0)
+        {
+            printf("\nusing custom cracker name...\n");
+            [[Preferences sharedInstance] tempSetObject:crackerName forKey:@"CrackerName"];
+        }
+        
+        NSString *nativeZip = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_NATIVE_ZIP"];
+        
+        if ([nativeZip isEqualToString:@"YES"] || [nativeZip isEqualToString:@"NO"])
+        {
+            printf("\nusing custom native zip value...\n");
+            [[Preferences sharedInstance] tempSetObject:nativeZip forKey:@"UseNativeZip"];
+        }
+        
+        NSString *metadataEmail = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_METADATA_EMAIL"];
+        
+        if (metadataEmail.length > 0)
+        {
+            printf("\nusing custom metadata email...\n");
+            [[Preferences sharedInstance] tempSetObject:metadataEmail forKey:@"MetadataEmail"];
+        }
+        
+        
         
         gettimeofday(&start, NULL);
         

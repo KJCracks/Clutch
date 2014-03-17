@@ -620,29 +620,32 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     
     NSDictionary *imetadata_orig = [NSDictionary dictionaryWithContentsOfFile:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"]];
     
-    DEBUG(@"Creating fake SC_Info data...");
+    if ([[Preferences sharedInstance] useOverdrive]) // Fix for #19
+    {
+        DEBUG(@"Creating fake SC_Info data...");
     
-    // create fake SC_Info directory
-    [[NSFileManager defaultManager] createDirectoryAtPath:[_workingDir stringByAppendingPathComponent:@"SF_Info"] withIntermediateDirectories:YES attributes:nil error:NULL];
+        // create fake SC_Info directory
+        [[NSFileManager defaultManager] createDirectoryAtPath:[_workingDir stringByAppendingPathComponent:@"SF_Info"] withIntermediateDirectories:YES attributes:nil error:NULL];
+        
+        NSLog(@"DEBUG: made fake directory");
     
-    NSLog(@"DEBUG: made fake directory");
-    
-    // create fake SC_Info SINF file
-    FILE *sinfh = fopen([[_workingDir stringByAppendingPathComponent:@"SF_Info"]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sinf", _app.applicationExecutableName]].UTF8String, "w");
+        // create fake SC_Info SINF file
+        FILE *sinfh = fopen([[_workingDir stringByAppendingPathComponent:@"SF_Info"]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sinf", _app.applicationExecutableName]].UTF8String, "w");
 
-    void *sinf = generate_sinf([imetadata_orig[@"itemId"] intValue], (char *)[crackerName UTF8String], [imetadata_orig[@"vendorId"] intValue]);
+        void *sinf = generate_sinf([imetadata_orig[@"itemId"] intValue], (char *)[crackerName UTF8String], [imetadata_orig[@"vendorId"] intValue]);
     
-    fwrite(sinf, CFSwapInt32(*(uint32_t *)sinf), 1, sinfh);
-    fclose(sinfh);
-    free(sinf);
+        fwrite(sinf, CFSwapInt32(*(uint32_t *)sinf), 1, sinfh);
+        fclose(sinfh);
+        free(sinf);
     
-    // create fake SC_Info SUPP file
-    FILE *supph = fopen([[_workingDir stringByAppendingPathComponent:@"SF_Info"]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.supp", _app.applicationExecutableName]].UTF8String, "w");
-    uint32_t suppsize;
-    void *supp = generate_supp(&suppsize);
-    fwrite(supp, suppsize, 1, supph);
-    fclose(supph);
-    free(supp);
+        // create fake SC_Info SUPP file
+        FILE *supph = fopen([[_workingDir stringByAppendingPathComponent:@"SF_Info"]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.supp", _app.applicationExecutableName]].UTF8String, "w");
+        uint32_t suppsize;
+        void *supp = generate_supp(&suppsize);
+        fwrite(supp, suppsize, 1, supph);
+        fclose(supph);
+        free(supp);
+    }
 }
 
 -(NSString *)getAppDescription

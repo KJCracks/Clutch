@@ -231,7 +231,7 @@ static NSString * genRandStringLength(int len)
     
     if (!_yopaEnabled)
     {
-        [zip setCompressionLevel:[[Preferences sharedInstance] compressionLevel]];
+        [zip setCompressionLevel:[[Preferences sharedInstance] _compressionLevel]];
     }
     else
     {
@@ -472,7 +472,7 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     YOPAPackage* package = [[YOPAPackage alloc] initWithPackagePath:_yopaPath];
     
     
-    xpc_connection_t c = xpc_connection_create_mach_service("zorro.yopainstalld", NULL, 0);
+    xpc_connection_t c = xpc_connection_create_mach_service("swag.zoro.yopainstalld", NULL, 0);
     
     xpc_connection_set_event_handler(c, ^(xpc_object_t object) {
         //yopainstalld_peer_event_handler(self, c, object); //don't need dat?

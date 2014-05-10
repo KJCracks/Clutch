@@ -163,7 +163,8 @@
         fclose(f);
         data = [[NSData alloc] initWithBytesNoCopy:fBuffer length:fLenght];
 		uLong crcValue = crc32( 0L,NULL, 0L );
-		crcValue = crc32( crcValue, (const Bytef*)[data bytes], [data length] );
+
+		crcValue = crc32( crcValue, (const Bytef*)[data bytes], (unsigned int)[data length] );
 		ret = zipOpenNewFileInZip3( _zipFile,
                                    (const char*) [newname UTF8String],
                                    &zipInfo,
@@ -202,7 +203,7 @@
     
     if(fLenght) {
         fread(fBuffer, 1, fLenght, f);
-        ret = zipWriteInFileInZip( _zipFile, (const void*)fBuffer, fLenght);
+        ret = zipWriteInFileInZip( _zipFile, (const void*)fBuffer, (unsigned int)fLenght);
         if( ret!=Z_OK )
         {
             free(fBuffer);
@@ -258,7 +259,7 @@
 		unz_global_info  globalInfo = {0};
 		if( unzGetGlobalInfo(_unzFile, &globalInfo )==UNZ_OK )
 		{
-            _numFiles = globalInfo.number_entry;
+            _numFiles = (unsigned int)globalInfo.number_entry;
 			//VERBOSE("%lu entries in the zip file", globalInfo.number_entry);
 		}
 	}

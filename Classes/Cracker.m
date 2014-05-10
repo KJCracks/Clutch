@@ -9,12 +9,9 @@
 #import "izip.h"
 #import "ZipArchive.h"
 #import "API.h"
-#import "YOPAPackage.h"
 #import "Localization.h"
 #import "ApplicationLister.h"
 
-#import <xpc/xpc.h>
-// ln -s /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/usr/include/xpc /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/usr/include/xpc
 #import <sys/stat.h>
 #import <sys/types.h>
 #import <utime.h>
@@ -202,12 +199,10 @@ static NSString * genRandStringLength(int len)
     if ([[Preferences sharedInstance] addMinOS])
     {
         _ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
-        _yopaPath = [NSString stringWithFormat:@"%@%@-v%@-%@-iOS%@-(Clutch-%@).7z.yopa.ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, _app.minimumOSVersion , [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
     else
     {
         _ipapath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
-         _yopaPath = [NSString stringWithFormat:@"%@%@-v%@-%@-(Clutch-%@).7z.yopa.ipa", crackedPath, _app.applicationDisplayName, _app.applicationVersion, crackerName, [NSString stringWithUTF8String:CLUTCH_VERSION]];
     }
     
     DEBUG(_ipapath);
@@ -229,14 +224,9 @@ static NSString * genRandStringLength(int len)
     
     iZip* zip = [[iZip alloc] initWithCracker:self];
     
-    if (!_yopaEnabled)
-    {
-        [zip setCompressionLevel:[[Preferences sharedInstance] compressionLevel]];
-    }
-    else
-    {
-        [zip setCompressionLevel:0];
-    }
+
+    [zip setCompressionLevel:0];
+
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
 
@@ -341,11 +331,6 @@ static NSString * genRandStringLength(int len)
             //clean up
             MSG(PACKAGING_COMPRESSION_LEVEL, zip->_compressionLevel);
             
-            if (_yopaEnabled)
-            {
-                DEBUG(@"YOPA enabled, generating YOPA file..");
-                [self packageYOPA];
-            }
         }
         else
         {
@@ -387,192 +372,6 @@ static NSString * genRandStringLength(int len)
     system([[NSString stringWithFormat:@"7z a \"%@\" \"%@\"", packagePath, _ipapath] UTF8String]);
 }
 
-
-void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xpc_object_t reply)
-{
-    
-    xpc_type_t type = xpc_get_type(reply);
-    if (xpc_get_type(reply) == XPC_TYPE_ERROR) {
-        if (reply == XPC_ERROR_CONNECTION_INVALID)
-        {
-            NSLog(@"DAFUQ JUST HAPPENED. make sure you are r00t");
-            xpc_connection_cancel(peer);
-            exit(0);
-            
-        } else if (reply == XPC_ERROR_TERMINATION_IMMINENT)
-        {
-            NSLog(@"TERMINATOR!!!!!!!");
-            //dunno what to do
-            exit(0);
-        }
-    } else {
-        assert(type == XPC_TYPE_DICTIONARY);
-        
-        NSString *status = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Status")];
-        
-        if ([status isEqualToString:@"Complete"]) {
-            NSString* command = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Command")];
-            if ([command isEqualToString:@"SaveVersion"]) {
-                NSLog(@"save version ok");
-            }
-            else if ([command isEqualToString:@"GetVersions"]) {
-                 xpc_object_t versions = xpc_dictionary_get_value(reply, "Versions");
-                cracker->_yopaVersions = [[NSMutableArray alloc] init];
-                 xpc_array_apply(versions, ^_Bool(size_t index, xpc_object_t value) {
-                     [cracker->_yopaVersions addObject:[NSNumber numberWithInt:(int)value]];
-                     return true;
-                 });
-            }
-            else if ([command isEqualToString:@"GetPatchFiles"]) {
-                xpc_object_t diff = xpc_dictionary_get_value(reply, "Diff");
-                xpc_object_t addFiles = xpc_dictionary_get_value(diff, "AddFiles");
-                xpc_object_t remFiles = xpc_dictionary_get_value(diff, "RemoveFiles");
-                NSLog(@"Complete! YAY");
-                cracker->_yopaAddFiles = [[NSMutableArray alloc] init];
-                cracker->_yopaRemFiles = [[NSMutableArray alloc] init];
-                xpc_array_apply(addFiles, ^_Bool(size_t index, xpc_object_t value) {
-                    NSLog(@"Add Array value %s", (const char*)value);
-                    [cracker->_yopaAddFiles addObject:[NSString stringWithUTF8String:(const char*)value]];
-                    return true;
-                });
-                
-                xpc_array_apply(remFiles, ^_Bool(size_t index, xpc_object_t value) {
-                    NSLog(@"Remove Array value %s", (const char*)value);
-                    [cracker->_yopaRemFiles addObject:[NSString stringWithUTF8String:(const char*)value]];
-                    return true;
-                });
-               
-            }
-            xpc_connection_cancel(peer);
-            
-        }
-        else if ([status isEqualToString:@"Error"])
-        {
-            
-            if (xpc_dictionary_get_string(reply, "Error")) {
-                //NSString *error = [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Error")];
-                NSLog(@"Error %@", [NSString stringWithUTF8String:xpc_dictionary_get_string(reply, "Error")]);
-            }
-            
-            xpc_connection_cancel(peer);
-            exit(0);
-        }
-        else
-        {
-            NSLog(@"%@",status);
-        }
-        
-    }
-    
-}
-
--(void)packageYOPA
-{
-    
-    YOPAPackage* package = [[YOPAPackage alloc] initWithPackagePath:_yopaPath];
-    
-    
-    xpc_connection_t c = xpc_connection_create_mach_service("zorro.yopainstalld", NULL, 0);
-    
-    xpc_connection_set_event_handler(c, ^(xpc_object_t object) {
-        //yopainstalld_peer_event_handler(self, c, object); //don't need dat?
-    });
-    
-    xpc_connection_resume(c);
-    
-    // Messages are always dictionaries.
-    xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
-    xpc_dictionary_set_string(message, "Command", "SaveVersion");
-    xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
-    //xpc_dictionary_set_int64(message, "Version", 38);
-    
-    xpc_object_t SaveVersionResponse = xpc_connection_send_message_with_reply_sync(c, message);
-    
-    xpc_release(message);
-    
-    yopainstalld_peer_event_handler(self, c, SaveVersionResponse);
-    
-    xpc_release(SaveVersionResponse);
-
-    // Messages are always dictionaries.
-    message = xpc_dictionary_create(NULL, NULL, 0);
-    xpc_dictionary_set_string(message, "Command", "GetVersions");
-    xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
-    
-    xpc_object_t GetVersionsResponse = xpc_connection_send_message_with_reply_sync(c, message);
-    
-    xpc_release(message);
-    
-    yopainstalld_peer_event_handler(self, c, GetVersionsResponse);
-    
-    xpc_release(GetVersionsResponse);
-
-    for (NSNumber* version in _yopaVersions) {
-        if ([version isEqualToNumber:_app.appVersion]) {
-            NSLog(@"same version! %@", version);
-            continue;
-        }
-        
-        // Messages are always dictionaries.
-        message = xpc_dictionary_create(NULL, NULL, 0);
-        xpc_dictionary_set_string(message, "Command", "GetPatchFiles");
-        xpc_dictionary_set_string(message, "AppBundle", _app.applicationBundleID.UTF8String);
-        xpc_dictionary_set_int64(message, "Version", [version intValue]);
-        
-        xpc_object_t GetPatchFilesResponse = xpc_connection_send_message_with_reply_sync(c, message);
-        
-        xpc_release(message);
-        
-        yopainstalld_peer_event_handler(self, c, GetPatchFilesResponse);
-        
-        xpc_release(GetPatchFilesResponse);
-        
-        ZipArchive* archive = [[ZipArchive alloc] init];
-        NSString* archivePath = [_tempPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.zip", version]];
-        [archive CreateZipFile2:archivePath];
-        for (NSString* file in _yopaAddFiles) {
-            NSLog(@"yopa add file patch %@", file);
-            NSString* longPath = [_workingDir stringByAppendingPathComponent:file];
-            [archive addFileToZip:longPath newname:file compressionLevel:0];
-            
-            [archive CloseZipFile2];
-            
-            YOPASegment* segment = [[YOPASegment alloc] initWithPatchPackage:archivePath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID withVersion:version];
-            
-            [package addSegment:segment];
-            [segment release];
-        }
-        
-        [archive release];
-        
-    }
-    
-
-    
-    //default zip segment
-    YOPASegment* ipaSegment = [[YOPASegment alloc] initWithNormalPackage:_ipapath withCompressionType:ZIP_COMPRESSION withBundleName:_app.applicationBundleID];
-    
-    DEBUG(@"compressing to 7zip");
-    
-    NSString* tmp7z = [_tempPath stringByAppendingPathComponent:@"tmp.7z"];
-    
-    [self compressIPAto7z:tmp7z];
-    
-    YOPASegment* sevenZipSegment = [[YOPASegment alloc] initWithNormalPackage:tmp7z withCompressionType:SEVENZIP_COMPRESSION withBundleName:_app.applicationBundleID];
-    
-     DEBUG(@"adding segments");
-    
-    [package addSegment:ipaSegment];
-    [ipaSegment release];
-    [package addSegment:sevenZipSegment];
-    [sevenZipSegment release];
-    
-    
-    DEBUG(@"adding header");
-    [package writeHeader];
-    
-    [package release];
-}
 
 -(void)packageIPA
 {
@@ -658,9 +457,6 @@ void yopainstalld_peer_event_handler(Cracker* cracker, xpc_connection_t peer, xp
     return _finaldir;
 }
 
--(void)yopaEnabled:(BOOL)flag {
-    _yopaEnabled = flag;
-}
 
 void generateMetadata(NSString *origPath,NSString *output)
 {

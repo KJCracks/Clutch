@@ -24,7 +24,6 @@
     NSString *_workingDir;
     NSString *_ipapath;
     NSString *_yopaPath;
-    BOOL* _yopaEnabled;
     
     NSMutableArray* _yopaAddFiles;
     NSMutableArray* _yopaRemFiles;
@@ -35,6 +34,5 @@
 -(BOOL)prepareFromInstalledApp:(Application*)app;
 -(BOOL)execute;
 -(NSString*) generateIPAPath;
--(void)yopaEnabled:(BOOL) dunno;
 
 @end

@@ -63,9 +63,9 @@
  */
 
 BOOL crack = FALSE;
-BOOL readCompression;
+BOOL readCompression, skip_64;
 struct timeval start, end;
-int yopa_enabled, get_info;
+int get_info;
 
 NSMutableArray *successfulCracks;
 NSMutableArray *failedCracks;
@@ -79,7 +79,7 @@ void cmd_version();
 void cmd_help();
 void cmd_list_applications(NSArray *applications);
 int cmd_crack_all(NSArray *applications);
-int cmd_crack_app(Application *app, int yopa_enabled);
+int cmd_crack_app(Application *app, BOOL skip_64);
 int cmd_crack_specific_binary(NSString *inbinary, NSString *outbinary);
 
 
@@ -188,6 +188,7 @@ void cmd_help()
            "                              scp'd to the device. (advanced usage)\n");
     //printf("--yopa                        Creates a YOPA package\n");
     //printf("-d                            Shows debug messages\n");
+    printf("--no-64                       Skips arm64 portions\n");
     printf("\n");
 }
 
@@ -279,13 +280,14 @@ int cmd_crack_specific_binary(NSString *inbinary, NSString *outbinary)
 }
 
 
-int cmd_crack_app(Application *app, int yopa_enabled)
+int cmd_crack_app(Application *app, BOOL skip_64)
 {
     MSG(CRACKING_APPNAME, app.applicationName);
     
     Cracker *cracker = [[Cracker alloc] init];
     [cracker prepareFromInstalledApp:app];
-    [cracker yopaEnabled:yopa_enabled];
+    
+    cracker->_binary->skip_64 = skip_64;
     
     NSString *ipapath = [cracker generateIPAPath];
     
@@ -516,16 +518,15 @@ int main(int argc, char *argv[])
                 goto endMain;
             }
 
+            else if ([arg isEqualToString:@"--no-64"]) {
+                skip_64 = TRUE;
+                printf("Skipping arm64 segments\n");
+            }
             else if ([arg isEqualToString:@"-h"] || [arg isEqualToString:@"-help"])
             {
                 cmd_help();
                 
                 goto endMain;
-            }
-            else if ([arg isEqualToString:@"--yopa"])
-            {
-                MSG(CLUTCH_ENABLED_YOPA);
-                yopa_enabled = 1;
             }
             else if ([arg isEqualToString:@"--info"])
             {
@@ -546,7 +547,7 @@ int main(int argc, char *argv[])
                         int number = [arg intValue] - 1;
                         Application *app = applist[number];
                     
-                        retVal = cmd_crack_app(app, yopa_enabled);
+                        retVal = cmd_crack_app(app, skip_64);
                         //printf("continuing after int crack");
                     }
                 }
@@ -600,7 +601,7 @@ int main(int argc, char *argv[])
                         goto endMain;
                     }
                     
-                    retVal = cmd_crack_app(crackApp, yopa_enabled);
+                    retVal = cmd_crack_app(crackApp, skip_64);
                     goto endMain;
                 }
             }

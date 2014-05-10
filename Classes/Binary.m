@@ -551,6 +551,13 @@
             {
                 DEBUG(@"currently cracking arch %u", CFSwapInt32(arch->cpusubtype));
                 
+                if ((arch->cputype == CPU_TYPE_ARM64) && (skip_64)) {
+                    DEBUG(@"Skipping arm64!");
+                    NSValue* archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
+                    [stripHeaders addObject:archValue];
+                    break;
+                }
+                
                 switch ([Device compatibleWith:arch])
                 {
                     case COMPATIBLE:
@@ -687,7 +694,7 @@
     
     return YES;
 }
-
+                                                                                                                                                                   
 
 - (BOOL)dumpOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withArch:(struct fat_arch)arch
 {
@@ -714,15 +721,15 @@
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;
 	fgetpos(target, &topPosition);
-	
+
 	struct linkedit_data_command ldid; // LC_CODE_SIGNATURE load header (for resign)
 	struct encryption_info_command_64 crypt; // LC_ENCRYPTION_INFO load header (for crypt*)
 	struct mach_header_64 mach; // generic mach header
 	struct load_command l_cmd; // generic load command
 	struct segment_command_64 __text; // __TEXT segment
 	
-	struct SuperBlob64 *codesignblob; // codesign blob pointer
-	struct CodeDirectory64 directory; // codesign directory index
+	struct SuperBlob *codesignblob; // codesign blob pointer
+	struct CodeDirectory directory; // codesign directory index
 	
 	BOOL foundCrypt = FALSE;
 	BOOL foundSignature = FALSE;
@@ -777,7 +784,7 @@
         MSG(DUMPING_ASLR_ENABLED);
         mach.flags &= ~MH_PIE;
         fseek(origin, top, SEEK_SET);
-        fwrite(&mach, sizeof(struct mach_header), 1, origin);
+        fwrite(&mach, sizeof(struct mach_header_64), 1, origin);
     }
 	
 	pid_t pid; // store the process ID of the fork
@@ -836,15 +843,16 @@
         DEBUG(@"64-bit code resign");
 
 		codesignblob = malloc(ldid.datasize);
+        
 		fseek(target, top + ldid.dataoff, SEEK_SET); // seek to the codesign blob
 		fread(codesignblob, ldid.datasize, 1, target); // read the whole codesign blob
-		uint64_t countBlobs = CFSwapInt64(codesignblob->count); // how many indexes?
+		uint64_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
 		
 		// iterate through each index
 		for (uint64_t index = 0; index < countBlobs; index++) {
-			if (CFSwapInt64(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) { // is this the code directory?
+			if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) { // is this the code directory?
 				// we'll find the hash metadata in here
-				begin = top + ldid.dataoff + CFSwapInt64(codesignblob->index[index].offset); // store the top of the codesign directory blob
+				begin = top + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
 				fseek(target, begin, SEEK_SET); // seek to the beginning of the blob
 				fread(&directory, sizeof(struct CodeDirectory), 1, target); // read the blob
 				break; // break (we don't need anything from this the superblob anymore)
@@ -853,7 +861,7 @@
 		
 		free(codesignblob); // free the codesign blob
         
-        uint64_t pages = CFSwapInt64(directory.nCodeSlots); // get the amount of codeslots
+        uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
         
 		if (pages == 0) {
 			kill(pid, SIGKILL); // kill the fork
@@ -926,7 +934,7 @@
 			}
 		}
 		
-        uint32_t headerProgress = sizeof(struct mach_header);
+        uint32_t headerProgress = sizeof(struct mach_header_64);
         uint32_t i_lcmd = 0;
         
         // overdrive dylib load command size
@@ -1053,7 +1061,7 @@
 		MSG(DUMPING_NEW_CHECKSUM);
         
 		// nice! now let's write the new checksum data
-		fseek(target, begin + CFSwapInt32(directory.hashOffset), SEEK_SET); // go to the hash offset
+		fseek(target, begin + CFSwapInt64(directory.hashOffset), SEEK_SET); // go to the hash offset
 		fwrite(checksum, 20*pages_d, 1, target); // write the hashes (ONLY for the amount of pages modified)
 		
 		free(checksum); // free checksum table from memory

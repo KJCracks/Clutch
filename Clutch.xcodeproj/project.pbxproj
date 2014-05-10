@@ -36,9 +36,6 @@
 		BC871C8817E7126F00048636 /* Clutch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC871C8717E7126F00048636 /* Clutch-Info.plist */; };
 		E9F95EC7188FF5C60002EBAC /* Packager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F95EC6188FF5C60002EBAC /* Packager.m */; };
 		E9F95ED0189001C40002EBAC /* libarchive.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F95ECF189001C40002EBAC /* libarchive.dylib */; };
-		F415012E189948A200D57F30 /* CRC32.m in Sources */ = {isa = PBXBuildFile; fileRef = F4150129189948A200D57F30 /* CRC32.m */; };
-		F415012F189948A200D57F30 /* YOPAPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = F415012B189948A200D57F30 /* YOPAPackage.m */; };
-		F4150130189948A200D57F30 /* YOPASegment.m in Sources */ = {isa = PBXBuildFile; fileRef = F415012D189948A200D57F30 /* YOPASegment.m */; };
 		F473DA7A1872300800AF3C59 /* izip.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA791872300800AF3C59 /* izip.m */; };
 /* End PBXBuildFile section */
 
@@ -102,12 +99,6 @@
 		E9F95ECF189001C40002EBAC /* libarchive.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libarchive.dylib; path = usr/lib/libarchive.dylib; sourceTree = SDKROOT; };
 		E9F95ED1189001CF0002EBAC /* archive_entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive_entry.h; sourceTree = "<group>"; };
 		E9F95ED2189001F40002EBAC /* archive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive.h; sourceTree = "<group>"; };
-		F4150128189948A200D57F30 /* CRC32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRC32.h; sourceTree = "<group>"; };
-		F4150129189948A200D57F30 /* CRC32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRC32.m; sourceTree = "<group>"; };
-		F415012A189948A200D57F30 /* YOPAPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YOPAPackage.h; sourceTree = "<group>"; };
-		F415012B189948A200D57F30 /* YOPAPackage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YOPAPackage.m; sourceTree = "<group>"; };
-		F415012C189948A200D57F30 /* YOPASegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YOPASegment.h; sourceTree = "<group>"; };
-		F415012D189948A200D57F30 /* YOPASegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YOPASegment.m; sourceTree = "<group>"; };
 		F473DA551871E77400AF3C59 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		F473DA781872300800AF3C59 /* izip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = izip.h; sourceTree = "<group>"; };
 		F473DA791872300800AF3C59 /* izip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = izip.m; sourceTree = "<group>"; };
@@ -134,11 +125,9 @@
 			children = (
 				E9F95ED2189001F40002EBAC /* archive.h */,
 				E9F95ED1189001CF0002EBAC /* archive_entry.h */,
-				F4150127189948A200D57F30 /* yopa-package */,
 				E9ABBFB8188D4154000B442F /* sha1 */,
 				E9ABBFB7188D3F29000B442F /* ZipArchive */,
 				AD30146718714C3D00E06315 /* CLI */,
-				BC871C7817E7122500048636 /* main.m */,
 				ADAA367C1870606D0029AF7D /* Preferences.h */,
 				ADAA367D1870606D0029AF7D /* Preferences.m */,
 				ADC8A6E81880FAA30063B6BD /* Localization.h */,
@@ -225,6 +214,7 @@
 		AD30146718714C3D00E06315 /* CLI */ = {
 			isa = PBXGroup;
 			children = (
+				BC871C7817E7122500048636 /* main.m */,
 			);
 			name = CLI;
 			sourceTree = "<group>";
@@ -270,19 +260,6 @@
 			);
 			name = sha1;
 			sourceTree = "<group>";
-		};
-		F4150127189948A200D57F30 /* yopa-package */ = {
-			isa = PBXGroup;
-			children = (
-				F4150128189948A200D57F30 /* CRC32.h */,
-				F4150129189948A200D57F30 /* CRC32.m */,
-				F415012A189948A200D57F30 /* YOPAPackage.h */,
-				F415012B189948A200D57F30 /* YOPAPackage.m */,
-				F415012C189948A200D57F30 /* YOPASegment.h */,
-				F415012D189948A200D57F30 /* YOPASegment.m */,
-			);
-			path = "yopa-package";
-			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -368,7 +345,6 @@
 				E9F95EC7188FF5C60002EBAC /* Packager.m in Sources */,
 				ADC8A6ED188170000063B6BD /* API.m in Sources */,
 				AD61315C187D23FC00B94378 /* Install.m in Sources */,
-				F4150130189948A200D57F30 /* YOPASegment.m in Sources */,
 				AD2790D61870580000A4FD11 /* Device.m in Sources */,
 				AD2790D31870580000A4FD11 /* Application.m in Sources */,
 				ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */,
@@ -378,10 +354,8 @@
 				F473DA7A1872300800AF3C59 /* izip.m in Sources */,
 				AD2790D51870580000A4FD11 /* Binary.m in Sources */,
 				BC871C8417E7122500048636 /* scinfo.m in Sources */,
-				F415012E189948A200D57F30 /* CRC32.m in Sources */,
 				BC871C8517E7122500048636 /* sha1.c in Sources */,
 				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,
-				F415012F189948A200D57F30 /* YOPAPackage.m in Sources */,
 				ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */,
 				ADAA367E1870606D0029AF7D /* Preferences.m in Sources */,
 				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,

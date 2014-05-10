@@ -28,7 +28,7 @@
 #define CLUTCH_VERSION "1.4.4"
 #define CLUTCH_RELEASE "git-1"
 #define CLUTCH_BUILD 14401
-#define CLUTCH_DEV 1 //1
+#define CLUTCH_DEV 0 //1
 
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
@@ -69,38 +69,6 @@ struct CodeDirectory {
     
 };
 
-struct BlobIndex64 {
-	uint64_t type;
-	uint64_t offset;
-};
-
-struct Blob64 {
-	uint64_t magic;
-	uint64_t length;
-};
-
-struct SuperBlob64 {
-	struct Blob64 blob;
-	uint64_t count;
-	struct BlobIndex64 index[];
-};
-
-struct CodeDirectory64 {
-	struct Blob64 blob;
-	uint64_t version;
-	uint64_t flags;
-	uint64_t hashOffset;
-	uint64_t identOffset;
-	uint64_t nSpecialSlots;
-	uint64_t nCodeSlots;
-	uint64_t codeLimit;
-	uint16_t hashSize;
-	uint16_t hashType;
-	uint16_t spare1;
-	uint16_t pageSize;
-	uint64_t spare2;
-    
-};
 
 extern kern_return_t mach_vm_region
 (

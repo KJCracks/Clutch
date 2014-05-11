@@ -391,7 +391,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"/Users/thomas/Desktop/Clutch-Master",
 				);
 				PRODUCT_NAME = Clutch;
 			};
@@ -418,7 +417,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"/Users/thomas/Desktop/Clutch-Master",
 				);
 				"OTHER_LDFLAGS[arch=*]" = "-all_load";
 				PRODUCT_NAME = Clutch;

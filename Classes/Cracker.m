@@ -51,75 +51,6 @@
 	[super dealloc];
 }
 
-static BOOL forceRemoveDirectory(NSString *dirpath)
-{
-	BOOL isDir;
-	NSFileManager *fileManager=[NSFileManager defaultManager];
-    
-	if(![fileManager fileExistsAtPath:dirpath isDirectory:&isDir])
-	{
-		if(![fileManager removeItemAtPath:dirpath error:NULL])
-		{
-			return NO;
-		}
-	}
-    
-	return YES;
-}
-
-static BOOL forceCreateDirectory(NSString *dirpath)
-{
-	BOOL isDir;
-	NSFileManager *fileManager= [NSFileManager defaultManager];
-    
-	if([fileManager fileExistsAtPath:dirpath isDirectory:&isDir])
-	{
-		if(![fileManager removeItemAtPath:dirpath error:NULL])
-		{
-			return NO;
-		}
-	}
-    
-	if(![fileManager createDirectoryAtPath:dirpath withIntermediateDirectories:YES attributes:nil error:NULL])
-	{
-		return NO;
-	}
-    
-	return YES;
-}
-
-static BOOL copyFile(NSString *infile, NSString *outfile)
-{
-	NSFileManager *fileManager= [NSFileManager defaultManager];
-    
-	if(![fileManager createDirectoryAtPath:[outfile stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL])
-	{
-		return NO;
-	}
-    
-	if(![fileManager copyItemAtPath:infile toPath:outfile error:NULL])
-	{
-		return NO;
-	}
-    
-	return YES;
-}
-
-static ZipArchive * createZip(NSString *file) {
-	ZipArchive *archiver = [[ZipArchive alloc] init];
-    
-	if (!file)
-	{
-		DEBUG(@"File string is nil");
-        
-		[archiver release];
-		return nil;
-	}
-    
-	[archiver CreateZipFile2:file];
-    
-	return archiver;
-}
 
 
 static NSString * genRandStringLength(int len)
@@ -543,7 +474,7 @@ void generateMetadata(NSString *origPath,NSString *output)
     
 	[metadataPlist removeObjectForKey:@"com.apple.iTunesStore.downloadInfo"];
     
-	DEBUG(@"metadataplist %@", metadataPlist);
+	//DEBUG(@"metadataplist %@", metadataPlist);
     
 	[metadataPlist writeToFile:output atomically:NO];
     

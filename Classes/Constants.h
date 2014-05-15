@@ -2,7 +2,6 @@
 //  Constants.h
 //  Clutch
 //
-//  Created by Zorro on 30.12.13.
 //
 //
 
@@ -25,10 +24,10 @@
  */
 
 #define CLUTCH_TITLE "Clutch"
-#define CLUTCH_VERSION "1.4.4"
+#define CLUTCH_VERSION "1.4.5"
 #define CLUTCH_RELEASE "git-1"
-#define CLUTCH_BUILD 14401
-#define CLUTCH_DEV 0 //1
+#define CLUTCH_BUILD 14501
+#define CLUTCH_DEV 1 //0
 
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);

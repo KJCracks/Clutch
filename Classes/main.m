@@ -531,18 +531,17 @@ int main(int argc, char *argv[])
 			else if ([arg isEqualToString:@"--info"])
 			{
 				get_info = 1;
-				DEBUG(@"getting info wow");
+
 			}
 			else
 			{
 				if ([arg isEqualToString:arguments[0]])
 				{
+                    
 					continue;
 				}
-                
-				if ([arg intValue] != 0)
-				{
-					if ([[Preferences sharedInstance] numberBasedMenu])
+                if ([[Preferences sharedInstance] numberBasedMenu]) {
+                    if ([arg intValue] != 0)
 					{
 						int number = [arg intValue] - 1;
 						Application *app = applist[number];
@@ -550,9 +549,11 @@ int main(int argc, char *argv[])
 						retVal = cmd_crack_app(app, skip_64);
 						//printf("continuing after int crack");
 					}
+                    
 				}
 				else
 				{
+                    
 					NSString* _arg = arg;
 					Application* crackApp = NULL;
                     
@@ -560,6 +561,7 @@ int main(int argc, char *argv[])
 					{
 						if ([[[Preferences sharedInstance] objectForKey:@"ListWithDisplayName"] isEqualToString:@"DIRECTORY"])
 						{
+                            DEBUG(@"holy shiit wow");
 							if ([app.applicationDirectory caseInsensitiveCompare:_arg] == NSOrderedSame)
 							{
 								crackApp = app;
@@ -600,7 +602,7 @@ int main(int argc, char *argv[])
 						retVal = 0;
 						goto endMain;
 					}
-                    
+                    DEBUG(@"app to crack %@", crackApp->_info);
 					retVal = cmd_crack_app(crackApp, skip_64);
 					goto endMain;
 				}

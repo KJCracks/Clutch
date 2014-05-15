@@ -35,6 +35,10 @@
 	return nil;
 }
 
+-(void)patchPIE:(BOOL)patch {
+    self->patchPIE = patch;
+}
+
 -(NSString *) genRandStringLength: (int) len
 {
 	NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -455,7 +459,7 @@
 				return NO;
 			}
             
-			if (![self dump64bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0 patchPIE:FALSE])
+			if (![self dump64bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0])
 			{
 				// Dumping failed
 				DEBUG(@"Failed to dump %@",[self readable_cpusubtype:mh64->cpusubtype]);
@@ -504,7 +508,7 @@
 				return NO;
 			}
             
-			if (![self dump32bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0 patchPIE:false])
+			if (![self dump32bitOrigFile:oldbinary withLocation:oldbinaryPath toFile:newbinary withTop:0])
 			{
 				// Dumping failed
 				DEBUG(@"Failed to dump %@",[self readable_cpusubtype:mh32->cpusubtype]);
@@ -702,18 +706,18 @@
 	if (CFSwapInt32(arch.cputype) == CPU_TYPE_ARM64)
 	{
 		DEBUG(@"currently cracking 64bit portion");
-		return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset) patchPIE:FALSE];
+		return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
 	}
 	else
 	{
 		DEBUG(@"currently cracking 32bit portion");
-		return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset) patchPIE:FALSE];
+		return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:CFSwapInt32(arch.offset)];
 	}
 	return true;
 }
                                                                                                                                           
                                                                                                                                         
-- (BOOL)dump64bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top patchPIE:(BOOL) patchPIE
+- (BOOL)dump64bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top
 {
 	fseek(target, top, SEEK_SET); // go the top of the target
     
@@ -951,13 +955,14 @@
 				DEBUG(@"dum_error: %u", err);
 				VERBOSE("dumping binary: failed to dump a page (64)");
                 
-				if (__text_start == 16384) {
+				if (__text_start == 0x4000) {
 					printf("\n=================\n");
 					printf("0x4000 binary detected, attempting to remove MH_PIE flag");
 					printf("\n=================\n\n");
 					free(checksum); // free checksum table
 					kill(pid, SIGKILL); // kill fork
-					return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:top patchPIE:true];
+                    [self patchPIE:TRUE];
+					return [self dump64bitOrigFile:origin withLocation:originPath toFile:target withTop:top];
 				}
                 
 				free(checksum); // free checksum table
@@ -1067,8 +1072,9 @@
 
 }
                                                                                                                                                 
-- (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top patchPIE:(BOOL) patchPIE {
-	DEBUG(@"32bit dumping!!!");
+- (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top
+{
+	DEBUG(@"Dumping 32bit segment..");
 	fseek(target, top, SEEK_SET); // go the top of the target
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;
@@ -1088,7 +1094,7 @@
 	BOOL foundStartText = FALSE;
 	uint64_t __text_start = 0;
 	//uint64_t __text_size = 0;
-	DEBUG(@"32bit dumping, offset %u", top);
+	DEBUG(@"32bit dumping: offset %u", top);
 	//VERBOSE("dumping binary: analyzing load commands");
 	MSG(DUMPING_ANALYZE_LOAD_COMMAND);
 	fread(&mach, sizeof(struct mach_header), 1, target); // read mach header to get number of load commands
@@ -1293,13 +1299,6 @@
 			// get a percentage for the progress bar
 			PERCENT((int)ceil((((double)total - togo) / (double)total) * 100));
             
-			// move an entire page into memory (we have to move an entire page regardless of whether it's a resultant or not)
-			/*if((err = vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
-			VERBOSE("dumping binary: failed to dump a page");
-			free(checksum); // free checksum table
-			kill(pid, SIGKILL); // kill fork
-			return FALSE;
-			}*/
             
 			if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
                 
@@ -1310,7 +1309,8 @@
 					printf("\n=================\n\n");
 					free(checksum); // free checksum table
 					kill(pid, SIGKILL); // kill the fork
-					return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:top patchPIE:true];
+                    [self patchPIE:TRUE];
+					return [self dump32bitOrigFile:origin withLocation:originPath toFile:target withTop:top];
 				}
 				free(checksum); // free checksum table
 				kill(pid, SIGKILL); // kill the fork

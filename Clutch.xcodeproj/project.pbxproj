@@ -16,10 +16,6 @@
 		AD3014691871514D00E06315 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3014681871514D00E06315 /* Cracker.m */; };
 		AD61315C187D23FC00B94378 /* Install.m in Sources */ = {isa = PBXBuildFile; fileRef = AD61315B187D23FC00B94378 /* Install.m */; };
 		ADAA367E1870606D0029AF7D /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA367D1870606D0029AF7D /* Preferences.m */; };
-		ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */; };
-		ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CC617ECA8A7005282CE /* make_vms.com */; };
-		ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */; };
-		ADC68CDC17ECA8A7005282CE /* MiniZip64_info.txt in Resources */ = {isa = PBXBuildFile; fileRef = ADC68CCB17ECA8A7005282CE /* MiniZip64_info.txt */; };
 		ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CD317ECA8A7005282CE /* ZipArchive.m */; };
 		ADC68CE517ECAD3E005282CE /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CD017ECA8A7005282CE /* zip.c */; };
 		ADC68CE617ECAD4C005282CE /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CCE17ECA8A7005282CE /* unzip.c */; };
@@ -59,16 +55,12 @@
 		AD61315B187D23FC00B94378 /* Install.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Install.m; sourceTree = "<group>"; };
 		ADAA367C1870606D0029AF7D /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
 		ADAA367D1870606D0029AF7D /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
-		ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLogUnzip; sourceTree = "<group>"; };
 		ADC68CC117ECA8A7005282CE /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		ADC68CC217ECA8A7005282CE /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
 		ADC68CC317ECA8A7005282CE /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		ADC68CC617ECA8A7005282CE /* make_vms.com */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = make_vms.com; sourceTree = "<group>"; };
 		ADC68CC717ECA8A7005282CE /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		ADC68CC817ECA8A7005282CE /* miniunz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = miniunz.c; sourceTree = "<group>"; };
 		ADC68CC917ECA8A7005282CE /* minizip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = minizip.c; sourceTree = "<group>"; };
-		ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MiniZip64_Changes.txt; sourceTree = "<group>"; };
-		ADC68CCB17ECA8A7005282CE /* MiniZip64_info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MiniZip64_info.txt; sourceTree = "<group>"; };
 		ADC68CCC17ECA8A7005282CE /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
 		ADC68CCD17ECA8A7005282CE /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
 		ADC68CCE17ECA8A7005282CE /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
@@ -221,16 +213,12 @@
 		ADC68CBF17ECA8A7005282CE /* minizip */ = {
 			isa = PBXGroup;
 			children = (
-				ADC68CC017ECA8A7005282CE /* ChangeLogUnzip */,
 				ADC68CC117ECA8A7005282CE /* crypt.h */,
 				ADC68CC217ECA8A7005282CE /* ioapi.c */,
 				ADC68CC317ECA8A7005282CE /* ioapi.h */,
-				ADC68CC617ECA8A7005282CE /* make_vms.com */,
 				ADC68CC717ECA8A7005282CE /* Makefile */,
 				ADC68CC817ECA8A7005282CE /* miniunz.c */,
 				ADC68CC917ECA8A7005282CE /* minizip.c */,
-				ADC68CCA17ECA8A7005282CE /* MiniZip64_Changes.txt */,
-				ADC68CCB17ECA8A7005282CE /* MiniZip64_info.txt */,
 				ADC68CCC17ECA8A7005282CE /* mztools.c */,
 				ADC68CCD17ECA8A7005282CE /* mztools.h */,
 				ADC68CCE17ECA8A7005282CE /* unzip.c */,
@@ -310,10 +298,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADC68CD417ECA8A7005282CE /* ChangeLogUnzip in Resources */,
-				ADC68CD717ECA8A7005282CE /* make_vms.com in Resources */,
-				ADC68CDB17ECA8A7005282CE /* MiniZip64_Changes.txt in Resources */,
-				ADC68CDC17ECA8A7005282CE /* MiniZip64_info.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,10 +411,14 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
@@ -442,10 +430,14 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;

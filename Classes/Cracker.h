@@ -23,11 +23,6 @@
     Application *_app;
     NSString *_workingDir;
     NSString *_ipapath;
-    NSString *_yopaPath;
-    
-    NSMutableArray* _yopaAddFiles;
-    NSMutableArray* _yopaRemFiles;
-    NSMutableArray* _yopaVersions;
 }
 
 -(id)init;

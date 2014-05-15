@@ -187,7 +187,6 @@ void cmd_help()
 	printf("-e <InBinary> <OutBinary>     Cracks specific already-installed\n"
 		"                              executable or one that has been\n"
 			"                              scp'd to the device. (advanced usage)\n");
-	//printf("--yopa                        Creates a YOPA package\n");
 	//printf("-d                            Shows debug messages\n");
 	printf("--no-64                       Skips arm64 portions\n");
 	printf("\n");

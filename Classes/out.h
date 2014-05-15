@@ -27,15 +27,10 @@
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define DEBUG(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%d | %s\n", FILE_NAME, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define ERROR(M, ...) fprintf(stderr, "\033[0;32mERROR\033[0m | %s \n", [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-
-#   define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
-#   define DebugLog(M, ...) NSLog(@"\033[0;32m[YOPA]\033[0m | %s:%d | %@\n", FILE_NAME, __LINE__, [NSString stringWithFormat:M, ##__VA_ARGS__]);
-
 #else
 #   define DEBUG(M, ...)
 #   define NSLog(M, ...)
 #   define ERROR(M, ...)
-#   define DebugLog( s, ... )
 #endif
 
 int determine_screen_width (void);

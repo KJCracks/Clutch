@@ -456,6 +456,7 @@ void generateMetadata(NSString *origPath,NSString *output)
 		@"", @"is-purchased-redownload",
 		@"", @"asset-info",
 		@"", @"bundleDisplayName",
+        @"", @"userName",
 		nil];
 		for (id plistItem in metadataPlist)
 		{

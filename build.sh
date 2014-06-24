@@ -2,14 +2,23 @@
 # Clutch xcodebuild script
 # Credits to Tatsh
 
-xcodebuild clean install
+# Default Xcode
+#BUILD=$(which xcodebuild)
+SDK="iphoneos7.1"
 
-xcodebuild ARCHS='armv7 armv7s arm64' ONLY_ACTIVE_ARCH=NO -sdk iphoneos7.1 -configuration Release -alltargets clean
+# Xcode6-Beta
+BUILD="/Applications/Xcode6-Beta.app/Contents/Developer/usr/bin/xcodebuild"
+SDK="iphoneos8.0"
 
-# Uncomment to enable CLUTCH_DEBUG with release
-# xcodebuild ONLY_ACTIVE_ARCH=NO -sdk iphoneos7.0 -configuration Release CLUTCH_DEBUG=1
+$BUILD clean install
 
-xcodebuild ARCHS='armv7 armv7s arm64' ONLY_ACTIVE_ARCH=NO -sdk iphoneos7.1 -configuration Release -alltargets CLUTCH_DEBUG=0 # equivalent to next line where CLUTCH_DEBUG is not set
+$BUILD ARCHS='armv7 armv7s arm64' ONLY_ACTIVE_ARCH=NO -sdk "$SDK" -configuration Release -alltargets clean
+
+# Uncomment to enable CLUTCH_DEBUG and DEV with release
+$BUILD ARCHS='armv7 armv7s arm64' ONLY_ACTIVE_ARCH=NO -sdk "$SDK" -configuration Release -alltargets CLUTCH_DEV=1
+
+#$BUILD ARCHS='armv7 armv7s arm64' ONLY_ACTIVE_ARCH=NO -sdk "$SDK" -configuration Release -alltargets CLUTCH_DEV=0 # equivalent to next line where CLUTCH_DEV is not set
+
 
 strip "build/Release-iphoneos/Clutch.app/Clutch"
 codesign -f -s "iPhone Developer" --entitlements Resources/Clutch.entitlements "build/Release-iphoneos/Clutch.app/Clutch"

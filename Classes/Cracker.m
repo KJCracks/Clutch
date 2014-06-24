@@ -413,7 +413,7 @@ void generateMetadata(NSString *origPath,NSString *output)
     
 	NSMutableDictionary *metadataPlist = [NSMutableDictionary dictionaryWithContentsOfFile:origPath];
     
-	NSDictionary *censorList = [NSDictionary dictionaryWithObjectsAndKeys:fake_email, @"appleId", fake_purchase_date, @"purchaseDate", nil];
+	NSDictionary *censorList = [NSDictionary dictionaryWithObjectsAndKeys:fake_email, @"appleId", fake_purchase_date, @"purchaseDate", @"", @"userName", nil];
     
 	if ([[Preferences sharedInstance] boolForKey:@"CheckMetadata"])
 	{
@@ -456,7 +456,6 @@ void generateMetadata(NSString *origPath,NSString *output)
 		@"", @"is-purchased-redownload",
 		@"", @"asset-info",
 		@"", @"bundleDisplayName",
-        @"", @"userName",
 		nil];
 		for (id plistItem in metadataPlist)
 		{

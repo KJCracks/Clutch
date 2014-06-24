@@ -141,6 +141,13 @@ NSString* preferences_location = prefsPath;
 
 - (BOOL) useNativeZip
 {
+    if (![self boolForKey:@"UseNativeZip"]) {
+        if ((![[NSFileManager defaultManager] fileExistsAtPath:@"/usr/bin/zip"]) || (![[NSFileManager defaultManager] fileExistsAtPath:@"/bin/zip"])) {
+            printf("\nwarning: could not find zip! using built-in zipping library\n\n");
+            return true;
+        }
+        return false;
+    }
     return [self boolForKey:@"UseNativeZip"];
 }
 
@@ -166,8 +173,16 @@ NSString* preferences_location = prefsPath;
 - (void) setupConfig
 {
     MSG(CONFIG_DOWNLOADING_FILES);
+    NSString* support_plist;
+    if ([[Localization sharedInstance] defaultLang] == zh) {
+        support_plist = @"http://kjcracks.github.io/Clutch/support14.zh.plist";
+    }
+    else {
+        support_plist = @"http://kjcracks.github.io/Clutch/support14.plist";
+    }
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://kjcracks.github.io/Clutch/support14.plist"] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:support_plist] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+
     NSURLResponse* response = [[NSURLResponse alloc] init];
     NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
     NSError * error = nil;

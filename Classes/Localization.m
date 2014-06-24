@@ -64,6 +64,7 @@ NSString* msg(Message message) {
             [[NSFileManager defaultManager] moveItemAtPath:langCacheTmp toPath:langCache error:nil];
         }
         _preferredLang = [[NSArray alloc] initWithContentsOfFile:langCache];
+        DEBUG(@"preferred lang: %@", _preferredLang);
         
     }
     return self;
@@ -101,7 +102,7 @@ NSString* msg(Message message) {
     return lang;
 }
 -(void)checkCache {
-    
+    NSLog(@"checking localization cache");
     if ([_preferredLang count] == 0) {
         int ret = setuid(501); //setuid as mobile, get language
         if (ret == 0)

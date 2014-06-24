@@ -15,7 +15,8 @@ build/*
 !default.perspectivev3
 *.xcworkspace
 !default.xcworkspace
-xcuserdata
+xcuserdata/*
+*.xcuserdatad
 profile
 *.moved-aside
 DerivedData

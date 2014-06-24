@@ -334,6 +334,7 @@ int cmd_crack_app(Application *app, BOOL skip_64)
 int main(int argc, char *argv[])
 {
 	@autoreleasepool {
+        [[Localization sharedInstance] checkCache];
 		int retVal = 0;
         
 		if (getuid() != 0) // Clutch needs to be root
@@ -350,9 +351,8 @@ int main(int argc, char *argv[])
 			goto endMain;
 		}
         
-		if (CLUTCH_DEV == 1)
+		if (CLUTCH_DEV == 1) 
 		{
-            
 			if (![[[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_IGNORE_DEV"] isEqualToString:@"YES"]) {
 				MSG(CLUTCH_DEV_CHECK_UPDATE);
                 
@@ -382,6 +382,11 @@ int main(int argc, char *argv[])
 			printf("\nusing custom configuration...\n");
 			[Preferences setConfigPath:clutch_conf];
 		}
+        else if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) {
+            printf("\nCould not find Clutch configuration, please setup Clutch first\n\n");
+            [[Preferences sharedInstance] setupConfig];
+
+        }
         
 		NSString *crackerName = [[[NSProcessInfo processInfo] environment] objectForKey:@"CLUTCH_CRACKER_NAME"];
         
@@ -411,8 +416,7 @@ int main(int argc, char *argv[])
         
 		gettimeofday(&start, NULL);
         
-		[[Localization sharedInstance] checkCache];
-        
+	
 		successfulCracks = [[[NSMutableArray alloc] init] autorelease];
 		failedCracks = [[[NSMutableArray alloc] init] autorelease];
         

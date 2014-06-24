@@ -121,18 +121,18 @@ static NSString * const en_locale[] = {
 static NSString * const zh_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"您正使用Clutch 的开发版本，正在检查更新...",
     [CLUTCH_DEV_UP_TO_DATE] = @"您的Clutch 是最新版!",
-    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
-    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
-    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
-    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"您使用的开发版本需要更新！",
+    [CLUTCH_PERMISSION_ERROR] = @"Clutch 需要 root",
+    [CLUTCH_NO_APPLICATIONS] = @"没有任何正版应用！",
+    [CLUTCH_CRACKING_ALL] = @"正破解所有得应用..",
     [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
     
-    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
-    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
-    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
-    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    [CONFIG_DOWNLOADING_FILES] = @"正下载组态文件..",
+    [CONFIG_NO_MEMORY] = @"错误：内存已满",
+    [CONFIG_SAVING] = @"正保存组态文件..",
+    [CONFIG_USING_DEFAULT] = @"使用预定的选择..",
     
-    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
+    [CRACKING_DIRECTORY_ERROR] = @"错误：不能创造工程目录",
     [CRACKING_APPNAME] = @"正在破解 %@",
     [CRACKING_CREATE_WORKING_DIR] = @"正在创建工作目录...",
     [CRACKING_PERFORMING_ANALYSIS] = @"正在进行初始化解析...",
@@ -163,7 +163,7 @@ static NSString * const zh_locale[] = {
     [PACKAGING_IPA] = @"包装：正在打包文件",
     [PACKAGING_COMPRESSION_LEVEL] = @"包装：压缩级别 - 0",
     
-    [COMPLETE_ELAPSED_TIME] = @"执行时间: %u 毫秒",
+    [COMPLETE_ELAPSED_TIME] = @"执行时间: %.02f 秒",
     [COMPLETE_APPS_CRACKED] = @"\n完成破解的应用:\n",
     [COMPLETE_APPS_FAILED] = @"\n破解失败的应用:\n",
     [COMPLETE_TOTAL] = @"\n成功总计: \033[0;32m%u\033[0m   失败总计: \033[0;32m%u\033[0m ",
@@ -449,6 +449,7 @@ NSString* msg(Message message);
 }
 + (Localization*) sharedInstance;
 -(NSString*) valueWithMessage:(Message)message;
+-(Lang) defaultLang;
 -(void)checkCache;
 
 

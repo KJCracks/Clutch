@@ -25,7 +25,7 @@
 
 Usage
 ------------
-Current development version: *Clutch 1.4.3*
+Current stable version: *Clutch 1.4.6*
 
 *Clutch* [flags] [application name] [...]
 
@@ -47,6 +47,10 @@ You can also set environment variables to change the behaviour of *Clutch*
 * `CLUTCH_CRACKER_NAME` Sets cracker name<br />
 * `CLUTCH_NATIVE_ZIP` Sets if native zip will be used<br />
 * `CLUTCH_METADATA_EMAIL` Sets metadata email<br />
+
+Support
+-----------
+If you encounter any issues, please visit our IRC at *irc.cracksbykim #Clutch* or open an issue here.
 
 Compiling
 ------------

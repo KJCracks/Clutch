@@ -2,13 +2,16 @@
 # Clutch xcodebuild script
 # Credits to Tatsh
 
-# Default Xcode
-#BUILD=$(which xcodebuild)
-SDK="iphoneos7.1"
+# Prefer Xcode 6
+[ -d '/Applications/Xcode6-Beta.app' ] && \
+    BUILD='/Applications/Xcode6-Beta.app/Contents/Developer/usr/bin/xcodebuild' && \
+    SDK='iphoneos8.0'
 
-# Xcode6-Beta
-BUILD="/Applications/Xcode6-Beta.app/Contents/Developer/usr/bin/xcodebuild"
-SDK="iphoneos8.0"
+# Default Xcode
+if [ -z "$BUILD" ]; then
+    BUILD=$(which xcodebuild)
+    SDK='iphoneos7.1'
+fi
 
 $BUILD clean install
 

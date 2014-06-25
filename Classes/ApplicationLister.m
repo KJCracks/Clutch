@@ -6,13 +6,16 @@
 //
 //  Re-tailored for use in Clutch
 
+#import <dlfcn.h>
 #import "ApplicationLister.h"
-#import "MobileInstallation.h"
 #import "out.h"
 #import "Preferences.h"
 
 #define applistCachePath @"/etc/applist-cache.clutch"
 #define crackedAppPath @"/etc/cracked.clutch"
+#define mobileinstallationcache @"/private/var/mobile/Library/Caches/com.apple.mobile.installation.plist"
+
+typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
 NSArray * get_application_list(BOOL sort) {
     
@@ -26,8 +29,37 @@ NSArray * get_application_list(BOOL sort) {
                                                     @"CFBundleExecutable",
                                                     @"ApplicationSINF",
                                                     @"MinimumOSVersion"]};
+   
+    NSDictionary *installedApps;
+   
+    MobileInstallationLookup  mobileInstallationLookup = dlsym(dlopen(0,RTLD_LAZY),"MobileInstallationLookup");
+   
+    if (mobileInstallationLookup)
+        installedApps = mobileInstallationLookup(options); //convenient way
+    else
+    {
+    	// iOS 8 workaround
+    	NSMutableDictionary *iapps = [NSMutableDictionary new];
+       	NSDictionary *userApps = [NSDictionary dictionaryWithContentsOfFile:mobileinstallationcache][@"User"];
+       	
+       	for (NSString *bID in userApps.allKeys)
+       	{
+       		NSDictionary *app = userApps[bID];
+       		
+       		NSMutableDictionary *tmp =  [NSMutableDictionary new];
+       		
+       		for (NSString *attribute in options[@"ReturnAttributes"])
+       		{
+       			if (app[attribute])
+       			tmp[attribute] = app[attribute];
+       		}
+       		
+       		iapps[bID] = tmp;
+       	}
+       	
+       	installedApps = [iapps copy];
+    }
     
-    NSDictionary *installedApps = MobileInstallationLookup(options);
     
     for (NSString *bundleID in [installedApps allKeys])
     {

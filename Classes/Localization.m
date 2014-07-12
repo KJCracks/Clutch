@@ -39,6 +39,9 @@ NSString* msg(Message message) {
         case ru:
             return ru_locale[message];
             break;
+        case ar:
+            return ar_locale[message];
+            break;
         case en:
         default:
             return en_locale[message];
@@ -94,6 +97,10 @@ NSString* msg(Message message) {
         else if ([[defaultLang lowercaseString] hasPrefix:@"ru"]){
             // russian
             lang = ru;
+        }
+        else if ([[defaultLang lowercaseString] hasPrefix:@"ar"]){
+            // arabic
+            lang = ar;
         }
         else {
             lang = en;

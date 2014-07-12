@@ -62,7 +62,8 @@ typedef enum {
     de, // german
     fr, // french
     hr, // serbian/croatian
-    ru  // russian
+    ru,  // russian
+    ar, // arabic
 } Lang;
 
 
@@ -377,6 +378,60 @@ static NSString * const ru_locale[] = {
     [COMPLETE_APPS_CRACKED] = @"\nВзломанные приложения:\n",
     [COMPLETE_APPS_FAILED] = @"\nНеудачные взломы:\n",
     [COMPLETE_TOTAL] = @"\nУдачные взломы: \033[0;32m%u\033[0m   Неудачные взломы: \033[0;32m%u\033[0m ",
+    
+};
+
+
+// Translator: iD70my
+static NSString * const ar_locale[] = {
+    [CLUTCH_DEV_CHECK_UPDATE] = @"أنت تستخدم نسخة المطورين ، تحقق من وجود تحديثات",
+    [CLUTCH_DEV_UP_TO_DATE] = @"هل لديك أخر نسخه من كلاتش!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"إصدار كلاتش قديم\nالرجاء تحديث كلاتش!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"يجب الدخول على الروت لإستخدام كلاتش",
+    [CLUTCH_NO_APPLICATIONS] = @"لا توجد تطبيقات مشفرة على هذا الجهاز.",
+    [CLUTCH_CRACKING_ALL] = @"جاري تكريك جميع التطبيقات المشفرة على هذا الجهاز.",
+    [CLUTCH_ENABLED_YOPA] = @"YOPA مفعلة",
+    
+    [CONFIG_DOWNLOADING_FILES] = @"تحميل ملفات التكوين...",
+    [CONFIG_NO_MEMORY] = @"لا توجد ذاكرة",
+    [CONFIG_SAVING] = @"حفظ إعدادات التكوين...",
+    [CONFIG_USING_DEFAULT] = @"إستخدم القيمة الافتراضية...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"خطأ: لا يمكن إنشاء دليل العمل.",
+    [CRACKING_APPNAME] = @"جاري التكريك %@...",
+    [CRACKING_CREATE_WORKING_DIR] = @"إنشاء دليل العمل...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"أداء التحليل الأولي...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"أداء الكراك الاختبار المبدئي...",
+    
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"فضلا إنتظر: تحميل فرق تحليل",
+    [DUMPING_OBTAIN_PTRACE] = @"فضلا إنتظر: الحصول على مقبض ptrace",
+    [DUMPING_FORKING] = @"فضلا إنتظر: التفرع لبدء الإستنساخ",
+    [DUMPING_FORK_SUCCESS] = @"فضلا إنتظر: تم الإستنساخ بنجاح",
+    [DUMPING_OBTAIN_MACH_PORT] = @"فضلا إنتظر: الحصول على بورت",
+    [DUMPING_CODE_RESIGN] = @"فضلا إنتظر: إعداد الكود النهائي",
+    [DUMPING_PREPARE_DUMP] = @"فضلا إنتظر: التحضير للتفريغ",
+    [DUMPING_ASLR_ENABLED] = @"فضلا إنتظر: ASLR تفعيل، وتحديد موقع تفريغ حيوي",
+    [DUMPING_PERFORM_DUMP] = @"فضلا إنتظر: أداء التفريغ",
+    [DUMPING_PATCH_CRYPTID] = @"فظلا إنتظر: مصحح cryptid",
+    [DUMPING_NEW_CHECKSUM] = @" كتابة التطبيق الاختباري الجديد",
+    
+    [SWAP_CRACKING_PORTION] = @"إنتظر: جاري التكريك تم تكريك%u جزء",
+    
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"فضلا إنتظر : تصحيح mach header (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"فضلا إنتظر : تصحيح maxprot (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"فضلا إنتظر : تصحيح cryptid (overdrive)",
+    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"فضلا إنتظر : ربط overdrive DYLIB (overdrive)",
+    
+    [PACKAGING_WAITING_ZIP] = @"فضلا إنتظر : في إنتظار الضغط",
+    [PACKAGING_FAILED_KILL_ZIP] = @"فشل الكراك : وذلك بسبب قتل الضغط \n تعريب @iD70my",
+    [PACKAGING_ITUNESMETADATA] = @"فضلا إنتظر : متابعة من iTunesMetadata",
+    [PACKAGING_IPA] = @"فضلا إنتظر : ضغط IPA ",
+    [PACKAGING_COMPRESSION_LEVEL] = @"فضلا إنتظر : مستوى الضغط %u",
+    
+    [COMPLETE_ELAPSED_TIME] = @"الوقت المنقضي: %.02fs",
+    [COMPLETE_APPS_CRACKED] = @"\nالتطبيقات المكركة:\n",
+    [COMPLETE_APPS_FAILED] = @"\nالتطبيقات التي فشلت:\n",
+    [COMPLETE_TOTAL] = @"\nمجموع الناجحة: \033[0;32m%u\033[0m   مجموع الفاشلة: \033[0;32m%u\033[0m ",
     
 };
 

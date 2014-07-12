@@ -6,12 +6,16 @@
 //
 //  Re-tailored for use in Clutch
 
+#import <dlfcn.h>
 #import "ApplicationLister.h"
-#import "MobileInstallation.h"
 #import "out.h"
 #import "Preferences.h"
 
 #define applistCachePath @"/etc/applist-cache.clutch"
+#define crackedAppPath @"/etc/cracked.clutch"
+#define mobileinstallationcache @"/private/var/mobile/Library/Caches/com.apple.mobile.installation.plist"
+
+typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
 NSArray * get_application_list(BOOL sort) {
     
@@ -25,8 +29,37 @@ NSArray * get_application_list(BOOL sort) {
                                                     @"CFBundleExecutable",
                                                     @"ApplicationSINF",
                                                     @"MinimumOSVersion"]};
+   
+    NSDictionary *installedApps;
+   
+    MobileInstallationLookup  mobileInstallationLookup = dlsym(dlopen(0,RTLD_LAZY),"MobileInstallationLookup");
+   
+    if (mobileInstallationLookup)
+        installedApps = mobileInstallationLookup(options); //convenient way
+    else
+    {
+    	// iOS 8 workaround
+    	NSMutableDictionary *iapps = [NSMutableDictionary new];
+       	NSDictionary *userApps = [NSDictionary dictionaryWithContentsOfFile:mobileinstallationcache][@"User"];
+       	
+       	for (NSString *bID in userApps.allKeys)
+       	{
+       		NSDictionary *app = userApps[bID];
+       		
+       		NSMutableDictionary *tmp =  [NSMutableDictionary new];
+       		
+       		for (NSString *attribute in options[@"ReturnAttributes"])
+       		{
+       			if (app[attribute])
+       			tmp[attribute] = app[attribute];
+       		}
+       		
+       		iapps[bID] = tmp;
+       	}
+       	
+       	installedApps = [iapps copy];
+    }
     
-    NSDictionary *installedApps = MobileInstallationLookup(options);
     
     for (NSString *bundleID in [installedApps allKeys])
     {
@@ -68,7 +101,7 @@ NSArray * get_application_list(BOOL sort) {
                                                                    @"ApplicationBasename":[appPath lastPathComponent],
                                                                    @"ApplicationVersion":version,
                                                                    @"ApplicationBundleID":bundleID,
-                                                                   @"ApplicationSINF":SINF,
+                                                                   //@"ApplicationSINF":SINF,
                                                                    @"ApplicationExecutableName":executableName,
                                                                    @"MinimumOSVersion":minimumOSVersion}];
             
@@ -106,6 +139,7 @@ NSArray * get_application_list(BOOL sort) {
     if (cacheArray.count > 0)
     {
         [cacheArray writeToFile:applistCachePath atomically:YES];
+        
     }
     
     [cacheArray release];
@@ -127,6 +161,65 @@ NSArray * get_application_list(BOOL sort) {
     return shared;
 }
 
+- (NSArray *)modifiedApps {
+    NSDictionary* cracked = [self crackedAppsList];
+    NSArray* apps = get_application_list(YES);
+    NSMutableArray* modifiedApps = [[NSMutableArray alloc] init];
+    for (Application* app in apps) {
+        NSDictionary* appInfo = [cracked objectForKey:app.applicationBundleID];
+        if (appInfo == nil) {
+            continue;
+        }
+        Application* oldApp = [[Application alloc] initWithAppInfo:appInfo];
+        DEBUG(@"new app version: %ld, %ld", (long)oldApp.appVersion, (long)app.appVersion);
+        if (app.appVersion > oldApp.appVersion) {
+            [modifiedApps addObject:app];
+        }
+        [oldApp release];
+    }
+    DEBUG(@"modified apps array %@", modifiedApps);
+    return [modifiedApps autorelease];
+}
+
+-(void)crackedApp:(Application*) app {
+    DEBUG(@"cracked app ok");
+    DEBUG(@"this crack lol %ld", (long)app.appVersion);
+    NSMutableDictionary* dict = [[NSMutableDictionary alloc] initWithDictionary:[self crackedAppsList]];
+    if (dict == nil) {
+        dict = [[NSMutableDictionary alloc] init];
+    }
+    [dict setObject:app.dictionaryRepresentation forKey:app.applicationBundleID];
+    //DEBUG(@"da dict %@", dict);
+    [dict writeToFile:crackedAppPath atomically:YES];
+    
+    [dict release];
+}
+
+-(NSDictionary*)crackedAppsList {
+    return [[[NSDictionary alloc] initWithContentsOfFile:crackedAppPath] autorelease];
+}
+
+-(void)saveModifiedAppsCache {
+    get_application_list(YES);
+}
+
+- (NSArray*) modifiedAppCache {
+    //check mod. date;
+    
+    NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
+    
+    NSMutableArray *appsArray = [[NSMutableArray new] autorelease];
+    
+    for (NSDictionary *appInfo in cachedAppsInfo)
+    {
+        Application *app = [[Application alloc]initWithAppInfo:appInfo];
+        [appsArray addObject:app];
+        [app release];
+    }
+    
+    return appsArray;
+    
+}
 - (NSArray *)installedApps
 {
     if ([NSFileManager.defaultManager fileExistsAtPath:applistCachePath])

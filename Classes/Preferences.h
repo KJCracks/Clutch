@@ -16,8 +16,10 @@
 }
 
 + (Preferences *) sharedInstance;
++ (void)setConfigPath:(NSString*)path;
 
 - (void)setBool:(BOOL)value forKey:(NSString *)defaultName;
+- (void)tempSetObject:(id)value forKey:(NSString *)defaultName;
 - (void)setObject:(id)value forKey:(NSString *)defaultName;
 - (BOOL)boolForKey:(NSString *)defaultName;
 - (id)objectForKey:(NSString *)defaultName;

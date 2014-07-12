@@ -12,8 +12,8 @@
 
 @interface Cracker : NSObject
 {
-    NSString* _tempPath;
     @public
+    NSString* _tempPath;
     NSString *_appDescription;
     NSString *_finaldir;
     NSString *_baselinedir;
@@ -23,14 +23,11 @@
     Application *_app;
     NSString *_workingDir;
     NSString *_ipapath;
-    NSString *_yopaPath;
-    BOOL* _yopaEnabled;
 }
 
 -(id)init;
 -(BOOL)prepareFromInstalledApp:(Application*)app;
 -(BOOL)execute;
 -(NSString*) generateIPAPath;
--(void)yopaEnabled:(BOOL) dunno;
 
 @end

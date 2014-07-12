@@ -49,7 +49,6 @@ void run_getenv (const char * name)
     {
         NSString* line = [NSString stringWithFormat:@"\n%@=\"%@\"", key, [_dict objectForKey:key]];
         source = [source stringByAppendingString:line];
-        //DEBUG(@"line %@", line);
     }
     
     [source writeToFile:sourcePath atomically:YES encoding:NSUTF8StringEncoding error:nil];

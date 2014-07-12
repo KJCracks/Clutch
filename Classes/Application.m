@@ -52,6 +52,7 @@
         dictRep = copy;
         isCracking = NO;
         _info = info;
+        
     }
     return self;
 }
@@ -59,6 +60,10 @@
 - (NSString *)applicationContainer
 {
     return applicationContainer;
+}
+
+- (NSString*) applicationDirectory {
+    return [applicationContainer lastPathComponent];
 }
 
 - (NSString *)applicationDisplayName
@@ -117,6 +122,10 @@
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p, appName: %@, bundleID: %@>",NSStringFromClass([self class]),self,self.applicationName,self.applicationBundleID];
+}
+
+-(NSInteger)appVersion {
+    return [[applicationVersion stringByReplacingOccurrencesOfString:@"." withString:@""] integerValue];
 }
 
 @end

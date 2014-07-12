@@ -33,6 +33,7 @@
 
 - (NSString *)appDirectory;
 - (NSString *)applicationContainer;
+- (NSString*) applicationDirectory;
 - (NSString *)applicationBundleID;
 - (NSString *)applicationDisplayName;
 - (NSString *)applicationExecutableName;
@@ -42,6 +43,7 @@
 - (NSString *)minimumOSVersion;
 - (UIImage *)applicationIcon;
 - (NSData *)applicationSINF;
+- (NSInteger)appVersion;
 
 - (NSDictionary *)dictionaryRepresentation;
 

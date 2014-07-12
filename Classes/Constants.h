@@ -2,7 +2,6 @@
 //  Constants.h
 //  Clutch
 //
-//  Created by Zorro on 30.12.13.
 //
 //
 
@@ -25,10 +24,13 @@
  */
 
 #define CLUTCH_TITLE "Clutch"
-#define CLUTCH_VERSION "1.4"
-#define CLUTCH_RELEASE "git-5"
-#define CLUTCH_BUILD 14005
-#define CLUTCH_DEV 1
+#define CLUTCH_VERSION "1.4.6"
+#define CLUTCH_RELEASE "git-1"
+#define CLUTCH_BUILD 14601
+
+#if !defined(CLUTCH_DEV) || !defined(NDEBUG)
+#define CLUTCH_DEV 0
+#endif
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
@@ -67,6 +69,7 @@ struct CodeDirectory {
 	uint32_t spare2;
     
 };
+
 
 extern kern_return_t mach_vm_region
 (

@@ -58,10 +58,11 @@ typedef enum {
 
 typedef enum {
     en,
-    zh, //chinese
-    de, //german
-    fr, //french
-    hr, //serbian/croatian
+    zh, // chinese
+    de, // german
+    fr, // french
+    hr, // serbian/croatian
+    ru  // russian
 } Lang;
 
 
@@ -120,18 +121,18 @@ static NSString * const en_locale[] = {
 static NSString * const zh_locale[] = {
     [CLUTCH_DEV_CHECK_UPDATE] = @"您正使用Clutch 的开发版本，正在检查更新...",
     [CLUTCH_DEV_UP_TO_DATE] = @"您的Clutch 是最新版!",
-    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
-    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
-    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
-    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"您使用的开发版本需要更新！",
+    [CLUTCH_PERMISSION_ERROR] = @"Clutch 需要 root",
+    [CLUTCH_NO_APPLICATIONS] = @"没有任何正版应用！",
+    [CLUTCH_CRACKING_ALL] = @"正破解所有得应用..",
     [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
     
-    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
-    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
-    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
-    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    [CONFIG_DOWNLOADING_FILES] = @"正下载组态文件..",
+    [CONFIG_NO_MEMORY] = @"错误：内存已满",
+    [CONFIG_SAVING] = @"正保存组态文件..",
+    [CONFIG_USING_DEFAULT] = @"使用预定的选择..",
     
-    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
+    [CRACKING_DIRECTORY_ERROR] = @"错误：不能创造工程目录",
     [CRACKING_APPNAME] = @"正在破解 %@",
     [CRACKING_CREATE_WORKING_DIR] = @"正在创建工作目录...",
     [CRACKING_PERFORMING_ANALYSIS] = @"正在进行初始化解析...",
@@ -162,7 +163,7 @@ static NSString * const zh_locale[] = {
     [PACKAGING_IPA] = @"包装：正在打包文件",
     [PACKAGING_COMPRESSION_LEVEL] = @"包装：压缩级别 - 0",
     
-    [COMPLETE_ELAPSED_TIME] = @"执行时间: %u 毫秒",
+    [COMPLETE_ELAPSED_TIME] = @"执行时间: %.02f 秒",
     [COMPLETE_APPS_CRACKED] = @"\n完成破解的应用:\n",
     [COMPLETE_APPS_FAILED] = @"\n破解失败的应用:\n",
     [COMPLETE_TOTAL] = @"\n成功总计: \033[0;32m%u\033[0m   失败总计: \033[0;32m%u\033[0m ",
@@ -223,54 +224,54 @@ static NSString * const de_locale[] = {
 
 
 static NSString * const fr_locale[] = {
-    [CLUTCH_DEV_CHECK_UPDATE] = @"Vous utilisez une version de développement de Clutch, vérification des mises à jour...",
-    [CLUTCH_DEV_UP_TO_DATE] = @"Votre version de Clutch est à jour !",
-    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"[Not yet translated] Your current version of Clutch is outdated!\nPlease get the latest version!\n",
-    [CLUTCH_PERMISSION_ERROR] = @"[Not yet translated] You must be root to use Clutch.",
-    [CLUTCH_NO_APPLICATIONS] = @"[Not yet translated] There are no encrypted applications on this device.",
-    [CLUTCH_CRACKING_ALL] = @"[Not yet translated] Cracking all encrypted applications on this device.",
-    [CLUTCH_ENABLED_YOPA] = @"[Not yet translated] YOPA is enabled.",
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Vous utilisez une version de dÈveloppement de Clutch, vÈrification des mises ‡ jour...",
+    [CLUTCH_DEV_UP_TO_DATE] = @"Votre version de Clutch est ‡ jour !",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"Votre version Clutch n'est pas ‡ jour !\nVeuillez tÈlÈcharger la derniËre version !\n",
+    [CLUTCH_PERMISSION_ERROR] = @"Vous devez Ítre root pour utiliser Clutch.",
+    [CLUTCH_NO_APPLICATIONS] = @"Il n'y a aucune application cryptÈe sur cet appareil.",
+    [CLUTCH_CRACKING_ALL] = @"Crackage de toutes les applications cryptÈes sur cet appareil.",
+    [CLUTCH_ENABLED_YOPA] = @"Yopa est activÈ.",
     
-    [CONFIG_DOWNLOADING_FILES] = @"[Not yet translated] Downloading config files...",
-    [CONFIG_NO_MEMORY] = @"[Not yet translated] No memory",
-    [CONFIG_SAVING] = @"[Not yet translated] Saving configuration settings...",
-    [CONFIG_USING_DEFAULT] = @"[Not yet translated] Using default value...",
+    [CONFIG_DOWNLOADING_FILES] = @"TÈlÈchargement des fichiers de configuration...",
+    [CONFIG_NO_MEMORY] = @"Pas de mÈmoire",
+    [CONFIG_SAVING] = @"Enregistrement des paramËtres de configuration...",
+    [CONFIG_USING_DEFAULT] = @"Utilisation de la valeur par dÈfaut...",
     
-    [CRACKING_DIRECTORY_ERROR] = @"[Not yet translated] error: could not create working directory.",
+    [CRACKING_DIRECTORY_ERROR] = @"erreur: impossible de crÈer le rÈpertoire de travail.",
     [CRACKING_APPNAME] = @"Craquage %@...",
-    [CRACKING_CREATE_WORKING_DIR] = @"Création du répertoire de travail...",
-    [CRACKING_PERFORMING_ANALYSIS] = @"Exécute une première analyse...",
-    [CRACKING_PERFORMING_PREFLIGHT] = @"Exécution du craquage de pré-installation...",
+    [CRACKING_CREATE_WORKING_DIR] = @"CrÈation du rÈpertoire de travail...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"ExÈcute une premiËre analyse...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"ExÈcution du craquage de prÈ-installation...",
     
     [DUMPING_ANALYZE_LOAD_COMMAND] = @"Dumping du binaire: analyse du chargement des commandes",
-    [DUMPING_OBTAIN_PTRACE] = @"Dumping du binaire: Récupération du traitement de ptrace",
-    [DUMPING_FORKING] = @"Dumping du binaire: bifurcation pour commencer à tracer",
-    [DUMPING_FORK_SUCCESS] = @"Dumping du binaire: bifurcation réussie",
+    [DUMPING_OBTAIN_PTRACE] = @"Dumping du binaire: RÈcupÈration du traitement de ptrace",
+    [DUMPING_FORKING] = @"Dumping du binaire: sÈparation pour commencer ‡ tracer",
+    [DUMPING_FORK_SUCCESS] = @"Dumping du binaire: sÈparation rÈussie",
     [DUMPING_OBTAIN_MACH_PORT] = @"Dumping du binaire: Obtention du port correspondant",
-    [DUMPING_CODE_RESIGN] = @"Dumping du binaire: préparation du code",
-    [DUMPING_PREPARE_DUMP] = @"Dumping du binaire: préparation du vidage",
-    [DUMPING_ASLR_ENABLED] = @"Dumping du binaire: ASLR activé, identification de l'emplacement de vidage dynamique",
-    [DUMPING_PERFORM_DUMP] = @"Dumping du binaire: exécution du vidage",
-    [DUMPING_PATCH_CRYPTID] = @"Dumping du binaire: cryptid patché",
-    [DUMPING_NEW_CHECKSUM] = @" Dumping du binaire: écriture de la nouvelle somme de contrôle",
+    [DUMPING_CODE_RESIGN] = @"Dumping du binaire: prÈparation du code",
+    [DUMPING_PREPARE_DUMP] = @"Dumping du binaire: prÈparation du vidage",
+    [DUMPING_ASLR_ENABLED] = @"Dumping du binaire: ASLR activÈ, identification de l'emplacement de vidage dynamique",
+    [DUMPING_PERFORM_DUMP] = @"Dumping du binaire: exÈcution du vidage",
+    [DUMPING_PATCH_CRYPTID] = @"Dumping du binaire: cryptid patchÈ",
+    [DUMPING_NEW_CHECKSUM] = @" Dumping du binaire: Ècriture de la nouvelle somme de contrÙle",
     
     [SWAP_CRACKING_PORTION] = @"swap: craquage de la partie armv%u",
     
-    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Dumping du binaire: patchage de l'en-tête correspondante (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Dumping du binaire: patchage de l'en-tÍte correspondante (overdrive)",
     [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Dumping du binaire: patch maxprot (overdrive)",
     [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Dumping du binaire: patch cryptid (overdrive)",
     [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Dumping du binaire: attache overdrive DYLIB (overdrive)",
     
-    [PACKAGING_WAITING_ZIP] = @"Package: patienter pendant la création du zip",
-    [PACKAGING_FAILED_KILL_ZIP] = @"Package: le crack a échoué, suppression de la création du zip",
-    [PACKAGING_ITUNESMETADATA] = @"Package: censure d'iTunesMetadata",
+    [PACKAGING_WAITING_ZIP] = @"Package: patienter pendant la crÈation du zip",
+    [PACKAGING_FAILED_KILL_ZIP] = @"Package: le crack a ÈchouÈ, suppression de la crÈation du zip",
+    [PACKAGING_ITUNESMETADATA] = @"Package: suppression d'iTunesMetadata",
     [PACKAGING_IPA] = @"Package: Compression de l'IPA",
     [PACKAGING_COMPRESSION_LEVEL] = @"Package: Compression de niveau %u",
     
-    [COMPLETE_ELAPSED_TIME] = @"Temps écoulé: %ums",
-    [COMPLETE_APPS_CRACKED] = @"\nApplications crackées:\n",
-    [COMPLETE_APPS_FAILED] = @"\nApplications ratées:\n",
-    [COMPLETE_TOTAL] = @"\nNombre de succès: \033[0;32m%u\033[0m   Nombre d'échoués: \033[0;32m%u\033[0m ",
+    [COMPLETE_ELAPSED_TIME] = @"Temps ÈcoulÈ: %ums",
+    [COMPLETE_APPS_CRACKED] = @"\nApplications crackÈes:\n",
+    [COMPLETE_APPS_FAILED] = @"\nApplications non crackÈes:\n",
+    [COMPLETE_TOTAL] = @"\nSuccËs: \033[0;32m%u\033[0m   EchouÈs: \033[0;32m%u\033[0m ",
     
 };
 
@@ -323,6 +324,60 @@ static NSString * const hr_locale[] = {
 	[COMPLETE_APPS_CRACKED] = @"\nUspešno:\n",
 	[COMPLETE_APPS_FAILED] = @"\nBezuspešno:\n",
 	[COMPLETE_TOTAL] = @"\nUkupno uspešno: \033[0;32m%u\033[0m   Ukupno bezuspešno: \033[0;32m%u\033[0m ",
+};
+
+
+// Translator: OdNairy
+static NSString * const ru_locale[] = {
+    [CLUTCH_DEV_CHECK_UPDATE] = @"Вы используете версию для разработчиков, подождите, идёт проверка обновлений..",
+    [CLUTCH_DEV_UP_TO_DATE] = @"У вас самая последняя версия Clutch!",
+    [CLUTCH_DEV_NOT_UP_TO_DATE] = @"Ваша версия Clutch устарела!\nПожалуйста, обновите Clutch!\n",
+    [CLUTCH_PERMISSION_ERROR] = @"Для работы Clutch необходимы root-права",
+    [CLUTCH_NO_APPLICATIONS] = @"Необнаружено зашифрованных приложений на этом устройстве.",
+    [CLUTCH_CRACKING_ALL] = @"Идёт взлом всех зашифрованных приложений на этом устровстве.",
+    [CLUTCH_ENABLED_YOPA] = @"YOPA активирован.",
+    
+    [CONFIG_DOWNLOADING_FILES] = @"Скачиваются файлы конфигурации...",
+    [CONFIG_NO_MEMORY] = @"Недостаточно памяти",
+    [CONFIG_SAVING] = @"Сохраняю файлы конфигурации...",
+    [CONFIG_USING_DEFAULT] = @"Будет использовано значение по-умолчанию...",
+    
+    [CRACKING_DIRECTORY_ERROR] = @"Ошибка: невозможно создать рабочую директорию.",
+    [CRACKING_APPNAME] = @"Взламываю %@...",
+    [CRACKING_CREATE_WORKING_DIR] = @"Создаю рабочую директорию...",
+    [CRACKING_PERFORMING_ANALYSIS] = @"Выполняю первоначальный анализ...",
+    [CRACKING_PERFORMING_PREFLIGHT] = @"Выполняю подготовку к взлому...",
+    
+    [DUMPING_ANALYZE_LOAD_COMMAND] = @"Дамп бинарного файла: анализ команд загрузки",
+    [DUMPING_OBTAIN_PTRACE] = @"Дамп бинарного файла: обход ptrace-хендлера",
+    [DUMPING_FORKING] = @"Дамп бинарного файла: клонирование перед началом трасировки",
+    [DUMPING_FORK_SUCCESS] = @"Дамп бинарного файла: клонирование успешно завершено",
+    [DUMPING_OBTAIN_MACH_PORT] = @"Дамп бинарного файла: захват mach port",
+    [DUMPING_CODE_RESIGN] = @"Дамп бинарного файла: подготовка к переподпики приложения",
+    [DUMPING_PREPARE_DUMP] = @"Дамп бинарного файла: подготовка к дампу",
+    [DUMPING_ASLR_ENABLED] = @"Дамп бинарного файла: ASLR включён, определяем место для дампа динамически",
+    [DUMPING_PERFORM_DUMP] = @"Дамп бинарного файла: выполняется дамп",
+    [DUMPING_PATCH_CRYPTID] = @"Дамп бинарного файла: изменён cryptid",
+    [DUMPING_NEW_CHECKSUM] = @" Дамп бинарного файла: запись новой чек-суммы",
+    
+    [SWAP_CRACKING_PORTION] = @"swap: идёт взлом armv%u архитектуры",
+    
+    [DUMPING_OVERDRIVE_PATCH_HEADER] = @"Дамп бинарного файла: изменён mach header (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_MAXPROT] = @"Дамп бинарного файла: изменён maxprot (overdrive)",
+    [DUMPING_OVERDRIVE_PATCH_CRYPTID] = @"Дамп бинарного файла: изменён cryptid (overdrive)",
+    [DUMPING_OVERDRIVE_ATTACH_DYLIB] = @"Дамп бинарного файла: добавлен overdrive DYLIB (overdrive)",
+    
+    [PACKAGING_WAITING_ZIP] = @"Сборка: ожидаем завершения архивирования",
+    [PACKAGING_FAILED_KILL_ZIP] = @"Сборка: взлом приложения не удался, останавливаем поток архивирования",
+    [PACKAGING_ITUNESMETADATA] = @"Сборка: игнорируем iTunesMetadata",
+    [PACKAGING_IPA] = @"Сборка: архивирование IPA-файла",
+    [PACKAGING_COMPRESSION_LEVEL] = @"Сборка: выбран уровень компрессии %u",
+    
+    [COMPLETE_ELAPSED_TIME] = @"Затрачено времени: %.02fs",
+    [COMPLETE_APPS_CRACKED] = @"\nВзломанные приложения:\n",
+    [COMPLETE_APPS_FAILED] = @"\nНеудачные взломы:\n",
+    [COMPLETE_TOTAL] = @"\nУдачные взломы: \033[0;32m%u\033[0m   Неудачные взломы: \033[0;32m%u\033[0m ",
+    
 };
 
 /*
@@ -394,6 +449,7 @@ NSString* msg(Message message);
 }
 + (Localization*) sharedInstance;
 -(NSString*) valueWithMessage:(Message)message;
+-(Lang) defaultLang;
 -(void)checkCache;
 
 

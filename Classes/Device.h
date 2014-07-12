@@ -15,7 +15,7 @@
 typedef enum {
     COMPATIBLE,
     COMPATIBLE_SWAP,
-    COMPATIBLE_STRIP,
+    //COMPATIBLE_STRIP,
     NOT_COMPATIBLE
 } ArchCompatibility;
 

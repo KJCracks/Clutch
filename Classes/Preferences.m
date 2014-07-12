@@ -12,18 +12,24 @@
 
 #define MAX_NAME_SZ 256
 
+static dispatch_once_t preferences_dispatch = 0;
+NSString* preferences_location = prefsPath;
+
 @implementation Preferences
 
 + (Preferences *) sharedInstance
 {
-    static dispatch_once_t pred;
     static Preferences *shared = nil;
-    
-    dispatch_once(&pred, ^{
-        shared = [Preferences new];
+    dispatch_once(&preferences_dispatch, ^{
+        shared = [[Preferences alloc] init];
     });
     
     return shared;
+}
+
++ (void)setConfigPath:(NSString*)path {
+    preferences_dispatch = 0;
+    preferences_location = path;
 }
 
 - (id)init
@@ -32,8 +38,9 @@
     
     if (self)
     {
-        _dict = [[NSMutableDictionary alloc]initWithContentsOfFile:prefsPath];
-       
+        _dict = [[NSMutableDictionary alloc]initWithContentsOfFile:preferences_location];
+        DEBUG(@"preferences_location: %@", preferences_location);
+        DEBUG(@"%@", _dict);
         if (_dict==nil)
         {
             _dict=[NSMutableDictionary new];
@@ -49,7 +56,7 @@
     [_dict writeToFile:prefsPath atomically:YES];
 }
 
-- (void)setObject:(id)value forKey:(NSString *)defaultName
+- (void)tempSetObject:(id)value forKey:(NSString *)defaultName
 {
     if (_dict == nil)
     {
@@ -63,10 +70,17 @@
     else
     {
         [_dict setObject:value forKey:defaultName];
+        
     }
+    //DEBUG(@"Preferences dictionary: %@", _dict);
     
+}
+
+- (void)setObject:(id)value forKey:(NSString *)defaultName {
+    [self tempSetObject:value forKey:defaultName];
     [_dict writeToFile:prefsPath atomically:YES];
 }
+
 
 - (BOOL)boolForKey:(NSString *)defaultName
 {
@@ -127,6 +141,13 @@
 
 - (BOOL) useNativeZip
 {
+    if (![self boolForKey:@"UseNativeZip"]) {
+        if ((![[NSFileManager defaultManager] fileExistsAtPath:@"/usr/bin/zip"]) || (![[NSFileManager defaultManager] fileExistsAtPath:@"/bin/zip"])) {
+            printf("\nwarning: could not find zip! using built-in zipping library\n\n");
+            return true;
+        }
+        return false;
+    }
     return [self boolForKey:@"UseNativeZip"];
 }
 
@@ -152,8 +173,16 @@
 - (void) setupConfig
 {
     MSG(CONFIG_DOWNLOADING_FILES);
+    NSString* support_plist;
+    if ([[Localization sharedInstance] defaultLang] == zh) {
+        support_plist = @"http://kjcracks.github.io/Clutch/support14.zh.plist";
+    }
+    else {
+        support_plist = @"http://kjcracks.github.io/Clutch/support14.plist";
+    }
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://kjcracks.github.io/Clutch/support14.plist"] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:support_plist] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30];
+
     NSURLResponse* response = [[NSURLResponse alloc] init];
     NSData* data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
     NSError * error = nil;
@@ -262,7 +291,5 @@
     
     MSG(CONFIG_SAVING);
 }
-
-
 
 @end

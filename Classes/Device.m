@@ -8,9 +8,7 @@
 //  Re-tailored for Clutch
 
 #import "Device.h"
-#import "out.h"
-
-#import "Constants.h"
+#import "mach/machine.h"
 
 @implementation Device
 

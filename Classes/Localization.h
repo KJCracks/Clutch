@@ -62,7 +62,8 @@ typedef enum {
     de, // german
     fr, // french
     hr, // serbian/croatian
-    ru  // russian
+    ru, // russian
+    ar, // arabic
 } Lang;
 
 
@@ -510,4 +511,3 @@ NSString* msg(Message message);
 
 
 @end
-

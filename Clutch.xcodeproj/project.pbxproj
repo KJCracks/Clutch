@@ -7,258 +7,122 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AD201A0517EC908800BF9F6C /* libz.dylib */; };
-		AD2790D31870580000A4FD11 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CC187057FF00A4FD11 /* Application.m */; };
-		AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790CE187057FF00A4FD11 /* ApplicationLister.m */; };
-		AD2790D51870580000A4FD11 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D01870580000A4FD11 /* Binary.m */; };
-		AD2790D61870580000A4FD11 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2790D21870580000A4FD11 /* Device.m */; };
-		AD3014691871514D00E06315 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3014681871514D00E06315 /* Cracker.m */; };
-		AD61315C187D23FC00B94378 /* Install.m in Sources */ = {isa = PBXBuildFile; fileRef = AD61315B187D23FC00B94378 /* Install.m */; };
-		ADAA367E1870606D0029AF7D /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA367D1870606D0029AF7D /* Preferences.m */; };
-		ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CD317ECA8A7005282CE /* ZipArchive.m */; };
-		ADC68CE517ECAD3E005282CE /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CD017ECA8A7005282CE /* zip.c */; };
-		ADC68CE617ECAD4C005282CE /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CCE17ECA8A7005282CE /* unzip.c */; };
-		ADC68CE717ECAD61005282CE /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CCC17ECA8A7005282CE /* mztools.c */; };
-		ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = ADC68CC217ECA8A7005282CE /* ioapi.c */; };
-		ADC6C4851871A48D0073C40B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADC6C4841871A48D0073C40B /* UIKit.framework */; };
-		ADC6C4881871A7260073C40B /* MobileInstallation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADC6C4871871A7260073C40B /* MobileInstallation.framework */; };
-		ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC8A6E91880FAA30063B6BD /* Localization.m */; };
-		ADC8A6ED188170000063B6BD /* API.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC8A6EC188170000063B6BD /* API.m */; };
-		BC871C8217E7122500048636 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7817E7122500048636 /* main.m */; };
-		BC871C8317E7122500048636 /* out.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7A17E7122500048636 /* out.m */; };
-		BC871C8417E7122500048636 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7C17E7122500048636 /* scinfo.m */; };
-		BC871C8517E7122500048636 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = BC871C7D17E7122500048636 /* sha1.c */; };
-		E9F95EC7188FF5C60002EBAC /* Packager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F95EC6188FF5C60002EBAC /* Packager.m */; };
-		E9F95ED0189001C40002EBAC /* libarchive.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F95ECF189001C40002EBAC /* libarchive.dylib */; };
-		F473DA7A1872300800AF3C59 /* izip.m in Sources */ = {isa = PBXBuildFile; fileRef = F473DA791872300800AF3C59 /* izip.m */; };
+		C80B777E199E8F38003723DB /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = C80B777D199E8F38003723DB /* Application.m */; };
+		C83F2CA41997A585006F4352 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CA31997A585006F4352 /* main.m */; };
+		C83F2CA71997A585006F4352 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CA61997A585006F4352 /* AppDelegate.m */; };
+		C83F2CA91997A585006F4352 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C83F2CA81997A585006F4352 /* Images.xcassets */; };
+		C83F2CB51997A585006F4352 /* ClutchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CB41997A585006F4352 /* ClutchTests.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		C83F2CAF1997A585006F4352 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C83F2C961997A585006F4352 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C83F2C9D1997A585006F4352;
+			remoteInfo = Clutch;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		AD2019F717E576D100BF9F6C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		AD201A0517EC908800BF9F6C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		AD2790CB187057FF00A4FD11 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
-		AD2790CC187057FF00A4FD11 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
-		AD2790CD187057FF00A4FD11 /* ApplicationLister.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ApplicationLister.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		AD2790CE187057FF00A4FD11 /* ApplicationLister.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationLister.m; sourceTree = "<group>"; };
-		AD2790CF1870580000A4FD11 /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
-		AD2790D01870580000A4FD11 /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Binary.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		AD2790D11870580000A4FD11 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
-		AD2790D21870580000A4FD11 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
-		AD2790D718705BBB00A4FD11 /* MobileInstallation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MobileInstallation.h; path = Classes/MobileInstallation.h; sourceTree = "<group>"; };
-		AD3014681871514D00E06315 /* Cracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Cracker.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		AD30146A1871517400E06315 /* Cracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cracker.h; sourceTree = "<group>"; };
-		AD61315A187D23FC00B94378 /* Install.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Install.h; sourceTree = "<group>"; };
-		AD61315B187D23FC00B94378 /* Install.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Install.m; sourceTree = "<group>"; };
-		ADAA367C1870606D0029AF7D /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
-		ADAA367D1870606D0029AF7D /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
-		ADC68CC117ECA8A7005282CE /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
-		ADC68CC217ECA8A7005282CE /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
-		ADC68CC317ECA8A7005282CE /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		ADC68CC717ECA8A7005282CE /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		ADC68CC817ECA8A7005282CE /* miniunz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = miniunz.c; sourceTree = "<group>"; };
-		ADC68CC917ECA8A7005282CE /* minizip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = minizip.c; sourceTree = "<group>"; };
-		ADC68CCC17ECA8A7005282CE /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
-		ADC68CCD17ECA8A7005282CE /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
-		ADC68CCE17ECA8A7005282CE /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
-		ADC68CCF17ECA8A7005282CE /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
-		ADC68CD017ECA8A7005282CE /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
-		ADC68CD117ECA8A7005282CE /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
-		ADC68CD217ECA8A7005282CE /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
-		ADC68CD317ECA8A7005282CE /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
-		ADC6C4841871A48D0073C40B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		ADC6C4871871A7260073C40B /* MobileInstallation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileInstallation.framework; path = System/Library/PrivateFrameworks/MobileInstallation.framework; sourceTree = SDKROOT; };
-		ADC8A6E71880E77E0063B6BD /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSTask.h; path = Classes/NSTask.h; sourceTree = "<group>"; };
-		ADC8A6E81880FAA30063B6BD /* Localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Localization.h; sourceTree = "<group>"; };
-		ADC8A6E91880FAA30063B6BD /* Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Localization.m; sourceTree = "<group>"; };
-		ADC8A6EB188170000063B6BD /* API.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = API.h; sourceTree = "<group>"; };
-		ADC8A6EC188170000063B6BD /* API.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = API.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		BC871C7817E7122500048636 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; wrapsLines = 0; };
-		BC871C7917E7122500048636 /* out.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = out.h; sourceTree = "<group>"; };
-		BC871C7A17E7122500048636 /* out.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = out.m; sourceTree = "<group>"; };
-		BC871C7B17E7122500048636 /* scinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scinfo.h; sourceTree = "<group>"; };
-		BC871C7C17E7122500048636 /* scinfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = scinfo.m; sourceTree = "<group>"; };
-		BC871C7D17E7122500048636 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
-		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
-		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
-		E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clutch_Prefix.pch; path = Resources/Clutch_Prefix.pch; sourceTree = "<group>"; };
-		E9F95EC5188FF5C60002EBAC /* Packager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packager.h; sourceTree = "<group>"; };
-		E9F95EC6188FF5C60002EBAC /* Packager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packager.m; sourceTree = "<group>"; };
-		E9F95ECF189001C40002EBAC /* libarchive.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libarchive.dylib; path = usr/lib/libarchive.dylib; sourceTree = SDKROOT; };
-		E9F95ED1189001CF0002EBAC /* archive_entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive_entry.h; sourceTree = "<group>"; };
-		E9F95ED2189001F40002EBAC /* archive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = archive.h; sourceTree = "<group>"; };
-		F473DA551871E77400AF3C59 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		F473DA781872300800AF3C59 /* izip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = izip.h; sourceTree = "<group>"; };
-		F473DA791872300800AF3C59 /* izip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = izip.m; sourceTree = "<group>"; };
+		C80B777C199E8F38003723DB /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		C80B777D199E8F38003723DB /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		C83F2C9E1997A585006F4352 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C83F2CA21997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C83F2CA31997A585006F4352 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C83F2CA51997A585006F4352 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C83F2CA61997A585006F4352 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C83F2CA81997A585006F4352 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C83F2CAE1997A585006F4352 /* ClutchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClutchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C83F2CB31997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C83F2CB41997A585006F4352 /* ClutchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClutchTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+		C83F2C9B1997A585006F4352 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9F95ED0189001C40002EBAC /* libarchive.dylib in Frameworks */,
-				ADC6C4881871A7260073C40B /* MobileInstallation.framework in Frameworks */,
-				ADC6C4851871A48D0073C40B /* UIKit.framework in Frameworks */,
-				AD201A0617EC908800BF9F6C /* libz.dylib in Frameworks */,
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C83F2CAB1997A585006F4352 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
+		C83F2C951997A585006F4352 = {
 			isa = PBXGroup;
 			children = (
-				E9F95ED2189001F40002EBAC /* archive.h */,
-				E9F95ED1189001CF0002EBAC /* archive_entry.h */,
-				E9ABBFB8188D4154000B442F /* sha1 */,
-				E9ABBFB7188D3F29000B442F /* ZipArchive */,
-				AD30146718714C3D00E06315 /* CLI */,
-				ADAA367C1870606D0029AF7D /* Preferences.h */,
-				ADAA367D1870606D0029AF7D /* Preferences.m */,
-				ADC8A6E81880FAA30063B6BD /* Localization.h */,
-				ADC8A6E91880FAA30063B6BD /* Localization.m */,
-				AD2790CB187057FF00A4FD11 /* Application.h */,
-				AD2790CC187057FF00A4FD11 /* Application.m */,
-				AD2790CD187057FF00A4FD11 /* ApplicationLister.h */,
-				AD2790CE187057FF00A4FD11 /* ApplicationLister.m */,
-				AD2790CF1870580000A4FD11 /* Binary.h */,
-				AD2790D01870580000A4FD11 /* Binary.m */,
-				AD2790D11870580000A4FD11 /* Device.h */,
-				AD2790D21870580000A4FD11 /* Device.m */,
-				AD30146A1871517400E06315 /* Cracker.h */,
-				AD3014681871514D00E06315 /* Cracker.m */,
-				F473DA781872300800AF3C59 /* izip.h */,
-				F473DA791872300800AF3C59 /* izip.m */,
-				AD61315A187D23FC00B94378 /* Install.h */,
-				AD61315B187D23FC00B94378 /* Install.m */,
-				BC871C7917E7122500048636 /* out.h */,
-				BC871C7A17E7122500048636 /* out.m */,
-				BC871C7B17E7122500048636 /* scinfo.h */,
-				BC871C7C17E7122500048636 /* scinfo.m */,
-				F473DA551871E77400AF3C59 /* Constants.h */,
-				ADC8A6EB188170000063B6BD /* API.h */,
-				ADC8A6EC188170000063B6BD /* API.m */,
-				E9F95EC5188FF5C60002EBAC /* Packager.h */,
-				E9F95EC6188FF5C60002EBAC /* Packager.m */,
+				C80B777C199E8F38003723DB /* Application.h */,
+				C80B777D199E8F38003723DB /* Application.m */,
+				C83F2CA01997A585006F4352 /* Clutch */,
+				C83F2CB11997A585006F4352 /* ClutchTests */,
+				C83F2C9F1997A585006F4352 /* Products */,
 			);
-			path = Classes;
 			sourceTree = "<group>";
 		};
-		19C28FACFE9D520D11CA2CBB /* Products */ = {
+		C83F2C9F1997A585006F4352 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Clutch.app */,
+				C83F2C9E1997A585006F4352 /* Clutch.app */,
+				C83F2CAE1997A585006F4352 /* ClutchTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+		C83F2CA01997A585006F4352 /* Clutch */ = {
 			isa = PBXGroup;
 			children = (
-				080E96DDFE201D6D7F000001 /* Classes */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
-				29B97323FDCFA39411CA2CEA /* Frameworks */,
-				19C28FACFE9D520D11CA2CBB /* Products */,
+				C83F2CA51997A585006F4352 /* AppDelegate.h */,
+				C83F2CA61997A585006F4352 /* AppDelegate.m */,
+				C83F2CA81997A585006F4352 /* Images.xcassets */,
+				C83F2CA11997A585006F4352 /* Supporting Files */,
 			);
-			name = CustomTemplate;
+			path = Clutch;
 			sourceTree = "<group>";
 		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+		C83F2CA11997A585006F4352 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				ADC8A6E71880E77E0063B6BD /* NSTask.h */,
-				AD2790D718705BBB00A4FD11 /* MobileInstallation.h */,
+				C83F2CA21997A585006F4352 /* Info.plist */,
+				C83F2CA31997A585006F4352 /* main.m */,
 			);
-			name = "Other Sources";
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		29B97317FDCFA39411CA2CEA /* Resources */ = {
+		C83F2CB11997A585006F4352 /* ClutchTests */ = {
 			isa = PBXGroup;
 			children = (
-				E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */,
-				BC871C8717E7126F00048636 /* Clutch-Info.plist */,
+				C83F2CB41997A585006F4352 /* ClutchTests.m */,
+				C83F2CB21997A585006F4352 /* Supporting Files */,
 			);
-			name = Resources;
+			path = ClutchTests;
 			sourceTree = "<group>";
 		};
-		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+		C83F2CB21997A585006F4352 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E9F95ECF189001C40002EBAC /* libarchive.dylib */,
-				ADC6C4871871A7260073C40B /* MobileInstallation.framework */,
-				ADC6C4841871A48D0073C40B /* UIKit.framework */,
-				AD201A0517EC908800BF9F6C /* libz.dylib */,
-				AD2019F717E576D100BF9F6C /* QuartzCore.framework */,
-				AD2019F517E5769D00BF9F6C /* CoreFoundation.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				C83F2CB31997A585006F4352 /* Info.plist */,
 			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		AD30146718714C3D00E06315 /* CLI */ = {
-			isa = PBXGroup;
-			children = (
-				BC871C7817E7122500048636 /* main.m */,
-			);
-			name = CLI;
-			sourceTree = "<group>";
-		};
-		ADC68CBF17ECA8A7005282CE /* minizip */ = {
-			isa = PBXGroup;
-			children = (
-				ADC68CC117ECA8A7005282CE /* crypt.h */,
-				ADC68CC217ECA8A7005282CE /* ioapi.c */,
-				ADC68CC317ECA8A7005282CE /* ioapi.h */,
-				ADC68CC717ECA8A7005282CE /* Makefile */,
-				ADC68CC817ECA8A7005282CE /* miniunz.c */,
-				ADC68CC917ECA8A7005282CE /* minizip.c */,
-				ADC68CCC17ECA8A7005282CE /* mztools.c */,
-				ADC68CCD17ECA8A7005282CE /* mztools.h */,
-				ADC68CCE17ECA8A7005282CE /* unzip.c */,
-				ADC68CCF17ECA8A7005282CE /* unzip.h */,
-				ADC68CD017ECA8A7005282CE /* zip.c */,
-				ADC68CD117ECA8A7005282CE /* zip.h */,
-			);
-			path = minizip;
-			sourceTree = "<group>";
-		};
-		E9ABBFB7188D3F29000B442F /* ZipArchive */ = {
-			isa = PBXGroup;
-			children = (
-				ADC68CBF17ECA8A7005282CE /* minizip */,
-				ADC68CD217ECA8A7005282CE /* ZipArchive.h */,
-				ADC68CD317ECA8A7005282CE /* ZipArchive.m */,
-			);
-			name = ZipArchive;
-			sourceTree = "<group>";
-		};
-		E9ABBFB8188D4154000B442F /* sha1 */ = {
-			isa = PBXGroup;
-			children = (
-				BC871C7D17E7122500048636 /* sha1.c */,
-				BC871C7E17E7122500048636 /* sha1.h */,
-			);
-			name = sha1;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Clutch */ = {
+		C83F2C9D1997A585006F4352 /* Clutch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Clutch" */;
+			buildConfigurationList = C83F2CB81997A585006F4352 /* Build configuration list for PBXNativeTarget "Clutch" */;
 			buildPhases = (
-				1D60588D0D05DD3D006BFB54 /* Resources */,
-				1D60588E0D05DD3D006BFB54 /* Sources */,
-				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				41E0DE311237440B0068268F /* ShellScript */,
+				C83F2C9A1997A585006F4352 /* Sources */,
+				C83F2C9B1997A585006F4352 /* Frameworks */,
+				C83F2C9C1997A585006F4352 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -266,35 +130,73 @@
 			);
 			name = Clutch;
 			productName = Clutch;
-			productReference = 1D6058910D05DD3D006BFB54 /* Clutch.app */;
+			productReference = C83F2C9E1997A585006F4352 /* Clutch.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C83F2CAD1997A585006F4352 /* ClutchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C83F2CBB1997A585006F4352 /* Build configuration list for PBXNativeTarget "ClutchTests" */;
+			buildPhases = (
+				C83F2CAA1997A585006F4352 /* Sources */,
+				C83F2CAB1997A585006F4352 /* Frameworks */,
+				C83F2CAC1997A585006F4352 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C83F2CB01997A585006F4352 /* PBXTargetDependency */,
+			);
+			name = ClutchTests;
+			productName = ClutchTests;
+			productReference = C83F2CAE1997A585006F4352 /* ClutchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		29B97313FDCFA39411CA2CEA /* Project object */ = {
+		C83F2C961997A585006F4352 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = Hackulous;
+				TargetAttributes = {
+					C83F2C9D1997A585006F4352 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+					C83F2CAD1997A585006F4352 = {
+						CreatedOnToolsVersion = 6.0;
+						TestTargetID = C83F2C9D1997A585006F4352;
+					};
+				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Clutch" */;
+			buildConfigurationList = C83F2C991997A585006F4352 /* Build configuration list for PBXProject "Clutch" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
-			hasScannedForEncodings = 1;
+			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			mainGroup = C83F2C951997A585006F4352;
+			productRefGroup = C83F2C9F1997A585006F4352 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Clutch */,
+				C83F2C9D1997A585006F4352 /* Clutch */,
+				C83F2CAD1997A585006F4352 /* ClutchTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1D60588D0D05DD3D006BFB54 /* Resources */ = {
+		C83F2C9C1997A585006F4352 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C83F2CA91997A585006F4352 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C83F2CAC1997A585006F4352 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -303,186 +205,210 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		41E0DE311237440B0068268F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export CODESIGN_ALLOCATE=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate\n#if [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n#codesign -f -s \"iPhone Developer\" --entitlements \"/Users/ttwj/ClutchPlus/Clutch.entitlements\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Clutch\"\n#fi";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		1D60588E0D05DD3D006BFB54 /* Sources */ = {
+		C83F2C9A1997A585006F4352 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9F95EC7188FF5C60002EBAC /* Packager.m in Sources */,
-				ADC8A6ED188170000063B6BD /* API.m in Sources */,
-				AD61315C187D23FC00B94378 /* Install.m in Sources */,
-				AD2790D61870580000A4FD11 /* Device.m in Sources */,
-				AD2790D31870580000A4FD11 /* Application.m in Sources */,
-				ADC8A6EA1880FAA30063B6BD /* Localization.m in Sources */,
-				AD2790D41870580000A4FD11 /* ApplicationLister.m in Sources */,
-				BC871C8217E7122500048636 /* main.m in Sources */,
-				BC871C8317E7122500048636 /* out.m in Sources */,
-				F473DA7A1872300800AF3C59 /* izip.m in Sources */,
-				AD2790D51870580000A4FD11 /* Binary.m in Sources */,
-				BC871C8417E7122500048636 /* scinfo.m in Sources */,
-				BC871C8517E7122500048636 /* sha1.c in Sources */,
-				ADC68CE617ECAD4C005282CE /* unzip.c in Sources */,
-				ADC68CE817ECAD6B005282CE /* ioapi.c in Sources */,
-				ADAA367E1870606D0029AF7D /* Preferences.m in Sources */,
-				ADC68CE717ECAD61005282CE /* mztools.c in Sources */,
-				ADC68CE517ECAD3E005282CE /* zip.c in Sources */,
-				ADC68CE017ECA8A7005282CE /* ZipArchive.m in Sources */,
-				AD3014691871514D00E06315 /* Cracker.m in Sources */,
+				C80B777E199E8F38003723DB /* Application.m in Sources */,
+				C83F2CA71997A585006F4352 /* AppDelegate.m in Sources */,
+				C83F2CA41997A585006F4352 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C83F2CAA1997A585006F4352 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C83F2CB51997A585006F4352 /* ClutchTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C83F2CB01997A585006F4352 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C83F2C9D1997A585006F4352 /* Clutch */;
+			targetProxy = C83F2CAF1997A585006F4352 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		1D6058940D05DD3E006BFB54 /* Debug */ = {
+		C83F2CB61997A585006F4352 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv7,
-					arm64,
-					armv7s,
-				);
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-				);
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Resources/Clutch_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "CLUTCH_DEBUG=1";
-				HEADER_SEARCH_PATHS = (
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
 					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"/opt/iOSOpenDev/include/**",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/Resources/Clutch-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-				);
-				PRODUCT_NAME = Clutch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		1D6058950D05DD3E006BFB54 /* Release */ = {
+		C83F2CB71997A585006F4352 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv7,
-					arm64,
-					armv7s,
-				);
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Resources/Clutch_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "CLUTCH_DEBUG=$(CLUTCH_DEBUG)";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"/opt/iOSOpenDev/include/**",
-				);
-				INFOPLIST_FILE = "$(SRCROOT)/Resources/Clutch-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-				);
-				"OTHER_LDFLAGS[arch=*]" = "-all_load";
-				PRODUCT_NAME = Clutch;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		C01FCF4F08A954540054247B /* Debug */ = {
+		C83F2CB91997A585006F4352 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				ONLY_ACTIVE_ARCH = NO;
-				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				INFOPLIST_FILE = Clutch/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Clutch/Clutch-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
-		C01FCF5008A954540054247B /* Release */ = {
+		C83F2CBA1997A585006F4352 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				INFOPLIST_FILE = Clutch/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Clutch/Clutch-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		C83F2CBC1997A585006F4352 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Clutch.app/Clutch";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ClutchTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		C83F2CBD1997A585006F4352 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Clutch.app/Clutch";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ClutchTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Clutch" */ = {
+		C83F2C991997A585006F4352 /* Build configuration list for PBXProject "Clutch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1D6058940D05DD3E006BFB54 /* Debug */,
-				1D6058950D05DD3E006BFB54 /* Release */,
+				C83F2CB61997A585006F4352 /* Debug */,
+				C83F2CB71997A585006F4352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Clutch" */ = {
+		C83F2CB81997A585006F4352 /* Build configuration list for PBXNativeTarget "Clutch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C01FCF4F08A954540054247B /* Debug */,
-				C01FCF5008A954540054247B /* Release */,
+				C83F2CB91997A585006F4352 /* Debug */,
+				C83F2CBA1997A585006F4352 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C83F2CBB1997A585006F4352 /* Build configuration list for PBXNativeTarget "ClutchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C83F2CBC1997A585006F4352 /* Debug */,
+				C83F2CBD1997A585006F4352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+	rootObject = C83F2C961997A585006F4352 /* Project object */;
 }

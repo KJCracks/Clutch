@@ -2,7 +2,7 @@
 //  Application.m
 //  Clutch
 //
-//  Created by Thomas Hedderwick on 15/08/2014.
+//  Created by NinjaLikesCheez on 15/08/2014.
 //  Copyright (c) 2014 Hackulous. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/C
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<Application: %p, ApplicationName: %@, BundleID: %@", self, self.displayName, self.bundleID];
+    return [NSString stringWithFormat:@"<Application: %p, DisplayName: %@, Name: %@, BundleID: %@, DirectoryPath: %@, ExectuableName: %@, Installed: %s", self, self.displayName, self.name, self.bundleID, self.directoryPath, self.executableName, self.installed ? "YES" : "NO"];
 }
 
 @end
@@ -29,30 +29,29 @@ static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/C
     NSMutableArray *applicationList = [NSMutableArray new];
     
     [applications enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        /* TODO: This doesn't take already cracked application into account */
-        /* Application isn't already cracked */
-        Application *app = [[Application alloc] init];
+        Application *app = [[[Application alloc] init] autorelease];
         
         NSString *scInfoPath = [NSString stringWithFormat:@"%@/SC_Info/", obj[@"Path"]];
         NSArray *scInfoPathFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:scInfoPath error:nil];
         
+        /* Application isn't already cracked */
         if (scInfoPathFiles)
         {
             NSArray *sinfArray = [scInfoPathFiles filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"pathExtension='sinf'"]];
             NSArray *suppArray = [scInfoPathFiles filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"pathExtension='supp'"]];
             NSArray *supfArray = [scInfoPathFiles filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"pathExtension='supf'"]];
             
-            if (sinfArray.count > 1)
+            if (sinfArray.count != 0)
             {
                 app.sinf = sinfArray[0];
             }
             
-            if (suppArray.count > 1)
+            if (suppArray.count != 0)
             {
                 app.supp = suppArray[0];
             }
             
-            if (supfArray.count > 1)
+            if (supfArray.count != 0)
             {
                 app.supf = supfArray[0];
             }
@@ -69,18 +68,23 @@ static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/C
             }
             
             app.name = [[obj[@"Path"] lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""];
-            app.directory = obj[@"Path"];
+            app.directoryPath = obj[@"Path"];
             app.realUniqueID = [app.container lastPathComponent];
             
-            if (obj[@"CFBundleShortVersionString"]) {
+            if (obj[@"CFBundleShortVersionString"])
+            {
                 app.version = obj[@"CFBundleShortVersionString"];
-            } else {
+            }
+            else
+            {
                 app.version = obj[@"CFBundleVersion"];
             }
             
             app.bundleID = key;
-            app.executableName = obj[@"CFBundleExectuable"];
+            app.executableName = obj[@"CFBundleExecutable"];
             app.minimumOSVersion = obj[@"MinimumOSVersion"];
+            app.installed = YES;
+            app.binaryPath = [NSString stringWithFormat:@"%@/%@", app.directoryPath, app.executableName];
             
             [applicationList addObject: app];
         }
@@ -88,6 +92,8 @@ static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/C
         {
             /* Application is already cracked */
             /* Ignore iiiiiit */
+
+
         }
     }];
     

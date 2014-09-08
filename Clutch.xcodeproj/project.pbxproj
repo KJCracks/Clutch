@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		C80B777E199E8F38003723DB /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = C80B777D199E8F38003723DB /* Application.m */; };
+		C832E83919B8D6A1004ACB81 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = C832E83819B8D6A1004ACB81 /* Cracker.m */; };
+		C832E83C19B8DED9004ACB81 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = C832E83B19B8DED9004ACB81 /* Binary.m */; };
 		C83F2CA41997A585006F4352 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CA31997A585006F4352 /* main.m */; };
-		C83F2CA71997A585006F4352 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CA61997A585006F4352 /* AppDelegate.m */; };
 		C83F2CA91997A585006F4352 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C83F2CA81997A585006F4352 /* Images.xcassets */; };
 		C83F2CB51997A585006F4352 /* ClutchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CB41997A585006F4352 /* ClutchTests.m */; };
 /* End PBXBuildFile section */
@@ -27,11 +28,13 @@
 /* Begin PBXFileReference section */
 		C80B777C199E8F38003723DB /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		C80B777D199E8F38003723DB /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		C832E83719B8D6A1004ACB81 /* Cracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cracker.h; sourceTree = "<group>"; };
+		C832E83819B8D6A1004ACB81 /* Cracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cracker.m; sourceTree = "<group>"; };
+		C832E83A19B8DED9004ACB81 /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
+		C832E83B19B8DED9004ACB81 /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
 		C83F2C9E1997A585006F4352 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83F2CA21997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C83F2CA31997A585006F4352 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		C83F2CA51997A585006F4352 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		C83F2CA61997A585006F4352 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C83F2CA81997A585006F4352 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C83F2CAE1997A585006F4352 /* ClutchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClutchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83F2CB31997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -59,6 +62,10 @@
 		C83F2C951997A585006F4352 = {
 			isa = PBXGroup;
 			children = (
+				C832E83A19B8DED9004ACB81 /* Binary.h */,
+				C832E83B19B8DED9004ACB81 /* Binary.m */,
+				C832E83719B8D6A1004ACB81 /* Cracker.h */,
+				C832E83819B8D6A1004ACB81 /* Cracker.m */,
 				C80B777C199E8F38003723DB /* Application.h */,
 				C80B777D199E8F38003723DB /* Application.m */,
 				C83F2CA01997A585006F4352 /* Clutch */,
@@ -79,8 +86,6 @@
 		C83F2CA01997A585006F4352 /* Clutch */ = {
 			isa = PBXGroup;
 			children = (
-				C83F2CA51997A585006F4352 /* AppDelegate.h */,
-				C83F2CA61997A585006F4352 /* AppDelegate.m */,
 				C83F2CA81997A585006F4352 /* Images.xcassets */,
 				C83F2CA11997A585006F4352 /* Supporting Files */,
 			);
@@ -211,8 +216,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C80B777E199E8F38003723DB /* Application.m in Sources */,
-				C83F2CA71997A585006F4352 /* AppDelegate.m in Sources */,
 				C83F2CA41997A585006F4352 /* main.m in Sources */,
+				C832E83C19B8DED9004ACB81 /* Binary.m in Sources */,
+				C832E83919B8D6A1004ACB81 /* Cracker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +327,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				INFOPLIST_FILE = Clutch/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Clutch/Clutch-Bridging-Header.h";
@@ -336,6 +343,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				INFOPLIST_FILE = Clutch/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Clutch/Clutch-Bridging-Header.h";
@@ -355,6 +363,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ClutchTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				METAL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -371,6 +380,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ClutchTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				METAL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -50,6 +50,7 @@
 #include <sys/time.h>
 
 #import "Application.h"
+#import "Cracker.h"
 
 /* Prototypes */
 const static int NOT_YET_IMPLEMENTED = 2;
@@ -59,7 +60,8 @@ int diff_ms(struct timeval t1, struct timeval t2);
 
 int cmd_version();
 int cmd_help();
-int cmd_crack_app(Application *application);
+int cmd_crack_app(Application *application, Cracker *cracker);
+int cmd_crack_all_apps(NSArray *applications, Cracker *cracker);
 int cmd_list_applications();
 int cmd_run_configuration();
 
@@ -90,9 +92,31 @@ int cmd_help()
     return 1;
 }
 
-int cmd_crack_app(Application *application)
+int cmd_crack_app(Application *application, Cracker *cracker)
 {
-    return NOT_YET_IMPLEMENTED;
+    BOOL success = [cracker crackApplication:application];
+    
+    if (success)
+    {
+        return EXIT_SUCCESS;
+    }
+    
+    return EXIT_FAILURE;
+}
+
+int cmd_crack_all_apps(NSArray *applications, Cracker *cracker)
+{
+    for (Application *app in applications)
+    {
+        int success = cmd_crack_app(app, cracker);
+        
+        if (!success)
+        {
+            printf("Error: Failed to cracked application: %s", app.displayName.UTF8String);
+        }
+    }
+    
+    return EXIT_FAILURE;
 }
 
 int cmd_list_applications(NSArray *applications)
@@ -134,10 +158,10 @@ int main(int argc, char * argv[]) {
         
         /* Parse CLI arguments */
         NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-        NSLog(@"Arguments: %@", arguments);
         NSString *binaryName = arguments[0];
         
         NSArray *applications = [ApplicationLister applications];
+        Cracker *cracker = [Cracker sharedSingleton];
         
         /* Interate through arguments */
         for (int i = 0; i < arguments.count; i++)
@@ -169,8 +193,7 @@ int main(int argc, char * argv[]) {
             {
                 for (Application *app in applications)
                 {
-                    returnValue = cmd_crack_app(app);
-                    goto endMain;
+                    returnValue = cmd_crack_app(app, cracker);
                 }
             }
             else
@@ -183,14 +206,17 @@ int main(int argc, char * argv[]) {
                     /* We can add any type of identifer we want here */
                     if ([app.displayName caseInsensitiveCompare:currentArgument] == NSOrderedSame || [app.name caseInsensitiveCompare:currentArgument] == NSOrderedSame)
                     {
-                        NSLog(@"Display Name or Name Found");
                         applicationToCrack = app;
                         *stop = YES;
                     }
                     else if ([app.bundleID caseInsensitiveCompare:currentArgument] == NSOrderedSame)
                     {
-                        NSLog(@"Bundle ID Found");
                         applicationToCrack = app;
+                        *stop = YES;
+                    }
+                    else if (applications.count >= (currentArgument.intValue - 1))
+                    {
+                        applicationToCrack = applications[currentArgument.intValue - 1];
                         *stop = YES;
                     }
                 }];
@@ -200,7 +226,7 @@ int main(int argc, char * argv[]) {
                     printf("Unrecogised Identifier: %s.\n", currentArgument.UTF8String);
                 }
                 
-                returnValue = cmd_crack_app(applicationToCrack);
+                returnValue = cmd_crack_app(applicationToCrack, cracker);
                 goto endMain;
             }
         }

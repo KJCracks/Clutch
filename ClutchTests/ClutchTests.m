@@ -2,7 +2,7 @@
 //  ClutchTests.m
 //  ClutchTests
 //
-//  Created by Thomas Hedderwick on 10/08/2014.
+//  Created by NinjaLikesCheez on 10/08/2014.
 //  Copyright (c) 2014 Hackulous. All rights reserved.
 //
 

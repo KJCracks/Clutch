@@ -65,7 +65,7 @@
         [binary dump];
         
         
-        //[binary cleanUp];
+        [binary cleanUp];
         [binary release];
         return EXIT_SUCCESS;
     }

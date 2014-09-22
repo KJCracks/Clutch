@@ -8,21 +8,25 @@
 
 #import <Foundation/Foundation.h>
 #import "Application.h"
+#import <mach/machine.h>
 
 @interface Binary : NSObject
 
 /* Properties */
 @property (nonatomic, strong) NSString *binaryPath;
 @property (nonatomic, strong) NSString *temporaryPath;
+@property (nonatomic, strong) NSString *targetPath; // path of output file
 @property (nonatomic, strong) NSArray *archs;
+
+@property cpu_subtype_t local_cpu_subtype;
+@property cpu_type_t local_cpu_type;
 
 @property (strong) Application *application;
 
 /* Methods */
 - (void)cleanUp;
-- (NSArray *)getArches;
-- (id)initWithApplication:(Application *)app;
-- (void)injectBinary;
 - (void)dump;
+- (id)initWithApplication:(Application *)app;
+- (BOOL)dumpBinary:(FILE *)origin atPath:(NSString *)originPath toFile:(FILE *)target atPath:(NSString *)targetPath withTop:(uint32_t)top error:(NSError **)error;
 
 @end

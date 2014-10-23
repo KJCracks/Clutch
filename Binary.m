@@ -14,6 +14,27 @@
 #import <mach-o/dyld.h>
 #import <sys/stat.h>
 #import <mach/machine.h>
+#import <dlfcn.h>
+#import <mach/mach_traps.h>
+#import <mach/vm_map.h>
+#import <mach/vm_region.h>
+#import <mach/mach.h>
+
+#define PT_TRACE_ME 0
+#define CSSLOT_CODEDIRECTORY 0
+
+#ifdef __LP64__
+typedef vm_region_basic_info_data_64_t vm_region_basic_info_data;
+typedef vm_region_info_64_t vm_region_info;
+#define VM_REGION_BASIC_INFO_COUNT_UNIV VM_REGION_BASIC_INFO_COUNT_64
+
+#else
+
+typedef vm_region_basic_info_data_t vm_region_basic_info_data;
+typedef vm_region_info_t vm_region_info;
+#define VM_REGION_BASIC_INFO_COUNT_UNIV VM_REGION_BASIC_INFO_COUNT_64
+#endif
+
 
 @implementation Binary
 
@@ -378,8 +399,282 @@ typedef enum
 
 - (BOOL)dumpBinary:(FILE *)origin atPath:(NSString *)originPath toFile:(FILE *)target atPath:(NSString *)targetPath withTop:(uint32_t)top error:(NSError **)error
 {
+    /* Go to top of target, save top position */
+    fseek(target, top, SEEK_SET);
+    fpos_t top_position;
+    fgetpos(target, &top_position);
     
-    return YES;
+    /* Load Command structures */
+    struct linkedit_data_command ldid; // LC_CODE_SIGNATURE (for resign)
+    struct encryption_info_command crypt; // LC_ENCRYPTION_INFO (for crypt*)
+    struct mach_header mach; // Generic MH
+    struct load_command l_cmd; // Generic LC
+    struct segment_command __text; // __TEXT seg
+    
+    struct SuperBlob *codesignBlob; // Codesign blob pointer
+    struct CodeDirectory directory; // Codesign directory index
+    
+    BOOL foundCrypt = FALSE;
+    BOOL foundSignature = FALSE;
+    BOOL foundStartText = FALSE;
+    
+    uint32_t __text_start = 0;
+    
+    printf("Analysing Load Commands...\n");
+    
+    fread(&mach, sizeof(struct mach_header), 1, target); // Read mach header to get ncmds
+    
+    for (int lc_index = 0; lc_index < mach.ncmds; lc_index++)
+    {
+        fread(&l_cmd, sizeof(struct load_command), 1, target); // Read LC from binary
+        
+        switch (l_cmd.cmd) {
+            case LC_ENCRYPTION_INFO:
+            case LC_ENCRYPTION_INFO_64:
+            {
+                /* Encryption Info LC */
+                fseek(target, -1 * sizeof(struct load_command), SEEK_CUR); // Seek back a LC
+                fread(&crypt, sizeof(struct encryption_info_command), 1, target); // Store the crypt info
+                
+                foundCrypt = TRUE;
+                NSLog(@"Found LC_ENCRYPTION_INFO");
+                
+                break;
+            }
+            case LC_CODE_SIGNATURE:
+            {
+                /* Code Signature */
+                fseek(target, -1 * sizeof(struct load_command), SEEK_CUR); // Seek back a LC
+                fread(&ldid, sizeof(struct linkedit_data_command), 1, target); // Store the ldid info
+                
+                foundSignature = TRUE;
+                NSLog(@"Found LC_CODE_SIGNATURE");
+                
+                break;
+            }
+            case LC_SEGMENT:
+            case LC_SEGMENT_64:
+            {
+                /* Segments (we're looking for __TEXT) */
+                
+                // Some applications, like Skype, have decided to start offsetting the executable image's
+                // vm region by substantial amounts for no apparant reason. This will find the vmaddr of
+                // that segment (referenced later during dumping)
+                fseek(target, -1 * sizeof(struct load_command), SEEK_CUR);
+                fread(&__text, sizeof(struct segment_command), 1, target);
+                
+                if (strncmp(__text.segname, "__TEXT", 6) == 0)
+                {
+                    foundStartText = TRUE;
+                    NSLog(@"Found __TEXT's start");
+                    __text_start = __text.vmaddr;
+                }
+                
+                fseek(target, l_cmd.cmdsize - sizeof(struct segment_command), SEEK_CUR); // Seek over segment
+                break;
+            }
+            default:
+            {
+                if (foundCrypt && foundSignature && foundStartText)
+                {
+                    break;
+                }
+                
+                fseek(target, l_cmd.cmdsize - sizeof(struct load_command), SEEK_CUR); // Seek over this load command
+                break;
+            }
+        }
+    }
+    
+    if (!foundCrypt || !foundSignature || !foundStartText)
+    {
+        printf("dumping: couldn't find some load commands\n");
+        return FALSE;
+    }
+    
+    /* TODO: Normally we patch PIE here - do we *still* have to do this? */
+    BOOL patchPIE = FALSE;
+    
+    if (patchPIE)
+    {
+        printf("dumping: patching PIE\n");
+        
+        mach.flags &= ~MH_PIE;
+        
+        fseek(origin, top, SEEK_SET);
+        fwrite(&mach, sizeof(struct mach_header), 1, origin);
+    }
+    
+    pid_t pid; // Store the process id of the fork
+    mach_port_t port; // Mach port used for moving virtual memory
+    kern_return_t err; // any kernel return codes
+    mach_vm_size_t local_size = 0; // Amount of data moved into the buffer
+    int status; // Status of the wait
+    uint32_t begin;
+    
+    printf("dumping: obtaining ptrace handle\n");
+    
+    void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW); // Open handle to the dylib loader
+    ptrace_ptr_t ptrace = dlsym(handle, "ptrace");
+    
+    printf("dumping: beginning forking\n");
+    
+    if ((pid = fork()) == 0)
+    {
+        // it worked! the magic is in allowing the process to trace before execl.
+        // the process will be incapatable of preventing itself from tracing
+        // execl stops the process before this is capable
+        // PT_DENY_ATTACH was never meant to be good security, only a minor roadblock
+        
+        ptrace(PT_TRACE_ME, 0, 0, 0); // ptrace
+        execl(originPath.UTF8String, "", (char *)0); // import binary memory into executable space
+        
+        exit(2); // exit with error 2 in case we could not import binary to memory (shouldn't happen)
+    }
+    else if (pid < 0)
+    {
+        printf("error: Couldn't fork process did you sign with proper entitlements?\n");
+        return FALSE;
+    }
+    else
+    {
+        /* wait until process stops */
+        do
+        {
+            wait(&status);
+            
+            if (WIFEXITED(status))
+            {
+                return FALSE;
+            }
+        }
+        while (!WIFSTOPPED(status));
+    }
+    
+    printf("dumping: obtaining Mach port\n");
+    
+    /* open mach port to other process */
+    
+    if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS))
+    {
+        printf("error: Couldn't obtain mach port, did you sign with proper entitlements?\n");
+        
+        kill(pid, SIGKILL);
+        return FALSE;
+    }
+    
+    printf("dumping: preparing code resign\n");
+    
+    codesignBlob = malloc(ldid.datasize);
+    
+    fseek(target, top + ldid.dataoff, SEEK_SET); // Seek to the codesign blob
+    fread(codesignBlob, ldid.datasize, 1, target); // Read the whole blob
+    uint32_t countBlobs = CFSwapInt32(codesignBlob->count); // How many indices?
+    
+    for (uint32_t index = 0; index < countBlobs; index++)
+    {
+        if (CFSwapInt32(codesignBlob->index[index].type) == CSSLOT_CODEDIRECTORY) // Is this the code directory?
+        {
+            /* We will find the hash metadata in here */
+            begin = top + ldid.dataoff + CFSwapInt32(codesignBlob->index[index].offset); // Store the top of the codesign blob
+            
+            fseek(target, begin, SEEK_SET); // Seek to the beginning of the blog
+            fread(&directory, sizeof(struct CodeDirectory), 1, target); // read the whole blob
+            
+            break; // Don't need anything from this superblob anymore
+        }
+    }
+    
+    free(codesignBlob); // Free the codesign blob
+    
+    uint32_t pages = CFSwapInt32(directory.nCodeSlots); // Get the amount of codeslots
+    
+    if (pages == 0)
+    {
+        kill(pid, SIGKILL); // kill fork
+        
+        return FALSE;
+    }
+    
+    void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
+    
+    uint8_t buff_p[0x1000]; // create a single page buffer
+    uint8_t *buff = &buff_p[0]; // Store the locaiton of the buffer
+    
+    printf("dumping: prepairing to dump\n");
+    
+    /* We should only have to write and perform checksums on data that changes */
+    uint32_t togo = crypt.cryptsize + crypt.cryptoff;
+    uint32_t total = togo;
+    uint32_t pages_d = 0;
+    BOOL header = TRUE;
+    
+    /* Write the header */
+    fsetpos(target, &top_position);
+    
+    // in iOS 4.3+, ASLR can be enabled by developers by setting the MH_PIE flag in
+    // the mach header flags. this will randomly offset the location of the __TEXT
+    // segment, making it slightly difficult to identify the location of the
+    // decrypted pages. instead of disabling this flag in the original binary
+    // (which is slow, requires resigning, and requires reverting to the original
+    // binary after cracking) we instead manually identify the vm regions which
+    // contain the header and subsequent decrypted executable code.
+    if ((mach.flags & MH_PIE) && (!patchPIE))
+    {
+        printf("dumping: ASLR enabled, identifying dump location dynamically\n");
+        
+        /* Perform checks on vm regions */
+        memory_object_name_t object;
+        vm_region_basic_info_data_t info;
+        mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_UNIV;
+        mach_vm_address_t region_start = 0;
+        mach_vm_size_t region_size = 0;
+        vm_region_flavor_t flavor = VM_REGION_BASIC_INFO;
+        err = 0;
+        
+        while (err == KERN_SUCCESS)
+        {
+            err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
+            
+            NSLog(@"region size: %llu crypt_siz: %u", region_size, crypt.cryptsize);
+            
+            if (region_size == crypt.cryptsize)
+            {
+                NSLog(@"region_size == cryptsize");
+                
+                break;
+            }
+            
+            __text_start = region_start;
+            region_start += region_size;
+            region_size = 0;
+        }
+        
+        if (err != KERN_SUCCESS)
+        {
+            NSLog(@"mach_vm_error: %u", err);
+            printf("ALSR is enabled and we could not identify the decrypted memory region.\n");
+            
+            free(checksum);
+            kill(pid, SIGKILL);
+            
+            return FALSE;
+        }
+    }
+    
+    uint32_t header_progress = sizeof(struct mach_header); // TODO: 64 bit tho
+    uint32_t i_lcmd = 0;
+    
+    // Some overdrive stuff here eventually
+    
+    printf("dumping: performing dump\n");
+    
+    while (togo > 0)
+    {
+        // Get percentage for progress bar here at some point. 
+    }
+    
+    return TRUE;
 }
 
 - (BOOL)lipoBinary:(FILE *)binary

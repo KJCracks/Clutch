@@ -12,6 +12,41 @@
 
 @interface Binary : NSObject
 
+/* Structs */
+struct BlobIndex {
+    uint32_t type;
+    uint32_t offset;
+};
+
+struct Blob {
+    uint32_t magic;
+    uint32_t length;
+};
+
+struct SuperBlob {
+    struct Blob blob;
+    uint32_t count;
+    struct BlobIndex index[];
+};
+
+struct CodeDirectory {
+    struct Blob blob;
+    uint32_t version;
+    uint32_t flags;
+    uint32_t hashOffset;
+    uint32_t identOffset;
+    uint32_t nSpecialslots;
+    uint32_t nCodeSlots;
+    uint32_t codeLimit;
+    uint8_t hashSize;
+    uint8_t hashType;
+    uint8_t spare1;
+    uint8_t pageSize;
+    uint32_t spare2;
+};
+
+typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
+
 /* Properties */
 @property (nonatomic, strong) NSString *binaryPath;
 @property (nonatomic, strong) NSString *temporaryPath;

@@ -20,6 +20,8 @@
     NSString *_tempBinaryPath;
     NSString *_binaryPath;
     Binary *_binary;
+    Binary *_plugin;
+    NSString *_pluginPath;
     Application *_app;
     NSString *_workingDir;
     NSString *_ipapath;

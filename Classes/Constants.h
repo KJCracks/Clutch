@@ -28,9 +28,9 @@
 #define CLUTCH_RELEASE "git-1"
 #define CLUTCH_BUILD 14701
 
-#if !defined(CLUTCH_DEV) || !defined(NDEBUG)
-#define CLUTCH_DEV 0
-#endif
+//#if !defined(CLUTCH_DEV) || !defined(NDEBUG)
+#define CLUTCH_DEV 1
+//#endif
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);

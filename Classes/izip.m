@@ -73,6 +73,7 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     if ([fileManager fileExistsAtPath:folder isDirectory:&isDir] && isDir)
     {
         NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:folder] includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:nil errorHandler:^BOOL(NSURL *url, NSError *error) {
+            DEBUG(@"%@", error);
             return YES;
         }];
         

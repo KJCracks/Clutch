@@ -80,7 +80,8 @@ NSMutableArray * get_ios_7_application_list()
                                                                     @"ApplicationBundleID":bundleID,
                                                                     //@"ApplicationSINF":SINF,
                                                                     @"ApplicationExecutableName":executableName,
-                                                                    @"MinimumOSVersion":minimumOSVersion}];
+                                                                    @"MinimumOSVersion":minimumOSVersion,
+                                                                    @"PlugIn": @NO}];
             
             [returnArray addObject:app];
             
@@ -93,7 +94,7 @@ NSMutableArray * get_ios_7_application_list()
 
 NSMutableArray * get_ios_8_application_list()
 {
-    printf("is iOS 8\n");
+    printf("is iOS 8 application listing method brah\n");
     
     NSMutableArray *returnArray = [[[NSMutableArray alloc] init] autorelease];
     NSError *error;
@@ -114,34 +115,100 @@ NSMutableArray * get_ios_8_application_list()
                 
                 NSArray *appContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:appContentPath error:&error];
                 
-                NSString *infoPlist = [NSString stringWithFormat:@"%@Info.plist", appContentPath]; // literally the worst thing since hitler
+                NSString *infoPlist = [appContentPath stringByAppendingString:@"Info.plist"]; // literally the worst thing since hitler
                 NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:infoPlist];
                 
                 NSString *version = info[@"CFBundleVersion"];
+                if (!version)
+                {
+                    version = @"1.0";
+                }
+                
                 NSString *shortVersion = info[@"CFBundleShortVersionString"];
+                // Not used
+                
                 NSString *displayName = info[@"CFBundleDisplayName"];
+                if (!displayName)
+                {
+                    displayName = [obj stringByDeletingPathExtension];
+                }
+                
                 NSString *executable = info[@"CFBundleExecutable"];
-                //                    NSString *sinf;
+                // If this isn't there, then son you got bigger problems
+                
                 NSString *minimumOSVersion = info[@"MinimumOSVersion"];
+                if (!minimumOSVersion)
+                {
+                    minimumOSVersion = @"1.0";
+                }
+                
                 NSString *bundleID = info[@"CFBundleIdentifier"];
                 NSString *container = [NSString stringWithFormat:@"%@%@/", applicationPath, uuid];
                 
+                // Try to detect .appex bundles (App Extension)
+                NSString *pluginPath = [appContentPath stringByAppendingString:@"PlugIns/"];
                 
-                Application *app =[[Application alloc]initWithAppInfo:@{@"ApplicationContainer":container,
-                                                                        @"ApplicationDirectory":obj,
-                                                                        @"ApplicationDisplayName":displayName,
-                                                                        @"ApplicationName":[[obj lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""],
-                                                                        @"RealUniqueID":uuid,
-                                                                        @"ApplicationBasename":obj,
-                                                                        @"ApplicationVersion":version,
-                                                                        @"ApplicationBundleID":bundleID,
-                                                                        //@"ApplicationSINF":SINF,
-                                                                        @"ApplicationExecutableName":executable,
-                                                                        @"MinimumOSVersion":minimumOSVersion}];
+                BOOL extension = [[NSFileManager defaultManager] fileExistsAtPath:pluginPath];
+                if (extension)
+                {
+                    NSArray *plugins = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pluginPath error:nil];
+                    NSMutableDictionary *pluginList = [[[NSMutableDictionary alloc] init] autorelease];
+                    
+                    for (NSString *plugin in plugins)
+                    {
+                        NSString *extensionPath = [pluginPath stringByAppendingString:[NSString stringWithFormat:@"%@/", plugin]];
+                    
+                        NSString *extensionInfoPlistPath = [extensionPath stringByAppendingString:@"Info.plist"];
+                        NSDictionary *extensionInfoPlist = [NSDictionary dictionaryWithContentsOfFile:extensionInfoPlistPath];
+                    
+                        NSString *extensionExecutableName = extensionInfoPlist[@"CFBundleExecutable"];
+                        NSString *extensionName = extensionInfoPlist[@"CFBundleDisplayName"];
+                        
+                        pluginList[plugin] = @{@"ExtensionPath" : extensionPath,
+                                               @"ExtensionExecutableName": extensionExecutableName,
+                                               @"ExtensionName" : extensionName};
+                    }
+                    
+                    Application *app =[[Application alloc]initWithAppInfo:@{
+                                                                            @"ApplicationContainer":container,
+                                                                            @"ApplicationDirectory":obj,
+                                                                            @"ApplicationDisplayName":displayName,
+                                                                            @"ApplicationName":[[obj lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""],
+                                                                            @"RealUniqueID":uuid,
+                                                                            @"ApplicationBasename":obj,
+                                                                            @"ApplicationVersion":version,
+                                                                            @"ApplicationBundleID":bundleID,
+                                                                            //@"ApplicationSINF":SINF,
+                                                                            @"ApplicationExecutableName":executable,
+                                                                            @"MinimumOSVersion":minimumOSVersion,
+                                                                            @"PlugIn": @YES,
+                                                                            @"PlugIns" : pluginList
+                                                                            }];
+                    [returnArray addObject:app];
+                    [app release];
+                }
+                else
+                {
+                        Application *app =[[Application alloc]initWithAppInfo:@{
+                                 @"ApplicationContainer":container,
+                                 @"ApplicationDirectory":obj,
+                                 @"ApplicationDisplayName":displayName,
+                                 @"ApplicationName":[[obj lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""],
+                                 @"RealUniqueID":uuid,
+                                 @"ApplicationBasename":obj,
+                                 @"ApplicationVersion":version,
+                                 @"ApplicationBundleID":bundleID,
+                                 //@"ApplicationSINF":SINF,
+                                 @"ApplicationExecutableName":executable,
+                                 @"MinimumOSVersion":minimumOSVersion,
+                                 @"PlugIn": @NO
+                                 }];
+                    
+                    [returnArray addObject:app];
+                    [app release];
+                }
                 
-                [returnArray addObject:app];
-                [app release];
-                
+                break;
             }
         }
     }

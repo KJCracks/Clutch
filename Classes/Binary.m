@@ -832,6 +832,9 @@
 		MSG(DUMPING_OBTAIN_MACH_PORT);
         
 		// open mach port to the other process
+        
+#warning CRASH HERE - no ptrace, in dyld cache we need to fix thiiiiiis
+    
 		if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
 			VERBOSE("ERROR: Could not obtain mach port, did you sign with proper entitlements?");
 			kill(pid, SIGKILL); // kill the fork

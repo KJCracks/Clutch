@@ -84,6 +84,7 @@
 		BC871C7D17E7122500048636 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		BC871C7E17E7122500048636 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		BC871C8717E7126F00048636 /* Clutch-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Clutch-Info.plist"; path = "Resources/Clutch-Info.plist"; sourceTree = "<group>"; };
+		C8AB92BB19FE4FDF0079B498 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		E9ABBFB6188C809F000B442F /* Clutch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clutch_Prefix.pch; path = Resources/Clutch_Prefix.pch; sourceTree = "<group>"; };
 		E9F95EC5188FF5C60002EBAC /* Packager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packager.h; sourceTree = "<group>"; };
 		E9F95EC6188FF5C60002EBAC /* Packager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packager.m; sourceTree = "<group>"; };
@@ -191,6 +192,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C8AB92BB19FE4FDF0079B498 /* MobileCoreServices.framework */,
 				E9F95ECF189001C40002EBAC /* libarchive.dylib */,
 				ADC6C4871871A7260073C40B /* MobileInstallation.framework */,
 				ADC6C4841871A48D0073C40B /* UIKit.framework */,

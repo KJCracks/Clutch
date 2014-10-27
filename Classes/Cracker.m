@@ -320,7 +320,7 @@ static NSString * genRandStringLength(int len)
 	{
 		//NSError *err;
 		DEBUG(@"Moving iTunesMetadata");
-		DEBUG(@"copy from %@ to %@", [_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"/iTunesMetadata.plist"]);
+		DEBUG(@"copy from %@ to %@", [_app.applicationContainer stringByAppendingString:@"iTunesMetadata.plist"], [[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingString:@"iTunesMetadata.plist"]);
         
         
 		[[NSFileManager defaultManager] copyItemAtPath:[_app.applicationContainer stringByAppendingPathComponent:@"iTunesMetadata.plist"] toPath:[[[_workingDir stringByDeletingLastPathComponent] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"iTunesMetadata.plist"] error:nil];

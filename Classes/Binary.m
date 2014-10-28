@@ -631,10 +631,8 @@
 							[stripHeaders release];
 							return NO;
 						}
-#warning something isn't right here.
-                        FILE* stripBinary = fopen([stripPath UTF8String], "r+");
 
-                        //at this point newbinary is not fopen()'d  - should it be?
+                        FILE* stripBinary = fopen([stripPath UTF8String], "r+");
                         
 						if (![self dumpOrigFile:stripBinary withLocation:stripPath toFile:newbinary withArch:*arch])
 						{

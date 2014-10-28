@@ -185,7 +185,7 @@ void cmd_help()
 	printf("-v                            Shows version\n");
 	printf("-i <IPA> <Binary> <OutBinary> Installs IPA and cracks it\n");
 	printf("-e <InBinary> <OutBinary>     Cracks specific already-installed\n"
-		"                              executable or one that has been\n"
+           "                              executable or one that has been\n"
 			"                              scp'd to the device. (advanced usage)\n");
 	//printf("-d                            Shows debug messages\n");
 	printf("--no-64                       Skips arm64 portions\n");
@@ -267,11 +267,14 @@ int cmd_crack_specific_binary(NSString *inbinary, NSString *outbinary)
     
 	Binary* binary = [[Binary alloc] initWithBinary:inbinary];
     
-	DEBUG(@"outbinary %@", outbinary);
-    
-	[binary crackBinaryToFile:outbinary error:nil];
-    
-	DEBUG(@"apparently crack was ok!?");
+	if(![binary crackBinaryToFile:outbinary error:nil])
+    {
+        [failedCracks addObject:inbinary];
+    }
+    else
+    {
+        [successfulCracks addObject:inbinary];
+    }
     
 	[binary release];
     

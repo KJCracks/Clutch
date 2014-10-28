@@ -190,7 +190,38 @@ static NSString * genRandStringLength(int len)
 		}
 		else
 		{
-			crackOk = TRUE;
+            crackOk = TRUE;
+            
+            // Try crack any plugins
+            if (_app.plugins)
+            {
+                NSArray *plugins = _app.plugins;
+                printf("dumping: found plugins to crack\n");
+                for (int i = 0; i < plugins.count; i++)
+                {
+                    Plugin *plugin = (Plugin *)plugins[i];
+                    
+                    Binary *pluginBinary = [[Binary alloc] initWithBinary:[plugin.pluginPath stringByAppendingString:plugin.pluginExecutableName]];
+                    
+                    NSString *tempPluginBinaryPath = [_workingDir stringByAppendingFormat:@"/PlugIns/%@", plugin.pluginExecutableName];
+                    NSError *error;
+                    
+                    printf("dumping: attempting to crack plugin: %s\n", plugin.pluginName.UTF8String);
+                    if (![pluginBinary crackBinaryToFile:tempPluginBinaryPath error:&error])
+                    {
+                        if (error)
+                        {
+                            NSLog(@"Failed to crack plugin: %@ with error: %@", plugin.pluginExecutableName, error.description);
+                            crackOk = FALSE;
+                        }
+                    }
+                    else
+                    {
+                        printf("Plugin cracked ok?\n");
+                    }
+                }
+                
+            }
          
 			DEBUG(@"crack operation ok!");
 			MSG(PACKAGING_WAITING_ZIP);

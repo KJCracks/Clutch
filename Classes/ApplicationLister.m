@@ -152,7 +152,7 @@ NSMutableArray * get_ios_8_application_list()
                 if (extension)
                 {
                     NSArray *plugins = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pluginPath error:nil];
-                    NSMutableDictionary *pluginList = [[[NSMutableDictionary alloc] init] autorelease];
+                    NSMutableArray *pluginList = [[[NSMutableArray alloc] init] autorelease];
                     
                     for (NSString *plugin in plugins)
                     {
@@ -164,9 +164,27 @@ NSMutableArray * get_ios_8_application_list()
                         NSString *extensionExecutableName = extensionInfoPlist[@"CFBundleExecutable"];
                         NSString *extensionName = extensionInfoPlist[@"CFBundleDisplayName"];
                         
-                        pluginList[plugin] = @{@"ExtensionPath" : extensionPath,
-                                               @"ExtensionExecutableName": extensionExecutableName,
-                                               @"ExtensionName" : extensionName};
+                        if (extensionPath == nil)
+                        {
+                            NSLog(@"Extension path is nil wtf?");
+                        }
+                        
+                        if (extensionExecutableName == nil)
+                        {
+                            NSLog(@"Extension executable name is nil wtf?");
+                        }
+                        
+                        if (extensionName == nil)
+                        {
+                            NSLog(@"Extension name is nil wtf?");
+                        }
+                        
+                        Plugin *plugin = [[[Plugin alloc] init] autorelease];
+                        plugin.pluginPath = extensionPath;
+                        plugin.pluginExecutableName = extensionExecutableName;
+                        plugin.pluginName = extensionName;
+                        
+                        [pluginList addObject:plugin];
                     }
                     
                     Application *app =[[Application alloc]initWithAppInfo:@{

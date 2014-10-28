@@ -45,6 +45,8 @@
 - (UIImage *)applicationIcon;
 - (NSData *)applicationSINF;
 - (NSInteger)appVersion;
+- (NSArray *)plugins;
+- (BOOL)hasPlugin;
 
 
 

@@ -398,8 +398,17 @@
     
 	if (![[NSFileManager defaultManager] copyItemAtPath:oldbinaryPath toPath:finalPath error:NULL])
 	{
-		DEBUG(@"could not copy item!");
-		return NO;
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:[finalPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil])
+        {
+            DEBUG(@"could not create folder!");
+            return NO;
+        }
+        
+        if (![[NSFileManager defaultManager] copyItemAtPath:oldbinaryPath toPath:finalPath error:NULL])
+        {
+            DEBUG(@"could not copy item!");
+            return NO;
+        }
 	}
 
 
@@ -622,8 +631,10 @@
 							[stripHeaders release];
 							return NO;
 						}
-                        
-						FILE* stripBinary = fopen([stripPath UTF8String], "r+");
+#warning something isn't right here.
+                        FILE* stripBinary = fopen([stripPath UTF8String], "r+");
+
+                        //at this point newbinary is not fopen()'d  - should it be?
                         
 						if (![self dumpOrigFile:stripBinary withLocation:stripPath toFile:newbinary withArch:*arch])
 						{
@@ -1078,6 +1089,14 @@
 - (BOOL)dump32bitOrigFile:(FILE *) origin withLocation:(NSString*)originPath toFile:(FILE *) target withTop:(uint32_t) top
 {
 	DEBUG(@"Dumping 32bit segment..");
+    if (target == NULL)
+    {
+        printf("Target is null, wtf? - %s\n", strerror(errno));
+        
+        target = fopen(newbinaryPath.UTF8String, "r+");
+        
+        
+    }
 	fseek(target, top, SEEK_SET); // go the top of the target
 	// we're going to be going to this position a lot so let's save it
 	fpos_t topPosition;

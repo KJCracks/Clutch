@@ -33,7 +33,9 @@
     *applicationExecutableName,        // Clutch-1.4.7
     *minimumOSVersion;                 // 4.3
     
-    NSArray *plugins;                  // Dict of Plugins
+    BOOL hasPlugin;
+    
+    NSArray *plugins;                  // Array of Plugins
     
     NSData *applicationSINF;           // NSData of /SC_Info/$(applicationExecutableName).sinf
     UIImage *applicationIcon;          // 
@@ -64,23 +66,13 @@
         // Extension
         if ([info[@"PlugIn"]  isEqual: @YES])
         {
-            NSDictionary *plugs = info[@"PlugIns"];
-            NSMutableArray *pluginsList = [[NSMutableArray alloc] init];
+            hasPlugin = YES;
             
-            for (NSString *plugName in plugs.allKeys)
-            {
-                NSDictionary *obj = plugs[plugName];
-                
-                Plugin *plugin = [[[Plugin alloc] init] autorelease];
-                plugin.pluginPath = obj[@"ExtensionPath"];
-                plugin.pluginExecutableName = obj[@"ExtensionExecutableName"];
-                plugin.pluginName = obj[@"ExtensionName"];
-                
-                [pluginsList addObject:plugin];
-                [plugin release];
-            }
-            plugins = (NSArray *)pluginsList;
-            [pluginsList release];
+            plugins = info[@"PlugIns"];
+        }
+        else
+        {
+            hasPlugin = NO;
         }
 
         NSMutableDictionary* copy = [[NSMutableDictionary alloc] initWithDictionary:info];
@@ -148,6 +140,16 @@
 - (NSString *)minimumOSVersion
 {
     return minimumOSVersion;
+}
+
+- (NSArray *)plugins
+{
+    return plugins;
+}
+
+- (BOOL)hasPlugin
+{
+    return hasPlugin;
 }
 
 - (NSDictionary *)dictionaryRepresentation

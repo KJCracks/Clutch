@@ -1291,14 +1291,22 @@
 				if ((uint32_t)region_size == crypt.cryptsize) {
 					break;
 				}
+                else if ((uint32_t)region_size >= crypt.cryptsize)
+                {
+                    DEBUG(@"32-bit region_size >= cryptsize");
+                    printf("warning: this binary may be a little dodgy - but it will work.");
+                    break;
+                }
 				__text_start = region_start;
 				region_start += region_size;
 				region_size        = 0;
 			}
+            
 			if (err != KERN_SUCCESS) {
 				free(checksum);
 				DEBUG(@"32-bit mach_vm_error: %u", err);
 				printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
+                printf("DEBUG: mach_vm_error: %s", strerror(errno));
 				kill(pid, SIGKILL);
 				return FALSE;
                 

@@ -21,7 +21,6 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
 NSMutableArray * get_ios_7_application_list()
 {
-    DEBUG(@"iOS 7");
     NSMutableArray *returnArray = [[[NSMutableArray alloc] init] autorelease];
     NSDictionary* options = @{@"ApplicationType":@"User",
                               @"ReturnAttributes":@[@"CFBundleShortVersionString",
@@ -95,7 +94,8 @@ NSMutableArray * get_ios_7_application_list()
 
 NSMutableArray * get_ios_8_application_list()
 {
-    DEBUG(@"iOS 8");
+    printf("is iOS 8 application listing method brah\n");
+    
     NSMutableArray *returnArray = [[[NSMutableArray alloc] init] autorelease];
     NSError *error;
     NSArray *uuids = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:applicationPath error:&error];

@@ -49,7 +49,7 @@ You can also set environment variables to change the behaviour of *Clutch*
 
 Support
 -----------
-If you encounter any issues, please visit our IRC at *irc.rizon.net #Clutch* or open an issue here.
+If you encounter any issues, please visit our IRC at *irc.cracksbykim #Clutch* or open an issue here.
 
 Compiling
 ------------
@@ -65,6 +65,12 @@ Licenses
 [MiniZip](http://www.winimage.com/zLibDll/minizip.html) by Gilles Vollant adn Mathias Svensson.
 
 Clutch is released under the GNU Affero General Public License (http://www.gnu.org/licenses/agpl-3.0.html)
+
+TODO
+-------------
+* Implement libarchive (built and included)
+* Fix a tonne of stuff
+
 
 
 (c) Kim Jong-Cracks 1819-2014

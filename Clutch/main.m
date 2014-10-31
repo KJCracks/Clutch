@@ -13,7 +13,7 @@
  
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 /*
 ....___ _       _       _
@@ -52,6 +52,13 @@
 #import "Application.h"
 #import "Cracker.h"
 
+#define CLUTCH_TITLE @"Clutch"
+#define CLUTCH_MAJOR_VERSION 2
+#define CLUTCH_MINOR_VERSION 0
+#define CLUTCH_GIT_VERSION @"git1"
+#define CLUTCH_DEBUG 1
+
+
 /* Prototypes */
 const static int NOT_YET_IMPLEMENTED = 2;
 struct timeval start, end; // Used to time execution
@@ -86,7 +93,6 @@ int cmd_help()
            "                              executable or one that has been\n"
            "                              scp'd to the device. (advanced usage)\n");
     printf("-d, --debug                       Shows debug messages\n");
-    printf("--no-64                           Skips arm64 portions\n");
     printf("\n");
     
     return 1;
@@ -94,6 +100,20 @@ int cmd_help()
 
 int cmd_crack_app(Application *application, Cracker *cracker)
 {
+    NSLog(@"Application: %@", application.description);
+    
+    if (application.plugins)
+    {
+        for (Plugin *plugin in application.plugins)
+        {
+            NSLog(@"Plugin: %@", plugin.description);
+        }
+    }
+    
+    return EXIT_SUCCESS;
+    
+    
+    
     BOOL success = [cracker crackApplication:application];
     
     if (success)
@@ -136,6 +156,13 @@ int cmd_run_configuration()
     return NOT_YET_IMPLEMENTED;
 }
 
+int cmd_show_version()
+{
+    printf("\n%s %d.%d-%s\n", CLUTCH_TITLE.UTF8String, CLUTCH_MAJOR_VERSION, CLUTCH_MINOR_VERSION, CLUTCH_GIT_VERSION.UTF8String);
+    
+    return EXIT_SUCCESS;
+}
+
 int main(int argc, char * argv[]) {
     @autoreleasepool {
         int returnValue = 0;
@@ -145,13 +172,11 @@ int main(int argc, char * argv[]) {
         if (getuid() != 0)
         {
             /* Clutch needs to be root */
-            printf("Please re-run Clutch as root user.\n");
+            printf("Please re-run %s as root user.\n", CLUTCH_TITLE.UTF8String);
             returnValue = EXIT_FAILURE;
             
             goto endMain;
         }
-        
-        printf("Clutch 2.0 pre-alpha\n");
         
         /* Parse Environment Options */
         NSDictionary *environment = [[NSProcessInfo processInfo] environment];
@@ -161,6 +186,7 @@ int main(int argc, char * argv[]) {
         NSString *binaryName = arguments[0];
         
         NSArray *applications = [ApplicationLister applications];
+//        NSLog(@"%@", applications);
         Cracker *cracker = [Cracker sharedSingleton];
         
         /* Interate through arguments */
@@ -168,17 +194,17 @@ int main(int argc, char * argv[]) {
         {
             NSString *currentArgument = arguments[i];
             
-            /* List installed applications */
-            if (arguments.count == 1 && [currentArgument isEqualToString:binaryName])
-            {
-                returnValue = cmd_list_applications(applications);
-                
-                goto endMain;
-            }
-            
-            /* Skip onto the next argument */
             if ([currentArgument isEqualToString:binaryName])
             {
+                /* List installed applications */
+                if (arguments.count == 1)
+                {
+                    returnValue = cmd_list_applications(applications);
+                    
+                    goto endMain;
+                }
+                
+                /* Skip onto the next argument */
                 continue;
             }
             
@@ -191,10 +217,16 @@ int main(int argc, char * argv[]) {
             }
             else if ([currentArgument isEqualToString:@"-a"])
             {
+                /* Crack All Applications */
                 for (Application *app in applications)
                 {
                     returnValue = cmd_crack_app(app, cracker);
                 }
+            }
+            else if ([currentArgument isEqualToString:@"-v"])
+            {
+                /* Show version information */
+                returnValue = cmd_show_version();
             }
             else
             {
@@ -224,6 +256,7 @@ int main(int argc, char * argv[]) {
                 if (!applicationToCrack)
                 {
                     printf("Unrecogised Identifier: %s.\n", currentArgument.UTF8String);
+                    goto endMain;
                 }
                 
                 returnValue = cmd_crack_app(applicationToCrack, cracker);

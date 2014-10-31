@@ -140,8 +140,9 @@ typedef enum
         NSLog(@"Copy error: %@", error);
         return nil;
     }
-    
-    if (![[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/SC_Info/%@", self.application.directoryPath, self.application.sinf] toPath:[NSString stringWithFormat:@"%@/%@", temporaryPath, self.application.sinf] error:&error])
+#warning refactor this
+    // Find SCI_Info keys
+    /*if (![[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/SC_Info/%@", self.application.directoryPath, self.application.sinf] toPath:[NSString stringWithFormat:@"%@/%@", temporaryPath, self.application.sinf] error:&error])
     {
         NSLog(@"%@", error);
         return nil;
@@ -163,7 +164,7 @@ typedef enum
             NSLog(@"%@", error);
             return nil;
         }
-    }
+    }*/
     
     return temporaryPath;
 }
@@ -634,7 +635,7 @@ typedef enum
         
         while (err == KERN_SUCCESS)
         {
-            err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
+            //err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
             
             NSLog(@"region size: %llu crypt_siz: %u", region_size, crypt.cryptsize);
             
@@ -765,7 +766,8 @@ typedef enum
     fclose(swap_binary);
     
     /* Move the SC_Info keys, this is because caching will make the OS load up the old arch */
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@%@", self.temporaryPath, self.application.sinf]])
+#warning refactor this
+    /*if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@%@", self.temporaryPath, self.application.sinf]])
     {
         if (![[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@%@", self.temporaryPath, self.application.sinf] toPath:[NSString stringWithFormat:@"%@%@_lwork", self.temporaryPath, self.application.sinf] error:nil])
         {
@@ -787,7 +789,7 @@ typedef enum
         {
             NSLog(@"Failed to move SC_INFO supf");
         }
-    }
+    }*/
     
     return TRUE;
 }

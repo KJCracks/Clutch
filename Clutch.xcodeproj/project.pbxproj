@@ -34,11 +34,13 @@
 		C832E83B19B8DED9004ACB81 /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
 		C83F2C9E1997A585006F4352 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83F2CA21997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C83F2CA31997A585006F4352 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C83F2CA31997A585006F4352 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Clutch/main.m; sourceTree = "<group>"; };
 		C83F2CA81997A585006F4352 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C83F2CAE1997A585006F4352 /* ClutchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClutchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83F2CB31997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C83F2CB41997A585006F4352 /* ClutchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClutchTests.m; sourceTree = "<group>"; };
+		C8C11D0A1A02930C0023C80F /* LSApplicationProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSApplicationProxy.h; sourceTree = "<group>"; };
+		C8C11D0B1A02930C0023C80F /* LSApplicationWorkspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSApplicationWorkspace.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,8 @@
 		C83F2C951997A585006F4352 = {
 			isa = PBXGroup;
 			children = (
+				C83F2CA31997A585006F4352 /* main.m */,
+				C8C11D0C1A0293170023C80F /* Application Listing */,
 				C832E83A19B8DED9004ACB81 /* Binary.h */,
 				C832E83B19B8DED9004ACB81 /* Binary.m */,
 				C832E83719B8D6A1004ACB81 /* Cracker.h */,
@@ -96,7 +100,6 @@
 			isa = PBXGroup;
 			children = (
 				C83F2CA21997A585006F4352 /* Info.plist */,
-				C83F2CA31997A585006F4352 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -116,6 +119,15 @@
 				C83F2CB31997A585006F4352 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C8C11D0C1A0293170023C80F /* Application Listing */ = {
+			isa = PBXGroup;
+			children = (
+				C8C11D0A1A02930C0023C80F /* LSApplicationProxy.h */,
+				C8C11D0B1A02930C0023C80F /* LSApplicationWorkspace.h */,
+			);
+			name = "Application Listing";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -41,7 +41,7 @@
 
 - (BOOL)crackApplication:(Application *)application
 {
-    BOOL success = [self performPreflightChecks:application];
+    /*BOOL success = [self performPreflightChecks:application];
     
     if (success)
     {
@@ -49,7 +49,8 @@
         return EXIT_SUCCESS;
     }
     
-    return EXIT_FAILURE;
+    return EXIT_FAILURE;*/
+    return 0;
 }
 
 - (BOOL)performPreflightChecks:(Application *)application

@@ -1114,6 +1114,7 @@
 	BOOL foundCrypt = FALSE;
 	BOOL foundSignature = FALSE;
 	BOOL foundStartText = FALSE;
+    // HMM
 	uint64_t __text_start = 0;
 	//uint64_t __text_size = 0;
 	DEBUG(@"32bit dumping: offset %u", top);

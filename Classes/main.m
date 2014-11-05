@@ -269,9 +269,18 @@ int cmd_crack_specific_binary(NSString *inbinary, NSString *outbinary)
     
 	DEBUG(@"outbinary %@", outbinary);
     
-	[binary crackBinaryToFile:outbinary error:nil];
+	BOOL success = [binary crackBinaryToFile:outbinary error:nil];
     
-	DEBUG(@"apparently crack was ok!?");
+    if (success)
+    {
+        [successfulCracks addObject:outbinary];
+        DEBUG(@"apparently crack was ok!?");
+    }
+    else
+    {
+        [failedCracks addObject:outbinary];
+        DEBUG(@"apparently crack wasn't ok!?");
+    }
     
 	[binary release];
     

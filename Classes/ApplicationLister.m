@@ -94,7 +94,7 @@ NSMutableArray * get_ios_7_application_list()
 
 NSMutableArray * get_ios_8_application_list()
 {
-    printf("is iOS 8 application listing method brah\n");
+    DEBUG(@"iOS 8");
     
     NSMutableArray *returnArray = [[[NSMutableArray alloc] init] autorelease];
     NSError *error;

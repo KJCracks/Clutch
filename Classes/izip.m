@@ -85,16 +85,9 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
             NSString *fullPath;
             [theURL getResourceValue:&fullPath forKey:NSURLPathKey error:NULL];
             
-            //NSLog(@"++++++++++++++++>%@",fullPath);
-            
             NSMutableArray *comp = [NSMutableArray arrayWithArray:[fullPath pathComponents]];
             
-            //fix iOS 8 bug
-            if ([UIDevice currentDevice].systemVersion.floatValue >= 8.0){
-                [comp removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 8)]];
-            }else{
-                [comp removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 5)]];
-            }
+            [comp removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 5)]];
             
             if (comp.count > 1)
             {
@@ -111,8 +104,6 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
                 [aNewPath appendFormat:@"%@%@",i==0?@"":@"/",comp[i]];
             }
             
-            //NSLog(@"==============>%@",aNewPath);
-            
             [subpaths addObject:aNewPath];
             
             [aNewPath release];
@@ -124,32 +115,9 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
     for(NSString *path in subpaths)
     {
         
-        //NSLog(@"------------------>%@",path);
-        
-        if ([path hasPrefix:[appGUID stringByAppendingPathComponent:@"Documents"]]||
-            [path hasPrefix:[appGUID stringByAppendingPathComponent:@"Library"]]||
-            [path hasPrefix:[appGUID stringByAppendingPathComponent:@"tmp"]]||
-            ([path rangeOfString:@"SC_Info"].location != NSNotFound)||
-            [path isEqualToString:@"iTunesArtwork"] ||
-            [path isEqualToString:@"iTunesMetadata.plist"] ||
-            [path hasSuffix:binary]
-            )
+        if ([path hasPrefix:[appGUID stringByAppendingPathComponent:@"Documents"]]||[path hasPrefix:[appGUID stringByAppendingPathComponent:@"Library"]]||[path hasPrefix:[appGUID stringByAppendingPathComponent:@"tmp"]]||([path rangeOfString:@"SC_Info"].location != NSNotFound)||[path hasSuffix:binary])
         {
             continue;
-        }
-        //check plugin
-        if (_cracker->_app.hasPlugin) {
-            BOOL should_continue = NO;
-            NSArray *pa = _cracker->_app.plugins;
-            for (Plugin *p in pa ) {
-                if ([path hasSuffix:p.pluginExecutableName]) {
-                    should_continue = YES;
-                    break;
-                }
-            }
-            if (should_continue) {
-                continue;
-            }
         }
         
         NSString *longPath = [folder stringByAppendingPathComponent:path];

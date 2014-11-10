@@ -145,11 +145,31 @@ NSMutableArray * get_ios_8_application_list()
                 NSString *bundleID = info[@"CFBundleIdentifier"];
                 NSString *container = [NSString stringWithFormat:@"%@%@/", applicationPath, uuid];
                 
+                NSDictionary* _appInfo =  @{
+                                                                        @"ApplicationContainer":container,
+                                                                        @"ApplicationDirectory":obj,
+                                                                        @"ApplicationDisplayName":displayName,
+                                                                        @"ApplicationName":[[obj lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""],
+                                                                        @"RealUniqueID":uuid,
+                                                                        @"ApplicationBasename":obj,
+                                                                        @"ApplicationVersion":version,
+                                                                        @"ApplicationBundleID":bundleID,
+                                                                        //@"ApplicationSINF":SINF,
+                                                                        @"ApplicationExecutableName":executable,
+                                                                        @"MinimumOSVersion":minimumOSVersion,
+                                                                        @"PlugIn": @NO,
+                                                                        //@"PlugIns" : pluginList
+                                                                        @"Framework": @NO,
+                                                                        //@"Frameworks": frameworkList
+                                                                        };
+                
+                NSMutableDictionary* appInfo = [[NSMutableDictionary alloc] initWithDictionary:_appInfo];
+                
                 // Try to detect .appex bundles (App Extension)
                 NSString *pluginPath = [appContentPath stringByAppendingString:@"PlugIns/"];
                 
-                BOOL extension = [[NSFileManager defaultManager] fileExistsAtPath:pluginPath];
-                if (extension)
+                BOOL hasPlugin = [[NSFileManager defaultManager] fileExistsAtPath:pluginPath];
+                if (hasPlugin)
                 {
                     NSArray *plugins = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pluginPath error:nil];
                     NSMutableArray *pluginList = [[[NSMutableArray alloc] init] autorelease];
@@ -164,10 +184,10 @@ NSMutableArray * get_ios_8_application_list()
                             continue;
                         }
                         NSString *extensionPath = [pluginPath stringByAppendingString:[NSString stringWithFormat:@"%@/", plugin]];
-                    
+                        
                         NSString *extensionInfoPlistPath = [extensionPath stringByAppendingString:@"Info.plist"];
                         NSDictionary *extensionInfoPlist = [NSDictionary dictionaryWithContentsOfFile:extensionInfoPlistPath];
-                    
+                        
                         NSString *extensionExecutableName = extensionInfoPlist[@"CFBundleExecutable"];
                         NSString *extensionName = extensionInfoPlist[@"CFBundleDisplayName"];
                         
@@ -186,53 +206,77 @@ NSMutableArray * get_ios_8_application_list()
                             NSLog(@"Extension name is nil wtf?");
                         }
                         
-                        Plugin *plugin = [[[Plugin alloc] init] autorelease];
-                        plugin.pluginPath = extensionPath;
-                        plugin.pluginExecutableName = extensionExecutableName;
-                        plugin.pluginName = extensionName;
+                        Extension *plugin = [[[Extension alloc] init] autorelease];
+                        plugin.path = extensionPath;
+                        plugin.executableName = extensionExecutableName;
+                        plugin.name = extensionName;
                         
                         [pluginList addObject:plugin];
                     }
+                    appInfo[@"PlugIn"] = @YES;
+                    appInfo[@"PlugIns"] = pluginList;
                     
-                    Application *app =[[Application alloc]initWithAppInfo:@{
-                                                                            @"ApplicationContainer":container,
-                                                                            @"ApplicationDirectory":obj,
-                                                                            @"ApplicationDisplayName":displayName,
-                                                                            @"ApplicationName":[[obj lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""],
-                                                                            @"RealUniqueID":uuid,
-                                                                            @"ApplicationBasename":obj,
-                                                                            @"ApplicationVersion":version,
-                                                                            @"ApplicationBundleID":bundleID,
-                                                                            //@"ApplicationSINF":SINF,
-                                                                            @"ApplicationExecutableName":executable,
-                                                                            @"MinimumOSVersion":minimumOSVersion,
-                                                                            @"PlugIn": @YES,
-                                                                            @"PlugIns" : pluginList
-                                                                            }];
-                    [returnArray addObject:app];
-                    [app release];
-                }
-                else
-                {
-                        Application *app =[[Application alloc]initWithAppInfo:@{
-                                 @"ApplicationContainer":container,
-                                 @"ApplicationDirectory":obj,
-                                 @"ApplicationDisplayName":displayName,
-                                 @"ApplicationName":[[obj lastPathComponent] stringByReplacingOccurrencesOfString:@".app" withString:@""],
-                                 @"RealUniqueID":uuid,
-                                 @"ApplicationBasename":obj,
-                                 @"ApplicationVersion":version,
-                                 @"ApplicationBundleID":bundleID,
-                                 //@"ApplicationSINF":SINF,
-                                 @"ApplicationExecutableName":executable,
-                                 @"MinimumOSVersion":minimumOSVersion,
-                                 @"PlugIn": @NO
-                                 }];
-                    
-                    [returnArray addObject:app];
-                    [app release];
                 }
                 
+                // Try to detect .framework bundles
+                
+                NSString *frameworkPath = [appContentPath stringByAppendingString:@"Frameworks/"];
+                
+                BOOL hasFramework = [[NSFileManager defaultManager] fileExistsAtPath:frameworkPath];
+                
+                if (hasFramework)
+                {
+                    NSArray *dir = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:frameworkPath error:nil];
+                    NSMutableArray *frameworkList = [[[NSMutableArray alloc] init] autorelease];
+                    
+                    for (NSString *framework in dir)
+                    {
+                        if ([[framework pathExtension] isEqualToString:@"framework"]) {
+                            NSLog(@"yay found framework!");
+                        }
+                        else {
+                            //NSLog(@"no framework found at path %@ %@", frameworkPath, framework);
+                            // too many swift dylibs
+                            continue;
+                        }
+                        NSString *extensionPath = [frameworkPath stringByAppendingString:[NSString stringWithFormat:@"%@/", framework]];
+                        
+                        NSString *extensionInfoPlistPath = [extensionPath stringByAppendingString:@"Info.plist"];
+                        NSDictionary *extensionInfoPlist = [NSDictionary dictionaryWithContentsOfFile:extensionInfoPlistPath];
+                        
+                        NSString *extensionExecutableName = extensionInfoPlist[@"CFBundleExecutable"];
+                        NSString *extensionName = extensionInfoPlist[@"CFBundleName"]; //Frameworks don't have DisplayName, weird
+                        
+                        if (extensionPath == nil)
+                        {
+                            NSLog(@"Extension path is nil wtf?");
+                        }
+                        
+                        if (extensionExecutableName == nil)
+                        {
+                            NSLog(@"Extension executable name is nil wtf?");
+                        }
+                        
+                        if (extensionName == nil)
+                        {
+                            NSLog(@"Extension name is nil wtf?");
+                        }
+                        
+                        Extension *framework = [[[Extension alloc] init] autorelease];
+                        framework.path = extensionPath;
+                        framework.executableName = extensionExecutableName;
+                        framework.name = extensionName;
+                        
+                        [frameworkList addObject:framework];
+                    }
+                    appInfo[@"Framework"] = @YES;
+                    appInfo[@"Frameworks"] = frameworkList;
+                    
+                }
+                Application *app =[[Application alloc]initWithAppInfo:appInfo];
+                [returnArray addObject:app];
+                NSLog(@"added app %@", app.applicationDisplayName);
+                [app release];
                 break;
             }
         }
@@ -253,10 +297,10 @@ NSArray * get_application_list(BOOL sort) {
         returnArray = get_ios_7_application_list();
     }
     
-	if ([returnArray count] == 0)
+    if ([returnArray count] == 0)
     {
-		return nil;
-	}
+        return nil;
+    }
     
     if (sort)
     {
@@ -286,7 +330,7 @@ NSArray * get_application_list(BOOL sort) {
     
     [cacheArray release];
     
-	return (NSArray *) returnArray;
+    return (NSArray *) returnArray;
 }
 
 @implementation ApplicationLister
@@ -376,7 +420,7 @@ NSArray * get_application_list(BOOL sort) {
         {
             return get_application_list(YES);
         }
-
+        
         NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
         
         NSMutableArray *appsArray = [[NSMutableArray new] autorelease];

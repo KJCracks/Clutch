@@ -141,8 +141,8 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
         if (_cracker->_app.hasPlugin) {
             BOOL should_continue = NO;
             NSArray *pa = _cracker->_app.plugins;
-            for (Plugin *p in pa ) {
-                if ([path hasSuffix:p.pluginExecutableName]) {
+            for (Extension *p in pa ) {
+                if ([path hasSuffix:p.executableName]) {
                     should_continue = YES;
                     break;
                 }
@@ -151,6 +151,20 @@ void zip_original(ZipArchive *archiver, NSString *folder, NSString *binary, NSSt
                 continue;
             }
         }
+        
+       /* if (_cracker->_app.hasFramework) {
+            BOOL should_continue = NO;
+            NSArray *pa = _cracker->_app.frameworks;
+            for (Extension *p in pa ) {
+                if ([path hasSuffix:p.executableName]) {
+                    should_continue = YES;
+                    break;
+                }
+            }
+            if (should_continue) {
+                continue;
+            }
+        }*/
         
         NSString *longPath = [folder stringByAppendingPathComponent:path];
         

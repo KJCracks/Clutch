@@ -47,6 +47,8 @@
 - (NSInteger)appVersion;
 - (NSArray *)plugins;
 - (BOOL)hasPlugin;
+- (NSArray *)frameworks;
+- (BOOL)hasFramework;
 
 
 
@@ -55,11 +57,11 @@
 
 @end
 
-@interface Plugin : NSObject
+@interface Extension : NSObject
 
 // Properties
-@property (nonatomic, retain) NSString *pluginPath;
-@property (nonatomic, retain) NSString *pluginName;
-@property (nonatomic, retain) NSString *pluginExecutableName;
+@property (nonatomic, retain) NSString *path;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *executableName;
 
 @end

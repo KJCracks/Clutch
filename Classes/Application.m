@@ -9,14 +9,14 @@
 #import "Application.h"
 #import "Binary.h"
 
-@interface Plugin ()
+@interface Extension ()
 {
     
 }
 
 @end
 
-@implementation Plugin
+@implementation Extension
 
 @end
 
@@ -34,10 +34,10 @@
     *minimumOSVersion;                 // 4.3
     
     BOOL hasPlugin;
-    BOOL hasExtension;
+    BOOL hasFramework;
     
     NSArray *plugins;                  // Array of Plugins
-    NSArray *extension;                // Array of Extensions
+    NSArray *frameworks;                // Array of Extensions
     
     NSData *applicationSINF;           // NSData of /SC_Info/$(applicationExecutableName).sinf
     UIImage *applicationIcon;          // 
@@ -77,9 +77,24 @@
             hasPlugin = NO;
         }
 
-        NSMutableDictionary* copy = [[NSMutableDictionary alloc] initWithDictionary:info];
-        [copy removeObjectForKey:@"ApplicationSINF"]; //slow
-        dictRep = copy;
+        if ([info[@"Framework"]  isEqual: @YES])
+        {
+            hasFramework = YES;
+            frameworks = info[@"Frameworks"];
+        }
+        else
+        {
+            hasFramework = NO;
+        }
+        
+        if ([info objectForKey:@"ApplicationSINF"]) {
+            NSMutableDictionary* copy = [[NSMutableDictionary alloc] initWithDictionary:info];
+            [copy removeObjectForKey:@"ApplicationSINF"]; //slow
+            dictRep = copy;
+        }
+        else {
+            dictRep = info;
+        }
         isCracking = NO;
         _info = info;
         
@@ -157,6 +172,12 @@
 - (NSDictionary *)dictionaryRepresentation
 {
     return dictRep;
+}
+- (NSArray *)frameworks {
+    return frameworks;
+}
+- (BOOL)hasFramework {
+    return hasFramework;
 }
 
 - (NSString *)description {

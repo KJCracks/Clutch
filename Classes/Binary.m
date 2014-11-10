@@ -813,6 +813,7 @@
 	MSG(DUMPING_OBTAIN_PTRACE);
     
 	// open handle to dylib loader
+    
 	void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW);
 	// load ptrace library into handle
 	ptrace_ptr_t ptrace = dlsym(handle, "ptrace");

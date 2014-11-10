@@ -14,6 +14,7 @@
     BOOL overdriveEnabled;
     BOOL skip_64;
     BOOL patchPIE;
+    BOOL isFramework;
 }
 
 - (id)initWithBinary:(NSString *)path;

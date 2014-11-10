@@ -199,20 +199,20 @@ static NSString * genRandStringLength(int len)
                 printf("dumping: found plugins to crack\n");
                 for (int i = 0; i < plugins.count; i++)
                 {
-                    Plugin *plugin = (Plugin *)plugins[i];
+                    Extension *plugin = (Extension *)plugins[i];
                     
-                    Binary *pluginBinary = [[Binary alloc] initWithBinary:[plugin.pluginPath stringByAppendingString:plugin.pluginExecutableName]];
+                    Binary *pluginBinary = [[Binary alloc] initWithBinary:[plugin.path stringByAppendingString:plugin.executableName]];
                     
-                    NSString *tempPluginBinaryPath = [_workingDir stringByAppendingFormat:@"/PlugIns/%@/%@", [plugin.pluginPath lastPathComponent], plugin.pluginExecutableName];
+                    NSString *tempPluginBinaryPath = [_workingDir stringByAppendingFormat:@"/PlugIns/%@/%@", [plugin.path lastPathComponent], plugin.executableName];
                     NSLog(@"### TEMP PLUGIN PATH %@ ####", tempPluginBinaryPath);
                     NSError *error;
                     
-                    printf("dumping: attempting to crack plugin: %s\n", plugin.pluginName.UTF8String);
+                    printf("dumping: attempting to crack plugin: %s\n", plugin.name.UTF8String);
                     if (![pluginBinary crackBinaryToFile:tempPluginBinaryPath error:&error])
                     {
                         if (error)
                         {
-                            NSLog(@"Failed to crack plugin: %@ with error: %@", plugin.pluginExecutableName, error.description);
+                            NSLog(@"Failed to crack plugin: %@ with error: %@", plugin.executableName, error.description);
                             crackOk = FALSE;
                         }
                     }
@@ -223,6 +223,39 @@ static NSString * genRandStringLength(int len)
                 }
                 
             }
+            
+            if (_app.frameworks)
+            {
+                NSArray *frameworks = _app.frameworks;
+                printf("dumping: found frameworks to crack\n");
+                NSLog(@"frameworks %@", frameworks);
+                for (Extension* framework in frameworks) {
+                    NSLog(@"extension wow %@ %@", framework.path, framework.executableName);
+                    Binary *frameworkBinary = [[Binary alloc] initWithBinary:[framework.path stringByAppendingString:framework.executableName]];
+                    
+                    NSString *tempFrameworkBinaryPath = [_workingDir stringByAppendingFormat:@"/Frameworks/%@/%@", [framework.path lastPathComponent], framework.executableName];
+                    NSLog(@"### TEMP PLUGIN PATH %@ ####", tempFrameworkBinaryPath);
+                    NSError *error;
+                    
+                    printf("dumping: attempting to crack plugin: %s\n", framework.name.UTF8String);
+                    if (![frameworkBinary crackBinaryToFile:tempFrameworkBinaryPath error:&error])
+                    {
+                        if (error)
+                        {
+                            NSLog(@"Failed to crack framework: %@ with error: %@", framework.executableName, error.description);
+                            crackOk = FALSE;
+                        }
+                    }
+                    else
+                    {
+                        printf("Framework cracked ok?\n");
+                    }
+
+                }
+            }
+            
+            
+            
          
 			DEBUG(@"crack operation ok!");
 			MSG(PACKAGING_WAITING_ZIP);

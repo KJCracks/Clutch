@@ -34,8 +34,10 @@
     *minimumOSVersion;                 // 4.3
     
     BOOL hasPlugin;
+    BOOL hasExtension;
     
     NSArray *plugins;                  // Array of Plugins
+    NSArray *extension;                // Array of Extensions
     
     NSData *applicationSINF;           // NSData of /SC_Info/$(applicationExecutableName).sinf
     UIImage *applicationIcon;          // 

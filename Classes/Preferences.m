@@ -142,7 +142,7 @@ NSString* preferences_location = prefsPath;
 - (BOOL) useNativeZip
 {
     if (![self boolForKey:@"UseNativeZip"]) {
-        if ((![[NSFileManager defaultManager] fileExistsAtPath:@"/usr/bin/zip"]) || (![[NSFileManager defaultManager] fileExistsAtPath:@"/bin/zip"])) {
+        if ((![[NSFileManager defaultManager] fileExistsAtPath:@"/usr/bin/zip"]) && (![[NSFileManager defaultManager] fileExistsAtPath:@"/bin/zip"])) {
             printf("\nwarning: could not find zip! using built-in zipping library\n\n");
             return true;
         }

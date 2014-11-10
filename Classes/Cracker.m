@@ -203,7 +203,8 @@ static NSString * genRandStringLength(int len)
                     
                     Binary *pluginBinary = [[Binary alloc] initWithBinary:[plugin.pluginPath stringByAppendingString:plugin.pluginExecutableName]];
                     
-                    NSString *tempPluginBinaryPath = [_workingDir stringByAppendingFormat:@"/PlugIns/%@", plugin.pluginExecutableName];
+                    NSString *tempPluginBinaryPath = [_workingDir stringByAppendingFormat:@"/PlugIns/%@/%@", [plugin.pluginPath lastPathComponent], plugin.pluginExecutableName];
+                    NSLog(@"### TEMP PLUGIN PATH %@ ####", tempPluginBinaryPath);
                     NSError *error;
                     
                     printf("dumping: attempting to crack plugin: %s\n", plugin.pluginName.UTF8String);
@@ -444,7 +445,11 @@ void generateMetadata(NSString *origPath,NSString *output)
     
 	NSMutableDictionary *metadataPlist = [NSMutableDictionary dictionaryWithContentsOfFile:origPath];
     
-	NSDictionary *censorList = [NSDictionary dictionaryWithObjectsAndKeys:fake_email, @"appleId", fake_purchase_date, @"purchaseDate", @"", @"userName", nil];
+    NSDictionary *censorList = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                fake_email, @"appleId",
+                                                                fake_purchase_date, @"purchaseDate",
+                                                                @"", @"userName",
+                                                                nil];
     
 	if ([[Preferences sharedInstance] boolForKey:@"CheckMetadata"])
 	{

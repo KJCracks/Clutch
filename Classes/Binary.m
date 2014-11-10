@@ -54,6 +54,7 @@
 
 - (id)initWithBinary:(NSString *)thePath
 {
+    NSLog(@"initialized binary %@", thePath);
     
 	if (![NSFileManager.defaultManager fileExistsAtPath:thePath])
 	{

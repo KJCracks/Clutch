@@ -12,7 +12,7 @@
  
      ttwj - post 1.2.6
      NinjaLikesCheez - post 1.2.6
-     Zorro - fixes, features, code (1.4)
+     Zorro, Tash  - fixes, features, code
  
      dissident - The original creator of Clutch (pre 1.2.6)
      Nighthawk - Code contributor (pre 1.2.6)
@@ -20,6 +20,14 @@
      TheSexyPenguin - Inspiration (not really)
      dildog - Refactoring and code cleanup (Clean up, refactoring, new features)
  
+
+     Translators:
+  
+     hotsjf - Chinese
+     DoubleDoughnut - Serbian
+     OdNairy - Russian 
+     iD70my - Arabic
+
      Thanks to: Nighthawk, puy0, rwxr-xr-x, Flox, Flawless, FloydianSlip, Crash-X, MadHouse, Rastignac, aulter, icefire
 
 

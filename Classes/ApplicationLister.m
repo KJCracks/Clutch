@@ -156,6 +156,13 @@ NSMutableArray * get_ios_8_application_list()
                     
                     for (NSString *plugin in plugins)
                     {
+                        if ([[plugin pathExtension] isEqualToString:@"appex"]) {
+                            NSLog(@"yay found extension!");
+                        }
+                        else {
+                            NSLog(@"no extension found at path %@", plugin);
+                            continue;
+                        }
                         NSString *extensionPath = [pluginPath stringByAppendingString:[NSString stringWithFormat:@"%@/", plugin]];
                     
                         NSString *extensionInfoPlistPath = [extensionPath stringByAppendingString:@"Info.plist"];

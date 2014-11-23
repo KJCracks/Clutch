@@ -412,7 +412,7 @@ static NSString * const ar_locale[] = {
     [DUMPING_PREPARE_DUMP] = @"فضلا إنتظر: التحضير للتفريغ",
     [DUMPING_ASLR_ENABLED] = @"فضلا إنتظر: ASLR تفعيل، وتحديد موقع تفريغ حيوي",
     [DUMPING_PERFORM_DUMP] = @"فضلا إنتظر: أداء التفريغ",
-    [DUMPING_PATCH_CRYPTID] = @"فظلا إنتظر: مصحح cryptid",
+    [DUMPING_PATCH_CRYPTID] = @"فضلا إنتظر: مصحح cryptid",
     [DUMPING_NEW_CHECKSUM] = @" كتابة التطبيق الاختباري الجديد",
     
     [SWAP_CRACKING_PORTION] = @"إنتظر: جاري التكريك تم تكريك%u جزء",

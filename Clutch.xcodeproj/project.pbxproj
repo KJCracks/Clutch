@@ -10,6 +10,7 @@
 		C80B777E199E8F38003723DB /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = C80B777D199E8F38003723DB /* Application.m */; };
 		C832E83919B8D6A1004ACB81 /* Cracker.m in Sources */ = {isa = PBXBuildFile; fileRef = C832E83819B8D6A1004ACB81 /* Cracker.m */; };
 		C832E83C19B8DED9004ACB81 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = C832E83B19B8DED9004ACB81 /* Binary.m */; };
+		C839B9131A2376C000195E99 /* out.m in Sources */ = {isa = PBXBuildFile; fileRef = C839B9121A2376C000195E99 /* out.m */; };
 		C83F2CA41997A585006F4352 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CA31997A585006F4352 /* main.m */; };
 		C83F2CA91997A585006F4352 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C83F2CA81997A585006F4352 /* Images.xcassets */; };
 		C83F2CB51997A585006F4352 /* ClutchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C83F2CB41997A585006F4352 /* ClutchTests.m */; };
@@ -32,6 +33,8 @@
 		C832E83819B8D6A1004ACB81 /* Cracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cracker.m; sourceTree = "<group>"; };
 		C832E83A19B8DED9004ACB81 /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
 		C832E83B19B8DED9004ACB81 /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
+		C839B9111A2376C000195E99 /* out.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = out.h; sourceTree = "<group>"; };
+		C839B9121A2376C000195E99 /* out.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = out.m; sourceTree = "<group>"; };
 		C83F2C9E1997A585006F4352 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83F2CA21997A585006F4352 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C83F2CA31997A585006F4352 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Clutch/main.m; sourceTree = "<group>"; };
@@ -64,6 +67,8 @@
 		C83F2C951997A585006F4352 = {
 			isa = PBXGroup;
 			children = (
+				C839B9111A2376C000195E99 /* out.h */,
+				C839B9121A2376C000195E99 /* out.m */,
 				C83F2CA31997A585006F4352 /* main.m */,
 				C8C11D0C1A0293170023C80F /* Application Listing */,
 				C832E83A19B8DED9004ACB81 /* Binary.h */,
@@ -228,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C80B777E199E8F38003723DB /* Application.m in Sources */,
+				C839B9131A2376C000195E99 /* out.m in Sources */,
 				C83F2CA41997A585006F4352 /* main.m in Sources */,
 				C832E83C19B8DED9004ACB81 /* Binary.m in Sources */,
 				C832E83919B8D6A1004ACB81 /* Cracker.m in Sources */,

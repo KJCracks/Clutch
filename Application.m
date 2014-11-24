@@ -14,6 +14,7 @@
 //#import <dlfcn.h>
 #include <objc/runtime.h> // For objc_getClass
 //#import "LSApplicationProxy.h"
+#import "out.h"
 
 static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/Caches/com.apple.mobile.installation.plist";
 
@@ -37,29 +38,20 @@ static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/C
 
 @end
 
-//
-//  Application Lister
-//
-
 #pragma mark - Application Lister Implementation
 
 @implementation ApplicationLister
 
 + (NSArray *)applications
 {
-    NSArray *returnArray = [[[NSArray alloc] init] autorelease];
-    
     if ([UIDevice currentDevice].systemVersion.floatValue >= 8.0)
     {
-        returnArray = [self applicationListForiOS8];
-        NSLog(@"%@", returnArray);
+        return [self applicationListForiOS8];
     }
     else
     {
-        returnArray = [self applicationListForiOS7];
+        return [self applicationListForiOS7];
     }
-    
-    return returnArray;
 }
 
 #pragma mark - Listing for iOS 8
@@ -122,88 +114,7 @@ static NSString * const MobileInstallationPath = @"/private/var/mobile/Library/C
                 
                 [pluginArray addObject:plugin];
             }
-            
-            BOOL fatal = NO;
-            if (!container)
-            {
-                fatal = YES;
-            }
-            if (!binaryPath)
-            {
-                fatal = YES;
-            }
-            if (!displayName)
-            {
-                if (name)
-                {
-                    displayName = name;
-                }
-                else
-                {
-                    displayName = @"NoDisplayName";
-                }
-            }
-            if (!name)
-            {
-                if (displayName)
-                {
-                    name = displayName;
-                }
-                else
-                {
-                    name = @"NoName";
-                }
-            }
-            if (!directoryPath)
-            {
-                fatal = YES;
-            }
-            if (!realUniqueID)
-            {
-                fatal = YES;
-            }
-            if (!version)
-            {
-                if (shortVersion)
-                {
-                    version = shortVersion;
-                }
-                else
-                {
-                    version = @"1.0";
-                }
-            }
-            if (!shortVersion)
-            {
-                if (version)
-                {
-                    shortVersion = version;
-                }
-                else
-                {
-                    shortVersion = @"1.0";
-                }
-            }
-            if (!bundleID)
-            {
-                bundleID = @"com.apple.application";
-            }
-            if (!executableName)
-            {
-                fatal = YES;
-            }
-            if (!minimumOSVersion)
-            {
-                minimumOSVersion = @"Unknown";
-            }
-            
-            if (fatal)
-            {
-                printf("warning: Couldn't find needed information for application: %s\n", name.UTF8String);
-                
-                continue;
-            }
-            
+                        
             Application *app = [[[Application alloc] init] autorelease];
             app.container = container;
             app.binaryPath = binaryPath;

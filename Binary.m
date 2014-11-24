@@ -8,6 +8,8 @@
 
 #import "Binary.h"
 #import "Application.h"
+#import "out.h"
+
 
 #import <mach-o/loader.h>
 #import <mach-o/fat.h>
@@ -181,7 +183,7 @@ typedef enum
 
 - (void)dump
 {
-    printf("Beginning Dumping...\n");
+    NOTIFY("Beginning Dumping...");
     
     NSError *error;
     FILE *binary_file = fopen(self.binaryPath.UTF8String, "r+");
@@ -189,7 +191,7 @@ typedef enum
     
     if (binary_file == NULL || target_file == NULL)
     {
-        printf("There was an error opening the binary file(s) for dumping\n");
+        ERROR("There was an error opening the binary file(s) for dumping");
         
         return;
     }

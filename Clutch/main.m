@@ -51,11 +51,12 @@
 
 #import "Application.h"
 #import "Cracker.h"
+#import "out.h"
 
 #define CLUTCH_TITLE @"Clutch"
 #define CLUTCH_MAJOR_VERSION 2
 #define CLUTCH_MINOR_VERSION 0
-#define CLUTCH_GIT_VERSION @"git1"
+#define CLUTCH_GIT_VERSION @"git-1"
 #define CLUTCH_DEBUG 1
 
 
@@ -63,7 +64,7 @@
 const static int NOT_YET_IMPLEMENTED = 2;
 struct timeval start, end; // Used to time execution
 
-int diff_ms(struct timeval t1, struct timeval t2);
+int get_ms_difference(struct timeval t1, struct timeval t2);
 
 int cmd_version();
 int cmd_help();
@@ -74,11 +75,24 @@ int cmd_run_configuration();
 
 /* Functions */
 
-int diff_ms(struct timeval t1, struct timeval t2)
+/**
+ *  Get the difference in milliseconds between two timevals
+ *
+ *  @param t1 timeval struct 'end'
+ *  @param t2 timeval struct 'start'
+ *
+ *  @return difference between t1 and t2 in milliseconds
+ */
+int get_ms_difference(struct timeval t1, struct timeval t2)
 {
-    return (int)((((t1.tv_sec - t2.tv_sec) * 1000000) + (t1.tv_usec - t2.tv_usec)) / 1000);
+    return (int)((((((t1.tv_sec - t2.tv_sec) * 1000000) + (t1.tv_usec - t2.tv_usec)) / 1000) + 500.0f) / 1000.0f);
 }
 
+/**
+ *  Prints the help menu (in English - eventually this will be localized)
+ *
+ *  @return EXIT_SUCCESS
+ */
 int cmd_help()
 {
     printf("Clutch Help\n");
@@ -92,27 +106,30 @@ int cmd_help()
     printf("-e <InBinary> <OutBinary>     Cracks specific already-installed\n"
            "                              executable or one that has been\n"
            "                              scp'd to the device. (advanced usage)\n");
-    printf("-d, --debug                       Shows debug messages\n");
+    printf("--debug                       Shows debug messages\n");
+    printf("--no-colors | --no-colours    Removes colors from output");
     printf("\n");
     
-    return 1;
+    return EXIT_SUCCESS;
 }
 
+/**
+ *  Begin the cracking of an Application object
+ *
+ *  @param application Application object you want cracked
+ *  @param cracker     Cracker singleton
+ *
+ *  @return EXIT_SUCCESS if application was cracked, else EXIT_FAILURE
+ */
 int cmd_crack_app(Application *application, Cracker *cracker)
 {
-    NSLog(@"Application: %@", application.description);
-    
     if (application.plugins)
     {
         for (Plugin *plugin in application.plugins)
         {
-            NSLog(@"Plugin: %@", plugin.description);
+            printf("Found plugin");
         }
     }
-    
-    return EXIT_SUCCESS;
-    
-    
     
     BOOL success = [cracker crackApplication:application];
     
@@ -124,6 +141,14 @@ int cmd_crack_app(Application *application, Cracker *cracker)
     return EXIT_FAILURE;
 }
 
+/**
+ *  Crack an array of Application objects
+ *
+ *  @param applications NSArray of Application objects
+ *  @param cracker      Cracker singleton
+ *
+ *  @return EXIT_SUCCESS if applications were cracked, else EXIT_FAILURE
+ */
 int cmd_crack_all_apps(NSArray *applications, Cracker *cracker)
 {
     for (Application *app in applications)
@@ -139,23 +164,42 @@ int cmd_crack_all_apps(NSArray *applications, Cracker *cracker)
     return EXIT_FAILURE;
 }
 
+/**
+ *  List Applications to stdout
+ *
+ *  @param applications NSArray of application objects to be printed (application.displayName)
+ *
+ *  @return EXIT_SUCCESS
+ */
 int cmd_list_applications(NSArray *applications)
 {
     int counter = 1;
     for (Application *app in applications)
     {
-        printf("%d) %s ", counter, app.displayName.UTF8String);
+        printf("%d) \033[1;3%dm%-s\033[0m  ", counter, 5 + ((counter + 1) % 2), app.displayName.UTF8String);
         counter++;
     }
+    
+    printf("\n");
     
     return EXIT_SUCCESS;
 }
 
+/**
+ *  Runs the configuration utility
+ *
+ *  @return NOT_YET_IMPLEMENTED
+ */
 int cmd_run_configuration()
 {
     return NOT_YET_IMPLEMENTED;
 }
 
+/**
+ *  Prints the version of Clutch
+ *
+ *  @return EXIT_SUCCESS
+ */
 int cmd_show_version()
 {
     printf("\n%s %d.%d-%s\n", CLUTCH_TITLE.UTF8String, CLUTCH_MAJOR_VERSION, CLUTCH_MINOR_VERSION, CLUTCH_GIT_VERSION.UTF8String);
@@ -163,8 +207,11 @@ int cmd_show_version()
     return EXIT_SUCCESS;
 }
 
-int main(int argc, char * argv[]) {
-    @autoreleasepool {
+
+int main(int argc, char * argv[])
+{
+    @autoreleasepool
+    {
         int returnValue = 0;
         gettimeofday(&start, NULL);
         
@@ -173,21 +220,35 @@ int main(int argc, char * argv[]) {
         {
             /* Clutch needs to be root */
             printf("Please re-run %s as root user.\n", CLUTCH_TITLE.UTF8String);
-            returnValue = EXIT_FAILURE;
-            
-            goto endMain;
+            return EXIT_FAILURE;
         }
         
         /* Parse Environment Options */
         NSDictionary *environment = [[NSProcessInfo processInfo] environment];
         
         /* Parse CLI arguments */
-        NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+        NSMutableArray *arguments = [[[NSProcessInfo processInfo] arguments] mutableCopy];
         NSString *binaryName = arguments[0];
         
         NSArray *applications = [ApplicationLister applications];
-//        NSLog(@"%@", applications);
         Cracker *cracker = [Cracker sharedSingleton];
+        
+        /* Set globals up */
+        if ([arguments containsObject:@"--debug"])
+        {
+            set_debug(true);
+            [arguments removeObject:@"--debug"];
+        }
+        
+        if ([arguments containsObject:@"--no-colors"] || [arguments containsObject:@"--no-colours"])
+        {
+            set_colors(false);
+            
+            if ([arguments containsObject:@"--no-colors"])
+                [arguments removeObject:@"--no-colors"];
+            if ([arguments containsObject:@"--no-colours"])
+                [arguments removeObject:@"--no-colours"];
+        }
         
         /* Interate through arguments */
         for (int i = 0; i < arguments.count; i++)
@@ -265,8 +326,9 @@ int main(int argc, char * argv[]) {
         }
         
     endMain:
+        [arguments release];
         gettimeofday(&end, NULL);
-        int timeElapsed = diff_ms(end, start);
+        int timeElapsed = get_ms_difference(end, start);
         printf("\nTime Elapsed: %f\n", ((timeElapsed + 500.0f) / 1000.0f));
         return returnValue;
     }

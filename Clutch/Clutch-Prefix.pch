@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Clutch' target in the 'Clutch' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif

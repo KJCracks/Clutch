@@ -1,0 +1,10 @@
+
+The control file in the same directory as this file is the Debian control file that is needed
+to build the project's Debian package that's used by APT repositories like Cydia.
+
+For more on...
+	Debian packages, see http://www.debian.org/doc/manuals/debian-faq/ch-pkg_basics.en.html.
+	Debian control files, see http://www.debian.org/doc/debian-policy/ch-controlfields.html.
+	Cydia packages, see http://www.saurik.com/id/7.
+
+Note: This file (control.txt) was created only to provide an explaination about the Debian control file. This file can now be deleted.

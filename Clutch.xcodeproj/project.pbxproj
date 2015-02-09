@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; };
+		324EA6331A89258000844540 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
+		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		324EA62B1A89258000844540 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
+		324EA62C1A89258000844540 /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = Package/DEBIAN/control; sourceTree = "<group>"; };
+		324EA62E1A89258000844540 /* PackageVersion.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PackageVersion.plist; sourceTree = "<group>"; };
+		324EA6311A89258000844540 /* 0xdeadfa11 */ = {isa = PBXFileReference; lastKnownFileType = text; name = 0xdeadfa11; path = Package/usr/bin/0xdeadfa11; sourceTree = "<group>"; };
+		324EA6321A89258000844540 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		324EA6341A89258000844540 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		324EA6201A89258000844540 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		324EA61A1A89258000844540 = {
+			isa = PBXGroup;
+			children = (
+				324EA6281A89258000844540 /* Clutch */,
+				324EA6251A89258000844540 /* Frameworks */,
+				324EA6241A89258000844540 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		324EA6241A89258000844540 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				324EA6231A89258000844540 /* Clutch */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		324EA6251A89258000844540 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				324EA6261A89258000844540 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		324EA6281A89258000844540 /* Clutch */ = {
+			isa = PBXGroup;
+			children = (
+				324EA6321A89258000844540 /* main.m */,
+				324EA6291A89258000844540 /* Package */,
+				324EA62D1A89258000844540 /* Supporting Files */,
+			);
+			path = Clutch;
+			sourceTree = "<group>";
+		};
+		324EA6291A89258000844540 /* Package */ = {
+			isa = PBXGroup;
+			children = (
+				324EA62A1A89258000844540 /* DEBIAN */,
+				324EA62F1A89258000844540 /* usr */,
+			);
+			name = Package;
+			sourceTree = "<group>";
+		};
+		324EA62A1A89258000844540 /* DEBIAN */ = {
+			isa = PBXGroup;
+			children = (
+				324EA62B1A89258000844540 /* control.txt */,
+				324EA62C1A89258000844540 /* control */,
+			);
+			name = DEBIAN;
+			sourceTree = "<group>";
+		};
+		324EA62D1A89258000844540 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				324EA62E1A89258000844540 /* PackageVersion.plist */,
+				324EA6341A89258000844540 /* Clutch-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		324EA62F1A89258000844540 /* usr */ = {
+			isa = PBXGroup;
+			children = (
+				324EA6301A89258000844540 /* bin */,
+			);
+			name = usr;
+			sourceTree = "<group>";
+		};
+		324EA6301A89258000844540 /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				324EA6311A89258000844540 /* 0xdeadfa11 */,
+			);
+			name = bin;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		324EA6221A89258000844540 /* Clutch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 324EA6371A89258000844540 /* Build configuration list for PBXNativeTarget "Clutch" */;
+			buildPhases = (
+				324EA61F1A89258000844540 /* Sources */,
+				324EA6201A89258000844540 /* Frameworks */,
+				324EA6211A89258000844540 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Clutch;
+			productName = Clutch;
+			productReference = 324EA6231A89258000844540 /* Clutch */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		324EA61B1A89258000844540 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				TargetAttributes = {
+					324EA6221A89258000844540 = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = 324EA61E1A89258000844540 /* Build configuration list for PBXProject "Clutch" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 324EA61A1A89258000844540;
+			productRefGroup = 324EA6241A89258000844540 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				324EA6221A89258000844540 /* Clutch */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		324EA6211A89258000844540 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/opt/iOSOpenDev/bin/iosod --xcbp";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		324EA61F1A89258000844540 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				324EA6331A89258000844540 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		324EA6351A89258000844540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(iOSOpenDevPath)/frameworks/**",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+				iOSOpenDevPath = /opt/iOSOpenDev;
+			};
+			name = Debug;
+		};
+		324EA6361A89258000844540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(iOSOpenDevPath)/frameworks/**",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				iOSOpenDevPath = /opt/iOSOpenDev;
+			};
+			name = Release;
+		};
+		324EA6381A89258000844540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
+				INSTALL_PATH = /usr/bin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevCopyOnBuild = NO;
+				iOSOpenDevDevice = "";
+				iOSOpenDevInstallOnAnyBuild = NO;
+				iOSOpenDevInstallOnProfiling = YES;
+				iOSOpenDevRespringOnInstall = YES;
+				iOSOpenDevUsePackageVersionPList = YES;
+			};
+			name = Debug;
+		};
+		324EA6391A89258000844540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
+				INSTALL_PATH = /usr/bin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevCopyOnBuild = NO;
+				iOSOpenDevDevice = "";
+				iOSOpenDevInstallOnAnyBuild = NO;
+				iOSOpenDevInstallOnProfiling = YES;
+				iOSOpenDevRespringOnInstall = YES;
+				iOSOpenDevUsePackageVersionPList = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		324EA61E1A89258000844540 /* Build configuration list for PBXProject "Clutch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				324EA6351A89258000844540 /* Debug */,
+				324EA6361A89258000844540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		324EA6371A89258000844540 /* Build configuration list for PBXNativeTarget "Clutch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				324EA6381A89258000844540 /* Debug */,
+				324EA6391A89258000844540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 324EA61B1A89258000844540 /* Project object */;
+}

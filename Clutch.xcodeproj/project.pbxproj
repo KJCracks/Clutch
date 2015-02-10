@@ -7,8 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; };
+		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		324EA6331A89258000844540 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
+		324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA63B1A8925DB00844540 /* ApplicationsManager.m */; };
+		324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA63D1A89260A00844540 /* MobileCoreServices.framework */; };
+		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
+		324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6451A892A1400844540 /* FrontBoard.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A41A89BEAD00BB5ABC /* Framework.m */; };
+		32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A71A89BEBE00BB5ABC /* Extension.m */; };
+		32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */; };
+		32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */; };
+		32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B81A89DC9200BB5ABC /* GBPrint.m */; };
+		32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
+		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
+		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +32,31 @@
 		324EA6311A89258000844540 /* 0xdeadfa11 */ = {isa = PBXFileReference; lastKnownFileType = text; name = 0xdeadfa11; path = Package/usr/bin/0xdeadfa11; sourceTree = "<group>"; };
 		324EA6321A89258000844540 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		324EA6341A89258000844540 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
+		324EA63A1A8925DB00844540 /* ApplicationsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationsManager.h; sourceTree = "<group>"; };
+		324EA63B1A8925DB00844540 /* ApplicationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationsManager.m; sourceTree = "<group>"; };
+		324EA63D1A89260A00844540 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		324EA6401A8926DC00844540 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		324EA6411A8926DC00844540 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		324EA6431A89270D00844540 /* Clutch.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Clutch.entitlements; sourceTree = "<group>"; };
+		324EA6451A892A1400844540 /* FrontBoard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FrontBoard.framework; path = System/Library/PrivateFrameworks/FrontBoard.framework; sourceTree = SDKROOT; };
+		324EA6471A892AAD00844540 /* FBApplicationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBApplicationInfo.h; sourceTree = "<group>"; };
+		32FB77A31A89BEAD00BB5ABC /* Framework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework.h; sourceTree = "<group>"; };
+		32FB77A41A89BEAD00BB5ABC /* Framework.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Framework.m; sourceTree = "<group>"; };
+		32FB77A61A89BEBE00BB5ABC /* Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension.h; sourceTree = "<group>"; };
+		32FB77A71A89BEBE00BB5ABC /* Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extension.m; sourceTree = "<group>"; };
+		32FB77B21A89DC9200BB5ABC /* GBCli.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCli.h; sourceTree = "<group>"; };
+		32FB77B31A89DC9200BB5ABC /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
+		32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
+		32FB77B51A89DC9200BB5ABC /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
+		32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOptionsHelper.m; sourceTree = "<group>"; };
+		32FB77B71A89DC9200BB5ABC /* GBPrint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBPrint.h; sourceTree = "<group>"; };
+		32FB77B81A89DC9200BB5ABC /* GBPrint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBPrint.m; sourceTree = "<group>"; };
+		32FB77B91A89DC9200BB5ABC /* GBSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSettings.h; sourceTree = "<group>"; };
+		32FB77BA1A89DC9200BB5ABC /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
+		32FB77BF1A89F09300BB5ABC /* ClutchBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchBundle.h; sourceTree = "<group>"; };
+		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
+		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
+		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */,
+				324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */,
 				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -54,6 +93,8 @@
 		324EA6251A89258000844540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				324EA6451A892A1400844540 /* FrontBoard.framework */,
+				324EA63D1A89260A00844540 /* MobileCoreServices.framework */,
 				324EA6261A89258000844540 /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -62,6 +103,10 @@
 		324EA6281A89258000844540 /* Clutch */ = {
 			isa = PBXGroup;
 			children = (
+				32FB77AA1A89D6C500BB5ABC /* Dumpers */,
+				32FB77A91A89CBAF00BB5ABC /* Application */,
+				324EA63A1A8925DB00844540 /* ApplicationsManager.h */,
+				324EA63B1A8925DB00844540 /* ApplicationsManager.m */,
 				324EA6321A89258000844540 /* main.m */,
 				324EA6291A89258000844540 /* Package */,
 				324EA62D1A89258000844540 /* Supporting Files */,
@@ -90,8 +135,11 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				32FB77B11A89DC6600BB5ABC /* GBCLI */,
+				324EA6471A892AAD00844540 /* FBApplicationInfo.h */,
 				324EA62E1A89258000844540 /* PackageVersion.plist */,
 				324EA6341A89258000844540 /* Clutch-Prefix.pch */,
+				324EA6431A89270D00844540 /* Clutch.entitlements */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -112,6 +160,54 @@
 			name = bin;
 			sourceTree = "<group>";
 		};
+		32FB77A91A89CBAF00BB5ABC /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				32FB77C51A89F3BE00BB5ABC /* ClutchBundle */,
+				324EA6401A8926DC00844540 /* Application.h */,
+				324EA6411A8926DC00844540 /* Application.m */,
+				32FB77A61A89BEBE00BB5ABC /* Extension.h */,
+				32FB77A71A89BEBE00BB5ABC /* Extension.m */,
+				32FB77A31A89BEAD00BB5ABC /* Framework.h */,
+				32FB77A41A89BEAD00BB5ABC /* Framework.m */,
+			);
+			name = Application;
+			sourceTree = "<group>";
+		};
+		32FB77AA1A89D6C500BB5ABC /* Dumpers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Dumpers;
+			sourceTree = "<group>";
+		};
+		32FB77B11A89DC6600BB5ABC /* GBCLI */ = {
+			isa = PBXGroup;
+			children = (
+				32FB77B21A89DC9200BB5ABC /* GBCli.h */,
+				32FB77B31A89DC9200BB5ABC /* GBCommandLineParser.h */,
+				32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */,
+				32FB77B51A89DC9200BB5ABC /* GBOptionsHelper.h */,
+				32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */,
+				32FB77B71A89DC9200BB5ABC /* GBPrint.h */,
+				32FB77B81A89DC9200BB5ABC /* GBPrint.m */,
+				32FB77B91A89DC9200BB5ABC /* GBSettings.h */,
+				32FB77BA1A89DC9200BB5ABC /* GBSettings.m */,
+			);
+			name = GBCLI;
+			sourceTree = "<group>";
+		};
+		32FB77C51A89F3BE00BB5ABC /* ClutchBundle */ = {
+			isa = PBXGroup;
+			children = (
+				32FB77C21A89F13000BB5ABC /* Binary.h */,
+				32FB77C31A89F13000BB5ABC /* Binary.m */,
+				32FB77BF1A89F09300BB5ABC /* ClutchBundle.h */,
+				32FB77C01A89F09300BB5ABC /* ClutchBundle.m */,
+			);
+			name = ClutchBundle;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -121,7 +217,6 @@
 			buildPhases = (
 				324EA61F1A89258000844540 /* Sources */,
 				324EA6201A89258000844540 /* Frameworks */,
-				324EA6211A89258000844540 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -138,7 +233,7 @@
 		324EA61B1A89258000844540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0630;
 				TargetAttributes = {
 					324EA6221A89258000844540 = {
 						CreatedOnToolsVersion = 6.2;
@@ -162,28 +257,22 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		324EA6211A89258000844540 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/opt/iOSOpenDev/bin/iosod --xcbp";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		324EA61F1A89258000844540 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
+				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
+				32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */,
+				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
+				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
+				324EA6421A8926DC00844540 /* Application.m in Sources */,
+				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
+				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
+				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,
+				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,8 +300,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
@@ -234,7 +324,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -246,7 +336,13 @@
 		324EA6381A89258000844540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
@@ -264,7 +360,13 @@
 		324EA6391A89258000844540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
@@ -298,6 +400,7 @@
 				324EA6391A89258000844540 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

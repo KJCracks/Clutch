@@ -15,9 +15,7 @@ int main (int argc, const char * argv[])
 
     @autoreleasepool
     {	
-    	// insert code here...
-        
-        
+
         GBOptionsHelper *options = [[GBOptionsHelper alloc] init];
         options.applicationVersion = ^{ return @"2.0"; };
         options.printHelpHeader = ^{ return @"Usage: %APPNAME [OPTIONS]"; };
@@ -32,6 +30,8 @@ int main (int argc, const char * argv[])
             [options printHelp];
             exit(0);
         }
+    
+        __block NSString *_selectedBundleID;
         
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
         [parser registerOptions:options];
@@ -46,11 +46,10 @@ int main (int argc, const char * argv[])
             }else if ([option isEqualToString:@"print-installed"]) {
                 ApplicationsManager *_manager = [ApplicationsManager sharedInstance];
                 
-                NSArray *installedApps = [_manager installedApps];
+                NSArray *installedApps = [_manager installedApps].allValues;
                 printf("Installed apps:\n");
                 for (Application *_app in installedApps) {
-                    //printf("%u) %s\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app.bundleIdentifier.UTF8String);
-                    gbprintln(@"%u) %@ %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app.bundleIdentifier,_app);
+                    gbprintln(@"%u) %@ %@ %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app.bundleIdentifier,_app,_app.extensions);
                 }
                 exit(0);
             }
@@ -63,15 +62,48 @@ int main (int argc, const char * argv[])
                     printf("Missing value for %s option, try --help!\n", [option UTF8String]);
                     break;
                 case GBParseFlagOption:
-                    // do something with 'option' and its 'value'
+
+                    if ([option isEqualToString:@"dump"]) {
+                        _selectedBundleID = [value copy];
+                    }
+                    
                     break;
                 case GBParseFlagArgument:
-                    // do something with argument 'value'
+                    //NSLog(@"GBParseFlagArgument %@",value);
                     break;
             }
         }];
         
+        if (!_selectedBundleID) {
+            [options printHelp];
+            exit(0);
+        }
         
+        ApplicationsManager *_appsManager = [ApplicationsManager sharedInstance];
+        
+        NSDictionary *_installedApps = [_appsManager installedApps];
+        
+        Application *_selectedApp = _installedApps[_selectedBundleID];
+        
+        if (_selectedApp.frameworks.count || _selectedApp.extensions.count) {
+            printf("It's not possible to dump this app at this moment\n");
+            exit(0);
+        }
+        
+        if (!_selectedApp) {
+            gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);
+            exit(0);
+        }
+        
+
+        
+        
+        
+        CFRunLoopRun();
+        
+        NSLog(@"you shouldnt be there pal. exiting with -1 code");
+        return -1;
+
         
     }
 	return 0;

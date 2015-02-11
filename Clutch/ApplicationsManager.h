@@ -13,10 +13,6 @@
 
 + (instancetype)sharedInstance;
 
-- (NSArray *)installedApps;
-- (NSArray *)crackedApps;
-- (void)saveModifiedAppsCache;
-- (NSArray *)modifiedApps;
-- (void)crackedApp:(id)app;
+- (NSDictionary *)installedApps;
 
 @end

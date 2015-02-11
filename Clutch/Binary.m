@@ -7,10 +7,10 @@
 //
 
 #import "Binary.h"
-
+#import "ClutchBundle.h"
 @interface Binary ()
 {
-    NSBundle *_bundle;
+    ClutchBundle *_bundle;
     
 	NSString* sinfPath;
 	NSString* suppPath;
@@ -26,7 +26,7 @@
     return nil;
 }
 
-- (instancetype)initWithBundle:(NSBundle *)path
+- (instancetype)initWithBundle:(ClutchBundle *)path
 {
     if (self = [super init]) {
         _bundle = path;

@@ -8,13 +8,21 @@
 
 #import "ClutchBundle.h"
 
+@interface ClutchBundle ()
+{
+    NSOperationQueue *_dumpQueue;
+}
+@end
+
 @implementation ClutchBundle
 
-- (instancetype)initWithAppInfo:(NSDictionary *)info
+- (instancetype)initWithBundleInfo:(NSDictionary *)info
 {
     
     if (self = [super initWithURL:info[@"BundleURL"]]) {
+        _bundleContainerURL = [info[@"BundleContainer"] copy];
         _executable = [[Binary alloc]initWithBundle:self];
+        _dumpQueue = [NSOperationQueue new];
     }
     
     return self;
@@ -32,6 +40,9 @@
 
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL
 {
+    if (_dumpQueue.operationCount)
+        [_dumpQueue cancelAllOperations];
+    
     
 }
 

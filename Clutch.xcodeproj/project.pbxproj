@@ -13,6 +13,13 @@
 		324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA63D1A89260A00844540 /* MobileCoreServices.framework */; };
 		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6451A892A1400844540 /* FrontBoard.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
+		32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6E91A8A4FEF005BB56C /* ioapi.c */; };
+		32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6EB1A8A4FEF005BB56C /* unzip.c */; };
+		32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6ED1A8A4FEF005BB56C /* zip.c */; };
+		32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32EFB6F21A8A500D005BB56C /* libz.dylib */; };
+		32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */; };
+		32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */; };
 		32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A41A89BEAD00BB5ABC /* Framework.m */; };
 		32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A71A89BEBE00BB5ABC /* Extension.m */; };
 		32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */; };
@@ -40,6 +47,20 @@
 		324EA6431A89270D00844540 /* Clutch.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Clutch.entitlements; sourceTree = "<group>"; };
 		324EA6451A892A1400844540 /* FrontBoard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FrontBoard.framework; path = System/Library/PrivateFrameworks/FrontBoard.framework; sourceTree = SDKROOT; };
 		324EA6471A892AAD00844540 /* FBApplicationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBApplicationInfo.h; sourceTree = "<group>"; };
+		32EFB6CE1A8A4F0E005BB56C /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
+		32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
+		32EFB6E81A8A4FEF005BB56C /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		32EFB6E91A8A4FEF005BB56C /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		32EFB6EA1A8A4FEF005BB56C /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		32EFB6EB1A8A4FEF005BB56C /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		32EFB6EC1A8A4FEF005BB56C /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		32EFB6ED1A8A4FEF005BB56C /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		32EFB6EE1A8A4FEF005BB56C /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		32EFB6F21A8A500D005BB56C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		32EFB6F61A8AC2AF005BB56C /* BundleDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleDumpOperation.h; sourceTree = "<group>"; };
+		32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleDumpOperation.m; sourceTree = "<group>"; };
+		32EFB6F91A8AE1A3005BB56C /* ZipOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipOperation.h; sourceTree = "<group>"; };
+		32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipOperation.m; sourceTree = "<group>"; };
 		32FB77A31A89BEAD00BB5ABC /* Framework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework.h; sourceTree = "<group>"; };
 		32FB77A41A89BEAD00BB5ABC /* Framework.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Framework.m; sourceTree = "<group>"; };
 		32FB77A61A89BEBE00BB5ABC /* Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension.h; sourceTree = "<group>"; };
@@ -64,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */,
 				324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */,
 				324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */,
 				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,
@@ -93,6 +115,7 @@
 		324EA6251A89258000844540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32EFB6F21A8A500D005BB56C /* libz.dylib */,
 				324EA6451A892A1400844540 /* FrontBoard.framework */,
 				324EA63D1A89260A00844540 /* MobileCoreServices.framework */,
 				324EA6261A89258000844540 /* Foundation.framework */,
@@ -135,6 +158,7 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				32EFB6CD1A8A4F06005BB56C /* Zip */,
 				32FB77B11A89DC6600BB5ABC /* GBCLI */,
 				324EA6471A892AAD00844540 /* FBApplicationInfo.h */,
 				324EA62E1A89258000844540 /* PackageVersion.plist */,
@@ -160,6 +184,41 @@
 			name = bin;
 			sourceTree = "<group>";
 		};
+		32EFB6CD1A8A4F06005BB56C /* Zip */ = {
+			isa = PBXGroup;
+			children = (
+				32EFB6E71A8A4FEF005BB56C /* MiniZip */,
+				32EFB6CE1A8A4F0E005BB56C /* ZipArchive.h */,
+				32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */,
+			);
+			name = Zip;
+			sourceTree = "<group>";
+		};
+		32EFB6E71A8A4FEF005BB56C /* MiniZip */ = {
+			isa = PBXGroup;
+			children = (
+				32EFB6E81A8A4FEF005BB56C /* crypt.h */,
+				32EFB6E91A8A4FEF005BB56C /* ioapi.c */,
+				32EFB6EA1A8A4FEF005BB56C /* ioapi.h */,
+				32EFB6EB1A8A4FEF005BB56C /* unzip.c */,
+				32EFB6EC1A8A4FEF005BB56C /* unzip.h */,
+				32EFB6ED1A8A4FEF005BB56C /* zip.c */,
+				32EFB6EE1A8A4FEF005BB56C /* zip.h */,
+			);
+			path = MiniZip;
+			sourceTree = "<group>";
+		};
+		32EFB6F51A8AC29D005BB56C /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				32EFB6F91A8AE1A3005BB56C /* ZipOperation.h */,
+				32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */,
+				32EFB6F61A8AC2AF005BB56C /* BundleDumpOperation.h */,
+				32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */,
+			);
+			name = Operations;
+			sourceTree = "<group>";
+		};
 		32FB77A91A89CBAF00BB5ABC /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +236,7 @@
 		32FB77AA1A89D6C500BB5ABC /* Dumpers */ = {
 			isa = PBXGroup;
 			children = (
+				32EFB6F51A8AC29D005BB56C /* Operations */,
 			);
 			name = Dumpers;
 			sourceTree = "<group>";
@@ -263,12 +323,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
+				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
+				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
 				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
+				32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */,
 				32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */,
 				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
+				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
 				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
 				324EA6421A8926DC00844540 /* Application.m in Sources */,
+				32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */,
 				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
+				32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */,
 				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,

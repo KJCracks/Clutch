@@ -12,10 +12,11 @@
 #include <mach-o/dyld.h>
 #include <mach-o/arch.h>
 
+@class ClutchBundle;
 @interface Binary : NSObject
 
 @property (readonly) NSString *binaryPath;
 
-- (instancetype)initWithBundle:(NSBundle *)bundle;
+- (instancetype)initWithBundle:(ClutchBundle *)bundle;
 
 @end

@@ -11,11 +11,14 @@
 
 @interface ClutchBundle : NSBundle
 
+@property (readonly) NSURL *bundleContainerURL;
+
 @property (readonly) Binary *executable;
+
 @property (readonly) BOOL hasARMSlice;
 @property (readonly) BOOL hasARM64Slice;
 
-- (instancetype)initWithAppInfo:(NSDictionary *)info;
+- (instancetype)initWithBundleInfo:(NSDictionary *)info;
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL;
 
 @end

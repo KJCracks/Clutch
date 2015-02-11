@@ -8,8 +8,6 @@
 
 #define applistCachePath @"/etc/applist-cache.clutch"
 #define crackedAppPath @"/etc/cracked.clutch"
-#define mobileinstallationcache @"/private/var/mobile/Library/Caches/com.apple.mobile.installation.plist"
-#define applicationPath @"/var/mobile/Containers/Bundle/Application/"
 
 #import <dlfcn.h>
 #import "ApplicationsManager.h"
@@ -42,7 +40,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 {
     self = [super init];
     if (self) {
-        _MIHandle = dlopen("/System/Library/PrivateFrameworks/MobileInstallation.framework/NearField", RTLD_NOW);
+        _MIHandle = dlopen("/System/Library/PrivateFrameworks/MobileInstallation.framework/MobileInstallation", RTLD_NOW);
         
         _mobileInstallationLookup = NULL;
         
@@ -53,9 +51,9 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
     return self;
 }
 
-- (NSArray *)_allApplications
+- (NSDictionary *)_allApplications
 {
-    NSMutableArray *returnArray = [NSMutableArray new];
+    NSMutableDictionary *returnValue = [NSMutableDictionary new];
     
     NSDictionary* options = @{@"ApplicationType":@"User",
                               @"ReturnAttributes":@[@"CFBundleShortVersionString",
@@ -69,9 +67,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         
         NSDictionary *installedApps;
         
-        MobileInstallationLookup  mobileInstallationLookup = dlsym(dlopen(0,RTLD_LAZY),"MobileInstallationLookup");
-        
-        installedApps = mobileInstallationLookup(options);
+        installedApps = _mobileInstallationLookup(options);
         
         
         for (NSString *bundleID in [installedApps allKeys])
@@ -87,10 +83,10 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
             BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
             
             if (purchased && isDirectory) {
-                Application *app =[[Application alloc]initWithAppInfo:@{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
-                                                                        @"BundleURL":bundleURL}];
+                Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
+                                                                           @"BundleURL":bundleURL}];
                 
-                [returnArray addObject:app];
+                [returnValue setObject:app forKey:bundleID];
             }
         }
         
@@ -121,10 +117,10 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                 BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
                 
                 if (purchased && isDirectory) {
-                    Application *app =[[Application alloc]initWithAppInfo:@{@"BundleContainer":info.bundleContainerURL,
-                                                                            @"BundleURL":info.bundleURL}];
+                    Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":info.bundleContainerURL,
+                                                                               @"BundleURL":info.bundleURL}];
                     
-                    [returnArray addObject:app];
+                    [returnValue setObject:app forKey:info.bundleIdentifier];
                 }
             }
         }
@@ -132,91 +128,11 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         
     }
     
-    return returnArray;
+    return [returnValue copy];
 }
 
-/*
-- (NSArray *)modifiedApps {
-    NSDictionary* cracked = [self crackedAppsList];
-    NSArray* apps = [self _allApplications];
-    NSMutableArray* modifiedApps = [[NSMutableArray alloc] init];
-    for (Application* app in apps) {
-        NSDictionary* appInfo = [cracked objectForKey:app.bundleIdentifier];
-        if (appInfo == nil) {
-            continue;
-        }
-        Application* oldApp = [[Application alloc] initWithAppInfo:appInfo];
-        NSLog(@"new app version: %ld, %ld", (long)oldApp.appVersion, (long)app.appVersion);
-        if (app.appVersion > oldApp.appVersion) {
-            [modifiedApps addObject:app];
-        }
-    }
-    NSLog(@"modified apps array %@", modifiedApps);
-    return [modifiedApps copy];
-}
-
--(void)crackedApp:(Application*) app {
-    NSLog(@"cracked app ok");
-    NSLog(@"this crack lol %ld", (long)app.appVersion);
-    NSMutableDictionary* dict = [[NSMutableDictionary alloc] initWithDictionary:[self crackedAppsList]];
-    if (dict == nil) {
-        dict = [[NSMutableDictionary alloc] init];
-    }
-    [dict setObject:app.dictionaryRepresentation forKey:app.applicationBundleID];
-    //DEBUG(@"da dict %@", dict);
-    [dict writeToFile:crackedAppPath atomically:YES];
-}*/
-
--(NSDictionary*)crackedAppsList {
-    return [NSDictionary dictionaryWithContentsOfFile:crackedAppPath];
-}
-
--(void)saveModifiedAppsCache {
-    //get_application_list(YES);
-}
-
-- (NSArray*) modifiedAppCache {
-    //check mod. date;
-    
-    NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
-    
-    NSMutableArray *appsArray = [NSMutableArray new];
-    
-    for (NSDictionary *appInfo in cachedAppsInfo)
-    {
-        Application *app = [[Application alloc]initWithAppInfo:appInfo];
-        [appsArray addObject:app];
-    }
-    
-    return appsArray;
-    
-}
-- (NSArray *)installedApps
+- (NSDictionary *)installedApps
 {
-    if ([NSFileManager.defaultManager fileExistsAtPath:applistCachePath])
-    {
-        //check mod. date;
-        NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:applistCachePath error:nil];
-        
-        NSUInteger modifTime = (NSUInteger)[[attributes fileModificationDate] timeIntervalSince1970]; //mins yo
-        NSUInteger currentTime = (NSUInteger)[[NSDate date] timeIntervalSince1970]/60; //mins yo
-        
-        if ((currentTime-modifTime) <= 5)
-        {
-            NSArray *cachedAppsInfo = [NSArray arrayWithContentsOfFile:applistCachePath];
-            
-            NSMutableArray *appsArray = [NSMutableArray new];
-            
-            for (NSDictionary *appInfo in cachedAppsInfo)
-            {
-                Application *app = [[Application alloc]initWithAppInfo:appInfo];
-                [appsArray addObject:app];
-            }
-            
-            return appsArray;
-        }
-    }
-    
     return [self _allApplications];
 }
 

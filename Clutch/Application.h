@@ -22,8 +22,6 @@
 
 @interface Application : ClutchBundle
 
-@property (readonly) NSURL *bundleContainerURL;
-
 @property (readonly) NSArray *extensions;
 @property (readonly) NSArray *frameworks;
 

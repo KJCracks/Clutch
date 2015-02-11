@@ -17,12 +17,11 @@
 
 @implementation Application
 
-- (instancetype)initWithAppInfo:(NSDictionary *)info
+- (instancetype)initWithBundleInfo:(NSDictionary *)info
 {
     
-    if (self = [super initWithAppInfo:info]) {
+    if (self = [super initWithBundleInfo:info]) {
         
-        _bundleContainerURL = [info[@"BundleContainer"] copy];
         
         // Application
         /*applicationContainer = info[@"ApplicationContainer"];
@@ -91,7 +90,8 @@
         }
         else if (![[url.path pathExtension] caseInsensitiveCompare:@"framework"] && [isDirectory boolValue])
         {
-            Framework *fmwk = [Framework bundleWithURL:url];
+            Framework *fmwk = [[Framework alloc]initWithBundleInfo:@{@"BundleContainer":url.URLByDeletingLastPathComponent,
+                                                                     @"BundleURL":url}];
             if (fmwk) {
                 [_frameworks addObject:fmwk];
             }
@@ -126,9 +126,10 @@
         }
         else if (![[url.path pathExtension] caseInsensitiveCompare:@"appex"] && [isDirectory boolValue])
         {
-            Extension *fmwk = [Extension bundleWithURL:url];
-            if (fmwk) {
-                [_extensions addObject:fmwk];
+            Extension *extension = [[Extension alloc]initWithBundleInfo:@{@"BundleContainer":url.URLByDeletingLastPathComponent,
+                                                                          @"BundleURL":url}];
+            if (extension) {
+                [_extensions addObject:extension];
             }
         }
     }

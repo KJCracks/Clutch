@@ -7,15 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <mach-o/fat.h>
-#include <mach-o/loader.h>
-#include <mach-o/dyld.h>
-#include <mach-o/arch.h>
+#import "BundleDumpOperation.h"
 
 @class ClutchBundle;
+
 @interface Binary : NSObject
 
+@property (readonly) BundleDumpOperation *dumpOperation;
+@property (readonly) NSString *workingPath;
 @property (readonly) NSString *binaryPath;
+@property (readonly) NSString *sinfPath;
+@property (readonly) NSString *supfPath;
+@property (readonly) NSString *suppPath;
+
+@property (readonly) BOOL hasARMSlice;
+@property (readonly) BOOL hasARM64Slice;
 
 - (instancetype)initWithBundle:(ClutchBundle *)bundle;
 

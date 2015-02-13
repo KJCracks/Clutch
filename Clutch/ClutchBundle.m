@@ -9,16 +9,13 @@
 #import "ClutchBundle.h"
 
 @interface ClutchBundle ()
-{
-    NSOperationQueue *_dumpQueue;
-}
+
 @end
 
 @implementation ClutchBundle
 
 - (instancetype)initWithBundleInfo:(NSDictionary *)info
 {
-    
     if (self = [super initWithURL:info[@"BundleURL"]]) {
         _bundleContainerURL = [info[@"BundleContainer"] copy];
         _executable = [[Binary alloc]initWithBundle:self];
@@ -28,22 +25,10 @@
     return self;
 }
 
-- (BOOL)hasARMSlice
-{
-    return [self.executableArchitectures containsObject:[NSNumber numberWithInteger:CPU_TYPE_ARM]];
-}
-
-- (BOOL)hasARM64Slice
-{
-    return [self.executableArchitectures containsObject:[NSNumber numberWithInteger:CPU_TYPE_ARM64]];
-}
-
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL
 {
     if (_dumpQueue.operationCount)
         [_dumpQueue cancelAllOperations];
-    
-    
 }
 
 - (NSString *)description {

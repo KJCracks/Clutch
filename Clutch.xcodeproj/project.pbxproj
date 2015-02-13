@@ -13,6 +13,12 @@
 		324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA63D1A89260A00844540 /* MobileCoreServices.framework */; };
 		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6451A892A1400844540 /* FrontBoard.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		3280118B1A8BFE82006D6653 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280118A1A8BFE82006D6653 /* Dumper.m */; };
+		3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */; };
+		3282BE0C1A8D9ACD00E5068A /* headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* headers.m */; };
+		3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE091A8D9ACD00E5068A /* NSData+Reading.m */; };
+		3282BE0E1A8D9ACD00E5068A /* operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE0B1A8D9ACD00E5068A /* operations.m */; };
+		32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93E41A8E0E8B00805D14 /* sha1.c */; };
 		32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
 		32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6E91A8A4FEF005BB56C /* ioapi.c */; };
 		32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6EB1A8A4FEF005BB56C /* unzip.c */; };
@@ -47,6 +53,19 @@
 		324EA6431A89270D00844540 /* Clutch.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Clutch.entitlements; sourceTree = "<group>"; };
 		324EA6451A892A1400844540 /* FrontBoard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FrontBoard.framework; path = System/Library/PrivateFrameworks/FrontBoard.framework; sourceTree = SDKROOT; };
 		324EA6471A892AAD00844540 /* FBApplicationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBApplicationInfo.h; sourceTree = "<group>"; };
+		328011891A8BFE82006D6653 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
+		3280118A1A8BFE82006D6653 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
+		3282BB7A1A8C920D00E5068A /* FinalizeDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinalizeDumpOperation.h; sourceTree = "<group>"; };
+		3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinalizeDumpOperation.m; sourceTree = "<group>"; };
+		3282BE051A8D9ACD00E5068A /* defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
+		3282BE061A8D9ACD00E5068A /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
+		3282BE071A8D9ACD00E5068A /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
+		3282BE081A8D9ACD00E5068A /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
+		3282BE091A8D9ACD00E5068A /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
+		3282BE0A1A8D9ACD00E5068A /* operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
+		3282BE0B1A8D9ACD00E5068A /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
+		32BC93E41A8E0E8B00805D14 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
+		32BC93E51A8E0E8B00805D14 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		32EFB6CE1A8A4F0E005BB56C /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		32EFB6E81A8A4FEF005BB56C /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -126,6 +145,7 @@
 		324EA6281A89258000844540 /* Clutch */ = {
 			isa = PBXGroup;
 			children = (
+				32EFB6F51A8AC29D005BB56C /* Operations */,
 				32FB77AA1A89D6C500BB5ABC /* Dumpers */,
 				32FB77A91A89CBAF00BB5ABC /* Application */,
 				324EA63A1A8925DB00844540 /* ApplicationsManager.h */,
@@ -158,6 +178,7 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3282BE041A8D9A9100E5068A /* optool */,
 				32EFB6CD1A8A4F06005BB56C /* Zip */,
 				32FB77B11A89DC6600BB5ABC /* GBCLI */,
 				324EA6471A892AAD00844540 /* FBApplicationInfo.h */,
@@ -182,6 +203,20 @@
 				324EA6311A89258000844540 /* 0xdeadfa11 */,
 			);
 			name = bin;
+			sourceTree = "<group>";
+		};
+		3282BE041A8D9A9100E5068A /* optool */ = {
+			isa = PBXGroup;
+			children = (
+				3282BE051A8D9ACD00E5068A /* defines.h */,
+				3282BE061A8D9ACD00E5068A /* headers.h */,
+				3282BE071A8D9ACD00E5068A /* headers.m */,
+				3282BE081A8D9ACD00E5068A /* NSData+Reading.h */,
+				3282BE091A8D9ACD00E5068A /* NSData+Reading.m */,
+				3282BE0A1A8D9ACD00E5068A /* operations.h */,
+				3282BE0B1A8D9ACD00E5068A /* operations.m */,
+			);
+			name = optool;
 			sourceTree = "<group>";
 		};
 		32EFB6CD1A8A4F06005BB56C /* Zip */ = {
@@ -215,6 +250,8 @@
 				32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */,
 				32EFB6F61A8AC2AF005BB56C /* BundleDumpOperation.h */,
 				32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */,
+				3282BB7A1A8C920D00E5068A /* FinalizeDumpOperation.h */,
+				3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */,
 			);
 			name = Operations;
 			sourceTree = "<group>";
@@ -236,7 +273,10 @@
 		32FB77AA1A89D6C500BB5ABC /* Dumpers */ = {
 			isa = PBXGroup;
 			children = (
-				32EFB6F51A8AC29D005BB56C /* Operations */,
+				32BC93E41A8E0E8B00805D14 /* sha1.c */,
+				32BC93E51A8E0E8B00805D14 /* sha1.h */,
+				328011891A8BFE82006D6653 /* Dumper.h */,
+				3280118A1A8BFE82006D6653 /* Dumper.m */,
 			);
 			name = Dumpers;
 			sourceTree = "<group>";
@@ -322,6 +362,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */,
+				3282BE0C1A8D9ACD00E5068A /* headers.m in Sources */,
+				3282BE0E1A8D9ACD00E5068A /* operations.m in Sources */,
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
 				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
 				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
@@ -331,11 +374,14 @@
 				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
 				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
 				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
+				3280118B1A8BFE82006D6653 /* Dumper.m in Sources */,
 				324EA6421A8926DC00844540 /* Application.m in Sources */,
 				32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */,
 				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
 				32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */,
 				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
+				32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */,
+				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,
 				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
@@ -402,6 +448,7 @@
 		324EA6381A89258000844540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
 				CODE_SIGN_IDENTITY = "-";
@@ -426,6 +473,7 @@
 		324EA6391A89258000844540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
 				CODE_SIGN_IDENTITY = "-";

@@ -7,30 +7,162 @@
 //
 
 #import "ZipOperation.h"
-
-// key for obtaining the current scan count
-NSString *kScanCountKey = @"scanCount";
-
-// key for obtaining the path of an image fiel
-NSString *kPathKey = @"path";
-
-// key for obtaining the size of an image file
-NSString *kSizeKey = @"size";
-
-// key for obtaining the name of an image file
-NSString *kNameKey = @"name";
-
-// key for obtaining the mod date of an image file
-NSString *kModifiedKey = @"modified";
-
-// NSNotification name to tell the Window controller an image file as found
-NSString *kLoadImageDidFinish = @"LoadImageDidFinish";
+#import "ZipArchive.h"
+#import "ClutchBundle.h"
+#import "GBPrint.h"
 
 @interface ZipOperation ()
-
+{
+    ClutchBundle *_application;
+    BOOL _executing, _finished;
+    ZipArchive *_archive;
+}
 @end
 
 
 @implementation ZipOperation
+
+- (id)initWithApplication:(ClutchBundle *)application {
+    self = [super init];
+    if (self) {
+        _executing = NO;
+        _finished = NO;
+        _application = application;
+    }
+    return self;
+}
+
+- (BOOL)isConcurrent {
+    return YES;
+}
+
+- (BOOL)isExecuting {
+    return _executing;
+}
+
+- (BOOL)isFinished {
+    return _finished;
+}
+
+- (void)start {
+    // Always check for cancellation before launching the task.
+    if ([self isCancelled])
+    {
+        // Must move the operation to the finished state if it is canceled.
+        [self willChangeValueForKey:@"isFinished"];
+        _finished = YES;
+        [self didChangeValueForKey:@"isFinished"];
+        return;
+    }
+    
+    self.completionBlock = ^{
+        
+    };
+    
+    // If the operation is not canceled, begin executing the task.
+    [self willChangeValueForKey:@"isExecuting"];
+    [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
+    _executing = YES;
+    [self didChangeValueForKey:@"isExecuting"];
+}
+
+- (void)main {
+    @try {
+        
+        NSString *_zipFilename = _application.zipFilename, *_localPrefix = _application.zipPrefix;
+        
+        if (_application.parentBundle) {
+            NSLog(@"Zipping %@",_application.bundleURL.lastPathComponent);
+        }
+        
+        if (_archive == nil) {
+            _archive = [[ZipArchive alloc] init];
+            [_archive CreateZipFile2:[_application.workingPath stringByAppendingPathComponent:_zipFilename] append:(_application.parentBundle != nil)];
+        }
+        
+        if (!_application.parentBundle && [[NSFileManager defaultManager]fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork" isDirectory:NO].path]) {
+            [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork" isDirectory:NO].path newname:@"iTunesArtwork"];
+            //gbprintln(@"Added %@",@"iTunesArtwork");
+        }
+        
+        if (!_application.parentBundle && [[NSFileManager defaultManager]fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path]) {
+            [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path newname:@"iTunesMetadata.plist"];
+            //gbprintln(@"Added %@",@"iTunesMetadata.plist");
+        }
+        
+        NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:_application.bundleURL includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:nil errorHandler:^BOOL(NSURL *url, NSError *error) {
+            //gbprintln(@"[ERROR] %@ %@",url.path, error);
+            return YES;
+        }];
+        
+        for (NSURL *theURL in dirEnumerator)
+        {
+            NSNumber *isDirectory;
+            [theURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nil];
+            
+            NSString *_localPath = [theURL.path stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
+            
+            NSArray *_pathComponents = _localPath.pathComponents;
+            
+            if (_pathComponents.count > 2)
+            {
+                if ([_pathComponents[2] isEqualToString:@"SC_Info"]||[_pathComponents[2] isEqualToString:@"Frameworks"]||[_pathComponents[2] isEqualToString:@"PlugIns"])
+                {
+                    //gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                }
+                else if (![isDirectory boolValue] && ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent])
+                {
+                    [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
+                    //gbprintln(@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                }
+                else
+                {
+                    //gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                }
+            }
+            else
+            {
+                //gbprintln(@"Skipping %@",_localPath);
+            }
+            
+            /*if ([_pathComponents[1] isEqualToString:@"Documents"]||[_pathComponents[1] isEqualToString:@"Library"]||[_pathComponents[1] isEqualToString:@"tmp"]||[_pathComponents[1] hasPrefix:@"."]) {
+             //gbprintln(@"Skipping %@",_localPath);
+             }else if (_pathComponents.count > 2)
+             {
+             if (([_pathComponents[1] isEqualToString:_application.bundleURL.lastPathComponent]&&[_pathComponents[2] isEqualToString:@"SC_Info"])||([_pathComponents[1] isEqualToString:_application.bundleURL.lastPathComponent]&&[_pathComponents[2] isEqualToString:_application.executableURL.lastPathComponent])) {
+             //gbprintln(@"Skipping %@",_localPath);
+             }else if (![isDirectory boolValue])
+             {
+             [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
+             //gbprintln(@"Added %@",_localPath);
+             }
+             }else if (![isDirectory boolValue])
+             {
+             //Additional handler for iTunesArtwork and iTunesMetadata
+             [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
+             //gbprintln(@"Added %@",_localPath);
+             }*/
+            
+            
+        }
+        
+        [_archive CloseZipFile2];
+        
+        // Do the main work of the operation here.
+        [self completeOperation];
+    }
+    @catch(...) {
+        // Do not rethrow exceptions.
+    }
+}
+
+- (void)completeOperation {
+    [self willChangeValueForKey:@"isFinished"];
+    [self willChangeValueForKey:@"isExecuting"];
+    _executing = NO;
+    _finished = YES;
+    [self didChangeValueForKey:@"isExecuting"];
+    [self didChangeValueForKey:@"isFinished"];
+}
 
 @end

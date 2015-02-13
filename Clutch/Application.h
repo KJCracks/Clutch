@@ -12,6 +12,7 @@
 #import "Framework.h"
 
 @class Application;
+
 @protocol ApplicationDelegate <NSObject>
 
 - (void)crackingProcessStarted:(Application*)app;

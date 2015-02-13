@@ -21,8 +21,9 @@ int main (int argc, const char * argv[])
         options.printHelpHeader = ^{ return @"Usage: %APPNAME [OPTIONS]"; };
         //options.printHelpFooter = ^{ return @"Thanks to everyone for their help..."; };
         
-        [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID" flags:GBValueRequired];
-        [options registerOption:'i' long:@"print-installed" description:@"Print installed application" flags:GBValueNone];
+        [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID" flags:GBValueRequired|GBOptionNoPrint];
+        [options registerOption:'i' long:@"print-installed" description:@"Print installed application" flags:GBValueNone|GBOptionNoPrint];
+        [options registerOption:0 long:@"clean" description:@"Clean /var/tmp/clutch directory" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
         
@@ -43,13 +44,17 @@ int main (int argc, const char * argv[])
             }else if ([option isEqualToString:@"version"]) {
                 [options printVersion];
                 exit(0);
+            }else if ([option isEqualToString:@"clean"]) {
+                [[NSFileManager defaultManager]removeItemAtPath:@"/var/tmp/clutch" error:nil];
+                [[NSFileManager defaultManager]createDirectoryAtPath:@"/var/tmp/clutch" withIntermediateDirectories:YES attributes:nil error:nil];
+                exit(0);
             }else if ([option isEqualToString:@"print-installed"]) {
                 ApplicationsManager *_manager = [ApplicationsManager sharedInstance];
                 
                 NSArray *installedApps = [_manager installedApps].allValues;
                 printf("Installed apps:\n");
                 for (Application *_app in installedApps) {
-                    gbprintln(@"%u) %@ %@ %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app.bundleIdentifier,_app,_app.extensions);
+                    gbprintln(@"%u) %@ %@ %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app.bundleIdentifier,_app,_app.workingPath);
                 }
                 exit(0);
             }
@@ -86,18 +91,16 @@ int main (int argc, const char * argv[])
         Application *_selectedApp = _installedApps[_selectedBundleID];
         
         if (_selectedApp.frameworks.count || _selectedApp.extensions.count) {
-            printf("It's not possible to dump this app at this moment\n");
-            exit(0);
+            printf("It's not possible to dump apps with iOS 8 extensions/frameworks at this moment\n");
+            //exit(0);
         }
         
         if (!_selectedApp) {
             gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);
             exit(0);
         }
-        
 
-        
-        
+        [_selectedApp dumpToDirectoryURL:nil];
         
         CFRunLoopRun();
         

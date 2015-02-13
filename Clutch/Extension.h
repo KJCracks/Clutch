@@ -9,7 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "ClutchBundle.h"
 
+@class Application;
+
 NS_CLASS_AVAILABLE_IOS(8_0)
 @interface Extension : ClutchBundle
+
 
 @end

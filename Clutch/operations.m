@@ -256,16 +256,3 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, struc
     
     return YES;
 }
-BOOL removeASLRFromBinary(NSMutableData *binary, struct thin_header macho) {
-    // MH_PIE is a flag on the macho header whcih indicates that the address space of the executable
-    // should be randomized
-    if (macho.header.flags & MH_PIE) {
-        macho.header.flags &= ~MH_PIE;
-        [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
-    } else {
-        LOG("binary is not protected by ASLR");
-        return NO;
-    }
-    
-    return YES;
-}

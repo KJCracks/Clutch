@@ -50,7 +50,11 @@ struct code_directory {
 
 - (NSString *)readableArchFromHeader:(struct thin_header)macho;
 
-- (BOOL)dump32bitWithData:(NSMutableData *)data machHeader:(struct thin_header)header;
-- (BOOL)dump64bitWithData:(NSMutableData *)data machHeader:(struct thin_header)header;
+- (BOOL)dump32bitFromFileHandle:(NSFileHandle **)fileHandle machHeader:(struct thin_header *)header;
+- (BOOL)dump64bitFromFileHandle:(NSFileHandle **)fileHandle machHeader:(struct thin_header *)header;
+- (BOOL)removeArchitecture:(struct thin_header*)removeArch;
+- (NSString *)stripArch:(cpu_subtype_t)keep_arch;
+//- (NSString *)swapArch:(cpu_subtype_t) swaparch;
+//- (void)swapBack:(NSString *)path;
 
 @end

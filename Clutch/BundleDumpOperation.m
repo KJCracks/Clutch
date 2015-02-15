@@ -16,6 +16,7 @@
 #import "operations.h"
 #import "NSData+Reading.h"
 #import "headers.h"
+#import "Device.h"
 
 @interface BundleDumpOperation ()
 {
@@ -76,57 +77,156 @@
 - (void)main {
     @try {
         
+        cpu_type_t _localCPUType = [Device cpu_type];
+        cpu_subtype_t _localCPUSubtype = [Device cpu_subtype];
+        
         NSFileManager *_fileManager = [NSFileManager defaultManager];
         
         Binary *originalBinary = _application.executable;
         
-        _binaryDumpPath = [_application.workingPath stringByAppendingPathComponent:[_application.bundleIdentifier stringByAppendingPathComponent:_application.executablePath.lastPathComponent]];
+        Dumper *_dumper = [[Dumper alloc]initWithBinary:originalBinary];
+
+        _binaryDumpPath = [originalBinary.workingPath stringByAppendingPathComponent:originalBinary.binaryPath.lastPathComponent];
         
         [_fileManager createDirectoryAtPath:_binaryDumpPath.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
         
-        [_fileManager copyItemAtPath:_application.executablePath toPath:_binaryDumpPath error:nil];
+        [_fileManager copyItemAtPath:originalBinary.binaryPath toPath:_binaryDumpPath error:nil];
         
-        NSData *_originalBinaryData = [NSData dataWithContentsOfFile:_binaryDumpPath];
-        
-        NSMutableData *_newBinaryData = _originalBinaryData.mutableCopy;
+        NSFileHandle *_handle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
         
         struct thin_header headers[4];
         uint32_t numHeaders = 0;
-        headersFromBinary(headers, _newBinaryData, &numHeaders);
+        
+        headersFromBinary(headers, _handle.availableData, &numHeaders);
         
         if (numHeaders == 0) {
             LOG("No compatible architecture found");
         }
+        
+        BOOL isFAT = numHeaders > 1;
 
+        NSInteger dumpCount = 0;
+        
+        NSMutableArray *_headersToStrip = [NSMutableArray new];
+        
+        struct thin_header* compatibleArch = NULL;
+        
         for (uint32_t i = 0; i < numHeaders; i++) {
+            
             struct thin_header macho = headers[i];
             
-            Dumper *_dumper = [[Dumper alloc]initWithBinary:originalBinary];
-            
-            if (macho.header.cputype == CPU_TYPE_ARM64)
-            {
-                // 64bit yoyo
-                BOOL result = [_dumper dump64bitWithData:_newBinaryData machHeader:macho];
-                
-            }else
-            {
-                // oldschool bae
-                
-                if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V6) {
+            if (!isFAT) {
+                if (macho.header.cputype == CPU_TYPE_ARM64)
+                {
+                    if (_localCPUType == CPU_TYPE_ARM64) {
+                        if ([_dumper dump64bitFromFileHandle:&_handle machHeader:&macho])
+                            dumpCount++;
+                    }else
+                        NSLog(@"Can't dump 64bit binary on 32bit device");
                     
-                }else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V7) {
-                    
-                }else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V7S) {
-                    
+                }else if ((_localCPUType == CPU_TYPE_ARM64) || (_localCPUSubtype >= macho.header.cpusubtype)) {
+                    if ([_dumper dump32bitFromFileHandle:&_handle machHeader:&macho])
+                        dumpCount++;
+                }else
+                {
+                    NSLog(@"Can't dump 32bit %@ binary on 32bit %u device",[_dumper readableArchFromHeader:macho],_localCPUSubtype);
                 }
+            
+            }else {
                 
-                BOOL result = [_dumper dump32bitWithData:_newBinaryData machHeader:macho];
+                if (macho.header.cputype == CPU_TYPE_ARM64)
+                {
+                    if (_localCPUType == CPU_TYPE_ARM64) {
+                        if ([_dumper dump64bitFromFileHandle:&_handle machHeader:&macho])
+                            dumpCount++;
+                        else
+                            return [self completeOperation];
+                    }else
+                        [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(struct thin_header)]];
+                    
+                }else
+                {
+                    // oldschool bae
+                    switch ([Device compatibleWith:&macho.header])
+                    {
+                        case COMPATIBLE:
+                        {
+                            if ([_dumper dump32bitFromFileHandle:&_handle machHeader:&macho])
+                            {
+                                dumpCount++;
+                                compatibleArch = &macho;
+                            }
+                            else
+                                return [self completeOperation];
+                            break;
+                        }
+                        case NOT_COMPATIBLE:
+                        {
+                            NSLog(@"arch %@ is not compatible with this device!",[_dumper readableArchFromHeader:macho]);
+                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(struct thin_header)]];
+                            break;
+                        }
+                        case COMPATIBLE_SWAP:
+                        {
+                           /* NSString* stripPath;
+                            
+                            if (originalBinary.hasARM64Slice) {
+                                stripPath = [_dumper stripArch:macho.header.cpusubtype];
+                            }else {
+                                //stripPath = [_dumper swapArch:macho.header.cpusubtype];
+                            }
+                            
+                            if (stripPath == NULL)
+                            {
+                                NSLog(@"error stripping/swapping binary!");
+                                return [self completeOperation];
+                            }
+                            
+                            NSFileHandle *_stripHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(stripPath.UTF8String, "r+"))];
+
+                            
+                            //at this point newbinary is not fopen()'d  - should it be?
+                            
+                            if (![_dumper dump32bitFromFileHandle:&_stripHandle machHeader:&macho])
+                            {
+                                [_stripHandle closeFile];
+                                // Dumping failed
+                                
+                                NSLog(@"Cannot crack stripped %@ portion of binary.", [_dumper readableArchFromHeader:macho]);
+                                
+                                
+                                return [self completeOperation];
+                            }
+                            [_stripHandle closeFile];
+
+                            //[_dumper swapBack:stripPath];
+                            
+                            compatibleArch = &macho;*/
+                            
+                            break;
+                        }
+                    }
+                }
                 
             }
             
         }
-
-        [_newBinaryData writeToFile:_binaryDumpPath atomically:YES];
+        
+        [_handle closeFile];
+        
+        for (NSValue *valueWithArch in _headersToStrip) {
+            struct thin_header stripArch;
+            [valueWithArch getValue:&stripArch];
+            [_dumper removeArchitecture:&stripArch];
+        }
+        
+        
+        if (dumpCount == (numHeaders-_headersToStrip.count))
+        {
+            NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.parentBundle?_application.parentBundle.bundleContainerURL.path:_application.bundleContainerURL.path withString:@""];
+            
+            [@{_binaryDumpPath:_localPath} writeToFile:[originalBinary.workingPath stringByAppendingPathComponent:@"filesToAdd.plist"] atomically:YES];
+        }
         
         // Do the main work of the operation here.
         [self completeOperation];

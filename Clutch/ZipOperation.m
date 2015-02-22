@@ -82,16 +82,13 @@
         
         if (!_application.parentBundle && [[NSFileManager defaultManager]fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork" isDirectory:NO].path]) {
             [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork" isDirectory:NO].path newname:@"iTunesArtwork"];
-            //gbprintln(@"Added %@",@"iTunesArtwork");
         }
         
         if (!_application.parentBundle && [[NSFileManager defaultManager]fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path]) {
             [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path newname:@"iTunesMetadata.plist"];
-            //gbprintln(@"Added %@",@"iTunesMetadata.plist");
         }
         
         NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:_application.bundleURL includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:nil errorHandler:^BOOL(NSURL *url, NSError *error) {
-            //gbprintln(@"[ERROR] %@ %@",url.path, error);
             return YES;
         }];
         
@@ -124,25 +121,6 @@
             {
                 //gbprintln(@"Skipping %@",_localPath);
             }
-            
-            /*if ([_pathComponents[1] isEqualToString:@"Documents"]||[_pathComponents[1] isEqualToString:@"Library"]||[_pathComponents[1] isEqualToString:@"tmp"]||[_pathComponents[1] hasPrefix:@"."]) {
-             //gbprintln(@"Skipping %@",_localPath);
-             }else if (_pathComponents.count > 2)
-             {
-             if (([_pathComponents[1] isEqualToString:_application.bundleURL.lastPathComponent]&&[_pathComponents[2] isEqualToString:@"SC_Info"])||([_pathComponents[1] isEqualToString:_application.bundleURL.lastPathComponent]&&[_pathComponents[2] isEqualToString:_application.executableURL.lastPathComponent])) {
-             //gbprintln(@"Skipping %@",_localPath);
-             }else if (![isDirectory boolValue])
-             {
-             [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
-             //gbprintln(@"Added %@",_localPath);
-             }
-             }else if (![isDirectory boolValue])
-             {
-             //Additional handler for iTunesArtwork and iTunesMetadata
-             [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
-             //gbprintln(@"Added %@",_localPath);
-             }*/
-            
             
         }
         

@@ -168,6 +168,9 @@
                         }
                         case COMPATIBLE_SWAP:
                         {
+                            NSLog(@"arch %@ is compatible(swap) but fuck it for now!",[_dumper readableArchFromHeader:macho]);
+                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(struct thin_header)]];
+                            break;
                            /* NSString* stripPath;
                             
                             if (originalBinary.hasARM64Slice) {

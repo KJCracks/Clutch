@@ -19,7 +19,7 @@
 static kern_return_t readmem(mach_vm_offset_t *buffer, mach_vm_address_t address, mach_vm_size_t size, pid_t pid, vm_region_basic_info_data_64_t *info);
 
 kern_return_t
-find_main_binary(pid_t pid, mach_vm_address_t *main_address,struct mach_header header)
+find_main_binary(pid_t pid, mach_vm_address_t *main_address)
 {
     vm_map_t targetTask = 0;
     kern_return_t kr = 0;
@@ -47,7 +47,7 @@ find_main_binary(pid_t pid, mach_vm_address_t *main_address,struct mach_header h
         if (kr == KERN_SUCCESS && bytes_read == sizeof(struct mach_header))
         {
             /* only one image with MH_EXECUTE filetype */
-            if (((mh.magic == MH_MAGIC || mh.magic == MH_MAGIC_64) && mh.filetype == MH_EXECUTE) && (mh.cpusubtype == header.cpusubtype) && (mh.cputype == header.cputype) )
+            if ((mh.magic == MH_MAGIC || mh.magic == MH_MAGIC_64) && mh.filetype == MH_EXECUTE)
             {
 #if DEBUG
                 NSLog(@"Found main binary mach-o image @ %p!\n", (void*)addr);

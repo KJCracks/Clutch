@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		323C86AF1AC0479E008949F2 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 323C86AE1AC0479E008949F2 /* README.md */; };
+		323C86B11AC05AE4008949F2 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 323C86B01AC05AE4008949F2 /* Dumper.m */; };
 		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		324EA6331A89258000844540 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
 		324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA63B1A8925DB00844540 /* ApplicationsManager.m */; };
@@ -15,9 +15,8 @@
 		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6451A892A1400844540 /* FrontBoard.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
-		3274B9581ABEA6E100964049 /* ARMv6Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMv6Dumper.m */; };
-		3274B95D1ABEA92800964049 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95C1ABEA92800964049 /* Dumper.m */; };
-		3274B9601ABEB00400964049 /* ARMv7Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARMv7Dumper.m */; };
+		3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMDumper.m */; };
+		3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARM64Dumper.m */; };
 		3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280118A1A8BFE82006D6653 /* Dumper_old.m */; };
 		3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */; };
 		3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* optool-headers.m */; };
@@ -46,6 +45,7 @@
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		323C86AE1AC0479E008949F2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
 		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
 		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		324EA62B1A89258000844540 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
@@ -65,12 +65,11 @@
 		3258FD621A90AAED007C2E66 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
 		3258FD631A90AAED007C2E66 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
 		3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BinaryDumpProtocol.h; sourceTree = "<group>"; };
-		3274B9561ABEA6E100964049 /* ARMv6Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMv6Dumper.h; sourceTree = "<group>"; };
-		3274B9571ABEA6E100964049 /* ARMv6Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMv6Dumper.m; sourceTree = "<group>"; };
+		3274B9561ABEA6E100964049 /* ARMDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMDumper.h; sourceTree = "<group>"; };
+		3274B9571ABEA6E100964049 /* ARMDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMDumper.m; sourceTree = "<group>"; };
 		3274B95B1ABEA92800964049 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
-		3274B95C1ABEA92800964049 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
-		3274B95E1ABEB00400964049 /* ARMv7Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMv7Dumper.h; sourceTree = "<group>"; };
-		3274B95F1ABEB00400964049 /* ARMv7Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMv7Dumper.m; sourceTree = "<group>"; };
+		3274B95E1ABEB00400964049 /* ARM64Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARM64Dumper.h; sourceTree = "<group>"; };
+		3274B95F1ABEB00400964049 /* ARM64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARM64Dumper.m; sourceTree = "<group>"; };
 		328011891A8BFE82006D6653 /* Dumper_old.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper_old.h; sourceTree = "<group>"; };
 		3280118A1A8BFE82006D6653 /* Dumper_old.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper_old.m; sourceTree = "<group>"; };
 		3282BB7A1A8C920D00E5068A /* FinalizeDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinalizeDumpOperation.h; sourceTree = "<group>"; };
@@ -201,6 +200,8 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				32BC93E41A8E0E8B00805D14 /* sha1.c */,
+				32BC93E51A8E0E8B00805D14 /* sha1.h */,
 				323C86AE1AC0479E008949F2 /* README.md */,
 				323C86AB1AC03E3F008949F2 /* .gitignore */,
 				32BC93F11A8F3C0B00805D14 /* mach_vm.h */,
@@ -236,7 +237,7 @@
 			children = (
 				3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */,
 				3274B95B1ABEA92800964049 /* Dumper.h */,
-				3274B95C1ABEA92800964049 /* Dumper.m */,
+				323C86B01AC05AE4008949F2 /* Dumper.m */,
 			);
 			name = "Protocol + Parent Dumper";
 			sourceTree = "<group>";
@@ -244,8 +245,6 @@
 		3274B9591ABEA6E800964049 /* old_stuff */ = {
 			isa = PBXGroup;
 			children = (
-				32BC93E41A8E0E8B00805D14 /* sha1.c */,
-				32BC93E51A8E0E8B00805D14 /* sha1.h */,
 				32BC93F21A8F726800805D14 /* ASLRDisabler.h */,
 				32BC93F31A8F726800805D14 /* ASLRDisabler.m */,
 				328011891A8BFE82006D6653 /* Dumper_old.h */,
@@ -325,10 +324,10 @@
 			children = (
 				3274B9591ABEA6E800964049 /* old_stuff */,
 				3274B9541ABEA5F400964049 /* Protocol + Parent Dumper */,
-				3274B9561ABEA6E100964049 /* ARMv6Dumper.h */,
-				3274B9571ABEA6E100964049 /* ARMv6Dumper.m */,
-				3274B95E1ABEB00400964049 /* ARMv7Dumper.h */,
-				3274B95F1ABEB00400964049 /* ARMv7Dumper.m */,
+				3274B9561ABEA6E100964049 /* ARMDumper.h */,
+				3274B9571ABEA6E100964049 /* ARMDumper.m */,
+				3274B95E1ABEB00400964049 /* ARM64Dumper.h */,
+				3274B95F1ABEB00400964049 /* ARM64Dumper.m */,
 			);
 			name = Dumpers;
 			sourceTree = "<group>";
@@ -422,27 +421,26 @@
 				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
 				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
 				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
-				3274B9581ABEA6E100964049 /* ARMv6Dumper.m in Sources */,
+				3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */,
 				3258FD641A90AAED007C2E66 /* Device.m in Sources */,
 				32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */,
 				32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */,
 				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
-				323C86AF1AC0479E008949F2 /* README.md in Sources */,
 				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
 				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
 				3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */,
-				3274B95D1ABEA92800964049 /* Dumper.m in Sources */,
 				324EA6421A8926DC00844540 /* Application.m in Sources */,
 				32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */,
 				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
 				32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */,
 				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
 				32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */,
-				3274B9601ABEB00400964049 /* ARMv7Dumper.m in Sources */,
+				3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */,
 				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,
 				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
+				323C86B11AC05AE4008949F2 /* Dumper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,6 +504,10 @@
 		324EA6381A89258000844540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
@@ -518,6 +520,7 @@
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				iOSOpenDevBuildPackageOnAnyBuild = NO;
 				iOSOpenDevCopyOnBuild = NO;
 				iOSOpenDevDevice = "";
@@ -531,6 +534,10 @@
 		324EA6391A89258000844540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
@@ -543,6 +550,7 @@
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				iOSOpenDevBuildPackageOnAnyBuild = NO;
 				iOSOpenDevCopyOnBuild = NO;
 				iOSOpenDevDevice = "";

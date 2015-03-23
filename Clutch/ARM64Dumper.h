@@ -1,5 +1,5 @@
 //
-//  ARMv6Dumper.h
+//  ARM64Dumper.h
 //  Clutch
 //
 //  Created by Anton Titkov on 22.03.15.
@@ -8,6 +8,6 @@
 
 #import "Dumper.h"
 
-@interface ARMv6Dumper : Dumper <BinaryDumpProtocol>
+@interface ARM64Dumper : Dumper <BinaryDumpProtocol>
 
 @end

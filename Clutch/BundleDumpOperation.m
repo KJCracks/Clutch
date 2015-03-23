@@ -80,9 +80,6 @@
 - (void)main {
     @try {
         
-        cpu_type_t _localCPUType = [Device cpu_type];
-        cpu_subtype_t _localCPUSubtype = [Device cpu_subtype];
-        
         NSFileManager *_fileManager = [NSFileManager defaultManager];
         
         Binary *originalBinary = _application.executable;
@@ -115,15 +112,25 @@
         for (uint32_t i = 0; i < numHeaders; i++) {
             
             thin_header macho = headers[i];
-            
-            for (Dumper<BinaryDumpProtocol>* _dumper in dumpers) {
-            
-                if (![_dumper canDumpArchForHeader:macho]) {
-                    NSLog(@"%@ cannot dump binary at URL path %@ with arch %i %i",_dumper,originalBinary.binaryPath,macho.header.cputype,macho.header.cpusubtype);
-                }
+            Dumper<BinaryDumpProtocol> *_dumper;
+            for (Class dumperClass in dumpers) {
+                _dumper = [[dumperClass alloc]initWithHeader:macho originalBinary:originalBinary];
                 
-                
+                if ([_dumper compatibilityMode] == ArchCompatibilityNotCompatible) {
+                    NSLog(@"%@ cannot dump binary at URL path %@ with arch %@",_dumper,originalBinary.binaryPath,[Dumper readableArchFromHeader:macho]);
+                    _dumper = nil;
+                }else
+                    break;
             }
+            
+            if (!_dumper) {
+                NSLog(@"Couldn't find compatible dumper for binary at URL path %@ with arch %@",originalBinary.binaryPath,[Dumper readableArchFromHeader:macho]);
+                continue;
+            }
+            
+            NSLog(@"Found compatible dumper %@ for binary at URL path %@ with arch %@",_dumper,originalBinary.binaryPath,[Dumper readableArchFromHeader:macho]);
+            
+            [_dumper dumpBinaryToURL:[NSURL fileURLWithPath:_binaryDumpPath]];
             
         }
         
@@ -176,7 +183,7 @@
             Class nextClass = classes[index];
             
             if (class_conformsToProtocol(nextClass, @protocol(BinaryDumpProtocol)))
-                [array addObject:[nextClass sharedInstance]];
+                [array addObject:nextClass];
         }
         free(classes);
     }

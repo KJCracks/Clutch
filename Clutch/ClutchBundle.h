@@ -10,6 +10,7 @@
 #import "Binary.h"
 
 @class Application;
+
 @interface ClutchBundle : NSBundle
 {
     NSOperationQueue *_dumpQueue;

@@ -8,7 +8,16 @@
 
 #import "BinaryDumpProtocol.h"
 
+#import "Binary.h"
+
 @interface Dumper : NSObject
-+ (instancetype)sharedInstance;
-- (ArchCompatibility)compatibilityModeWithCurrentDevice;
+{
+    Binary *_originalBinary;
+    thin_header _thinHeader;
+}
+
++ (NSString *)readableArchFromHeader:(thin_header)macho;
+- (pid_t)posix_spawn;
+- (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary NS_DESIGNATED_INITIALIZER;
+- (ArchCompatibility)compatibilityMode;
 @end

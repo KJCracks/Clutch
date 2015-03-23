@@ -20,12 +20,6 @@
 
 @implementation Binary
 
-- (instancetype)init
-{
-    // foolproof
-    return nil;
-}
-
 - (NSString *)workingPath
 {
     return [_bundle.workingPath stringByAppendingPathComponent:_bundle.bundleIdentifier];

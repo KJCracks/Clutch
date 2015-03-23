@@ -19,12 +19,8 @@ typedef NS_ENUM(NSUInteger, ArchCompatibility) {
 
 @protocol BinaryDumpProtocol <NSObject>
 
-+ (instancetype)sharedInstance;
-
-- (BOOL)canDumpArchForHeader:(thin_header)header;
 - (cpu_type_t)supportedCPUType;
-- (cpu_subtype_t)supportedCPUSubtype;
 
-- (BOOL)dumpBinaryAtURL:(NSURL *)origLocURL toURL:(NSURL *)newLocURL;
+- (BOOL)dumpBinaryToURL:(NSURL *)newLocURL;
 
 @end

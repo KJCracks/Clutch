@@ -52,11 +52,6 @@ void sha1(uint8_t *hash, uint8_t *data, size_t size);
 
 @implementation Dumper_old
 
-- (instancetype)init
-{
-    return nil;
-}
-
 - (instancetype)initWithBinary:(Binary *)binary
 {
     if (!binary) {

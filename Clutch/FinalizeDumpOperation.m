@@ -58,7 +58,7 @@
     __weak Application *_app = _application;
     
     self.completionBlock = ^{
-        gbprintln(@"DONE: %@",_app.workingPath);
+        NSLog(@"DONE: %@",_app.workingPath);
     };
     
     // If the operation is not canceled, begin executing the task.
@@ -70,6 +70,8 @@
 
 - (void)main {
     @try {
+        
+#warning todo
         
         // Do the main work of the operation here.
         [self completeOperation];

@@ -12,12 +12,7 @@
 #include <sys/sysctl.h>
 #import <mach-o/fat.h>
 
-typedef enum {
-    COMPATIBLE,
-    COMPATIBLE_SWAP,
-    //COMPATIBLE_STRIP,
-    NOT_COMPATIBLE
-} ArchCompatibility;
+#import "BinaryDumpProtocol.h"
 
 @interface Device : NSObject
 

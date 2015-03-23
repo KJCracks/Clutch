@@ -6,7 +6,7 @@
 //
 //
 
-#import "ASLR.h"
+#import "ASLRDisabler.h"
 #import <dlfcn.h>
 #import <mach-o/fat.h>
 #import <mach/mach_traps.h>
@@ -185,7 +185,7 @@ readmem(mach_vm_offset_t *buffer, mach_vm_address_t address, mach_vm_size_t size
     return KERN_SUCCESS;
 }
 
-@implementation ASLR
+@implementation ASLRDisabler
 
 
 @end

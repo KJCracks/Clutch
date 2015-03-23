@@ -41,7 +41,7 @@
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *directoryURL = [NSURL fileURLWithPath:self.privateFrameworksPath]; // URL pointing to the directory you want to browse
-    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+    NSArray *keys = @[NSURLIsDirectoryKey];
     
     NSDirectoryEnumerator *enumerator = [fileManager
                                          enumeratorAtURL:directoryURL
@@ -80,7 +80,7 @@
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *directoryURL = [NSURL fileURLWithPath:self.builtInPlugInsPath]; // URL pointing to the directory you want to browse
-    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+    NSArray *keys = @[NSURLIsDirectoryKey];
     
     NSDirectoryEnumerator *enumerator = [fileManager
                                          enumeratorAtURL:directoryURL

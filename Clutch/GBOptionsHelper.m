@@ -220,7 +220,7 @@ static NSUInteger GBOptionInternalEndGroup = 1 << 10;
 	[rows enumerateObjectsUsingBlock:^(NSArray *columns, NSUInteger rowIdx, BOOL *stopRow) {
 		NSMutableString *output = [NSMutableString string];
 		[columns enumerateObjectsUsingBlock:^(NSString *value, NSUInteger colIdx, BOOL *stopCol) {
-			NSUInteger columnSize = [[lengths objectAtIndex:colIdx] unsignedIntegerValue];
+			NSUInteger columnSize = [lengths[colIdx] unsignedIntegerValue];
 			NSUInteger valueSize = value.length;
 			[output appendString:value];
 			while (valueSize <= columnSize) {

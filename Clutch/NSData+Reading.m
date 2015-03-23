@@ -40,7 +40,7 @@ static char OFFSET;
 - (void)setCurrentOffset:(NSUInteger)offset
 {
     [self willChangeValueForKey:@"currentOffset"];
-    objc_setAssociatedObject(self, &OFFSET, [NSNumber numberWithUnsignedInteger:offset], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &OFFSET, @(offset), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [self didChangeValueForKey:@"currentOffset"];
 }
 

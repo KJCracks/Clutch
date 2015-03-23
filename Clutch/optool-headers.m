@@ -25,13 +25,13 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import "headers.h"
+#import "optool-headers.h"
 #import <mach-o/loader.h>
 #import <mach-o/fat.h>
 #import "NSData+Reading.h"
 
-struct thin_header headerAtOffset(NSData *binary, uint32_t offset) {
-    struct thin_header macho;
+thin_header headerAtOffset(NSData *binary, uint32_t offset) {
+    thin_header macho;
     macho.offset = offset;
     macho.header = *(struct mach_header *)(binary.bytes + offset);
     if (macho.header.magic == MH_MAGIC || macho.header.magic == MH_CIGAM) {
@@ -46,7 +46,7 @@ struct thin_header headerAtOffset(NSData *binary, uint32_t offset) {
     return macho;
 }
 
-struct thin_header *headersFromBinary(struct thin_header *headers, NSData *binary, uint32_t *amount) {
+thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *amount) {
     // In a MachO/FAT binary the first 4 bytes is a magic number
     // which gives details about the type of binary it is
     // CIGAM and co. mean the target binary has a byte order
@@ -74,7 +74,7 @@ struct thin_header *headersFromBinary(struct thin_header *headers, NSData *binar
             arch.cputype = SWAP(arch.cputype);
             arch.offset = SWAP(arch.offset);
 
-            struct thin_header macho = headerAtOffset(binary, arch.offset);
+            thin_header macho = headerAtOffset(binary, arch.offset);
             if (macho.size > 0) {
                 LOG("Found thin header...");
 
@@ -86,7 +86,7 @@ struct thin_header *headersFromBinary(struct thin_header *headers, NSData *binar
         }
     // The binary is thin, meaning it contains only one architecture
     } else if (magic == MH_MAGIC || magic == MH_MAGIC_64) {
-        struct thin_header macho = headerAtOffset(binary, 0);
+        thin_header macho = headerAtOffset(binary, 0);
         if (macho.size > 0) {
             LOG("Found thin header...");
 

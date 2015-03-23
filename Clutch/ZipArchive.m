@@ -144,7 +144,7 @@
     NSDate* fileDate = nil;
     
     if( attr )
-        fileDate = (NSDate*)[attr objectForKey:NSFileModificationDate];
+        fileDate = (NSDate*)attr[NSFileModificationDate];
     
     if( fileDate == nil )
         fileDate = [NSDate date];
@@ -390,7 +390,7 @@
                     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
                     NSDate* orgDate = [gregorianCalendar dateFromComponents:components];
                     
-                    NSDictionary* attr = [NSDictionary dictionaryWithObject:orgDate forKey:NSFileModificationDate]; //[_fileManager fileAttributesAtPath:fullPath traverseLink:YES];
+                    NSDictionary* attr = @{NSFileModificationDate: orgDate}; //[_fileManager fileAttributesAtPath:fullPath traverseLink:YES];
                     if( attr )
                     {
                         //	[attr  setValue:orgDate forKey:NSFileCreationDate];
@@ -503,7 +503,7 @@
             if (fileMutableData.length > 0)
             {
                 NSData *fileData = [NSData dataWithData:fileMutableData];
-                [fileDictionary setObject:fileData forKey:strPath];
+                fileDictionary[strPath] = fileData;
             }
             
             if (ret == UNZ_OK) {
@@ -593,7 +593,7 @@
         filename[fileInfo.size_filename] = '\0';
         
         // check if it contains directory
-        NSString * strPath = [NSString stringWithCString:filename encoding:NSASCIIStringEncoding];
+        NSString * strPath = @(filename);
         free( filename );
         if( [strPath rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"/\\"]].location!=NSNotFound )
         {// contains a path

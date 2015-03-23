@@ -11,17 +11,19 @@
 #import "optool.h"
 
 typedef NS_ENUM(NSUInteger, ArchCompatibility) {
-    COMPATIBLE,
-    //COMPATIBLE_STRIP,
-    COMPATIBLE_SWAP,
-    NOT_COMPATIBLE,
+    ArchCompatibilityCompatible,
+    //ArchCompatibilityStrip,
+    ArchCompatibilitySwap,
+    ArchCompatibilityNotCompatible,
 };
 
 @protocol BinaryDumpProtocol <NSObject>
 
-+ (BOOL)canDumpArchForHeader:(thin_header *)header;
-+ (cpu_type_t)supportedCPUType;
-+ (cpu_subtype_t)supportedCPUSubtype;
++ (instancetype)sharedInstance;
+
+- (BOOL)canDumpArchForHeader:(thin_header)header;
+- (cpu_type_t)supportedCPUType;
+- (cpu_subtype_t)supportedCPUSubtype;
 
 - (BOOL)dumpBinaryAtURL:(NSURL *)origLocURL toURL:(NSURL *)newLocURL;
 

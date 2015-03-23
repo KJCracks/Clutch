@@ -101,25 +101,28 @@
             
             NSArray *_pathComponents = _localPath.pathComponents;
             
-            if (_pathComponents.count > 2)
-            {
-                if ([_pathComponents[2] isEqualToString:@"SC_Info"]||[_pathComponents[2] isEqualToString:@"Frameworks"]||[_pathComponents[2] isEqualToString:@"PlugIns"])
-                {
-                    //gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+            if (_pathComponents.count > 2) {
+                if ([_pathComponents[2] isEqualToString:@"SC_Info"]||[_pathComponents[2] isEqualToString:@"Frameworks"]||[_pathComponents[2] isEqualToString:@"PlugIns"]) {
+                    #if PRINT_ZIP_LOGS
+                    gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                    #endif
                 }
-                else if (![isDirectory boolValue] && ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent])
-                {
+                else if (![isDirectory boolValue] && ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent]) {
                     [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
-                    //gbprintln(@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                    #if PRINT_ZIP_LOGS
+                    gbprintln(@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                    #endif
                 }
-                else
-                {
-                    //gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                else {
+                    #if PRINT_ZIP_LOGS
+                    gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                    #endif
                 }
             }
-            else
-            {
-                //gbprintln(@"Skipping %@",_localPath);
+            else {
+                #if PRINT_ZIP_LOGS
+                gbprintln(@"Skipping %@",_localPath);
+                #endif
             }
             
         }

@@ -92,7 +92,7 @@ int main (int argc, const char * argv[])
         
         if (_selectedApp.frameworks.count || _selectedApp.extensions.count) {
             printf("It's not possible to dump apps with iOS 8 extensions/frameworks at this moment\n");
-            //exit(0);
+            exit(0);
         }
         
         if (!_selectedApp) {

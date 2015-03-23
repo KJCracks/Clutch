@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#ifdef DEBUG
+#define PRINT_ZIP_LOGS 0
+#endif
+
 @class ClutchBundle;
 
 @interface ZipOperation : NSOperation

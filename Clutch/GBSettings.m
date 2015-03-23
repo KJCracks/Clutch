@@ -98,7 +98,7 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 }
 - (void)setObject:(id)value forKey:(NSString *)key {
 	if ([self isKeyArray:key] && ![key isKindOfClass:[NSArray class]]) {
-		NSMutableArray *array = [self.storage objectForKey:key];
+		NSMutableArray *array = (self.storage)[key];
 		if (![array isKindOfClass:[NSMutableArray class]]) {
 			id existing = array;
 			array = [NSMutableArray array];
@@ -165,10 +165,10 @@ GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
 }
 
 - (id)objectForLocalKey:(NSString *)key {
-	return [self.storage objectForKey:key];
+	return (self.storage)[key];
 }
 - (void)setObject:(id)value forLocalKey:(NSString *)key {
-	[self.storage setObject:value forKey:key];
+	(self.storage)[key] = value;
 }
 
 #pragma mark - Introspection
@@ -207,7 +207,7 @@ GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
 }
 
 - (BOOL)isKeyPresentAtThisLevel:(NSString *)key {
-	if ([self.storage objectForKey:key]) return YES;
+	if ((self.storage)[key]) return YES;
 	return NO;
 }
 

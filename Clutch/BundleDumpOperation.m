@@ -9,13 +9,9 @@
 #import "BundleDumpOperation.h"
 #import "Application.h"
 #import "GBPrint.h"
-
-#import "Dumper.h"
-
-#import "defines.h"
-#import "operations.h"
+#import "Dumper_old.h"
+#import "optool.h"
 #import "NSData+Reading.h"
-#import "headers.h"
 #import "Device.h"
 
 @interface BundleDumpOperation ()
@@ -28,7 +24,7 @@
 
 @implementation BundleDumpOperation
 
-- (id)initWithBundle:(ClutchBundle *)application {
+- (instancetype)initWithBundle:(ClutchBundle *)application {
     self = [super init];
     if (self) {
         _executing = NO;
@@ -84,7 +80,7 @@
         
         Binary *originalBinary = _application.executable;
         
-        Dumper *_dumper = [[Dumper alloc]initWithBinary:originalBinary];
+        Dumper_old *_dumper = [[Dumper_old alloc]initWithBinary:originalBinary];
 
         _binaryDumpPath = [originalBinary.workingPath stringByAppendingPathComponent:originalBinary.binaryPath.lastPathComponent];
         
@@ -94,7 +90,7 @@
         
         NSFileHandle *_handle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
         
-        struct thin_header headers[4];
+        thin_header headers[4];
         uint32_t numHeaders = 0;
         
         headersFromBinary(headers, _handle.availableData, &numHeaders);
@@ -109,11 +105,11 @@
         
         NSMutableArray *_headersToStrip = [NSMutableArray new];
         
-        struct thin_header* compatibleArch = NULL;
+        thin_header* compatibleArch = NULL;
         
         for (uint32_t i = 0; i < numHeaders; i++) {
             
-            struct thin_header macho = headers[i];
+            thin_header macho = headers[i];
             
             if (!isFAT) {
                 if (macho.header.cputype == CPU_TYPE_ARM64)
@@ -142,7 +138,7 @@
                         else
                             return [self completeOperation];
                     }else
-                        [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(struct thin_header)]];
+                        [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(thin_header)]];
                     
                 }else
                 {
@@ -163,13 +159,13 @@
                         case NOT_COMPATIBLE:
                         {
                             NSLog(@"arch %@ is not compatible with this device!",[_dumper readableArchFromHeader:macho]);
-                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(struct thin_header)]];
+                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(thin_header)]];
                             break;
                         }
                         case COMPATIBLE_SWAP:
                         {
                             NSLog(@"arch %@ is compatible(swap) but fuck it for now!",[_dumper readableArchFromHeader:macho]);
-                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(struct thin_header)]];
+                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(thin_header)]];
                             break;
                            /* NSString* stripPath;
                             
@@ -218,7 +214,7 @@
         [_handle closeFile];
         
         for (NSValue *valueWithArch in _headersToStrip) {
-            struct thin_header stripArch;
+            thin_header stripArch;
             [valueWithArch getValue:&stripArch];
             [_dumper removeArchitecture:&stripArch];
         }

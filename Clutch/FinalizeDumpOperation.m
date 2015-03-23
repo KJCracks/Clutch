@@ -22,7 +22,7 @@
 
 @implementation FinalizeDumpOperation
 
-- (id)initWithApplication:(Application *)application {
+- (instancetype)initWithApplication:(Application *)application {
     self = [super init];
     if (self) {
         _executing = NO;

@@ -23,6 +23,6 @@
 @property (readonly) BOOL hasARMSlice;
 @property (readonly) BOOL hasARM64Slice;
 
-- (instancetype)initWithBundle:(ClutchBundle *)bundle;
+- (instancetype)initWithBundle:(ClutchBundle *)bundle NS_DESIGNATED_INITIALIZER;
 
 @end

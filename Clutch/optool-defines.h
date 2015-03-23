@@ -76,11 +76,12 @@
 // we pass around this header which includes some extra information
 // and a 32-bit header which we used for both 32-bit and 64-bit files
 // since the 64-bit just adds an extra field to the end which we don't need
-struct thin_header {
+
+typedef struct thin_header {
     uint32_t offset;
     uint32_t size;
     struct mach_header header;
-};
+} thin_header;
 
 typedef NS_ENUM(int, OPError) {
     OPErrorNone               = 0,

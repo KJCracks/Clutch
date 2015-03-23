@@ -72,9 +72,9 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         
         for (NSString *bundleID in [installedApps allKeys])
         {
-            NSDictionary *appI=[installedApps objectForKey:bundleID];
+            NSDictionary *appI=installedApps[bundleID];
             
-            NSURL *bundleURL = [NSURL fileURLWithPath:[appI objectForKey:@"Path"]];
+            NSURL *bundleURL = [NSURL fileURLWithPath:appI[@"Path"]];
             
             NSString *scinfo=[bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
 
@@ -86,7 +86,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                 Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
                                                                            @"BundleURL":bundleURL}];
                 
-                [returnValue setObject:app forKey:bundleID];
+                returnValue[bundleID] = app;
             }
         }
         
@@ -120,7 +120,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                     Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":info.bundleContainerURL,
                                                                                @"BundleURL":info.bundleURL}];
                     
-                    [returnValue setObject:app forKey:info.bundleIdentifier];
+                    returnValue[info.bundleIdentifier] = app;
                 }
             }
         }

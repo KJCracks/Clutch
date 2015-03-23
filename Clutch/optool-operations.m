@@ -26,12 +26,12 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#import "operations.h"
+#import "optool-operations.h"
 #import "NSData+Reading.h"
 
 unsigned int OP_SOFT_STRIP = 0x00001337;
 
-BOOL stripCodeSignatureFromBinary(NSMutableData *binary, struct thin_header macho, BOOL softStrip) {
+BOOL stripCodeSignatureFromBinary(NSMutableData *binary, thin_header macho, BOOL softStrip) {
     binary.currentOffset = macho.offset + macho.size;
     BOOL success = NO;
 
@@ -81,7 +81,7 @@ BOOL stripCodeSignatureFromBinary(NSMutableData *binary, struct thin_header mach
     return success;
 }
 
-BOOL removeLoadEntryFromBinary(NSMutableData *binary, struct thin_header macho, NSString *payload) {
+BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSString *payload) {
     // parse load commands to see if our load command is already there
     binary.currentOffset = macho.offset + macho.size;
     
@@ -139,7 +139,7 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, struct thin_header macho, 
     return YES;
 }
 
-BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset, struct thin_header macho) {
+BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset, thin_header macho) {
     binary.currentOffset = macho.size + macho.offset;
     unsigned int loadOffset = (unsigned int)binary.currentOffset;
 
@@ -182,7 +182,7 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
     return NO;
 }
 
-BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, struct thin_header macho, uint32_t type) {
+BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho, uint32_t type) {
     if (type != LC_REEXPORT_DYLIB &&
         type != LC_LOAD_WEAK_DYLIB &&
         type != LC_LOAD_UPWARD_DYLIB &&
@@ -257,7 +257,7 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, struc
     return YES;
 }
 
-BOOL removeASLRFromBinary(NSMutableData *binary, struct thin_header macho) {
+BOOL removeASLRFromBinary(NSMutableData *binary, thin_header macho) {
     // MH_PIE is a flag on the macho header whcih indicates that the address space of the executable
     // should be randomized
     if (macho.header.flags & MH_PIE) {

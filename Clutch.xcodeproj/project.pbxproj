@@ -14,13 +14,16 @@
 		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		324EA6461A892A1400844540 /* FrontBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6451A892A1400844540 /* FrontBoard.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
-		3280118B1A8BFE82006D6653 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280118A1A8BFE82006D6653 /* Dumper.m */; };
+		3274B9581ABEA6E100964049 /* ARMv6Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMv6Dumper.m */; };
+		3274B95D1ABEA92800964049 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95C1ABEA92800964049 /* Dumper.m */; };
+		3274B9601ABEB00400964049 /* ARMv7Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARMv7Dumper.m */; };
+		3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280118A1A8BFE82006D6653 /* Dumper_old.m */; };
 		3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */; };
-		3282BE0C1A8D9ACD00E5068A /* headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* headers.m */; };
+		3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* optool-headers.m */; };
 		3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE091A8D9ACD00E5068A /* NSData+Reading.m */; };
-		3282BE0E1A8D9ACD00E5068A /* operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE0B1A8D9ACD00E5068A /* operations.m */; };
+		3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE0B1A8D9ACD00E5068A /* optool-operations.m */; };
 		32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93E41A8E0E8B00805D14 /* sha1.c */; };
-		32BC93F41A8F726800805D14 /* ASLR.m in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93F31A8F726800805D14 /* ASLR.m */; };
+		32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93F31A8F726800805D14 /* ASLRDisabler.m */; };
 		32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
 		32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6E91A8A4FEF005BB56C /* ioapi.c */; };
 		32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6EB1A8A4FEF005BB56C /* unzip.c */; };
@@ -39,6 +42,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
 		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		324EA62B1A89258000844540 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
@@ -57,22 +61,29 @@
 		324EA6471A892AAD00844540 /* FBApplicationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBApplicationInfo.h; sourceTree = "<group>"; };
 		3258FD621A90AAED007C2E66 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
 		3258FD631A90AAED007C2E66 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
-		328011891A8BFE82006D6653 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
-		3280118A1A8BFE82006D6653 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
+		3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BinaryDumpProtocol.h; sourceTree = "<group>"; };
+		3274B9561ABEA6E100964049 /* ARMv6Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMv6Dumper.h; sourceTree = "<group>"; };
+		3274B9571ABEA6E100964049 /* ARMv6Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMv6Dumper.m; sourceTree = "<group>"; };
+		3274B95B1ABEA92800964049 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
+		3274B95C1ABEA92800964049 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
+		3274B95E1ABEB00400964049 /* ARMv7Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMv7Dumper.h; sourceTree = "<group>"; };
+		3274B95F1ABEB00400964049 /* ARMv7Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMv7Dumper.m; sourceTree = "<group>"; };
+		328011891A8BFE82006D6653 /* Dumper_old.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper_old.h; sourceTree = "<group>"; };
+		3280118A1A8BFE82006D6653 /* Dumper_old.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper_old.m; sourceTree = "<group>"; };
 		3282BB7A1A8C920D00E5068A /* FinalizeDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinalizeDumpOperation.h; sourceTree = "<group>"; };
 		3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinalizeDumpOperation.m; sourceTree = "<group>"; };
-		3282BE051A8D9ACD00E5068A /* defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
-		3282BE061A8D9ACD00E5068A /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
-		3282BE071A8D9ACD00E5068A /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
+		3282BE051A8D9ACD00E5068A /* optool-defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-defines.h"; sourceTree = "<group>"; };
+		3282BE061A8D9ACD00E5068A /* optool-headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-headers.h"; sourceTree = "<group>"; };
+		3282BE071A8D9ACD00E5068A /* optool-headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "optool-headers.m"; sourceTree = "<group>"; };
 		3282BE081A8D9ACD00E5068A /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
 		3282BE091A8D9ACD00E5068A /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
-		3282BE0A1A8D9ACD00E5068A /* operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
-		3282BE0B1A8D9ACD00E5068A /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
+		3282BE0A1A8D9ACD00E5068A /* optool-operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-operations.h"; sourceTree = "<group>"; };
+		3282BE0B1A8D9ACD00E5068A /* optool-operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "optool-operations.m"; sourceTree = "<group>"; };
 		32BC93E41A8E0E8B00805D14 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		32BC93E51A8E0E8B00805D14 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		32BC93F11A8F3C0B00805D14 /* mach_vm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mach_vm.h; sourceTree = "<group>"; };
-		32BC93F21A8F726800805D14 /* ASLR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASLR.h; sourceTree = "<group>"; };
-		32BC93F31A8F726800805D14 /* ASLR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASLR.m; sourceTree = "<group>"; };
+		32BC93F21A8F726800805D14 /* ASLRDisabler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASLRDisabler.h; sourceTree = "<group>"; };
+		32BC93F31A8F726800805D14 /* ASLRDisabler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASLRDisabler.m; sourceTree = "<group>"; };
 		32EFB6CE1A8A4F0E005BB56C /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipArchive.m; sourceTree = "<group>"; };
 		32EFB6E81A8A4FEF005BB56C /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -215,16 +226,40 @@
 			name = bin;
 			sourceTree = "<group>";
 		};
+		3274B9541ABEA5F400964049 /* Protocol + Parent Dumper */ = {
+			isa = PBXGroup;
+			children = (
+				3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */,
+				3274B95B1ABEA92800964049 /* Dumper.h */,
+				3274B95C1ABEA92800964049 /* Dumper.m */,
+			);
+			name = "Protocol + Parent Dumper";
+			sourceTree = "<group>";
+		};
+		3274B9591ABEA6E800964049 /* old_stuff */ = {
+			isa = PBXGroup;
+			children = (
+				32BC93E41A8E0E8B00805D14 /* sha1.c */,
+				32BC93E51A8E0E8B00805D14 /* sha1.h */,
+				32BC93F21A8F726800805D14 /* ASLRDisabler.h */,
+				32BC93F31A8F726800805D14 /* ASLRDisabler.m */,
+				328011891A8BFE82006D6653 /* Dumper_old.h */,
+				3280118A1A8BFE82006D6653 /* Dumper_old.m */,
+			);
+			name = old_stuff;
+			sourceTree = "<group>";
+		};
 		3282BE041A8D9A9100E5068A /* optool */ = {
 			isa = PBXGroup;
 			children = (
-				3282BE051A8D9ACD00E5068A /* defines.h */,
-				3282BE061A8D9ACD00E5068A /* headers.h */,
-				3282BE071A8D9ACD00E5068A /* headers.m */,
+				32042D8D1AC03B580033F163 /* optool.h */,
+				3282BE051A8D9ACD00E5068A /* optool-defines.h */,
+				3282BE061A8D9ACD00E5068A /* optool-headers.h */,
+				3282BE071A8D9ACD00E5068A /* optool-headers.m */,
+				3282BE0A1A8D9ACD00E5068A /* optool-operations.h */,
+				3282BE0B1A8D9ACD00E5068A /* optool-operations.m */,
 				3282BE081A8D9ACD00E5068A /* NSData+Reading.h */,
 				3282BE091A8D9ACD00E5068A /* NSData+Reading.m */,
-				3282BE0A1A8D9ACD00E5068A /* operations.h */,
-				3282BE0B1A8D9ACD00E5068A /* operations.m */,
 			);
 			name = optool;
 			sourceTree = "<group>";
@@ -283,12 +318,12 @@
 		32FB77AA1A89D6C500BB5ABC /* Dumpers */ = {
 			isa = PBXGroup;
 			children = (
-				32BC93E41A8E0E8B00805D14 /* sha1.c */,
-				32BC93E51A8E0E8B00805D14 /* sha1.h */,
-				32BC93F21A8F726800805D14 /* ASLR.h */,
-				32BC93F31A8F726800805D14 /* ASLR.m */,
-				328011891A8BFE82006D6653 /* Dumper.h */,
-				3280118A1A8BFE82006D6653 /* Dumper.m */,
+				3274B9591ABEA6E800964049 /* old_stuff */,
+				3274B9541ABEA5F400964049 /* Protocol + Parent Dumper */,
+				3274B9561ABEA6E100964049 /* ARMv6Dumper.h */,
+				3274B9571ABEA6E100964049 /* ARMv6Dumper.m */,
+				3274B95E1ABEB00400964049 /* ARMv7Dumper.h */,
+				3274B95F1ABEB00400964049 /* ARMv7Dumper.m */,
 			);
 			name = Dumpers;
 			sourceTree = "<group>";
@@ -375,26 +410,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */,
-				3282BE0C1A8D9ACD00E5068A /* headers.m in Sources */,
-				3282BE0E1A8D9ACD00E5068A /* operations.m in Sources */,
-				32BC93F41A8F726800805D14 /* ASLR.m in Sources */,
+				3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */,
+				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,
+				32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */,
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
 				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
 				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
 				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
+				3274B9581ABEA6E100964049 /* ARMv6Dumper.m in Sources */,
 				3258FD641A90AAED007C2E66 /* Device.m in Sources */,
 				32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */,
 				32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */,
 				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
 				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
 				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
-				3280118B1A8BFE82006D6653 /* Dumper.m in Sources */,
+				3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */,
+				3274B95D1ABEA92800964049 /* Dumper.m in Sources */,
 				324EA6421A8926DC00844540 /* Application.m in Sources */,
 				32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */,
 				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
 				32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */,
 				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
 				32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */,
+				3274B9601ABEB00400964049 /* ARMv7Dumper.m in Sources */,
 				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,

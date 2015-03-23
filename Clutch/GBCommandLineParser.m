@@ -173,10 +173,10 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 
 - (BOOL)parseOptionsWithArguments:(char **)argv count:(int)argc block:(GBCommandLineParseBlock)handler {
 	if (argc == 0) return YES;
-	NSString *command = [NSString stringWithUTF8String:argv[0]];
+	NSString *command = @(argv[0]);
 	NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:argc - 1];
 	for (int i=1; i<argc; i++) {
-		NSString *argument = [NSString stringWithUTF8String:argv[i]];
+		NSString *argument = @(argv[i]);
 		[arguments addObject:argument];
 	}
 	return [self parseOptionsWithArguments:arguments commandLine:command block:handler];
@@ -195,7 +195,7 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 	NSUInteger index = 0;
 	while (index < [arguments count]) {
 		id value = nil;
-		NSString *input = [arguments objectAtIndex:index];
+		NSString *input = arguments[index];
 		NSDictionary *data = [self optionDataForOption:input value:&value];
 		if (data == (id)GBCommandLineEndOfOptionsKey) {
 			// End of options detected. Skip this one and end option parsing.
@@ -241,7 +241,7 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 					// Option requires value: check next option and if it "looks like" an option (i.e. starts with -- or - or is one of option group names), notify about missing value. Also notify about missing value if this is the last option. If we already have the value (via --name=value syntax), no need to search.
 					if (!value) {
 						if (index < arguments.count - 1) {
-							value = [arguments objectAtIndex:index + 1];
+							value = arguments[index + 1];
 							if ([self isShortOrLongOptionName:value]) {
 								flags = GBParseFlagMissingValue;
 							} else if ([self isOptionGroupName:value]) {
@@ -258,7 +258,7 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 					// Options can have optional value: check next option and if it "looks like" a value (i.e. doesn't start with -- or -), use it. Otherwie assume YES (the same if there's no more option). If we already have the value (via --name=value syntax), no need to search.
 					if (!value) {
 						if (index < arguments.count - 1) {
-							value = [arguments objectAtIndex:index + 1];
+							value = arguments[index + 1];
 							if ([self isShortOrLongOptionName:value]) {
 								value = @YES;
 							} else if ([self isOptionGroupName:value]) {
@@ -297,13 +297,13 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 		if (stop) return NO;
 		
 		// Remember parsed option and continue with next one.
-		if (name && value) [self.parsedOptions setObject:value forKey:name];
+		if (name && value) (self.parsedOptions)[name] = value;
 		index++;
 	}
 	
 	// Prepare arguments (arguments are command line options after options).
 	while (index < arguments.count) {
-		NSString *input = [arguments objectAtIndex:index];
+		NSString *input = arguments[index];
 		[self.parsedArguments addObject:input];
 		handler(GBParseFlagArgument, nil, input, &stop);
 		if (stop) return NO;
@@ -342,7 +342,7 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 		if (value) *value = [name substringFromIndex:valueRange.location + 1];
 		name = [name substringToIndex:valueRange.location];
 	}
-	return [options objectForKey:name];
+	return options[name];
 }
 
 - (BOOL)isShortOrLongOptionName:(NSString *)value {
@@ -360,7 +360,7 @@ static NSString * const GBCommandLineEndOfOptionsKey = @"end-of-options"; // thi
 #pragma mark - Getting parsed results
 
 - (id)valueForOption:(NSString *)longOption {
-	return [self.parsedOptions objectForKey:longOption];
+	return (self.parsedOptions)[longOption];
 }
 
 - (NSArray *)arguments {

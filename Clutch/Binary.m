@@ -8,7 +8,7 @@
 
 #import "Binary.h"
 #import "ClutchBundle.h"
-#import "Dumper.h"
+#import "Dumper_old.h"
 
 #include <mach-o/fat.h>
 
@@ -53,12 +53,12 @@
 
 - (BOOL)hasARMSlice
 {
-    return [_bundle.executableArchitectures containsObject:[NSNumber numberWithInteger:CPU_TYPE_ARM]];
+    return [_bundle.executableArchitectures containsObject:@CPU_TYPE_ARM];
 }
 
 - (BOOL)hasARM64Slice
 {
-    return [_bundle.executableArchitectures containsObject:[NSNumber numberWithInteger:CPU_TYPE_ARM64]];
+    return [_bundle.executableArchitectures containsObject:@CPU_TYPE_ARM64];
 }
 
 - (NSString *)description {

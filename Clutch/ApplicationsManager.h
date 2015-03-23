@@ -13,6 +13,6 @@
 
 + (instancetype)sharedInstance;
 
-- (NSDictionary *)installedApps;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDictionary *installedApps;
 
 @end

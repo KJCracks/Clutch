@@ -12,6 +12,6 @@
 
 @interface FinalizeDumpOperation : NSOperation
 
-- (instancetype)initWithApplication:(Application *)application;
+- (instancetype)initWithApplication:(Application *)application NS_DESIGNATED_INITIALIZER;
 
 @end

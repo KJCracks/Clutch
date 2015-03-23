@@ -11,18 +11,28 @@
 
 @implementation Dumper
 
-+ (BOOL)canDumpArchForHeader:(thin_header *)header
++ (instancetype)sharedInstance
+{
+    static dispatch_once_t pred;
+    static id shared = nil;
+    dispatch_once(&pred, ^{
+        shared = [self new];
+    });
+    return shared;
+}
+
+- (BOOL)canDumpArchForHeader:(thin_header)header
 {
     return NO;
 }
 
-+ (cpu_type_t)supportedCPUType
+- (cpu_type_t)supportedCPUType
 {
 #warning not implemented on purpose
     return NULL;
 }
 
-+ (cpu_subtype_t)supportedCPUSubtype
+- (cpu_subtype_t)supportedCPUSubtype
 {
 #warning not implemented on purpose
     return NULL;
@@ -34,7 +44,7 @@
     return NO;
 }
 
-+ (ArchCompatibility)compatibilityModeWithCurrentDevice
+- (ArchCompatibility)compatibilityModeWithCurrentDevice
 {
     cpu_type_t cputype = self.supportedCPUType;
     cpu_subtype_t cpusubtype = self.supportedCPUSubtype;

@@ -14,12 +14,19 @@
 #import "NSData+Reading.h"
 #import "Device.h"
 
+#import "Dumper.h"
+
+@import ObjectiveC.runtime;
+
 @interface BundleDumpOperation ()
 {
     ClutchBundle *_application;
     BOOL _executing, _finished;
     NSString *_binaryDumpPath;
 }
+
++ (NSArray *)availableDumpers;
+
 @end
 
 @implementation BundleDumpOperation
@@ -80,8 +87,6 @@
         
         Binary *originalBinary = _application.executable;
         
-        Dumper_old *_dumper = [[Dumper_old alloc]initWithBinary:originalBinary];
-
         _binaryDumpPath = [originalBinary.workingPath stringByAppendingPathComponent:originalBinary.binaryPath.lastPathComponent];
         
         [_fileManager createDirectoryAtPath:_binaryDumpPath.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
@@ -105,107 +110,18 @@
         
         NSMutableArray *_headersToStrip = [NSMutableArray new];
         
-        thin_header* compatibleArch = NULL;
+        NSArray *dumpers = [self.class availableDumpers];
         
         for (uint32_t i = 0; i < numHeaders; i++) {
             
             thin_header macho = headers[i];
             
-            if (!isFAT) {
-                if (macho.header.cputype == CPU_TYPE_ARM64)
-                {
-                    if (_localCPUType == CPU_TYPE_ARM64) {
-                        if ([_dumper dump64bitFromFileHandle:&_handle machHeader:&macho])
-                            dumpCount++;
-                    }else
-                        NSLog(@"Can't dump 64bit binary on 32bit device");
-                    
-                }else if ((_localCPUType == CPU_TYPE_ARM64) || (_localCPUSubtype >= macho.header.cpusubtype)) {
-                    if ([_dumper dump32bitFromFileHandle:&_handle machHeader:&macho])
-                        dumpCount++;
-                }else
-                {
-                    NSLog(@"Can't dump 32bit %@ binary on 32bit %u device",[_dumper readableArchFromHeader:macho],_localCPUSubtype);
-                }
+            for (Dumper<BinaryDumpProtocol>* _dumper in dumpers) {
             
-            }else {
-                
-                if (macho.header.cputype == CPU_TYPE_ARM64)
-                {
-                    if (_localCPUType == CPU_TYPE_ARM64) {
-                        if ([_dumper dump64bitFromFileHandle:&_handle machHeader:&macho])
-                            dumpCount++;
-                        else
-                            return [self completeOperation];
-                    }else
-                        [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(thin_header)]];
-                    
-                }else
-                {
-                    // oldschool bae
-                    switch ([Device compatibleWith:&macho.header])
-                    {
-                        case COMPATIBLE:
-                        {
-                            if ([_dumper dump32bitFromFileHandle:&_handle machHeader:&macho])
-                            {
-                                dumpCount++;
-                                compatibleArch = &macho;
-                            }
-                            else
-                                return [self completeOperation];
-                            break;
-                        }
-                        case NOT_COMPATIBLE:
-                        {
-                            NSLog(@"arch %@ is not compatible with this device!",[_dumper readableArchFromHeader:macho]);
-                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(thin_header)]];
-                            break;
-                        }
-                        case COMPATIBLE_SWAP:
-                        {
-                            NSLog(@"arch %@ is compatible(swap) but fuck it for now!",[_dumper readableArchFromHeader:macho]);
-                            [_headersToStrip addObject:[NSValue value:&macho withObjCType:@encode(thin_header)]];
-                            break;
-                           /* NSString* stripPath;
-                            
-                            if (originalBinary.hasARM64Slice) {
-                                stripPath = [_dumper stripArch:macho.header.cpusubtype];
-                            }else {
-                                //stripPath = [_dumper swapArch:macho.header.cpusubtype];
-                            }
-                            
-                            if (stripPath == NULL)
-                            {
-                                NSLog(@"error stripping/swapping binary!");
-                                return [self completeOperation];
-                            }
-                            
-                            NSFileHandle *_stripHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(stripPath.UTF8String, "r+"))];
-
-                            
-                            //at this point newbinary is not fopen()'d  - should it be?
-                            
-                            if (![_dumper dump32bitFromFileHandle:&_stripHandle machHeader:&macho])
-                            {
-                                [_stripHandle closeFile];
-                                // Dumping failed
-                                
-                                NSLog(@"Cannot crack stripped %@ portion of binary.", [_dumper readableArchFromHeader:macho]);
-                                
-                                
-                                return [self completeOperation];
-                            }
-                            [_stripHandle closeFile];
-
-                            //[_dumper swapBack:stripPath];
-                            
-                            compatibleArch = &macho;*/
-                            
-                            break;
-                        }
-                    }
+                if (![_dumper canDumpArchForHeader:macho]) {
+                    NSLog(@"%@ cannot dump binary at URL path %@ with arch %i %i",_dumper,originalBinary.binaryPath,macho.header.cputype,macho.header.cpusubtype);
                 }
+                
                 
             }
             
@@ -216,7 +132,6 @@
         for (NSValue *valueWithArch in _headersToStrip) {
             thin_header stripArch;
             [valueWithArch getValue:&stripArch];
-            [_dumper removeArchitecture:&stripArch];
         }
         
         
@@ -242,6 +157,31 @@
     _finished = YES;
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
+}
+
++ (NSArray *)availableDumpers
+{
+    NSMutableArray *array = [NSMutableArray new];
+    
+    Class* classes = NULL;
+    
+    int numClasses = objc_getClassList(NULL, 0);
+    
+    if (numClasses > 0 ) {
+        classes = (Class *)malloc(sizeof(Class) * numClasses);
+        
+        numClasses = objc_getClassList(classes, numClasses);
+        
+        for (int index = 0; index < numClasses; index++) {
+            Class nextClass = classes[index];
+            
+            if (class_conformsToProtocol(nextClass, @protocol(BinaryDumpProtocol)))
+                [array addObject:[nextClass sharedInstance]];
+        }
+        free(classes);
+    }
+    
+    return [array copy];
 }
 
 @end

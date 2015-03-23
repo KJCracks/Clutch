@@ -9,5 +9,6 @@
 #import "BinaryDumpProtocol.h"
 
 @interface Dumper : NSObject
-+ (ArchCompatibility)compatibilityModeWithCurrentDevice;
++ (instancetype)sharedInstance;
+- (ArchCompatibility)compatibilityModeWithCurrentDevice;
 @end

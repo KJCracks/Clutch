@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		323C86AF1AC0479E008949F2 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 323C86AE1AC0479E008949F2 /* README.md */; };
 		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		324EA6331A89258000844540 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
 		324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA63B1A8925DB00844540 /* ApplicationsManager.m */; };
@@ -44,6 +45,7 @@
 /* Begin PBXFileReference section */
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
+		323C86AE1AC0479E008949F2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
 		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		324EA62B1A89258000844540 /* control.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = control.txt; path = Package/DEBIAN/control.txt; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				323C86AE1AC0479E008949F2 /* README.md */,
 				323C86AB1AC03E3F008949F2 /* .gitignore */,
 				32BC93F11A8F3C0B00805D14 /* mach_vm.h */,
 				3282BE041A8D9A9100E5068A /* optool */,
@@ -424,6 +427,7 @@
 				32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */,
 				32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */,
 				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
+				323C86AF1AC0479E008949F2 /* README.md in Sources */,
 				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
 				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
 				3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */,

@@ -22,6 +22,7 @@
 
 @property (readonly) BOOL hasARMSlice;
 @property (readonly) BOOL hasARM64Slice;
+@property (readonly) FILE* binaryFile;
 
 - (instancetype)initWithBundle:(ClutchBundle *)bundle NS_DESIGNATED_INITIALIZER;
 

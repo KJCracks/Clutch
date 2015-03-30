@@ -132,6 +132,7 @@
             
             [_dumper dumpBinaryToURL:[NSURL fileURLWithPath:_binaryDumpPath]];
             
+            
         }
         
         [_handle closeFile];

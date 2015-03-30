@@ -34,6 +34,8 @@
         _supfPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"supf" inDirectory:@"SC_Info"];
         _suppPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"supp" inDirectory:@"SC_Info"];
         
+        _binaryFile = fopen([self.binaryPath UTF8String], "r+");
+        
         _dumpOperation = [[BundleDumpOperation alloc]initWithBundle:_bundle];
     }
     

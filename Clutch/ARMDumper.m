@@ -36,7 +36,7 @@
         
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
         newSinf = [_originalBinary.sinfPath stringByAppendingString:suffix];
-        newSupp = [_originalBinary.supfPath stringByAppendingString:suffix];
+        newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
         
         [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:nil];
         [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
@@ -54,28 +54,27 @@
         struct fat_header fat = *(struct fat_header *)buffer.bytes;
         fat.nfat_arch = SWAP(fat.nfat_arch);
         int offset = sizeof(struct fat_header);
+        int wOffset = offset;
+        
+        uint32_t nf = SWAP(1);
+        [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nf];
         
         for (int i = 0; i < fat.nfat_arch; i++) {
             struct fat_arch arch;
             arch = *(struct fat_arch *)([buffer bytes] + offset);
             
-            if ((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype)) {
-                
-                thin_header macho = headerAtOffset(buffer, SWAP(arch.offset));
-                
-                arch.cputype = SWAP(CPU_TYPE_I386);
-                arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_ALL);
-                
-                [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
-                
-                macho.header.cputype = CPU_TYPE_I386;
-                macho.header.cpusubtype = CPU_SUBTYPE_X86_ALL;
-                
-                [self.originalFileHandle replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
+            if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+                [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
+                wOffset += sizeof(struct fat_arch);
             }
-            
+
             offset += sizeof(struct fat_arch);
         }
+        
+        char data[4096-wOffset];
+        memset(data,'\0',sizeof(data));
+        [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, 4096-wOffset) withBytes:&data];
+
         
         NSLog(@"wrote new header to binary");
         
@@ -222,7 +221,7 @@
     
     [newFileHandle seekToFileOffset:_thinHeader.offset];
     
-    if ((_thinHeader.header.flags & MH_PIE) && !patchPIE)
+    /*if ((_thinHeader.header.flags & MH_PIE) && !patchPIE)
     {
         mach_vm_address_t main_address;
         if(find_main_binary(pid, &main_address) != KERN_SUCCESS) {
@@ -240,7 +239,7 @@
         __text_start = aslr_slide;
 #warning should we __text_start += 0x2000? this method seems broken
         
-    }
+    }*/
     
     if ((_thinHeader.header.flags & MH_PIE) && (!patchPIE)) {
         //VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");

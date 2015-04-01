@@ -168,6 +168,8 @@
         [_dumpQueue addOperation:_dumpOperation];
     }
     
+    _finalizeDumpOperation.expectedBinariesCount = _additionalDumpOpeartions.count + 1;
+    
     [_dumpQueue addOperation:_finalizeDumpOperation];
 }
 

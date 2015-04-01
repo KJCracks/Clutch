@@ -92,8 +92,12 @@ int main (int argc, const char * argv[])
         Application *_selectedApp = _installedApps[_selectedBundleID];
         
         if (_selectedApp.frameworks.count || _selectedApp.extensions.count) {
-            printf("It's not possible to dump apps with iOS 8 extensions/frameworks at this moment\n");
+            gbprintln(@"It's not possible to dump apps with iOS 8 extensions/frameworks at this moment");
+#ifndef DEBUG
             exit(0);
+#else
+            gbprintln(@"DEBUG build, will try to dump anyway");
+#endif
         }
         
         if (!_selectedApp) {

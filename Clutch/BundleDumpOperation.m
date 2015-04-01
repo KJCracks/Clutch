@@ -177,6 +177,11 @@
             struct fat_header fat = *(struct fat_header *)buffer.bytes;
             fat.nfat_arch = SWAP(fat.nfat_arch);
             int offset = sizeof(struct fat_header);
+            int wOffset = offset;
+
+            uint32_t nf = SWAP(dumpCount);
+            [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nf];
+            
             for (NSValue *valueWithArch in _headersToStrip) {
                 thin_header stripArch;
                 [valueWithArch getValue:&stripArch];
@@ -185,22 +190,18 @@
                     struct fat_arch arch;
                     arch = *(struct fat_arch *)([buffer bytes] + offset);
 
-                    if ((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype)) {
-
-                        thin_header macho = headerAtOffset(buffer, SWAP(arch.offset));
-                        
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_ALL);
-
-                        [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
-                        
-                        macho.header.cputype = CPU_TYPE_I386;
-                        macho.header.cpusubtype = CPU_SUBTYPE_X86_ALL;
-                        
-                        [_dumpHandle replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
+                    if (!((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype))) {
+                        [_dumpHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
+                        wOffset += sizeof(struct fat_arch);
                     }
+                    
                     offset += sizeof(struct fat_arch);
                 }
+                
+                char data[4096-wOffset];
+                memset(data,'\0',sizeof(data));
+                [_dumpHandle replaceBytesInRange:NSMakeRange(wOffset, 4096-wOffset) withBytes:&data];
+                
             }
             
             [_dumpHandle closeFile];
@@ -210,7 +211,9 @@
 #pragma mark checking if everything's fine
         if (dumpCount == (numHeaders-_headersToStrip.count))
         {
-            NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.parentBundle?_application.parentBundle.bundleContainerURL.path:_application.bundleContainerURL.path withString:@""];
+            NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
+            
+            _localPath = [_application.zipPrefix stringByAppendingPathComponent:_localPath];
             
             [@{_binaryDumpPath:_localPath} writeToFile:[originalBinary.workingPath stringByAppendingPathComponent:@"filesToAdd.plist"] atomically:YES];
         }

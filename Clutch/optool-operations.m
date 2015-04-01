@@ -51,7 +51,7 @@ BOOL stripCodeSignatureFromBinary(NSMutableData *binary, thin_header macho, BOOL
         switch (cmd) {
             case LC_CODE_SIGNATURE: {
                 struct linkedit_data_command command = *(struct linkedit_data_command *)(binary.bytes + binary.currentOffset);
-                LOG("stripping code signature for architecture %s...", CPU(macho.header.cputype));
+                printf("stripping code signature for architecture %s...\n", CPU(macho.header.cputype));
                 
                 if (!softStrip) {
                     macho.header.ncmds -= 1;
@@ -104,7 +104,7 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSStrin
                 struct dylib_command command = *(struct dylib_command *)(binary.bytes + binary.currentOffset);
                 char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset, command.cmdsize - command.dylib.name.offset)] bytes];
                 if ([@(name) isEqualToString:payload]) {
-                    LOG("removing payload from %s...", LC(cmd));
+                    printf("removing payload from %s...\n", LC(cmd));
                     // remove load command
                     // remove these bytes and append zeroes to the end of the header
                     [binary replaceBytesInRange:NSMakeRange(binary.currentOffset, size) withBytes:0 length:0];
@@ -187,7 +187,7 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_
         type != LC_LOAD_WEAK_DYLIB &&
         type != LC_LOAD_UPWARD_DYLIB &&
         type != LC_LOAD_DYLIB) {
-        LOG("Invalid load command type");
+        printf("Invalid load command type\n");
         return NO;
     }
     // parse load commands to see if our load command is already there
@@ -196,10 +196,10 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_
         // there already exists a load command for this payload so change the command type
         uint32_t originalType = *(uint32_t *)(binary.bytes + lastOffset);
         if (originalType != type) {
-            LOG("A load command already exists for %s. Changing command type from %s to desired %s", dylibPath.UTF8String, LC(originalType), LC(type));
+            printf("A load command already exists for %s. Changing command type from %s to desired %s\n", dylibPath.UTF8String, LC(originalType), LC(type));
             [binary replaceBytesInRange:NSMakeRange(lastOffset, sizeof(type)) withBytes:&type];
         } else {
-            LOG("Load command already exists");
+            printf("Load command already exists\n");
         }
         
         return YES;
@@ -222,7 +222,7 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_
         return NO;
     }
     
-    LOG("Inserting a %s command for architecture: %s", LC(type), CPU(macho.header.cputype));
+    printf("Inserting a %s command for architecture: %s\n", LC(type), CPU(macho.header.cputype));
     
     struct dylib_command command;
     struct dylib dylib;
@@ -264,7 +264,7 @@ BOOL removeASLRFromBinary(NSMutableData *binary, thin_header macho) {
         macho.header.flags &= ~MH_PIE;
         [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
     } else {
-        LOG("binary is not protected by ASLR");
+        printf("binary is not protected by ASLR\n");
         return NO;
     }
     

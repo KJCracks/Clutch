@@ -17,11 +17,11 @@
 		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
 		3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMDumper.m */; };
 		3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARM64Dumper.m */; };
-		3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */ = {isa = PBXBuildFile; fileRef = 3280118A1A8BFE82006D6653 /* Dumper_old.m */; };
 		3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */; };
 		3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* optool-headers.m */; };
 		3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE091A8D9ACD00E5068A /* NSData+Reading.m */; };
 		3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE0B1A8D9ACD00E5068A /* optool-operations.m */; };
+		328359DE1ACC118D003587F3 /* NSFileHandle+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */; };
 		32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93E41A8E0E8B00805D14 /* sha1.c */; };
 		32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93F31A8F726800805D14 /* ASLRDisabler.m */; };
 		32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
@@ -81,6 +81,8 @@
 		3282BE091A8D9ACD00E5068A /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
 		3282BE0A1A8D9ACD00E5068A /* optool-operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-operations.h"; sourceTree = "<group>"; };
 		3282BE0B1A8D9ACD00E5068A /* optool-operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "optool-operations.m"; sourceTree = "<group>"; };
+		328359DC1ACC118D003587F3 /* NSFileHandle+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileHandle+Private.h"; sourceTree = "<group>"; };
+		328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileHandle+Private.m"; sourceTree = "<group>"; };
 		32BC93E41A8E0E8B00805D14 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		32BC93E51A8E0E8B00805D14 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		32BC93F11A8F3C0B00805D14 /* mach_vm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mach_vm.h; sourceTree = "<group>"; };
@@ -212,6 +214,8 @@
 				324EA62E1A89258000844540 /* PackageVersion.plist */,
 				324EA6341A89258000844540 /* Clutch-Prefix.pch */,
 				324EA6431A89270D00844540 /* Clutch.entitlements */,
+				328359DC1ACC118D003587F3 /* NSFileHandle+Private.h */,
+				328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -428,7 +432,6 @@
 				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
 				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
 				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
-				3280118B1A8BFE82006D6653 /* Dumper_old.m in Sources */,
 				324EA6421A8926DC00844540 /* Application.m in Sources */,
 				32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */,
 				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
@@ -441,6 +444,7 @@
 				324EA6331A89258000844540 /* main.m in Sources */,
 				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
 				323C86B11AC05AE4008949F2 /* Dumper.m in Sources */,
+				328359DE1ACC118D003587F3 /* NSFileHandle+Private.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

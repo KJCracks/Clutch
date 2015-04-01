@@ -22,6 +22,7 @@
     if (self = [super init]) {
         _thinHeader = macho;
         _originalBinary = binary;
+        patchPIE = NO;
     }
     
     return self;
@@ -54,11 +55,11 @@ exit_with_errno (int err, const char *prefix)
     }
 }
 
-- (pid_t)posix_spawn
+- (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn
 {
     pid_t pid = 0;
     
-    const char *path = _originalBinary.binaryPath.UTF8String;
+    const char *path = binaryPath.UTF8String;
     
     posix_spawnattr_t attr;
     
@@ -70,17 +71,11 @@ exit_with_errno (int err, const char *prefix)
     // so we can debug it
     short flags = POSIX_SPAWN_START_SUSPENDED | POSIX_SPAWN_SETEXEC;
     
-    // Disable ASLR
+    if (yrn)
     flags |= _POSIX_SPAWN_DISABLE_ASLR;
     
     // Set the flags we just made into our posix spawn attributes
     exit_with_errno (posix_spawnattr_setflags (&attr, flags), "::posix_spawnattr_setflags (&attr, flags) error: ");
-    
-    
-    // Another darwin specific thing here where we can select the architecture
-    // of the binary we want to re-exec as.
-    size_t ocount = 0;
-    exit_with_errno (posix_spawnattr_setbinpref_np (&attr, 1, &_thinHeader.header.cputype, &ocount), "posix_spawnattr_setbinpref_np () error: ");
     
     // I wish there was a posix_spawn flag to change the working directory of
     // the inferior process we will spawn, but there currently isn't. If there
@@ -91,7 +86,7 @@ exit_with_errno (int err, const char *prefix)
     //if (working_dir)
     //    chdir (working_dir);
     
-    exit_with_errno (posix_spawnp (&pid, path, NULL, &attr, NULL, NULL), "posix_spawn() error: ");
+    exit_with_errno (posix_spawn (&pid, path, NULL, &attr, NULL, NULL), "posix_spawn() error: ");
     
     posix_spawnattr_destroy (&attr);
     
@@ -104,7 +99,7 @@ exit_with_errno (int err, const char *prefix)
     return NULL;
 }
 
-- (BOOL)dumpBinaryToURL:(NSURL *)newLocURL
+- (BOOL)dumpBinary
 {
 #warning not implemented on purpose
     return NO;

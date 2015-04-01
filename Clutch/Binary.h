@@ -20,9 +20,11 @@
 @property (readonly) NSString *supfPath;
 @property (readonly) NSString *suppPath;
 
+@property (readonly) BOOL isFAT;
 @property (readonly) BOOL hasARMSlice;
 @property (readonly) BOOL hasARM64Slice;
-@property (readonly) FILE* binaryFile;
+@property (readonly) BOOL hasMultipleARMSlices;
+@property (readonly) BOOL hasMultipleARM64Slices;
 
 - (instancetype)initWithBundle:(ClutchBundle *)bundle NS_DESIGNATED_INITIALIZER;
 

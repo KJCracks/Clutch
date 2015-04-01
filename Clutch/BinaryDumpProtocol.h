@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, ArchCompatibility) {
 };
 
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
+void sha1(uint8_t *hash, uint8_t *data, size_t size);
 
 #define CSSLOT_CODEDIRECTORY 0
 

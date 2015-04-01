@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GBCli.h"
 #import "ApplicationsManager.h"
+#import "sha1.h"
 
 int main (int argc, const char * argv[])
 {
@@ -112,3 +113,9 @@ int main (int argc, const char * argv[])
 	return 0;
 }
 
+void sha1(uint8_t *hash, uint8_t *data, size_t size) {
+    SHA1Context context;
+    SHA1Reset(&context);
+    SHA1Input(&context, data, (unsigned)size);
+    SHA1Result(&context, hash);
+}

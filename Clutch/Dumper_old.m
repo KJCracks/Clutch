@@ -17,6 +17,8 @@
 #import "mach_vm.h"
 #import "ASLRDisabler.h"
 
+#import "NSFileHandle+Private.h"
+
 #ifdef __LP64__
 typedef vm_region_basic_info_data_64_t vm_region_basic_info_data;
 typedef vm_region_info_64_t vm_region_info;
@@ -31,17 +33,6 @@ typedef vm_region_info_t vm_region_info;
 
 typedef int (*ptrace_ptr_t)(int _request, pid_t _pid, caddr_t _addr, int _data);
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
-
-@interface NSFileHandle (Private)
-
-- (uint32_t)intAtOffset:(NSUInteger)offset;
-- (void)replaceBytesInRange:(NSRange)range withBytes:(const void *)bytes;
-- (void)getBytes:(void*)result atOffset:(NSUInteger)offset length:(NSUInteger)length;
-- (void)getBytes:(void*)result inRange:(NSRange)range;
-//- (bool)hk_readValue:(void*)arg1 ofSize:(unsigned long long)arg2;
-//- (bool)hk_writeValue:(const void*)arg1 size:(unsigned long long)arg2;
-
-@end
 
 @interface Dumper_old ()
 {
@@ -997,86 +988,3 @@ void sha1(uint8_t *hash, uint8_t *data, size_t size);
 
 
 @end
-
-@implementation NSFileHandle (Private)
-
-- (void)replaceBytesInRange:(NSRange)range withBytes:(const void *)bytes
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:range.location];
-    
-    [self writeData:[NSData dataWithBytes:bytes length:range.length]];
-    
-    [self seekToFileOffset:oldOffset];
-}
-
-- (void)getBytes:(void *)result inRange:(NSRange)range
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:range.location];
-    
-    NSData *data = [self readDataOfLength:range.length];
-    
-    [data getBytes:result length:range.length];
-    
-    [self seekToFileOffset:oldOffset];
-}
-
-- (void)getBytes:(void*)result atOffset:(NSUInteger)offset length:(NSUInteger)length
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:offset];
-    
-    NSData *data = [self readDataOfLength:length];
-    
-    [data getBytes:result length:length];
-    
-    [self seekToFileOffset:oldOffset];
-}
-
-- (const void *)bytesAtOffset:(NSUInteger)offset length:(NSUInteger)size
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:offset];
-    
-    const void * result;
-    
-    NSData *data = [self readDataOfLength:size];
-    
-    [data getBytes:&result length:size];
-    
-    [self seekToFileOffset:oldOffset];
-    
-    return result;
-}
-
-- (uint32_t)intAtOffset:(NSUInteger)offset
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:offset];
-    
-    uint32_t result;
-    
-    NSData *data = [self readDataOfLength:sizeof(result)];
-    
-    [data getBytes:&result length:sizeof(result)];
-    
-    [self seekToFileOffset:oldOffset];
-    
-    return result;
-}
-
-
-@end
-
-void sha1(uint8_t *hash, uint8_t *data, size_t size) {
-    SHA1Context context;
-    SHA1Reset(&context);
-    SHA1Input(&context, data, (unsigned)size);
-    SHA1Result(&context, hash);
-}

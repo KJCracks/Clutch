@@ -15,7 +15,7 @@
     return CPU_TYPE_ARM64;
 }
 
-- (BOOL)dumpBinaryToURL:(NSURL *)newLocURL {
+- (BOOL)dumpBinary {
     
     return NO;
 }

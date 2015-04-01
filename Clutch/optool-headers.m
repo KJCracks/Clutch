@@ -53,13 +53,13 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
     // in reverse relation to the host machine so we have to swap the bytes
     uint32_t magic = [binary intAtOffset:0];
     bool shouldSwap = magic == MH_CIGAM || magic == MH_CIGAM_64 || magic == FAT_CIGAM;
-#define SWAP(NUM) shouldSwap ? CFSwapInt32(NUM) : NUM
+#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
     
     uint32_t numArchs = 0;
 
     // a FAT file is basically a collection of thin MachO binaries
     if (magic == FAT_CIGAM || magic == FAT_MAGIC) {
-        LOG("Found FAT Header");
+        NSLog("Found FAT Header");
         
         // WE GOT A FAT ONE
         struct fat_header fat = *(struct fat_header *)binary.bytes;
@@ -76,7 +76,7 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
 
             thin_header macho = headerAtOffset(binary, arch.offset);
             if (macho.size > 0) {
-                LOG("Found thin header...");
+                NSLog("Found thin header...");
 
                 headers[numArchs] = macho;
                 numArchs++;
@@ -88,14 +88,14 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
     } else if (magic == MH_MAGIC || magic == MH_MAGIC_64) {
         thin_header macho = headerAtOffset(binary, 0);
         if (macho.size > 0) {
-            LOG("Found thin header...");
+            NSLog("Found thin header...");
 
             numArchs++;
             headers[0] = macho;
         }
         
     } else {
-        LOG("No headers found.");
+        NSLog("No headers found.");
     }
     
     *amount = numArchs;

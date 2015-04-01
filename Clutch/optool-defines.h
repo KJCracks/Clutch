@@ -32,8 +32,6 @@
     #define CPU_TYPE_ARM64 (CPU_TYPE_ARM | CPU_ARCH_ABI64)
 #endif
 
-#define LOG(fmt, args...) printf(fmt "\n", ##args)
-
 #define CPU(CPUTYPE) ({ \
     const char *c = ""; \
     if (CPUTYPE == CPU_TYPE_I386) \

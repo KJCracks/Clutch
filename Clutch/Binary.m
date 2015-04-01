@@ -70,7 +70,6 @@
         _m32 = m32 > 1;
         _m64 = m64 > 1;
         _isFAT = numHeaders > 1;
-        
     }
     
     return self;
@@ -78,7 +77,13 @@
 
 - (NSString *)binaryPath
 {
-    return _bundle.executablePath;
+    NSString *path = [_bundle.executablePath copy];
+    
+    if ([path hasPrefix:@"/var/mobile"]) {
+        path = [@"/private" stringByAppendingString:path];
+    }
+    
+    return path;
 }
 
 - (BOOL)isFAT

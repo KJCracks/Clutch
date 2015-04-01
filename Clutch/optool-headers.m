@@ -59,7 +59,6 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
 
     // a FAT file is basically a collection of thin MachO binaries
     if (magic == FAT_CIGAM || magic == FAT_MAGIC) {
-        NSLog("Found FAT Header");
         
         // WE GOT A FAT ONE
         struct fat_header fat = *(struct fat_header *)binary.bytes;
@@ -76,7 +75,6 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
 
             thin_header macho = headerAtOffset(binary, arch.offset);
             if (macho.size > 0) {
-                NSLog("Found thin header...");
 
                 headers[numArchs] = macho;
                 numArchs++;
@@ -88,15 +86,12 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
     } else if (magic == MH_MAGIC || magic == MH_MAGIC_64) {
         thin_header macho = headerAtOffset(binary, 0);
         if (macho.size > 0) {
-            NSLog("Found thin header...");
 
             numArchs++;
             headers[0] = macho;
         }
         
-    } else {
-        NSLog("No headers found.");
-    }
+    } 
     
     *amount = numArchs;
     

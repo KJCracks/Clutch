@@ -42,8 +42,6 @@
         NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_bundle.executablePath.UTF8String, "r+"))];
         
         NSData *headersData = tmpHandle.availableData;
-
-        [tmpHandle closeFile];
         
         thin_header headers[4];
         uint32_t numHeaders = 0;
@@ -70,6 +68,41 @@
         _m32 = m32 > 1;
         _m64 = m64 > 1;
         _isFAT = numHeaders > 1;
+        
+        _hasRestrictedSegment = NO;
+        
+        struct thin_header macho = headers[0];
+        
+        NSUInteger size = [tmpHandle seekToEndOfFile];
+        
+        [tmpHandle seekToFileOffset:macho.offset + macho.size];
+        
+        for (int i = 0; i < macho.header.ncmds; i++) {
+            if (tmpHandle.offsetInFile >= size ||
+                tmpHandle.offsetInFile > macho.header.sizeofcmds + macho.size + macho.offset)
+                break;
+            
+            uint32_t cmd  = [tmpHandle intAtOffset:tmpHandle.offsetInFile];
+            uint32_t size = [tmpHandle intAtOffset:tmpHandle.offsetInFile + sizeof(uint32_t)];
+            
+            struct segment_command * command;
+            
+            command = malloc(sizeof(struct segment_command));
+            
+            [tmpHandle getBytes:command inRange:NSMakeRange(tmpHandle.offsetInFile,sizeof(struct segment_command))];
+            
+            if (((cmd == LC_SEGMENT) || (cmd == LC_SEGMENT_64)) && (strcmp(command->segname, "__RESTRICT") == 0)) {
+                _hasRestrictedSegment = YES;
+                break;
+            } else
+             [tmpHandle seekToFileOffset:tmpHandle.offsetInFile + size];
+
+            free(command);
+            
+        }
+        
+        [tmpHandle closeFile];
+
     }
     
     return self;

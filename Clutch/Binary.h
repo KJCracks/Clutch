@@ -13,6 +13,8 @@
 
 @interface Binary : NSObject
 
+@property (readonly) BOOL hasRestrictedSegment;
+
 @property (readonly) BundleDumpOperation *dumpOperation;
 @property (readonly) NSString *workingPath;
 @property (readonly) NSString *binaryPath;

@@ -86,8 +86,10 @@
         _binaryDumpPath = [originalBinary.workingPath stringByAppendingPathComponent:originalBinary.binaryPath.lastPathComponent];
         
         [_fileManager createDirectoryAtPath:_binaryDumpPath.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
-        [_fileManager copyItemAtPath:originalBinary.binaryPath toPath:_binaryDumpPath error:nil];
         
+        if (![_application isKindOfClass:[Framework class]])
+            [_fileManager copyItemAtPath:originalBinary.binaryPath toPath:_binaryDumpPath error:nil];
+                
         NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];
         
         NSData *headersData = tmpHandle.availableData;
@@ -171,14 +173,14 @@
             uint32_t magic = [_dumpHandle intAtOffset:0];
             bool shouldSwap = magic == FAT_CIGAM;
 #define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
-
+            
             NSData *buffer = _dumpHandle.availableData;
             
             struct fat_header fat = *(struct fat_header *)buffer.bytes;
             fat.nfat_arch = SWAP(fat.nfat_arch);
             int offset = sizeof(struct fat_header);
             int wOffset = offset;
-
+            
             uint32_t nf = SWAP(dumpCount);
             [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nf];
             
@@ -189,7 +191,7 @@
                 for (int i = 0; i < fat.nfat_arch; i++) {
                     struct fat_arch arch;
                     arch = *(struct fat_arch *)([buffer bytes] + offset);
-
+                    
                     if (!((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype))) {
                         [_dumpHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
                         wOffset += sizeof(struct fat_arch);
@@ -237,52 +239,56 @@
 
 + (NSArray *)availableDumpers
 {
-    NSMutableArray *array = [NSMutableArray new];
     
-    Class* classes = NULL;
-    
-    int numClasses = objc_getClassList(NULL, 0);
-    
-    if (numClasses > 0 ) {
-        classes = (Class *)malloc(sizeof(Class) * numClasses);
-        
-        numClasses = objc_getClassList(classes, numClasses);
-        
-        for (int index = 0; index < numClasses; index++) {
-            Class nextClass = classes[index];
-            
-            if (class_conformsToProtocol(nextClass, @protocol(BinaryDumpProtocol)))
-                [array addObject:nextClass];
-        }
-        free(classes);
-    }
-    
-    return [array copy];
+    return @[NSClassFromString(@"ARM64Dumper"),NSClassFromString(@"ARMDumper")];
+    /* NSMutableArray *array = [NSMutableArray new];
+     
+     Class* classes = NULL;
+     
+     int numClasses = objc_getClassList(NULL, 0);
+     
+     if (numClasses > 0 ) {
+     classes = (Class *)malloc(sizeof(Class) * numClasses);
+     
+     numClasses = objc_getClassList(classes, numClasses);
+     
+     for (int index = 0; index < numClasses; index++) {
+     Class nextClass = classes[index];
+     
+     if (class_conformsToProtocol(nextClass, @protocol(BinaryDumpProtocol)))
+     [array addObject:nextClass];
+     }
+     free(classes);
+     }
+     
+     return [array copy]; */
 }
 
 + (NSArray *)availableFrameworkDumpers
 {
-    NSMutableArray *array = [NSMutableArray new];
+    return @[NSClassFromString(@"Framework64Dumper"),NSClassFromString(@"FrameworkDumper")];
     
-    Class* classes = NULL;
-    
-    int numClasses = objc_getClassList(NULL, 0);
-    
-    if (numClasses > 0 ) {
-        classes = (Class *)malloc(sizeof(Class) * numClasses);
-        
-        numClasses = objc_getClassList(classes, numClasses);
-        
-        for (int index = 0; index < numClasses; index++) {
-            Class nextClass = classes[index];
-            
-            if (class_conformsToProtocol(nextClass, @protocol(FrameworkBinaryDumpProtocol)))
-                [array addObject:nextClass];
-        }
-        free(classes);
-    }
-    
-    return [array copy];
+    /* NSMutableArray *array = [NSMutableArray new];
+     
+     Class* classes = NULL;
+     
+     int numClasses = objc_getClassList(NULL, 0);
+     
+     if (numClasses > 0 ) {
+     classes = (Class *)malloc(sizeof(Class) * numClasses);
+     
+     numClasses = objc_getClassList(classes, numClasses);
+     
+     for (int index = 0; index < numClasses; index++) {
+     Class nextClass = classes[index];
+     
+     if (class_conformsToProtocol(nextClass, @protocol(FrameworkBinaryDumpProtocol)))
+     [array addObject:nextClass];
+     }
+     free(classes);
+     }
+     
+     return [array copy]; */
 }
 
 

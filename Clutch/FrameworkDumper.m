@@ -39,8 +39,58 @@
         
     }
     
+    [self.originalFileHandle closeFile];
+    
+    gbprintln(@"Loading %@",_originalBinary);
+    
+    void *fmwkHeader = dlopen(swappedBinaryPath.UTF8String, RTLD_NOW);
+    
+    if (fmwkHeader == NULL) {
+        gbprintln(@"Failed to load framework %@ with error %@",_originalBinary,[NSString stringWithUTF8String:dlerror()]);
+        return NO;
+    }
+    
+    dlclose(fmwkHeader);
+    
+    if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
+        [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
+    if (![newSinf isEqualToString:_originalBinary.sinfPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
+    if (![newSupp isEqualToString:_originalBinary.suppPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
     
     return NO;
 }
 
 @end
+
+
+/* 
+ 
+ // debug
+ 
+ static void image_added(const struct mach_header *mh, intptr_t slide) {
+ Dl_info image_info;
+ int result = dladdr(mh, &image_info);
+ 
+ gbprintln(@"loaded lib %@",[NSString stringWithUTF8String:image_info.dli_fname]);
+ 
+ //dumptofile(image_info.dli_fname, mh);
+ }
+ 
+ static void image_removed(const struct mach_header *mh, intptr_t slide) {
+ Dl_info image_info;
+ int result = dladdr(mh, &image_info);
+ 
+ gbprintln(@"unloaded lib %@",[NSString stringWithUTF8String:image_info.dli_fname]);
+ 
+ //dumptofile(image_info.dli_fname, mh);
+ }
+ 
+ 
+ __attribute__((constructor))
+ static void dumpexecutable() {
+ _dyld_register_func_for_add_image(&image_added);
+ _dyld_register_func_for_remove_image(&image_removed);
+ 
+ }*/

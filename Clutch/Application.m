@@ -76,6 +76,9 @@
 
 - (void)reloadPluginsInfo
 {
+    
+    _hasAppleWatchApp = NO;
+    
     _extensions = [NSMutableArray new];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -106,7 +109,9 @@
             if (_extension) {
                 
                 _extension.parentBundle = self;
-                
+                if (_extension.isWatchKitExtension) {
+                    _hasAppleWatchApp = YES;
+                }
                 [_extensions addObject:_extension];
             }
         }

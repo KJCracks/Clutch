@@ -23,6 +23,8 @@
 
 @interface Application : ClutchBundle
 
+@property (readonly) BOOL hasAppleWatchApp;
+
 @property (readonly) NSArray *extensions;
 @property (readonly) NSArray *frameworks;
 

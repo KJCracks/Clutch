@@ -30,53 +30,15 @@
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath; // default values if we dont need to swap archs
     
     //check if cpusubtype matches
-    if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && _originalBinary.hasMultipleARMSlices) {
-        //time to swap
+    if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && (_originalBinary.hasMultipleARMSlices || (_originalBinary.hasARM64Slice && ([Device cpu_type]==CPU_TYPE_ARM64)))) {
+        
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
         newSinf = [_originalBinary.sinfPath stringByAppendingString:suffix];
         newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
-        
-        [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:nil];
-        [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
-        [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.suppPath toPath:newSupp error:nil];
-        
-        [self.originalFileHandle closeFile];
-        self.originalFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+"))];
-        
-        uint32_t magic = [self.originalFileHandle intAtOffset:0];
-        bool shouldSwap = magic == FAT_CIGAM;
-#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
-        
-        NSData *buffer = [self.originalFileHandle readDataOfLength:4096];
-        
-        struct fat_header fat = *(struct fat_header *)buffer.bytes;
-        fat.nfat_arch = SWAP(fat.nfat_arch);
-        int offset = sizeof(struct fat_header);
-        int wOffset = offset;
-        
-        uint32_t nf = SWAP(1);
-        [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nf];
-        
-        for (int i = 0; i < fat.nfat_arch; i++) {
-            struct fat_arch arch;
-            arch = *(struct fat_arch *)([buffer bytes] + offset);
-            
-            if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
-                [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
-                wOffset += sizeof(struct fat_arch);
-            }
 
-            offset += sizeof(struct fat_arch);
-        }
-        
-        char data[4096-wOffset];
-        memset(data,'\0',sizeof(data));
-        [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, 4096-wOffset) withBytes:&data];
-
-        
-        NSLog(@"wrote new header to binary");
+        [self swapArch];
         
     }
     
@@ -95,7 +57,7 @@
     
     uint64_t __text_start = 0;
     
-    gbprintln(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    DumperLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
         
@@ -107,7 +69,7 @@
                 [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
                 
-                NSLog(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize);
+                DumperDebugLog(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize);
                 
                 break;
             }
@@ -115,7 +77,7 @@
                 [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command))];
                 foundCrypt = YES;
                 
-                NSLog(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid);
+                DumperDebugLog(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid);
                 
                 break;
             }
@@ -125,7 +87,7 @@
                 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
-                    NSLog(@"FOUND %s SEGMENT",__text.segname);
+                    DumperDebugLog(@"FOUND %s SEGMENT",__text.segname);
                     __text_start = __text.vmaddr;
                 }
                 break;
@@ -140,11 +102,11 @@
     
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        NSLog(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
+        DumperDebugLog(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
         return NO;
     }
     
-    NSLog(@"found all required load commands for %@ %@",_originalBinary,[Dumper readableArchFromHeader:_thinHeader]);
+    DumperDebugLog(@"found all required load commands for %@ %@",_originalBinary,[Dumper readableArchFromHeader:_thinHeader]);
     
     pid_t pid; // store the process ID of the fork
     mach_port_t port; // mach port used for moving virtual memory
@@ -163,21 +125,24 @@
     if ((pid = fork()) == 0) {
         ptrace(PT_TRACE_ME, 0, 0, 0); // trace
         execl(swappedBinaryPath.UTF8String, "", (char *) 0); // import binary memory into executable space
-        printf("exit with err code 2 in case we could not import (this should not happen)\n");
+        DumperLog(@"exit with err code 2 in case we could not import (this should not happen)");
         exit(2);
     } else if (pid < 0) {
-        printf("error: Couldn't fork, did you compile with proper entitlements?\n");
+        DumperLog(@"error: Couldn't fork, did you compile with proper entitlements?");
         return NO; // couldn't fork
     }
     
     do {
         wait(&status);
         if (WIFEXITED( status ))
+        {
+            DumperLog(@"ERROR: WIFEXITED(status)");
             return NO;
+        }
     } while (!WIFSTOPPED( status ));
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        gbprintln(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
+        DumperLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
         kill(pid, SIGKILL); // kill the fork
         return NO;
     }
@@ -205,7 +170,7 @@
     
     if (pages == 0) {
         kill(pid, SIGKILL); // kill the fork
-        gbprintln(@"pages == 0");
+        DumperLog(@"pages == 0");
         return FALSE;
     }
     
@@ -221,63 +186,16 @@
     
     [newFileHandle seekToFileOffset:_thinHeader.offset];
     
-    /*if ((_thinHeader.header.flags & MH_PIE) && !patchPIE)
+    if ((_thinHeader.header.flags & MH_PIE) && !patchPIE)
     {
         mach_vm_address_t main_address;
         if(find_main_binary(pid, &main_address) != KERN_SUCCESS) {
-            printf("Failed to find address of header!\n");
+            DumperLog(@"Failed to find address of header!");
             return NO;
         }
         
-        uint64_t aslr_slide;
-        if(get_image_size(main_address, pid, &aslr_slide) == -1) {
-            printf("Failed to find ASLR slide!\n");
-            return NO;
-        }
-        
-        printf("ASLR slide: 0x%llx\n", aslr_slide);
-        __text_start = aslr_slide;
-#warning should we __text_start += 0x2000? this method seems broken
-        
-    }*/
-    
-    if ((_thinHeader.header.flags & MH_PIE) && (!patchPIE)) {
-        //VERBOSE("dumping binary: ASLR enabled, identifying dump location dynamically");
-        // perform checks on vm regions
-        memory_object_name_t object;
-        vm_region_basic_info_data_64_t info;
-        mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
-        mach_vm_address_t region_start = 0;
-        mach_vm_size_t region_size = 0;
-        vm_region_flavor_t flavor = VM_REGION_BASIC_INFO_64;
-        err = 0;
-        
-        while (err == KERN_SUCCESS)
-        {
-            err = mach_vm_region(port, &region_start, &region_size, flavor, (vm_region_info_t) &info, &info_count, &object);
-            NSLog(@"32-bit Region Size: %llu %u", region_size, crypt.cryptsize);
-            
-            if (region_size == crypt.cryptsize)
-            {
-                NSLog(@"region_size == cryptsize");
-                break;
-            }
-            
-            __text_start = region_start;
-            region_start += region_size;
-            region_size	= 0;
-            
-        }
-        
-        if (err != KERN_SUCCESS)
-        {
-            NSLog(@"mach_vm_error: %u", err);
-            free(checksum);
-            kill(pid, SIGKILL);
-            printf("ASLR is enabled and we could not identify the decrypted memory region.\n");
-            return FALSE;
-            
-        }
+        DumperLog(@"ASLR slide: 0x%llx", main_address);
+        __text_start = main_address;
     }
     
     uint32_t headerProgress = sizeof(struct mach_header);
@@ -288,11 +206,11 @@
         
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
             
-            printf("dumping binary: failed to dump a page (32)\n");
+            DumperLog(@"dumping binary: failed to dump a page (32)");
             if (__text_start == 0x4000 && (_thinHeader.header.flags & MH_PIE)) {
-                printf("\n=================\n");
-                printf("0x4000 binary detected, attempting to remove MH_PIE flag");
-                printf("\n=================\n\n");
+                DumperLog(@"\n=================");
+                DumperLog(@"0x4000 binary detected, attempting to remove MH_PIE flag");
+                DumperLog(@"\n=================\n");
                 free(checksum); // free checksum table
                 kill(pid, SIGKILL); // kill the fork
                 patchPIE = YES;
@@ -355,17 +273,14 @@
             header = FALSE;
         }
     skipoverdrive:
-        printf("attemtping to write to binary\n");
-        //[binaryData replaceBytesInRange:NSMakeRange(binaryData.currentOffset, 0x1000) withBytes:buf length:0x1000];
+        DumperLog("attemtping to write to binary");
         
         [newFileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
-        
-        [newFileHandle seekToFileOffset:newFileHandle.offsetInFile + 0x1000];
-        
+                
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
-        printf("doing checksum yo\n");
+        DumperDebugLog("doing checksum yo");
         togo -= 0x1000; // remove a page from the togo
-        printf("togo yo %u\n", togo);
+        DumperDebugLog("togo yo %u", togo);
         pages_d += 1; // increase the amount of completed pages
     }
     

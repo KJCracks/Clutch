@@ -25,4 +25,15 @@
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn;
 - (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary NS_DESIGNATED_INITIALIZER;
 - (ArchCompatibility)compatibilityMode;
+
+- (void)swapArch;
+
 @end
+
+#define DumperLog(fmt,...) printf("%s\n",[NSString stringWithFormat:@"%@ " fmt, _originalBinary, ##__VA_ARGS__].UTF8String)
+
+#ifdef DEBUG
+#   define DumperDebugLog(fmt,...) NSLog(@"%@ " fmt,_originalBinary,##__VA_ARGS__)
+#else
+#   define DumperDebugLog(...)
+#endif

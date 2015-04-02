@@ -105,6 +105,69 @@ exit_with_errno (int err, const char *prefix)
     return NO;
 }
 
+- (void)swapArch
+{
+    thin_header macho = _thinHeader;
+    
+    DumperLog(@"swapping archs");
+    
+    //time to swap
+    NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
+    
+    NSString *swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
+    NSString *newSinf = [_originalBinary.sinfPath stringByAppendingString:suffix];
+    NSString *newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
+    
+    NSString *newSupf = nil;
+
+    if (macho.header.cputype == CPU_TYPE_ARM64) {
+        newSupf = [_originalBinary.supfPath stringByAppendingString:suffix];
+    }
+    
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:nil];
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.suppPath toPath:newSupp error:nil];
+    if (newSupf) {
+        [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.supfPath toPath:newSupf error:nil];
+    }
+    
+    [self.originalFileHandle closeFile];
+    self.originalFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+"))];
+    
+    uint32_t magic = [self.originalFileHandle intAtOffset:0];
+    bool shouldSwap = magic == FAT_CIGAM;
+#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
+    
+    NSData *buffer = [self.originalFileHandle readDataOfLength:4096];
+    
+    struct fat_header fat = *(struct fat_header *)buffer.bytes;
+    fat.nfat_arch = SWAP(fat.nfat_arch);
+    int offset = sizeof(struct fat_header);
+    int wOffset = offset;
+    
+    uint32_t nf = SWAP(1);
+    [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nf];
+    
+    for (int i = 0; i < fat.nfat_arch; i++) {
+        struct fat_arch arch;
+        arch = *(struct fat_arch *)([buffer bytes] + offset);
+        
+        if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+            [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
+            wOffset += sizeof(struct fat_arch);
+        }
+        
+        offset += sizeof(struct fat_arch);
+    }
+    
+    char data[4096-wOffset];
+    memset(data,'\0',sizeof(data));
+    [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, 4096-wOffset) withBytes:&data];
+    
+    DumperLog(@"wrote new header to binary");
+
+}
+
 - (ArchCompatibility)compatibilityMode;
 {
     cpu_type_t cputype = self.supportedCPUType;

@@ -104,7 +104,7 @@
                         [_archive addFileToZip:key newname:zipPath];
                     }
                     
-                    [plists addObject:dict];
+                    [plists addObject:theURL.path];
                 }
             }
         }
@@ -120,7 +120,7 @@
         
         __block BOOL status = plists.count == self.expectedBinariesCount;
         
-        NSLog(@"%@: %@",status?@"DONE":@"FAILED",status?[_application.workingPath stringByAppendingPathComponent:_zipFilename]:_application);
+        gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?[_application.workingPath stringByAppendingPathComponent:_zipFilename]:_application);
         
         // Do the main work of the operation here.
         [self completeOperation];

@@ -242,9 +242,7 @@ exit_with_errno (int err, const char *prefix)
             header = FALSE;
         }
         
-    writedata:
-        DumperLog("attemtping to write to binary");
-        
+    writedata:        
         [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
         
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page

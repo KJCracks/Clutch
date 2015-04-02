@@ -188,6 +188,15 @@
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start];
     
+    if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
+        [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
+    if (![newSinf isEqualToString:_originalBinary.sinfPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
+    if (![newSupp isEqualToString:_originalBinary.suppPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
+    if (![newSupf isEqualToString:_originalBinary.supfPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSupf error:nil];
+    
     return dumpResult;
 }
 

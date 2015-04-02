@@ -27,6 +27,7 @@
 - (ArchCompatibility)compatibilityMode;
 
 - (void)swapArch;
+- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)crypt pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)aslrSlide;
 
 @end
 

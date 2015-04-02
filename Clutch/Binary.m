@@ -8,9 +8,10 @@
 
 #import "Binary.h"
 #import "ClutchBundle.h"
-#import "Dumper_old.h"
 
 #include <mach-o/fat.h>
+#import "optool.h"
+#import "NSFileHandle+Private.h"
 
 @interface Binary ()
 {

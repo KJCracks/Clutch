@@ -17,6 +17,8 @@
 		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
 		3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMDumper.m */; };
 		3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARM64Dumper.m */; };
+		3277BF991ACD50BD0060935A /* FrameworkDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3277BF981ACD50BD0060935A /* FrameworkDumper.m */; };
+		3277BF9C1ACD54180060935A /* Framework64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3277BF9B1ACD54180060935A /* Framework64Dumper.m */; };
 		3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */; };
 		3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* optool-headers.m */; };
 		3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE091A8D9ACD00E5068A /* NSData+Reading.m */; };
@@ -70,8 +72,10 @@
 		3274B95B1ABEA92800964049 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
 		3274B95E1ABEB00400964049 /* ARM64Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARM64Dumper.h; sourceTree = "<group>"; };
 		3274B95F1ABEB00400964049 /* ARM64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARM64Dumper.m; sourceTree = "<group>"; };
-		328011891A8BFE82006D6653 /* Dumper_old.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper_old.h; sourceTree = "<group>"; };
-		3280118A1A8BFE82006D6653 /* Dumper_old.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper_old.m; sourceTree = "<group>"; };
+		3277BF971ACD50BD0060935A /* FrameworkDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkDumper.h; sourceTree = "<group>"; };
+		3277BF981ACD50BD0060935A /* FrameworkDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameworkDumper.m; sourceTree = "<group>"; };
+		3277BF9A1ACD54180060935A /* Framework64Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Framework64Dumper.h; path = ../Framework64Dumper.h; sourceTree = "<group>"; };
+		3277BF9B1ACD54180060935A /* Framework64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Framework64Dumper.m; path = ../Framework64Dumper.m; sourceTree = "<group>"; };
 		3282BB7A1A8C920D00E5068A /* FinalizeDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinalizeDumpOperation.h; sourceTree = "<group>"; };
 		3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinalizeDumpOperation.m; sourceTree = "<group>"; };
 		3282BE051A8D9ACD00E5068A /* optool-defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-defines.h"; sourceTree = "<group>"; };
@@ -251,8 +255,6 @@
 			children = (
 				32BC93F21A8F726800805D14 /* ASLRDisabler.h */,
 				32BC93F31A8F726800805D14 /* ASLRDisabler.m */,
-				328011891A8BFE82006D6653 /* Dumper_old.h */,
-				3280118A1A8BFE82006D6653 /* Dumper_old.m */,
 			);
 			name = old_stuff;
 			sourceTree = "<group>";
@@ -332,6 +334,10 @@
 				3274B9571ABEA6E100964049 /* ARMDumper.m */,
 				3274B95E1ABEB00400964049 /* ARM64Dumper.h */,
 				3274B95F1ABEB00400964049 /* ARM64Dumper.m */,
+				3277BF971ACD50BD0060935A /* FrameworkDumper.h */,
+				3277BF981ACD50BD0060935A /* FrameworkDumper.m */,
+				3277BF9A1ACD54180060935A /* Framework64Dumper.h */,
+				3277BF9B1ACD54180060935A /* Framework64Dumper.m */,
 			);
 			name = Dumpers;
 			sourceTree = "<group>";
@@ -422,6 +428,7 @@
 				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,
 				32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */,
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
+				3277BF9C1ACD54180060935A /* Framework64Dumper.m in Sources */,
 				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
 				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
 				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
@@ -437,6 +444,7 @@
 				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
 				32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */,
 				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
+				3277BF991ACD50BD0060935A /* FrameworkDumper.m in Sources */,
 				32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */,
 				3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */,
 				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,

@@ -655,6 +655,9 @@ local ZPOS64_T zip64local_SearchCentralDir64(const zlib_filefunc64_32_def* pzlib
     return offset;
 }
 
+zipFile ZEXPORT zipOpen4(const void *pathname, int append, ZPOS64_T disk_size, zipcharpc* globalcomment,
+                         zlib_filefunc64_32_def* pzlib_filefunc64_32_def);
+
 extern zipFile ZEXPORT zipOpen4(const void *pathname, int append, ZPOS64_T disk_size, zipcharpc* globalcomment, 
     zlib_filefunc64_32_def* pzlib_filefunc64_32_def)
 {

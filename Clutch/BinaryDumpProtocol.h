@@ -61,3 +61,11 @@ struct code_directory {
 - (BOOL)dumpBinary;
 
 @end
+
+@protocol FrameworkBinaryDumpProtocol <NSObject>
+
+- (cpu_type_t)supportedCPUType;
+
+- (BOOL)dumpBinary;
+
+@end

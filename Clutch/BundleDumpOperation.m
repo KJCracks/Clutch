@@ -9,7 +9,6 @@
 #import "BundleDumpOperation.h"
 #import "Application.h"
 #import "GBPrint.h"
-#import "Dumper_old.h"
 #import "optool.h"
 #import "NSData+Reading.h"
 #import "Device.h"
@@ -91,7 +90,7 @@
         
         NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];
         
-        NSData *headersData = tmpHandle.availableData; // 1MB is enough
+        NSData *headersData = tmpHandle.availableData;
         
         [tmpHandle closeFile];
         
@@ -112,11 +111,11 @@
         
         BOOL isFAT = numHeaders > 1;
         
-        NSInteger dumpCount = 0;
+        uint32_t dumpCount = 0;
         
         NSMutableArray *_headersToStrip = [NSMutableArray new];
         
-        NSArray *dumpers = [self.class availableDumpers];
+        NSArray *dumpers = [_application isKindOfClass:[Framework class]] ? [self.class availableFrameworkDumpers]: [self.class availableDumpers];
         
         for (uint32_t i = 0; i < numHeaders; i++) {
             
@@ -150,9 +149,10 @@
             
             if (result) {
                 dumpCount++;
+                gbprintln(@"Finished dumping binary %@ %@ with result: %i",originalBinary,[Dumper readableArchFromHeader:macho],result);
+            }else {
+                gbprintln(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
             }
-            
-            gbprintln(@"Finished dumping binaray %@ %@ with result: %i",originalBinary,[Dumper readableArchFromHeader:macho],result);
             
             [_handle closeFile];
         }
@@ -259,5 +259,31 @@
     
     return [array copy];
 }
+
++ (NSArray *)availableFrameworkDumpers
+{
+    NSMutableArray *array = [NSMutableArray new];
+    
+    Class* classes = NULL;
+    
+    int numClasses = objc_getClassList(NULL, 0);
+    
+    if (numClasses > 0 ) {
+        classes = (Class *)malloc(sizeof(Class) * numClasses);
+        
+        numClasses = objc_getClassList(classes, numClasses);
+        
+        for (int index = 0; index < numClasses; index++) {
+            Class nextClass = classes[index];
+            
+            if (class_conformsToProtocol(nextClass, @protocol(FrameworkBinaryDumpProtocol)))
+                [array addObject:nextClass];
+        }
+        free(classes);
+    }
+    
+    return [array copy];
+}
+
 
 @end

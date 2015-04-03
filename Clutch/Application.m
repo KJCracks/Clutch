@@ -10,6 +10,7 @@
 #import "ZipOperation.h"
 #import "BundleDumpOperation.h"
 #import "FinalizeDumpOperation.h"
+#import "SCInfoBuilder.h"
 
 @interface Application ()
 {
@@ -122,6 +123,8 @@
 {
     [super dumpToDirectoryURL:directoryURL];
  
+    NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
+    
     [[NSFileManager defaultManager]createDirectoryAtPath:_workingPath withIntermediateDirectories:YES attributes:nil error:nil];
     
     ZipOperation *_mainZipOperation = [[ZipOperation alloc]initWithApplication:self];

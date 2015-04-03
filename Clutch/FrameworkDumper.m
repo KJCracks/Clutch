@@ -46,7 +46,7 @@
     void *fmwkHeader = dlopen(swappedBinaryPath.UTF8String, RTLD_NOW);
     
     if (fmwkHeader == NULL) {
-        gbprintln(@"Failed to load framework %@ with error %@",_originalBinary,[NSString stringWithUTF8String:dlerror()]);
+        gbprintln(@"Failed to load framework %@ with error %@",_originalBinary,@(dlerror()));
         return NO;
     }
     

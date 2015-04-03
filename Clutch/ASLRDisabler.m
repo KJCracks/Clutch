@@ -16,17 +16,15 @@
 
 @import MachO.loader;
 
-static kern_return_t readmem(mach_vm_offset_t *buffer, mach_vm_address_t address, mach_vm_size_t size, pid_t pid, vm_region_basic_info_data_64_t *info);
+@implementation ASLRDisabler
 
-kern_return_t
-find_main_binary(pid_t pid, mach_vm_address_t *main_address)
-{
++ (mach_vm_address_t)slideForPID:(pid_t)pid {
     vm_map_t targetTask = 0;
     kern_return_t kr = 0;
     if (task_for_pid(mach_task_self(), pid, &targetTask))
     {
         NSLog(@"[ERROR] Can't execute task_for_pid! Do you have the right permissions/entitlements?\n");
-        return KERN_FAILURE;
+        return -1;
     }
     
     vm_address_t iter = 0;
@@ -52,16 +50,14 @@ find_main_binary(pid_t pid, mach_vm_address_t *main_address)
 #if DEBUG
                 NSLog(@"Found main binary mach-o image @ %p!\n", (void*)addr);
 #endif
-                *main_address = addr;
+                return addr;
                 break;
             }
         }
         iter = addr + lsize;
     }
-    return KERN_SUCCESS;
+
+    return -1;
 }
-
-@implementation ASLRDisabler
-
 
 @end

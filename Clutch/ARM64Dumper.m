@@ -176,8 +176,8 @@
     
     if ((_thinHeader.header.flags & MH_PIE) && !patchPIE)
     {
-        mach_vm_address_t main_address;
-        if(find_main_binary(pid, &main_address) != KERN_SUCCESS) {
+        mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid];
+        if(main_address == -1) {
             DumperLog(@"Failed to find address of header!");
             return NO;
         }
@@ -187,6 +187,8 @@
     }
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start];
+    
+    kill(pid, 0);
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

@@ -113,34 +113,9 @@
     pid_t pid; // store the process ID of the fork
     mach_port_t port; // mach port used for moving virtual memory
     kern_return_t err; // any kernel return codes
-    int status; // status of the wait
     NSUInteger begin;
     
-    // open handle to dylib loader
-    void *handle = dlopen(0, RTLD_GLOBAL | RTLD_NOW);
-    // load ptrace library into handle
-    ptrace_ptr_t ptrace = dlsym(handle, "ptrace");
-    
-#warning todo posix_spawn support
-    
-    if ((pid = fork()) == 0) {
-        ptrace(PT_TRACE_ME, 0, 0, 0); // trace
-        execl(swappedBinaryPath.UTF8String, "", (char *) 0); // import binary memory into executable space
-        DumperLog(@"exit with err code 2 in case we could not import (this should not happen)");
-        exit(2);
-    } else if (pid < 0) {
-        DumperLog(@"error: Couldn't fork, did you compile with proper entitlements?");
-        return NO; // couldn't fork
-    }
-    
-    do {
-        wait(&status);
-        if (WIFEXITED( status ))
-        {
-            DumperLog(@"ERROR: WIFEXITED(status)");
-            return NO;
-        }
-    } while (!WIFSTOPPED( status ));
+    pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
         DumperLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
@@ -177,7 +152,7 @@
     
     [newFileHandle seekToFileOffset:_thinHeader.offset];
     
-    if ((_thinHeader.header.flags & MH_PIE) && !patchPIE)
+    if ((_thinHeader.header.flags & MH_PIE) && !self.shouldDisableASLR)
     {
         mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid];
         if(main_address == -1) {

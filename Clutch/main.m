@@ -91,8 +91,8 @@ int main (int argc, const char * argv[])
         
         Application *_selectedApp = _installedApps[_selectedBundleID];
         
-        if (_selectedApp.frameworks.count || _selectedApp.hasAppleWatchApp) {
-            gbprintln(@"It's not possible to dump apps with iOS 8 frameworks/Watch app at this moment");
+        if (_selectedApp.frameworks.count) {
+            gbprintln(@"It's not possible to dump apps with iOS 8 frameworks at this moment");
 #ifndef DEBUG
             exit(0);
 #else

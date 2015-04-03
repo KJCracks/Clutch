@@ -90,16 +90,10 @@ exit_with_errno (int err, const char *prefix)
     if (yrn)
         flags |= _POSIX_SPAWN_DISABLE_ASLR;
     
-    char *argv[] = {
-        path,
-        NULL
-    };
-    
     // Set the flags we just made into our posix spawn attributes
     exit_with_errno (posix_spawnattr_setflags (&attr, flags), "::posix_spawnattr_setflags (&attr, flags) error: ");
     
-    extern char **environ;
-    posix_spawnp (&pid, path, NULL, &attr, argv, environ);
+    posix_spawnp (&pid, path, NULL, &attr, NULL, NULL);
     
     posix_spawnattr_destroy (&attr);
     

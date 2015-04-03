@@ -18,11 +18,14 @@
 @implementation Dumper
 
 - (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary {
-
+    
     if (self = [super init]) {
         _thinHeader = macho;
         _originalBinary = binary;
-        patchPIE = NO;
+        _shouldDisableASLR = NO;
+        
+        _isASLRProtected = (_thinHeader.header.flags & MH_PIE);
+        
     }
     
     return self;
@@ -57,6 +60,23 @@ exit_with_errno (int err, const char *prefix)
 
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn
 {
+    
+    if ((_thinHeader.header.flags & MH_PIE) && yrn) {
+        
+        DumperLog(@"disabling MH_PIE!!!!");
+        
+        _thinHeader.header.flags &= ~MH_PIE;
+        [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
+    }else if (_isASLRProtected && !yrn && !(_thinHeader.header.flags & MH_PIE)) {
+        
+        DumperLog(@"enabling MH_PIE!!!!");
+        
+        _thinHeader.header.flags |= MH_PIE;
+        [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
+    }else {
+        DumperLog(@"to MH_PIE or not to MH_PIE, that is the question");
+    }
+    
     pid_t pid = 0;
     
     const char *path = binaryPath.UTF8String;
@@ -65,22 +85,21 @@ exit_with_errno (int err, const char *prefix)
     
     exit_with_errno (posix_spawnattr_init (&attr), "::posix_spawnattr_init (&attr) error: ");
     
-    // Here we are using a darwin specific feature that allows us to exec only
-    // since we want this program to turn into the program we want to debug,
-    // and also have the new program start suspended (right at __dyld_start)
-    // so we can debug it
-    short flags = POSIX_SPAWN_START_SUSPENDED | POSIX_SPAWN_SETEXEC;
+    short flags = POSIX_SPAWN_START_SUSPENDED;
     
     if (yrn)
-    flags |= _POSIX_SPAWN_DISABLE_ASLR;
+        flags |= _POSIX_SPAWN_DISABLE_ASLR;
+    
+    char *argv[] = {
+        path,
+        NULL
+    };
     
     // Set the flags we just made into our posix spawn attributes
     exit_with_errno (posix_spawnattr_setflags (&attr, flags), "::posix_spawnattr_setflags (&attr, flags) error: ");
     
-    //if (working_dir)
-    //    chdir (working_dir);
-    
-    posix_spawn (&pid, path, NULL, &attr, NULL, NULL);
+    extern char **environ;
+    posix_spawnp (&pid, path, NULL, &attr, argv, environ);
     
     posix_spawnattr_destroy (&attr);
     
@@ -111,7 +130,7 @@ exit_with_errno (int err, const char *prefix)
     NSString *newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
     
     NSString *newSupf = nil;
-
+    
     if (macho.header.cputype == CPU_TYPE_ARM64) {
         newSupf = [_originalBinary.supfPath stringByAppendingString:suffix];
     }
@@ -158,13 +177,13 @@ exit_with_errno (int err, const char *prefix)
     [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, 4096-wOffset) withBytes:&data];
     
     DumperLog(@"wrote new header to binary");
-
+    
 }
 
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start
 {
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
-
+    
     
     uint32_t headerProgress = _thinHeader.header.cputype == CPU_TYPE_ARM64 ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
     
@@ -176,7 +195,7 @@ exit_with_errno (int err, const char *prefix)
     uint8_t buf_d[0x1000]; // create a single page buffer
     uint8_t *buf = &buf_d[0]; // store the location of the buffer
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
-
+    
     
     while (togo > 0) {
         // get a percentage for the progress bar
@@ -190,7 +209,7 @@ exit_with_errno (int err, const char *prefix)
                 DumperLog(@"\n=================\n");
                 free(checksum); // free checksum table
                 kill(pid, SIGKILL); // kill the fork
-                patchPIE = YES;
+                _shouldDisableASLR = YES;
                 return [self dumpBinary];
             }
             free(checksum); // free checksum table
@@ -242,7 +261,7 @@ exit_with_errno (int err, const char *prefix)
             header = FALSE;
         }
         
-    writedata:        
+    writedata:
         [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
         
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
@@ -263,7 +282,7 @@ exit_with_errno (int err, const char *prefix)
     }
     
     return ArchCompatibilityCompatible;
-
+    
 }
 
 @end

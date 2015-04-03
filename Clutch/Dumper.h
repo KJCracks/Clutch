@@ -16,10 +16,11 @@
 {
     Binary *_originalBinary;
     thin_header _thinHeader;
-    BOOL patchPIE;
 }
 
+@property (readonly) BOOL isASLRProtected;
 @property NSFileHandle *originalFileHandle;
+@property BOOL shouldDisableASLR;
 
 + (NSString *)readableArchFromHeader:(thin_header)macho;
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn;

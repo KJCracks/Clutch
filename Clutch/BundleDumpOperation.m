@@ -141,6 +141,8 @@
                 continue;
             }
             
+            // _dumper.shouldDisableASLR = YES; // yoyoyo
+            
             NSLog(@"Found compatible dumper %@ for binary %@ with arch %@",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
             
             NSFileHandle *_handle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];

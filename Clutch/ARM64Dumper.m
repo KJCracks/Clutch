@@ -116,8 +116,7 @@
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
         DumperLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
-        kill(pid, SIGKILL); // kill the fork
-        return NO;
+        goto gotofail;
     }
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
@@ -142,9 +141,8 @@
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
     if (pages == 0) {
-        kill(pid, SIGKILL); // kill the fork
         DumperLog(@"pages == 0");
-        return FALSE;
+        goto gotofail;
     }
     
     [newFileHandle seekToFileOffset:_thinHeader.offset];
@@ -154,7 +152,7 @@
         mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid];
         if(main_address == -1) {
             DumperLog(@"Failed to find address of header!");
-            return NO;
+            goto gotofail;
         }
         
         DumperLog(@"ASLR slide: 0x%llx", main_address);
@@ -175,6 +173,10 @@
         [[NSFileManager defaultManager]removeItemAtPath:newSupf error:nil];
     
     return dumpResult;
+    
+gotofail:
+    kill(pid, SIGKILL);
+    return NO;
 }
 
 

@@ -158,7 +158,7 @@ exit_with_errno (int err, const char *prefix)
         struct fat_arch arch;
         arch = *(struct fat_arch *)([buffer bytes] + offset);
         
-        if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+        if (((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
             [self.originalFileHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
             wOffset += sizeof(struct fat_arch);
         }

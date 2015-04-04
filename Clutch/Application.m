@@ -11,6 +11,7 @@
 #import "BundleDumpOperation.h"
 #import "FinalizeDumpOperation.h"
 #import "SCInfoBuilder.h"
+#import "Device.h"
 
 @interface Application ()
 {
@@ -139,6 +140,10 @@
     NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
     
     [[NSFileManager defaultManager]createDirectoryAtPath:_workingPath withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    NSData *libClutch = [Device libClutch];
+    
+    [libClutch writeToFile:[_workingPath stringByAppendingPathComponent:@"libClutch.dylib"] atomically:YES];
     
     ZipOperation *_mainZipOperation = [[ZipOperation alloc]initWithApplication:self];
     

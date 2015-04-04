@@ -18,5 +18,6 @@
 
 + (cpu_type_t)cpu_type;
 + (cpu_subtype_t)cpu_subtype;
++ (NSData *)libClutch;
 
 @end

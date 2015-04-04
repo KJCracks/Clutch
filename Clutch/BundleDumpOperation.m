@@ -268,7 +268,7 @@
 
 + (NSArray *)availableFrameworkDumpers
 {
-    return @[NSClassFromString(@"Framework64Dumper"),NSClassFromString(@"FrameworkDumper")];
+    return @[NSClassFromString(@"FrameworkDumper")];
     
     /* NSMutableArray *array = [NSMutableArray new];
      

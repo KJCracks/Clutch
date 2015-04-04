@@ -37,8 +37,8 @@
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
-        newSinf = [_originalBinary.sinfPath stringByAppendingString:suffix];
-        newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
+        newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
+        newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
 
         [self swapArch];
         
@@ -197,25 +197,27 @@
         uint32_t address = (uint32_t) ImageInfo.imageLoadAddress;
         DumperLog(@"%s %x\n", ImageInfo.imageFilePath, address);
     }
-    
+  
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
-    
+  
     kill(pid, 0);
     return dumpResult;
     
 gotofail:
     kill(pid, SIGKILL);
+   
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
+    
     return NO;
 }
 

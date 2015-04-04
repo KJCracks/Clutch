@@ -54,12 +54,10 @@
             thin_header macho = headers[i];
             
             switch (macho.header.cputype) {
-                case MH_MAGIC:
-                case MH_CIGAM:
+                case CPU_TYPE_ARM:
                     m32++;
                     break;
-                case MH_MAGIC_64:
-                case MH_CIGAM_64:
+                case CPU_TYPE_ARM64:
                     m64++;
                     break;
             }

@@ -115,7 +115,7 @@
     kern_return_t err; // any kernel return codes
     NSUInteger begin;
     
-    pid = [self posix_spawn:swappedBinaryPath disableASLR:YES];
+    pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
         DumperLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");

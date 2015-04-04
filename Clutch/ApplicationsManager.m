@@ -77,7 +77,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
             NSURL *bundleURL = [NSURL fileURLWithPath:appI[@"Path"]];
             
             NSString *scinfo=[bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
-
+            
             BOOL isDirectory;
             
             BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
@@ -96,35 +96,27 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         
         NSArray *proxies = [applicationWorkspace performSelector:@selector(allApplications)];
         
-        NSMutableArray *_iApps = [NSMutableArray new];
         
-        for (id proxy in proxies) {
-            FBApplicationInfo *appInfo = [[FBApplicationInfo alloc]initWithApplicationProxy:proxy];
+        for (FBApplicationInfo * proxy in proxies) {
             
-            if (appInfo) {
-                [_iApps addObject:appInfo];
-            }
-        }
-        
-        for (FBApplicationInfo *info in _iApps) {
+            NSString *appType = [proxy performSelector:@selector(applicationType)];
             
-            if ([options[@"ApplicationType"] isEqualToString:@"User"]&&([info.bundleContainerURL.path hasPrefix:@"/private"]||[info.bundleContainerURL.path hasPrefix:@"/var"]))
-            {
-                NSString *scinfo=[info.bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
+            if ([appType isEqualToString:@"User"] && proxy.bundleContainerURL && proxy.bundleURL) {
+                
+                NSString *scinfo=[proxy.bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
                 
                 BOOL isDirectory;
                 
                 BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
                 
                 if (purchased && isDirectory) {
-                    Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":info.bundleContainerURL,
-                                                                               @"BundleURL":info.bundleURL}];
+                    Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":proxy.bundleContainerURL,
+                                                                               @"BundleURL":proxy.bundleURL}];
                     
-                    returnValue[info.bundleIdentifier] = app;
+                    returnValue[proxy.bundleIdentifier] = app;
                 }
             }
         }
-        
         
     }
     

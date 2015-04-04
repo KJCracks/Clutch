@@ -12,6 +12,8 @@
 	<true/>
 	<key>run-unsigned-code</key>
 	<true/>
+	<key>com.apple.private.librarian.can-get-application-info</key>
+	<true/>
 	<key>com.apple.private.mobileinstall.allowedSPI</key>
 	<array>
 		<string>Lookup</string>

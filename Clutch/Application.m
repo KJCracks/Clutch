@@ -31,9 +31,20 @@
         _workingPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"clutch" stringByAppendingPathComponent:_workingUUID.UUIDString]];
         
         [self reloadFrameworksInfo];
-        [self reloadPluginsInfo];        
+        [self reloadPluginsInfo];
     }
     return self;
+}
+
+- (void)prepareForDump {
+    [super prepareForDump];
+    
+    for (ClutchBundle *bundle in _frameworks)
+        [bundle prepareForDump];
+    
+    for (ClutchBundle *bundle in _extensions)
+        [bundle prepareForDump];
+    
 }
 
 - (void)reloadFrameworksInfo
@@ -106,7 +117,7 @@
         else if (![[url.path pathExtension] caseInsensitiveCompare:@"appex"] && [isDirectory boolValue])
         {
             Extension *_extension = [[Extension alloc]initWithBundleInfo:@{@"BundleContainer":url.URLByDeletingLastPathComponent,
-                                                                          @"BundleURL":url}];
+                                                                           @"BundleURL":url}];
             if (_extension) {
                 
                 _extension.parentBundle = self;
@@ -122,7 +133,9 @@
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL
 {
     [super dumpToDirectoryURL:directoryURL];
- 
+    
+    [self prepareForDump];
+    
     NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
     
     [[NSFileManager defaultManager]createDirectoryAtPath:_workingPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -135,10 +148,10 @@
     
     [_finalizeDumpOperation addDependency:_mainZipOperation];
     [_finalizeDumpOperation addDependency:_dumpOperation];
-
+    
     NSMutableArray *_additionalDumpOpeartions = [NSMutableArray new];
     NSMutableArray *_additionalZipOpeartions = [NSMutableArray new];
-
+    
     for (Framework *_framework in self.frameworks) {
         ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_framework];
         [_zipOperation addDependency:_mainZipOperation];
@@ -150,7 +163,7 @@
     for (Extension *_extension in self.extensions) {
         ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_extension];
         [_zipOperation addDependency:_mainZipOperation];
-
+        
         [_additionalZipOpeartions addObject:_zipOperation];
         [_additionalDumpOpeartions addObject:_extension.executable.dumpOperation];
     }

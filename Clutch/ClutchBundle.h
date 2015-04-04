@@ -26,5 +26,6 @@
 
 - (instancetype)initWithBundleInfo:(NSDictionary *)info;
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL;
+- (void)prepareForDump;
 
 @end

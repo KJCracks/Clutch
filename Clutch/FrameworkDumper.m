@@ -12,6 +12,7 @@
 #import <mach-o/fat.h>
 #import <mach-o/loader.h>
 #import <mach-o/dyld.h>
+#import "NSTask.h"
 
 @implementation FrameworkDumper
 
@@ -22,6 +23,23 @@
 
 - (BOOL)dumpBinary
 {
+    
+    DumperLog(@"fuck you");
+    
+    return NO;
+    
+    NSString *libClutchPath = [_originalBinary.workingPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"libClutch.dylib"];
+    
+    if (_originalBinary.hasRestrictedSegment) {
+        
+        // remove libClutch
+        [[NSFileManager defaultManager]removeItemAtPath:libClutchPath error:nil];
+        
+        DumperLog(@"Cannot dump frameworks. The binary has __RESTRICT segment.");
+        
+        return NO;
+    }
+    
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
     
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath; // default values if we dont need to swap archs
@@ -41,16 +59,31 @@
     
     [self.originalFileHandle closeFile];
     
-    gbprintln(@"Loading %@",_originalBinary);
+    DumperLog(@"Loading %@",_originalBinary);
     
-    void *fmwkHeader = dlopen(swappedBinaryPath.UTF8String, RTLD_NOW);
+    NSTask *dumpTask = [NSTask new];
     
-    if (fmwkHeader == NULL) {
-        gbprintln(@"Failed to load framework %@ with error %@",_originalBinary,@(dlerror()));
-        return NO;
+    dumpTask.launchPath = _originalBinary.binaryPath;
+    
+    dumpTask.environment = @{@"DYLD_INSERT_LIBRARIES":libClutchPath};
+    
+    dumpTask.arguments = @[binaryDumpPath,@"test1",@"test2",@"test3"];
+    
+    NSPipe *pipe=[NSPipe pipe];
+    [dumpTask setStandardOutput:pipe];
+    [dumpTask setStandardError:pipe];
+    NSFileHandle *handle=[pipe fileHandleForReading];
+    
+    [dumpTask launch];
+    
+    while (dumpTask.isRunning == YES) {
+        DumperLog(@"still waiting");
     }
     
-    dlclose(fmwkHeader);
+    NSData * dataRead = [handle readDataToEndOfFile];
+    NSString * stringRead = [[NSString alloc] initWithData:dataRead encoding:NSUTF8StringEncoding];
+    
+    DumperLog(@"dumpdumpTask %@",stringRead);
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

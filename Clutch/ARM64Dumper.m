@@ -34,9 +34,9 @@
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
-        newSinf = [_originalBinary.sinfPath stringByAppendingString:suffix];
-        newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
-        newSupf = [_originalBinary.supfPath stringByAppendingString:suffix];
+        newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
+        newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
+        newSupf = [_originalBinary.supfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.supfPath.pathExtension]];
 
         [self swapArch];
     }

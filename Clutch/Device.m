@@ -59,14 +59,14 @@
         
         struct segment_command * command = (struct segment_command *)(binary.bytes + binary.currentOffset);
         
-        if (((cmd == LC_SEGMENT) || (cmd == LC_SEGMENT_64)) && (strcmp(command->segname, "__RESTRICT") == 0))
+        if (((cmd == LC_SEGMENT) || (cmd == LC_SEGMENT_64)) && (strcmp(command->segname, "__LIBCLUTCH") == 0))
         {
             const struct section* const sectionsStart = (struct section*)((char*)command + sizeof(struct segment_command));
             const struct segment_command* const sectionsEnd = &sectionsStart[command->nsects];
             
             for (sect=sectionsStart; sect < sectionsEnd; ++sect) {
                 
-                if (strcmp(sect->sectname, "__restrict") == 0)
+                if (strcmp(sect->sectname, "__libclutch") == 0)
                     break;
             }
             

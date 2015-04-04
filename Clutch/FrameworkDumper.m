@@ -14,6 +14,8 @@
 #import <mach-o/dyld.h>
 #import "NSTask.h"
 
+#import "ClutchBundle.h"
+
 @implementation FrameworkDumper
 
 - (cpu_type_t)supportedCPUType
@@ -26,11 +28,29 @@
     
     DumperLog(@"fuck you");
     
+    ClutchBundle *_framework = [_originalBinary valueForKey:@"_bundle"];
+
+    NSMutableData *data = [NSMutableData dataWithContentsOfFile:_framework.executable.binaryPath];
+    
+    insertRPATHIntoBinary(_framework.bundlePath.stringByDeletingLastPathComponent, data, _thinHeader);
+    
+    [data writeToFile:_framework.executable.binaryPath atomically:YES];
+    
+    NSError *loadError;
+    
+    [_framework loadAndReturnError:&loadError];
+    
+    DumperLog(@"error %@",loadError);
+    
     return NO;
     
-    NSString *libClutchPath = [_originalBinary.workingPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"libClutch.dylib"];
+    _originalBinary = _framework.parentBundle.executable;
+
+    NSString *libClutchPath = @"/libclutch.dylib";//[_originalBinary.workingPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"libClutch.dylib"];
     
     if (_originalBinary.hasRestrictedSegment) {
+        
+        // This' actually bullshit, never going to happen. But who knows, it's fucking apple after all =\
         
         // remove libClutch
         [[NSFileManager defaultManager]removeItemAtPath:libClutchPath error:nil];
@@ -50,8 +70,8 @@
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
-        newSinf = [_originalBinary.sinfPath stringByAppendingString:suffix];
-        newSupp = [_originalBinary.suppPath stringByAppendingString:suffix];
+        newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
+        newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
         
         [self swapArch];
         
@@ -77,13 +97,13 @@
     [dumpTask launch];
     
     while (dumpTask.isRunning == YES) {
-        DumperLog(@"still waiting");
+
     }
     
     NSData * dataRead = [handle readDataToEndOfFile];
     NSString * stringRead = [[NSString alloc] initWithData:dataRead encoding:NSUTF8StringEncoding];
     
-    DumperLog(@"dumpdumpTask %@",stringRead);
+    DumperLog(@"Dump task did finish %@",stringRead);
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

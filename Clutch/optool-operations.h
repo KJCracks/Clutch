@@ -34,3 +34,4 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSStrin
 BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset, thin_header macho);
 BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho, uint32_t type);
 BOOL removeASLRFromBinary(NSMutableData *binary, thin_header macho);
+BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho);

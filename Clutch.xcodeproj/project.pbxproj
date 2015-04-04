@@ -610,7 +610,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
-				OTHER_LDFLAGS = "-Wl,-sectcreate,__RESTRICT,__restrict,$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/libclutch.dylib";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @exectuable_path/Frameworks";
+				OTHER_LDFLAGS = "-Wl,-sectcreate,__LIBCLUTCH,__libclutch,$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/libclutch.dylib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 				iOSOpenDevBuildPackageOnAnyBuild = NO;
@@ -642,7 +643,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
-				OTHER_LDFLAGS = "-Wl,-sectcreate,__RESTRICT,__restrict,$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/libclutch.dylib";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @exectuable_path/Frameworks";
+				OTHER_LDFLAGS = "-Wl,-sectcreate,__LIBCLUTCH,__libclutch,$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/libclutch.dylib";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 				iOSOpenDevBuildPackageOnAnyBuild = NO;

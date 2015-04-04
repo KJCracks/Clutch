@@ -47,6 +47,8 @@
 		32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
 		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
 		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
+		ADE1ED2A1AD02C2000398728 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
+		ADE1ED2B1AD02C9C00398728 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +146,8 @@
 		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
 		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
+		ADE1ED291AD02C2000398728 /* AppSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/AppSupport.framework; sourceTree = DEVELOPER_DIR; };
+		ADE1ED2C1AD02D1A00398728 /* CPDistributedMessanging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CPDistributedMessanging.h; path = ../CPDistributedMessanging.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADE1ED2A1AD02C2000398728 /* AppSupport.framework in Frameworks */,
 				32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */,
 				324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */,
 				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,
@@ -161,6 +166,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADE1ED2B1AD02C9C00398728 /* AppSupport.framework in Frameworks */,
 				328CCB4A1ACFFBD500B21225 /* Foundation.framework in Frameworks */,
 				328CCB4C1ACFFBD500B21225 /* UIKit.framework in Frameworks */,
 			);
@@ -191,6 +197,7 @@
 		324EA6251A89258000844540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ADE1ED291AD02C2000398728 /* AppSupport.framework */,
 				32EFB6F21A8A500D005BB56C /* libz.dylib */,
 				324EA63D1A89260A00844540 /* MobileCoreServices.framework */,
 				324EA6261A89258000844540 /* Foundation.framework */,
@@ -277,6 +284,7 @@
 		328CCB621ACFFE2700B21225 /* libclutch */ = {
 			isa = PBXGroup;
 			children = (
+				ADE1ED2C1AD02D1A00398728 /* CPDistributedMessanging.h */,
 				328CCB641ACFFE2700B21225 /* libclutch.h */,
 				328CCB6A1ACFFE4300B21225 /* init.m */,
 				328CCB691ACFFE3000B21225 /* Supporting Files */,
@@ -597,6 +605,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
@@ -628,6 +637,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
@@ -660,6 +670,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
 					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "libclutch/clutch-Prefix.pch";
@@ -698,6 +709,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
 					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "libclutch/clutch-Prefix.pch";
@@ -745,6 +757,7 @@
 				328CCB5E1ACFFBD500B21225 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -271,6 +271,9 @@ exit_with_errno (int err, const char *prefix)
     cpu_type_t cputype = self.supportedCPUType;
     cpu_subtype_t cpusubtype = _thinHeader.header.cpusubtype;
     
+    if (Device.cpu_type == CPU_TYPE_ARM64)
+        return ArchCompatibilityCompatible; // god mode on
+    
     if ((cputype != _thinHeader.header.cputype) || (cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
         return ArchCompatibilityNotCompatible;
     }

@@ -182,6 +182,61 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
     return NO;
 }
 
+BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho) {
+    
+    uint32_t type = LC_RPATH;
+    
+    
+    // parse load commands to see if our load command is already there
+    uint32_t lastOffset = 0;
+    
+    // create a new load command
+    unsigned int length = (unsigned int)sizeof(struct rpath_command) + (unsigned int)dylibPath.length;
+    unsigned int padding = (8 - (length % 8));
+    
+    // check if data we are replacing is null
+    NSData *occupant = [binary subdataWithRange:NSMakeRange(macho.header.sizeofcmds + macho.offset + macho.size,
+                                                            length + padding)];
+    
+    // All operations in optool try to maintain a constant byte size of the executable
+    // so we don't want to append new bytes to the binary (that would break the executable
+    // since everything is offset-based–we'd have to go in and adjust every offset)
+    // So instead take advantage of the huge amount of padding after the load commands
+    if (strcmp([occupant bytes], "\0")) {
+        NSLog(@"cannot inject payload into %s because there is no room", dylibPath.fileSystemRepresentation);
+        return NO;
+    }
+    
+    printf("Inserting a %s command for architecture: %s\n", LC(type), CPU(macho.header.cputype));
+    
+    struct rpath_command command;
+    command.cmd = type;
+    command.cmdsize = length + padding;
+    
+    unsigned int zeroByte = 0;
+    NSMutableData *commandData = [NSMutableData data];
+    [commandData appendBytes:&command length:sizeof(struct rpath_command)];
+    [commandData appendData:[dylibPath dataUsingEncoding:NSASCIIStringEncoding]];
+    [commandData appendBytes:&zeroByte length:padding];
+    
+    // remove enough null bytes to account of our inserted data
+    [binary replaceBytesInRange:NSMakeRange(macho.offset + macho.header.sizeofcmds + macho.size, commandData.length)
+                      withBytes:0
+                         length:0];
+    // insert the data
+    [binary replaceBytesInRange:NSMakeRange(lastOffset, 0) withBytes:commandData.bytes length:commandData.length];
+    
+    // fix the existing header
+    macho.header.ncmds += 1;
+    macho.header.sizeofcmds += command.cmdsize;
+    
+    // this is safe to do in 32bit because the 4 bytes after the header are still being put back
+    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
+    
+    return YES;
+}
+
+
 BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho, uint32_t type) {
     if (type != LC_REEXPORT_DYLIB &&
         type != LC_LOAD_WEAK_DYLIB &&

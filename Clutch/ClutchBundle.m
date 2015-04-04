@@ -34,9 +34,12 @@
         [_dumpQueue cancelAllOperations];
 }
 
-- (NSString *)description {
+- (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),self,self.bundleIdentifier,self.bundleURL];
-    //return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@, executable: %@>",NSStringFromClass([self class]),self,self.bundleIdentifier,self.bundleURL,_executable];
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),self.bundleIdentifier,self.bundleURL];
 }
 
 @end

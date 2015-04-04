@@ -56,7 +56,7 @@
     }
     
     self.completionBlock = ^{
-        
+        exit(0);
     };
     
     // If the operation is not canceled, begin executing the task.

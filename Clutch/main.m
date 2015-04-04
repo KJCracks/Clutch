@@ -55,7 +55,7 @@ int main (int argc, const char * argv[])
                 NSArray *installedApps = [_manager installedApps].allValues;
                 printf("Installed apps:\n");
                 for (Application *_app in installedApps) {
-                    gbprintln(@"%u) %@ %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app.bundleIdentifier,_app,_app.workingPath);
+                    gbprintln(@"%u) %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app);
                 }
                 exit(0);
             }

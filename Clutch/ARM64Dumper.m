@@ -176,6 +176,14 @@
     
 gotofail:
     kill(pid, SIGKILL);
+    if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
+        [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
+    if (![newSinf isEqualToString:_originalBinary.sinfPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
+    if (![newSupp isEqualToString:_originalBinary.suppPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
+    if (![newSupf isEqualToString:_originalBinary.supfPath])
+        [[NSFileManager defaultManager]removeItemAtPath:newSupf error:nil];
     return NO;
 }
 

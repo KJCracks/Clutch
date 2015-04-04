@@ -24,4 +24,5 @@ struct sinf_kval {
 
 + (NSData *)sinfForBundle:(ClutchBundle *)bundle;
 + (NSDictionary *)parseOriginaleSinfForBundle:(ClutchBundle *)bundle;
+
 @end

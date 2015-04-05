@@ -123,6 +123,7 @@ int main (int argc, const char * argv[])
     }
 	return 0;
 }
+
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size) {

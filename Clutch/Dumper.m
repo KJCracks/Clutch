@@ -189,6 +189,7 @@ exit_with_errno (int err, const char *prefix)
     
     uint32_t total = togo;
     
+    progress_message("Dumping..");
     while (togo > 0) {
         // get a percentage for the progress bar
         

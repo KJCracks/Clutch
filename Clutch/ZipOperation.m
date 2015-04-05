@@ -10,6 +10,7 @@
 #import "ZipArchive.h"
 #import "ClutchBundle.h"
 #import "GBPrint.h"
+#import "ProgressBar.h"
 
 @interface ZipOperation ()
 {
@@ -92,8 +93,14 @@
             return YES;
         }];
         
+        int count = [[dirEnumerator allObjects] count];
+        int i;
+        progress_message("Zipping..");
         for (NSURL *theURL in dirEnumerator)
         {
+            i++;
+            PERCENT((int)(ceil(i/count)));
+            
             NSNumber *isDirectory;
             [theURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nil];
             

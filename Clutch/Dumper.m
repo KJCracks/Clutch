@@ -156,9 +156,39 @@ exit_with_errno (int err, const char *prefix)
         
         if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
             
-            uint32_t r = arc4random_uniform(51) + 100;
-            
-            arch.cpusubtype = SWAP(r);
+            if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
+                switch (SWAP(arch.cputype)) {
+                    case CPU_SUBTYPE_ARM_V6:
+                        arch.cputype = CPU_TYPE_I386;
+                        arch.cpusubtype = CPU_SUBTYPE_ARM_V7EM;
+                        break;
+                    case CPU_SUBTYPE_ARM_V7:
+                        arch.cputype = CPU_TYPE_I386;
+                        arch.cpusubtype = CPU_SUBTYPE_PENTIUM_4;
+                        break;
+                    case CPU_SUBTYPE_ARM_V7S:
+                        arch.cputype = CPU_TYPE_I386;
+                        arch.cpusubtype = CPU_SUBTYPE_ITANIUM;
+                        break;
+                    case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
+                        arch.cputype = CPU_TYPE_I386;
+                        arch.cpusubtype = CPU_SUBTYPE_XEON;
+                        break;
+                }
+            }else {
+                
+                switch (SWAP(arch.cputype)) {
+                    case CPU_SUBTYPE_ARM64_ALL:
+                        arch.cputype = CPU_TYPE_X86_64;
+                        arch.cpusubtype = CPU_SUBTYPE_X86_64_ALL;
+                        break;
+                    case CPU_SUBTYPE_ARM64_V8:
+                        arch.cputype = CPU_TYPE_X86_64;
+                        arch.cpusubtype = CPU_SUBTYPE_X86_64_H;
+                        break;
+                }
+                
+            }
             
             [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
         }

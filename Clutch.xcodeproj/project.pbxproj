@@ -185,8 +185,6 @@
 				3258FD621A90AAED007C2E66 /* Device.h */,
 				3258FD631A90AAED007C2E66 /* Device.m */,
 				324EA6321A89258000844540 /* main.m */,
-				ADE1ED301AD1636D00398728 /* ProgressBar.h */,
-				ADE1ED311AD1636D00398728 /* ProgressBar.m */,
 				324EA62D1A89258000844540 /* Supporting Files */,
 			);
 			path = Clutch;
@@ -195,6 +193,8 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ADE1ED301AD1636D00398728 /* ProgressBar.h */,
+				ADE1ED311AD1636D00398728 /* ProgressBar.m */,
 				328CCB711AD004FF00B21225 /* NSTask.h */,
 				328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */,
 				328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */,
@@ -225,15 +225,6 @@
 				323C86B01AC05AE4008949F2 /* Dumper.m */,
 			);
 			name = "Protocol + Parent Dumper";
-			sourceTree = "<group>";
-		};
-		3274B9591ABEA6E800964049 /* old_stuff */ = {
-			isa = PBXGroup;
-			children = (
-				32BC93F21A8F726800805D14 /* ASLRDisabler.h */,
-				32BC93F31A8F726800805D14 /* ASLRDisabler.m */,
-			);
-			name = old_stuff;
 			sourceTree = "<group>";
 		};
 		3282BE041A8D9A9100E5068A /* optool */ = {
@@ -305,8 +296,9 @@
 		32FB77AA1A89D6C500BB5ABC /* Dumpers */ = {
 			isa = PBXGroup;
 			children = (
-				3274B9591ABEA6E800964049 /* old_stuff */,
 				3274B9541ABEA5F400964049 /* Protocol + Parent Dumper */,
+				32BC93F21A8F726800805D14 /* ASLRDisabler.h */,
+				32BC93F31A8F726800805D14 /* ASLRDisabler.m */,
 				3274B9561ABEA6E100964049 /* ARMDumper.h */,
 				3274B9571ABEA6E100964049 /* ARMDumper.m */,
 				3274B95E1ABEB00400964049 /* ARM64Dumper.h */,

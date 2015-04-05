@@ -30,7 +30,7 @@ int main (int argc, const char * argv[])
         //options.printHelpFooter = ^{ return @"Thanks to everyone for their help..."; };
         
         [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID" flags:GBValueRequired|GBOptionNoPrint];
-        [options registerOption:'i' long:@"print-installed" description:@"Print installed application" flags:GBValueNone|GBOptionNoPrint];
+        [options registerOption:'i' long:@"print-installed" description:@"Print installed applications" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"clean" description:@"Clean /var/tmp/clutch directory" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
@@ -97,15 +97,6 @@ int main (int argc, const char * argv[])
         NSDictionary *_installedApps = [_appsManager installedApps];
         
         Application *_selectedApp = _installedApps[_selectedBundleID];
-        
-        if (_selectedApp.frameworks.count) {
-            gbprintln(@"It's not possible to dump apps with iOS 8 frameworks at this moment");
-#ifndef DEBUG
-            exit(0);
-#else
-            gbprintln(@"DEBUG build, will try to dump anyway");
-#endif
-        }
         
         if (!_selectedApp) {
             gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);

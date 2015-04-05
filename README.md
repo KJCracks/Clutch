@@ -9,12 +9,12 @@ Current version: 2.0
 
 Usage
 ------------
-Clutch [OPTIONS]
--d --dump <value>    Dump specified bundleID 
--i --print-installed Print installed application 
---clean           Clean /var/tmp/clutch directory 
---version         Display version and exit 
--? --help            Display this help and exit 
+Clutch [OPTIONS]<br />
+-d --dump <value>    Dump specified bundleID<br />
+-i --print-installed Print installed application<br /> 
+--clean           Clean /var/tmp/clutch directory<br /> 
+--version         Display version and exit<br /> 
+-? --help            Display this help and exit<br /> 
 
 
 Compiling
@@ -26,6 +26,8 @@ Licenses
 ------------
 *Clutch* uses the following libraries under their respective licenses.
 
+[optool] (https://github.com/alexzielenski/optool) by Alex Zielenski<br />
+[GBCli] (https://github.com/tomaz/GBCli) by Tomaz Kragelj<br />
 [ZipArchive] (https://github.com/mattconnolly/ZipArchive/) by Matt Connolly, Edward Patel, et al.<br />
 [MiniZip] (http://www.winimage.com/zLibDll/minizip.html) by Gilles Vollant and Mathias Svensson.
 

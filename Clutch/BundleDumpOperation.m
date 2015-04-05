@@ -179,33 +179,58 @@
             NSData *buffer = _dumpHandle.availableData;
             
             struct fat_header fat = *(struct fat_header *)buffer.bytes;
-            fat.nfat_arch = SWAP(fat.nfat_arch);
             int offset = sizeof(struct fat_header);
-            int wOffset = offset;
-            
-            uint32_t nf = SWAP(dumpCount);
-            [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nf];
             
             for (NSValue *valueWithArch in _headersToStrip) {
                 thin_header stripArch;
                 [valueWithArch getValue:&stripArch];
                 
-                for (int i = 0; i < fat.nfat_arch; i++) {
+                for (int i = 0; i < SWAP(fat.nfat_arch); i++) {
                     struct fat_arch arch;
                     arch = *(struct fat_arch *)([buffer bytes] + offset);
                     
-                    if (!((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype))) {
-                        [_dumpHandle replaceBytesInRange:NSMakeRange(wOffset, sizeof(struct fat_arch)) withBytes:&arch];
-                        wOffset += sizeof(struct fat_arch);
+                    if (((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype))) {
+                        
+                        if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
+                            switch (SWAP(arch.cputype)) {
+                                case CPU_SUBTYPE_ARM_V6:
+                                    arch.cputype = CPU_TYPE_I386;
+                                    arch.cpusubtype = CPU_SUBTYPE_ARM_V7EM;
+                                    break;
+                                case CPU_SUBTYPE_ARM_V7:
+                                    arch.cputype = CPU_TYPE_I386;
+                                    arch.cpusubtype = CPU_SUBTYPE_PENTIUM_4;
+                                    break;
+                                case CPU_SUBTYPE_ARM_V7S:
+                                    arch.cputype = CPU_TYPE_I386;
+                                    arch.cpusubtype = CPU_SUBTYPE_ITANIUM;
+                                    break;
+                                case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
+                                    arch.cputype = CPU_TYPE_I386;
+                                    arch.cpusubtype = CPU_SUBTYPE_XEON;
+                                    break;
+                            }
+                        }else {
+                            
+                            switch (SWAP(arch.cputype)) {
+                                case CPU_SUBTYPE_ARM64_ALL:
+                                    arch.cputype = CPU_TYPE_X86_64;
+                                    arch.cpusubtype = CPU_SUBTYPE_X86_64_ALL;
+                                    break;
+                                case CPU_SUBTYPE_ARM64_V8:
+                                    arch.cputype = CPU_TYPE_X86_64;
+                                    arch.cpusubtype = CPU_SUBTYPE_X86_64_H;
+                                    break;
+                            }
+                            
+                        }
+                        
+                        [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
                     }
                     
                     offset += sizeof(struct fat_arch);
                 }
-                
-                char data[4096-wOffset];
-                memset(data,'\0',sizeof(data));
-                [_dumpHandle replaceBytesInRange:NSMakeRange(wOffset, 4096-wOffset) withBytes:&data];
-                
+
             }
             
             [_dumpHandle closeFile];

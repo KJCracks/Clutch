@@ -39,7 +39,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %@ bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),self.bundlePath.lastPathComponent.stringByDeletingPathExtension,self.bundleIdentifier,self.bundleURL];
+    return [NSString stringWithFormat:@"<%@ bundleID: %@>",self.bundlePath.lastPathComponent.stringByDeletingPathExtension,self.bundleIdentifier];
 }
 
 @end

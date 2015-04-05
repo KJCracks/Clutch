@@ -2,7 +2,6 @@
 // Prefix header for all source files of the 'Clutch' target in the 'Clutch' project
 //
 
-#import "ProgressBar.h"
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
@@ -13,7 +12,7 @@
 #ifdef DEBUG
 # define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
 
-#   define NSLog(M, ...) progress_event("\033[0;32mDEBUG\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #else
 #   define NSLog(...)
 #endif

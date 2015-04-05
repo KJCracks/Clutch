@@ -32,7 +32,7 @@
 
 @end
 
-#define DumperLog(fmt,...) printf("%s\n",[NSString stringWithFormat:@"%@ " fmt, _originalBinary, ##__VA_ARGS__].UTF8String)
+#define DumperLog(fmt,...) printf("\033[0;32mDumping: \044[0m %s\n",[NSString stringWithFormat:@"%@ " fmt, _originalBinary, ##__VA_ARGS__].UTF8String)
 
 #ifdef DEBUG
 #   define DumperDebugLog(fmt,...) NSLog(@"%@ " fmt,_originalBinary,##__VA_ARGS__)

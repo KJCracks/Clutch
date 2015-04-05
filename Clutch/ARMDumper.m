@@ -164,40 +164,6 @@
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start];
     
-    //find dylibs swag
-    
-    task_dyld_info_data_t task_dyld_info;
-    mach_msg_type_number_t count = TASK_DYLD_INFO_COUNT;
-    
-    mach_port_t _task = port; // try to use mach_task_self() for Clutch task;
-    
-    kern_return_t kr = task_info(_task, TASK_DYLD_INFO ,(task_info_t)&task_dyld_info, &count);
-    if (kr != KERN_SUCCESS) {
-        DumperLog(@"Could not find dyld info!??");
-    }
-    
-    DumperLog(@"task_dyld_info.all_image_info_addr 0x%llx",task_dyld_info.all_image_info_addr);
-    DumperLog(@"task_dyld_info.all_image_info_size %llu",task_dyld_info.all_image_info_size);
-    DumperLog(@"task_dyld_info.all_image_info_format %i",task_dyld_info.all_image_info_format);
-
-    struct dyld_all_image_infos dyldInfo = {0};
-    mach_vm_size_t bytes_read = 0;
-    mach_vm_read_overwrite(_task, task_dyld_info.all_image_info_addr, task_dyld_info.all_image_info_size, &dyldInfo, &bytes_read);
-    
-    DumperLog(@"info.version %d\n", dyldInfo.version);
-    uint32_t ImageCount = dyldInfo.infoArrayCount;
-    DumperLog(@"ImageCount %d\n", ImageCount);
-    
-    if (!ImageCount) {
-        DumperLog(@"WTF %s",dyldInfo.errorMessage);
-    }
-    
-    for (int i = 0; i < ImageCount; ++i) {
-        struct dyld_image_info ImageInfo = dyldInfo.infoArray[i];
-        uint32_t address = (uint32_t) ImageInfo.imageLoadAddress;
-        DumperLog(@"%s %x\n", ImageInfo.imageFilePath, address);
-    }
-  
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])

@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'clutch' target in the 'clutch' project
-//
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-#endif

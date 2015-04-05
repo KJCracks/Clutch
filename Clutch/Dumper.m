@@ -156,7 +156,7 @@ exit_with_errno (int err, const char *prefix)
         
         if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
             
-            NSUInteger r = arc4random_uniform(51) + 100;
+            uint32_t r = arc4random_uniform(51) + 100;
             
             arch.cpusubtype = SWAP(r);
             

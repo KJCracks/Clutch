@@ -4,20 +4,31 @@ Introducing *Clutch*, the fastest and most advanced cracking utility for the iPh
 
 Works with all devices, iOS versions, architecture types, with most binaries.
 
-
 Current version: 2.0
+
+
+Usage
+------------
+Clutch [OPTIONS]
+-d --dump <value>    Dump specified bundleID 
+-i --print-installed Print installed application 
+--clean           Clean /var/tmp/clutch directory 
+--version         Display version and exit 
+-? --help            Display this help and exit 
 
 
 Compiling
 ------------
 Use Xcode with iOSOpenDev installed 
 
+
 Licenses
 ------------
 *Clutch* uses the following libraries under their respective licenses.
 
 [ZipArchive] (https://github.com/mattconnolly/ZipArchive/) by Matt Connolly, Edward Patel, et al.<br />
-[MiniZip] (http://www.winimage.com/zLibDll/minizip.html) by Gilles Vollant adn Mathias Svensson.
+[MiniZip] (http://www.winimage.com/zLibDll/minizip.html) by Gilles Vollant and Mathias Svensson.
+
 
 Thanks
 ------------
@@ -31,5 +42,4 @@ TheSexyPenguin - Inspiration<br />
 
 
 (c) Kim Jong-Cracks 1819-2015
-
 

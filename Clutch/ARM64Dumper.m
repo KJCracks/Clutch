@@ -161,7 +161,7 @@
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start];
     
-    kill(pid, 0);
+    kill(pid, SIGTERM);
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
@@ -175,7 +175,7 @@
     return dumpResult;
     
 gotofail:
-    kill(pid, SIGKILL);
+    kill(pid, SIGTERM);
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])

@@ -201,7 +201,7 @@
 
 - (NSString *)zipFilename
 {
-    return [NSString stringWithFormat:@"%@-iOS%@-Clutch.ipa",self.bundleIdentifier,self.infoDictionary[@"MinimumOSVersion"]];
+    return [NSString stringWithFormat:@"%@-iOS%@-(Clutch-%@).ipa",self.bundleIdentifier,self.infoDictionary[@"MinimumOSVersion"],CLUTCH_VERSION];
 }
 
 - (NSString *)zipPrefix

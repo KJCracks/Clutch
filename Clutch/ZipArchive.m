@@ -111,13 +111,121 @@
  * @returns BOOL YES on success
  */
 
+#define M_FRAGMENT_SIZE (1024*1024*15)
+
 -(BOOL) addFileToZip:(NSString*) file newname:(NSString*) newname;
 {
-    NSData *data = [NSData dataWithContentsOfFile:file];
-    NSError* error = nil;
-    NSDictionary* attr = [_fileManager _attributesOfItemAtPath:file followingSymLinks:YES error:&error];
-    BOOL result = [self addDataToZip:data fileAttributes:attr newname:newname];
-    return result;
+    if( !_zipFile )
+        return NO;
+    
+    //	tm_zip filetime;
+    time_t current;
+    time( &current );
+    
+    zip_fileinfo zipInfo = {0};
+    //	zipInfo.dosDate = (unsigned long) current;
+    
+    NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
+    if( attr )
+    {
+        NSDate* fileDate = (NSDate*)[attr objectForKey:NSFileModificationDate];
+        if( fileDate )
+        {
+            // some application does use dosDate, but tmz_date instead
+            //	zipInfo.dosDate = [fileDate timeIntervalSinceDate:[self Date1980] ];
+            NSCalendar* currCalendar = [NSCalendar currentCalendar];
+            uint flags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
+            NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ;
+            NSDateComponents* dc = [currCalendar components:flags fromDate:fileDate];
+            zipInfo.tmz_date.tm_sec = (uInt)[dc second];
+            zipInfo.tmz_date.tm_min = (uInt)[dc minute];
+            zipInfo.tmz_date.tm_hour = (uInt)[dc hour];
+            zipInfo.tmz_date.tm_mday = (uInt)[dc day];
+            zipInfo.tmz_date.tm_mon = (uInt)[dc month] - 1;
+            zipInfo.tmz_date.tm_year = (uInt)[dc year];
+        }
+    }
+    
+    int ret ;
+    NSData* data = nil;
+    if( [_password length] == 0 )
+    {
+        ret = zipOpenNewFileInZip( _zipFile,
+                                  (const char*) [newname UTF8String],
+                                  &zipInfo,
+                                  NULL,0,
+                                  NULL,0,
+                                  NULL,//comment
+                                  Z_DEFLATED,
+                                  self.compression );
+    }
+    else
+    {
+        FILE *f = fopen([file cStringUsingEncoding:NSUTF8StringEncoding], "r");
+        fseek(f, 0, SEEK_END);
+        long fLenght = ftell(f);
+        void *fBuffer = malloc(fLenght);
+        fread(fBuffer, 1, fLenght, f);
+        fclose(f);
+        data = [[NSData alloc] initWithBytesNoCopy:fBuffer length:fLenght];
+        uLong crcValue = crc32( 0L,NULL, 0L );
+        crcValue = crc32( crcValue, (const Bytef*)[data bytes], (uInt)[data length] );
+        ret = zipOpenNewFileInZip3( _zipFile,
+                                   (const char*) [newname UTF8String],
+                                   &zipInfo,
+                                   NULL,0,
+                                   NULL,0,
+                                   NULL,//comment
+                                   Z_DEFLATED,
+                                   self.compression,
+                                   0,
+                                   15,
+                                   8,
+                                   Z_DEFAULT_STRATEGY,
+                                   [_password cStringUsingEncoding:NSASCIIStringEncoding],
+                                   crcValue );
+    }
+    if( ret!=Z_OK )
+    {
+        return NO;
+    }
+    
+    // M_FRAGMENT_SIZE (15MB)
+    FILE *f = fopen([file cStringUsingEncoding:NSUTF8StringEncoding], "r");
+    if(!f)
+        return NO;
+    
+    fseek(f, 0, SEEK_END);
+    long fLenght = ftell(f);
+    rewind(f);
+    void *fBuffer = malloc(M_FRAGMENT_SIZE);
+    
+    for (;fLenght > M_FRAGMENT_SIZE; fLenght-=M_FRAGMENT_SIZE) {
+        fread(fBuffer, 1, M_FRAGMENT_SIZE, f);
+        ret = zipWriteInFileInZip( _zipFile, (const void*)fBuffer, M_FRAGMENT_SIZE);
+    }
+    
+    if(fLenght) {
+        fread(fBuffer, 1, fLenght, f);
+        ret = zipWriteInFileInZip( _zipFile, (const void*)fBuffer, (uInt)fLenght);
+        if( ret!=Z_OK )
+        {
+            free(fBuffer);
+            fclose(f);
+            return NO;
+        }
+    }
+    free(fBuffer);
+    fclose(f);
+    
+    if( ret!=Z_OK )
+    {
+        return NO;
+    }
+    ret = zipCloseFileInZip( _zipFile );
+    if( ret!=Z_OK )
+        return NO;
+    return YES;
 }
 
 /**

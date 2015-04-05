@@ -205,11 +205,11 @@
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
   
-    kill(pid, 0);
+    kill(pid, SIGTERM);
     return dumpResult;
     
 gotofail:
-    kill(pid, SIGKILL);
+    kill(pid, SIGTERM);
    
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

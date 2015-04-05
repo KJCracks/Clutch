@@ -15,10 +15,17 @@ int main (int argc, const char * argv[])
 {
 
     @autoreleasepool
-    {	
+    {
+        // yo
+        if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
+            
+            gbprintln(@"You need iOS 6.0+ to use Clutch 2");
+            
+            return 0;
+        }
 
         GBOptionsHelper *options = [[GBOptionsHelper alloc] init];
-        options.applicationVersion = ^{ return @"2.0"; };
+        options.applicationVersion = ^{ return CLUTCH_VERSION; };
         options.printHelpHeader = ^{ return @"Usage: %APPNAME [OPTIONS]"; };
         //options.printHelpFooter = ^{ return @"Thanks to everyone for their help..."; };
         

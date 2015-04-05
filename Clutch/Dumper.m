@@ -204,7 +204,7 @@ exit_with_errno (int err, const char *prefix)
                 return [self dumpBinary];
             }
             free(checksum); // free checksum table
-            kill(pid, SIGKILL); // kill the fork
+            kill(pid, SIGTERM); // kill the fork
             
             return NO;
         }

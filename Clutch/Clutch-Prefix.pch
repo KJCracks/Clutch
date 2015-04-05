@@ -6,8 +6,16 @@
     #import <Foundation/Foundation.h>
 #endif
 
+#define CLUTCH_VERSION @"2.0"
+
 #ifdef DEBUG
 #   define NSLog(fmt,...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
 #   define NSLog(...)
 #endif
+
+#define SYSTEM_VERSION_EQUAL_TO(_v)                  ( floor(NSFoundationVersionNumber) == _v ? YES : NO )
+#define SYSTEM_VERSION_GREATER_THAN(_v)              ( floor(NSFoundationVersionNumber) >  _v ? YES : NO )
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(_v)  ( floor(NSFoundationVersionNumber) >= _v ? YES : NO )
+#define SYSTEM_VERSION_LESS_THAN(_v)                 ( floor(NSFoundationVersionNumber) <  _v ? YES : NO )
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(_v)     ( floor(NSFoundationVersionNumber) <= _v ? YES : NO )

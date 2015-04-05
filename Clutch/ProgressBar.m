@@ -82,7 +82,7 @@ void print_bar(void)
             strncpy(bar_msg + width - 5, "...", 4); // buffer overflow gg dissident
         }
         
-        printf("%s", bar_msg);
+        printf("%s\n", bar_msg);
         fflush(stdout);
     } else
     {

@@ -42,7 +42,6 @@
 		32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
 		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
 		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
-		ADE1ED2A1AD02C2000398728 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
 		ADE1ED321AD1636D00398728 /* ProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE1ED311AD1636D00398728 /* ProgressBar.m */; };
 /* End PBXBuildFile section */
 
@@ -137,7 +136,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADE1ED2A1AD02C2000398728 /* AppSupport.framework in Frameworks */,
 				32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */,
 				324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */,
 				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,

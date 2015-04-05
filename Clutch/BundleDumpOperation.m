@@ -241,56 +241,12 @@
 
 + (NSArray *)availableDumpers
 {
-    
     return @[NSClassFromString(@"ARM64Dumper"),NSClassFromString(@"ARMDumper")];
-    /* NSMutableArray *array = [NSMutableArray new];
-     
-     Class* classes = NULL;
-     
-     int numClasses = objc_getClassList(NULL, 0);
-     
-     if (numClasses > 0 ) {
-     classes = (Class *)malloc(sizeof(Class) * numClasses);
-     
-     numClasses = objc_getClassList(classes, numClasses);
-     
-     for (int index = 0; index < numClasses; index++) {
-     Class nextClass = classes[index];
-     
-     if (class_conformsToProtocol(nextClass, @protocol(BinaryDumpProtocol)))
-     [array addObject:nextClass];
-     }
-     free(classes);
-     }
-     
-     return [array copy]; */
 }
 
 + (NSArray *)availableFrameworkDumpers
 {
     return @[NSClassFromString(@"FrameworkDumper"),NSClassFromString(@"Framework64Dumper")];
-    
-    /* NSMutableArray *array = [NSMutableArray new];
-     
-     Class* classes = NULL;
-     
-     int numClasses = objc_getClassList(NULL, 0);
-     
-     if (numClasses > 0 ) {
-     classes = (Class *)malloc(sizeof(Class) * numClasses);
-     
-     numClasses = objc_getClassList(classes, numClasses);
-     
-     for (int index = 0; index < numClasses; index++) {
-     Class nextClass = classes[index];
-     
-     if (class_conformsToProtocol(nextClass, @protocol(FrameworkBinaryDumpProtocol)))
-     [array addObject:nextClass];
-     }
-     free(classes);
-     }
-     
-     return [array copy]; */
 }
 
 

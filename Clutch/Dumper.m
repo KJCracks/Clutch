@@ -8,7 +8,7 @@
 
 #import "Dumper.h"
 #import "Device.h"
-
+#import "ProgressBar.h"
 #import <spawn.h>
 
 #ifndef _POSIX_SPAWN_DISABLE_ASLR
@@ -187,10 +187,13 @@ exit_with_errno (int err, const char *prefix)
     uint8_t *buf = &buf_d[0]; // store the location of the buffer
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
     
+    uint32_t total = togo;
     
     while (togo > 0) {
         // get a percentage for the progress bar
         
+        PERCENT((int)ceil((((double)total - togo) / (double)total) * 100));
+    
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
             
             DumperLog(@"dumping binary: failed to dump a page (32)");
@@ -268,10 +271,15 @@ exit_with_errno (int err, const char *prefix)
     cpu_type_t cputype = self.supportedCPUType;
     cpu_subtype_t cpusubtype = _thinHeader.header.cpusubtype;
     
-    if (Device.cpu_type == CPU_TYPE_ARM64)
+    if (self.supportedCPUType != _thinHeader.header.cputype) {
+        //why cut a potato with a pencil?
+        return ArchCompatibilityNotCompatible;
+    }
+    
+    else if ((Device.cpu_type == CPU_TYPE_ARM64) && (_thinHeader.header.cputype == CPU_TYPE_ARM))
         return ArchCompatibilityCompatible; // god mode on
     
-    if ((cputype != _thinHeader.header.cputype) || (cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
+    else if ((cputype != _thinHeader.header.cputype) || (cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
         return ArchCompatibilityNotCompatible;
     }
     

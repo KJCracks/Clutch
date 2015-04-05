@@ -9,7 +9,9 @@
 #define CLUTCH_VERSION @"2.0"
 
 #ifdef DEBUG
-#   define NSLog(fmt,...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+# define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
+
+#   define NSLog(M, ...) fprintf(stderr, "\033[0;32mDEBUG\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #else
 #   define NSLog(...)
 #endif

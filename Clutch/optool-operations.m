@@ -182,21 +182,121 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
     return NO;
 }
 
+BOOL removeRPATHFromBinary(NSMutableData *binary, thin_header macho) {
+    // parse load commands to see if our load command is already there
+    binary.currentOffset = macho.offset + macho.size;
+    
+    uint32_t num = 0;
+    uint32_t cumulativeSize = 0;
+    for (int i = 0; i < macho.header.ncmds; i++) {
+        if (binary.currentOffset >= binary.length ||
+            binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
+            break;
+        
+        uint32_t cmd  = [binary intAtOffset:binary.currentOffset];
+        uint32_t size = [binary intAtOffset:binary.currentOffset + 4];
+        
+        // delete the bytes in all of the load commands matching the description
+        switch (cmd) {
+            case LC_RPATH: {
+                struct rpath_command command = *(struct rpath_command *)(binary.bytes + binary.currentOffset);
+                char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset, command.cmdsize - command.path.offset)] bytes];
+                if ([@(name) hasPrefix:@"/private/var/mobile"]||[@(name) hasPrefix:@"/var/mobile"]) {
+                    printf("removing payload from %s...\n", LC(cmd));
+                    // remove load command
+                    // remove these bytes and append zeroes to the end of the header
+                    [binary replaceBytesInRange:NSMakeRange(binary.currentOffset, size) withBytes:0 length:0];
+                    num++;
+                    cumulativeSize += size;
+                }
+                
+                binary.currentOffset += size;
+                break;
+            }
+            default:
+                binary.currentOffset += size;
+                break;
+        }
+    }
+    
+    if (num == 0)
+        return NO;
+    
+    // fix the header
+    macho.header.ncmds -= num;
+    macho.header.sizeofcmds -= cumulativeSize;
+    
+    unsigned int zeroByte = 0;
+    
+    // append a null byte for every one we removed to the end of the header
+    [binary replaceBytesInRange:NSMakeRange(macho.offset + macho.header.sizeofcmds + macho.size, 0) withBytes:&zeroByte length:cumulativeSize];
+    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header))
+                      withBytes:&macho.header
+                         length:sizeof(macho.header)];
+    
+    return YES;
+}
+
+BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset, thin_header macho) {
+    binary.currentOffset = macho.size + macho.offset;
+    unsigned int loadOffset = (unsigned int)binary.currentOffset;
+    
+    // Loop through compatible LC_LOAD commands until we find one which points
+    // to the given dylib and tell the caller where it is and if it exists
+    for (int i = 0; i < macho.header.ncmds; i++) {
+        if (binary.currentOffset >= binary.length ||
+            binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
+            break;
+        
+        uint32_t cmd  = [binary intAtOffset:binary.currentOffset];
+        uint32_t size = [binary intAtOffset:binary.currentOffset + 4];
+        
+        switch (cmd) {
+            case LC_RPATH: {
+                struct rpath_command command = *(struct rpath_command *)(binary.bytes + binary.currentOffset);
+                char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset, command.cmdsize - command.path.offset)] bytes];
+                
+                if ([@(name) isEqualToString:dylib]) {
+                    *lastOffset = (unsigned int)binary.currentOffset;
+                    return YES;
+                }
+                
+                binary.currentOffset += size;
+                loadOffset = (unsigned int)binary.currentOffset;
+                break;
+            }
+            default:
+                binary.currentOffset += size;
+                break;
+        }
+    }
+    
+    if (lastOffset != NULL)
+        *lastOffset = loadOffset;
+    
+    return NO;
+}
+
 BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho) {
+
+    //removeRPATHFromBinary(binary,macho); // need to remove some unnecessary stuff
     
     uint32_t type = LC_RPATH;
     
-    
     // parse load commands to see if our load command is already there
     uint32_t lastOffset = 0;
+    if (binaryHasRPATH(binary, dylibPath, &lastOffset, macho)) {    
+        return YES;
+    }
     
     // create a new load command
-    unsigned int length = (unsigned int)sizeof(struct rpath_command) + (unsigned int)dylibPath.length;
-    unsigned int padding = (8 - (length % 8));
+    unsigned int length = (unsigned int)sizeof(struct rpath_command) + (unsigned int)dylibPath.length+1;
+    
+    //unsigned int padding = (12 - (length % 12));
     
     // check if data we are replacing is null
     NSData *occupant = [binary subdataWithRange:NSMakeRange(macho.header.sizeofcmds + macho.offset + macho.size,
-                                                            length + padding)];
+                                                            length)];
     
     // All operations in optool try to maintain a constant byte size of the executable
     // so we don't want to append new bytes to the binary (that would break the executable
@@ -211,16 +311,28 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
     
     struct rpath_command command;
     command.cmd = type;
-    command.cmdsize = length + padding;
+    command.cmdsize = length + sizeof(struct rpath_command) + 1;
+    
+    command.path.offset = sizeof(struct rpath_command);
     
     unsigned int zeroByte = 0;
     NSMutableData *commandData = [NSMutableData data];
     [commandData appendBytes:&command length:sizeof(struct rpath_command)];
     [commandData appendData:[dylibPath dataUsingEncoding:NSASCIIStringEncoding]];
-    [commandData appendBytes:&zeroByte length:padding];
+    [commandData appendBytes:&zeroByte length:occupant.length-commandData.length];
+    
+    // insert the data
+    [binary replaceBytesInRange:NSMakeRange(macho.header.sizeofcmds + macho.offset + macho.size, commandData.length) withBytes:commandData.bytes length:commandData.length];
+    
+    // fix the existing header
+    macho.header.ncmds += 1;
+    macho.header.sizeofcmds += command.cmdsize;
+    
+    // this is safe to do in 32bit because the 4 bytes after the header are still being put back
+    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
     
     // remove enough null bytes to account of our inserted data
-    [binary replaceBytesInRange:NSMakeRange(macho.offset + macho.header.sizeofcmds + macho.size, commandData.length)
+    /*[binary replaceBytesInRange:NSMakeRange(macho.offset + macho.header.sizeofcmds + macho.size, commandData.length)
                       withBytes:0
                          length:0];
     // insert the data
@@ -231,7 +343,7 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
     macho.header.sizeofcmds += command.cmdsize;
     
     // this is safe to do in 32bit because the 4 bytes after the header are still being put back
-    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
+    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];*/
     
     return YES;
 }

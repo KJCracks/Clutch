@@ -87,8 +87,8 @@
         
         [_fileManager createDirectoryAtPath:_binaryDumpPath.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
         
-        if (![_application isKindOfClass:[Framework class]])
-            [_fileManager copyItemAtPath:originalBinary.binaryPath toPath:_binaryDumpPath error:nil];
+        //if (![_application isKindOfClass:[Framework class]])
+        [_fileManager copyItemAtPath:originalBinary.binaryPath toPath:_binaryDumpPath error:nil];
                 
         NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];
         
@@ -268,7 +268,7 @@
 
 + (NSArray *)availableFrameworkDumpers
 {
-    return @[NSClassFromString(@"FrameworkDumper")];
+    return @[NSClassFromString(@"FrameworkDumper"),NSClassFromString(@"Framework64Dumper")];
     
     /* NSMutableArray *array = [NSMutableArray new];
      

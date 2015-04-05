@@ -140,11 +140,7 @@
     NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
     
     [[NSFileManager defaultManager]createDirectoryAtPath:_workingPath withIntermediateDirectories:YES attributes:nil error:nil];
-    
-    NSData *libClutch = [Device libClutch];
-    
-    [libClutch writeToFile:[_workingPath stringByAppendingPathComponent:@"libClutch.dylib"] atomically:YES];
-    
+        
     ZipOperation *_mainZipOperation = [[ZipOperation alloc]initWithApplication:self];
     
     BundleDumpOperation *_dumpOperation = self.executable.dumpOperation;

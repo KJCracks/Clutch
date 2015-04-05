@@ -25,11 +25,6 @@
 		328CCB371ACECEB500B21225 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB361ACECEB500B21225 /* scinfo.m */; };
 		328CCB3A1ACECF4100B21225 /* Framework64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB391ACECF4100B21225 /* Framework64Dumper.m */; };
 		328CCB3F1ACED00600B21225 /* SCInfoBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */; };
-		328CCB4A1ACFFBD500B21225 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; };
-		328CCB4C1ACFFBD500B21225 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 328CCB4B1ACFFBD500B21225 /* UIKit.framework */; };
-		328CCB661ACFFE2700B21225 /* clutch-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 328CCB631ACFFE2700B21225 /* clutch-Prefix.pch */; };
-		328CCB671ACFFE2700B21225 /* libclutch.h in Headers */ = {isa = PBXBuildFile; fileRef = 328CCB641ACFFE2700B21225 /* libclutch.h */; };
-		328CCB6B1ACFFE4300B21225 /* init.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB6A1ACFFE4300B21225 /* init.m */; };
 		32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93E41A8E0E8B00805D14 /* sha1.c */; };
 		32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93F31A8F726800805D14 /* ASLRDisabler.m */; };
 		32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
@@ -48,18 +43,7 @@
 		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
 		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
 		ADE1ED2A1AD02C2000398728 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
-		ADE1ED2B1AD02C9C00398728 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		328CCB6C1ACFFFE900B21225 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 324EA61B1A89258000844540 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 328CCB481ACFFBD400B21225;
-			remoteInfo = clutch;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
@@ -104,11 +88,7 @@
 		328CCB3B1ACECF5800B21225 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCInfoBuilder.h; sourceTree = "<group>"; };
 		328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCInfoBuilder.m; sourceTree = "<group>"; };
-		328CCB491ACFFBD400B21225 /* libclutch.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libclutch.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		328CCB4B1ACFFBD500B21225 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		328CCB631ACFFE2700B21225 /* clutch-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "clutch-Prefix.pch"; sourceTree = "<group>"; };
-		328CCB641ACFFE2700B21225 /* libclutch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libclutch.h; sourceTree = "<group>"; };
-		328CCB6A1ACFFE4300B21225 /* init.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = init.m; sourceTree = "<group>"; };
 		328CCB711AD004FF00B21225 /* NSTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		32BC93E41A8E0E8B00805D14 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		32BC93E51A8E0E8B00805D14 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
@@ -147,7 +127,6 @@
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
 		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
 		ADE1ED291AD02C2000398728 /* AppSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/AppSupport.framework; sourceTree = DEVELOPER_DIR; };
-		ADE1ED2C1AD02D1A00398728 /* CPDistributedMessanging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CPDistributedMessanging.h; path = ../CPDistributedMessanging.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,16 +141,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		328CCB451ACFFBD400B21225 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ADE1ED2B1AD02C9C00398728 /* AppSupport.framework in Frameworks */,
-				328CCB4A1ACFFBD500B21225 /* Foundation.framework in Frameworks */,
-				328CCB4C1ACFFBD500B21225 /* UIKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -179,7 +148,6 @@
 			isa = PBXGroup;
 			children = (
 				324EA6281A89258000844540 /* Clutch */,
-				328CCB621ACFFE2700B21225 /* libclutch */,
 				324EA6251A89258000844540 /* Frameworks */,
 				324EA6241A89258000844540 /* Products */,
 			);
@@ -189,7 +157,6 @@
 			isa = PBXGroup;
 			children = (
 				324EA6231A89258000844540 /* Clutch */,
-				328CCB491ACFFBD400B21225 /* libclutch.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -279,25 +246,6 @@
 				3282BE091A8D9ACD00E5068A /* NSData+Reading.m */,
 			);
 			name = optool;
-			sourceTree = "<group>";
-		};
-		328CCB621ACFFE2700B21225 /* libclutch */ = {
-			isa = PBXGroup;
-			children = (
-				ADE1ED2C1AD02D1A00398728 /* CPDistributedMessanging.h */,
-				328CCB641ACFFE2700B21225 /* libclutch.h */,
-				328CCB6A1ACFFE4300B21225 /* init.m */,
-				328CCB691ACFFE3000B21225 /* Supporting Files */,
-			);
-			path = libclutch;
-			sourceTree = SOURCE_ROOT;
-		};
-		328CCB691ACFFE3000B21225 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				328CCB631ACFFE2700B21225 /* clutch-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		32EFB6CD1A8A4F06005BB56C /* Zip */ = {
@@ -397,18 +345,6 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		328CCB461ACFFBD400B21225 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				328CCB661ACFFE2700B21225 /* clutch-Prefix.pch in Headers */,
-				328CCB671ACFFE2700B21225 /* libclutch.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		324EA6221A89258000844540 /* Clutch */ = {
 			isa = PBXNativeTarget;
@@ -420,29 +356,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				328CCB6D1ACFFFE900B21225 /* PBXTargetDependency */,
 			);
 			name = Clutch;
 			productName = Clutch;
 			productReference = 324EA6231A89258000844540 /* Clutch */;
 			productType = "com.apple.product-type.tool";
-		};
-		328CCB481ACFFBD400B21225 /* clutch */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 328CCB5C1ACFFBD500B21225 /* Build configuration list for PBXNativeTarget "clutch" */;
-			buildPhases = (
-				328CCB441ACFFBD400B21225 /* Sources */,
-				328CCB451ACFFBD400B21225 /* Frameworks */,
-				328CCB461ACFFBD400B21225 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = clutch;
-			productName = clutch;
-			productReference = 328CCB491ACFFBD400B21225 /* libclutch.dylib */;
-			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
 
@@ -454,9 +372,6 @@
 				TargetAttributes = {
 					324EA6221A89258000844540 = {
 						CreatedOnToolsVersion = 6.2;
-					};
-					328CCB481ACFFBD400B21225 = {
-						CreatedOnToolsVersion = 6.3;
 					};
 				};
 			};
@@ -473,7 +388,6 @@
 			projectRoot = "";
 			targets = (
 				324EA6221A89258000844540 /* Clutch */,
-				328CCB481ACFFBD400B21225 /* clutch */,
 			);
 		};
 /* End PBXProject section */
@@ -518,23 +432,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		328CCB441ACFFBD400B21225 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				328CCB6B1ACFFE4300B21225 /* init.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		328CCB6D1ACFFFE900B21225 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 328CCB481ACFFBD400B21225 /* clutch */;
-			targetProxy = 328CCB6C1ACFFFE900B21225 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		324EA6351A89258000844540 /* Debug */ = {
@@ -610,8 +508,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @exectuable_path/Frameworks";
-				OTHER_LDFLAGS = "-Wl,-sectcreate,__LIBCLUTCH,__libclutch,$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/libclutch.dylib";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 				iOSOpenDevBuildPackageOnAnyBuild = NO;
@@ -643,8 +540,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @exectuable_path/Frameworks";
-				OTHER_LDFLAGS = "-Wl,-sectcreate,__LIBCLUTCH,__libclutch,$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/libclutch.dylib";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 				iOSOpenDevBuildPackageOnAnyBuild = NO;
@@ -652,80 +548,6 @@
 				iOSOpenDevDevice = "";
 				iOSOpenDevInstallOnAnyBuild = NO;
 				iOSOpenDevInstallOnProfiling = YES;
-				iOSOpenDevRespringOnInstall = YES;
-				iOSOpenDevUsePackageVersionPList = YES;
-			};
-			name = Release;
-		};
-		328CCB5D1ACFFBD500B21225 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					armv7s,
-				);
-				CODE_SIGN_IDENTITY = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
-				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(iOSOpenDevPath)/frameworks/**",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "libclutch/clutch-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
-				INSTALL_PATH = /usr/lib;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				iOSOpenDevBuildPackageOnAnyBuild = NO;
-				iOSOpenDevCopyOnBuild = NO;
-				iOSOpenDevDevice = "";
-				iOSOpenDevInstallOnAnyBuild = NO;
-				iOSOpenDevInstallOnProfiling = YES;
-				iOSOpenDevPath = /opt/iOSOpenDev;
-				iOSOpenDevRespringOnInstall = YES;
-				iOSOpenDevUsePackageVersionPList = YES;
-			};
-			name = Debug;
-		};
-		328CCB5E1ACFFBD500B21225 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					armv7s,
-				);
-				CODE_SIGN_IDENTITY = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
-				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(iOSOpenDevPath)/frameworks/**",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "libclutch/clutch-Prefix.pch";
-				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
-				INSTALL_PATH = /usr/lib;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				iOSOpenDevBuildPackageOnAnyBuild = NO;
-				iOSOpenDevCopyOnBuild = NO;
-				iOSOpenDevDevice = "";
-				iOSOpenDevInstallOnAnyBuild = NO;
-				iOSOpenDevInstallOnProfiling = YES;
-				iOSOpenDevPath = /opt/iOSOpenDev;
 				iOSOpenDevRespringOnInstall = YES;
 				iOSOpenDevUsePackageVersionPList = YES;
 			};
@@ -748,15 +570,6 @@
 			buildConfigurations = (
 				324EA6381A89258000844540 /* Debug */,
 				324EA6391A89258000844540 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		328CCB5C1ACFFBD500B21225 /* Build configuration list for PBXNativeTarget "clutch" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				328CCB5D1ACFFBD500B21225 /* Debug */,
-				328CCB5E1ACFFBD500B21225 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

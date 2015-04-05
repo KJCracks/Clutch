@@ -12,9 +12,10 @@
 #import <mach-o/fat.h>
 #import <mach-o/loader.h>
 #import <mach-o/dyld.h>
-#import "NSTask.h"
-
-#import "ClutchBundle.h"
+#import <mach/mach.h>
+#import <mach/mach_traps.h>
+#import <mach/mach_init.h>
+#import <mach-o/dyld_images.h>
 
 @implementation FrameworkDumper
 
@@ -25,43 +26,8 @@
 
 - (BOOL)dumpBinary
 {
-    
-    DumperLog(@"fuck you");
-    
-    ClutchBundle *_framework = [_originalBinary valueForKey:@"_bundle"];
-
-    NSMutableData *data = [NSMutableData dataWithContentsOfFile:_framework.executable.binaryPath];
-    
-    insertRPATHIntoBinary(_framework.bundlePath.stringByDeletingLastPathComponent, data, _thinHeader);
-    
-    [data writeToFile:_framework.executable.binaryPath atomically:YES];
-    
-    NSError *loadError;
-    
-    [_framework loadAndReturnError:&loadError];
-    
-    DumperLog(@"error %@",loadError);
-    
-    return NO;
-    
-    _originalBinary = _framework.parentBundle.executable;
-
-    NSString *libClutchPath = @"/libclutch.dylib";//[_originalBinary.workingPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"libClutch.dylib"];
-    
-    if (_originalBinary.hasRestrictedSegment) {
-        
-        // This' actually bullshit, never going to happen. But who knows, it's fucking apple after all =\
-        
-        // remove libClutch
-        [[NSFileManager defaultManager]removeItemAtPath:libClutchPath error:nil];
-        
-        DumperLog(@"Cannot dump frameworks. The binary has __RESTRICT segment.");
-        
-        return NO;
-    }
-    
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
-    
+
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath; // default values if we dont need to swap archs
     
     //check if cpusubtype matches
@@ -77,33 +43,124 @@
         
     }
     
-    [self.originalFileHandle closeFile];
+    NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
     
-    DumperLog(@"Loading %@",_originalBinary);
+    [newFileHandle seekToFileOffset:_thinHeader.offset + _thinHeader.size];
     
-    NSTask *dumpTask = [NSTask new];
+    struct linkedit_data_command ldid; // LC_CODE_SIGNATURE load header (for resign)
+    struct encryption_info_command crypt; // LC_ENCRYPTION_INFO load header (for crypt*)
+    struct segment_command __text; // __TEXT segment
     
-    dumpTask.launchPath = _originalBinary.binaryPath;
+    struct super_blob *codesignblob; // codesign blob pointer
+    struct code_directory directory; // codesign directory index
     
-    dumpTask.environment = @{@"DYLD_INSERT_LIBRARIES":libClutchPath};
+    BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
     
-    dumpTask.arguments = @[binaryDumpPath,@"test1",@"test2",@"test3"];
+    uint64_t __text_start = 0;
     
-    NSPipe *pipe=[NSPipe pipe];
-    [dumpTask setStandardOutput:pipe];
-    [dumpTask setStandardError:pipe];
-    NSFileHandle *handle=[pipe fileHandleForReading];
+    DumperLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
     
-    [dumpTask launch];
-    
-    while (dumpTask.isRunning == YES) {
-
+    for (int i = 0; i < _thinHeader.header.ncmds; i++) {
+        
+        uint32_t cmd = [newFileHandle intAtOffset:newFileHandle.offsetInFile];
+        uint32_t size = [newFileHandle intAtOffset:newFileHandle.offsetInFile+sizeof(uint32_t)];
+        
+        switch (cmd) {
+            case LC_CODE_SIGNATURE: {
+                [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
+                foundSignature = YES;
+                
+                DumperDebugLog(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize);
+                
+                break;
+            }
+            case LC_ENCRYPTION_INFO: {
+                [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command))];
+                foundCrypt = YES;
+                
+                DumperDebugLog(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid);
+                
+                break;
+            }
+            case LC_SEGMENT:
+            {
+                [newFileHandle getBytes:&__text inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct segment_command))];
+                
+                if (strncmp(__text.segname, "__TEXT", 6) == 0) {
+                    foundStartText = YES;
+                    DumperDebugLog(@"FOUND %s SEGMENT",__text.segname);
+                    __text_start = __text.vmaddr;
+                }
+                break;
+            }
+        }
+        
+        [newFileHandle seekToFileOffset:newFileHandle.offsetInFile + size];
+        
+        if (foundCrypt && foundSignature && foundStartText)
+            break;
     }
     
-    NSData * dataRead = [handle readDataToEndOfFile];
-    NSString * stringRead = [[NSString alloc] initWithData:dataRead encoding:NSUTF8StringEncoding];
+    // we need to have all of these
+    if (!foundCrypt || !foundSignature || !foundStartText) {
+        DumperDebugLog(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
+        return NO;
+    }
     
-    DumperLog(@"Dump task did finish %@",stringRead);
+    NSUInteger begin;
+    
+    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
+    
+    codesignblob = malloc(ldid.datasize);
+    
+    [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
+    
+    uint64_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
+    
+    for (uint64_t index = 0; index < countBlobs; index++) {
+        if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
+            begin = newFileHandle.offsetInFile + CFSwapInt32(codesignblob->index[index].offset);
+            [newFileHandle seekToFileOffset:begin];
+            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))];
+            break;
+        }
+    }
+    
+    free(codesignblob);
+    
+    uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
+    
+    if (pages == 0) {
+        DumperLog(@"pages == 0");
+        return NO;
+    }
+    
+    [newFileHandle seekToFileOffset:_thinHeader.offset];
+    
+    void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
+    
+    uint32_t imageCount = _dyld_image_count();
+    uint32_t dyldIndex = -1;
+    for (uint32_t idx = 0; idx < imageCount; idx++) {
+        NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
+        
+        if ([swappedBinaryPath hasPrefix:dyldPath]) {
+            dyldIndex = idx;
+            break;
+        }
+    }
+    
+    if (dyldIndex == -1) {
+        DumperLog(@"dlopen error: %s",dlerror());
+        dlclose(handle);
+        return NO;
+    }
+    
+    intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
+    
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
+    
+    dlclose(handle);
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
@@ -112,14 +169,12 @@
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
     
-    return NO;
+    return dumpResult;
 }
 
 @end
 
-
-/* 
- 
+/*
  // debug
  
  static void image_added(const struct mach_header *mh, intptr_t slide) {
@@ -145,5 +200,5 @@
  static void dumpexecutable() {
  _dyld_register_func_for_add_image(&image_added);
  _dyld_register_func_for_remove_image(&image_removed);
- 
+
  }*/

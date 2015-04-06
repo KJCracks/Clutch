@@ -606,6 +606,10 @@
 		AD911DD91AD2840C007B6A11 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv7s,
+				);
 				CODE_SIGN_IDENTITY = "";
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -619,7 +623,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INSTALL_PATH = /usr/bin;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -638,6 +642,10 @@
 		AD911DDA1AD2840C007B6A11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv7,
+					armv7s,
+				);
 				CODE_SIGN_IDENTITY = "";
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -647,7 +655,7 @@
 				);
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INSTALL_PATH = /usr/bin;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "armv7 armv7s";
@@ -690,6 +698,7 @@
 				AD911DDA1AD2840C007B6A11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

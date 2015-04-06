@@ -154,9 +154,12 @@
         if (!status) {
             // remove .ipa if failed
             [[NSFileManager defaultManager]removeItemAtPath:[_application.workingPath stringByAppendingPathComponent:_zipFilename] error:nil];
+        }else {
+            [[NSFileManager defaultManager] createDirectoryAtPath:@"/private/var/mobile/Documents/Cracked" withIntermediateDirectories:YES attributes:nil error:nil];
+            [[NSFileManager defaultManager]moveItemAtPath:[_application.workingPath stringByAppendingPathComponent:_zipFilename] toPath:[@"/private/var/mobile/Documents/Cracked" stringByAppendingPathComponent:_zipFilename] error:nil];
         }
         
-        gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?[_application.workingPath stringByAppendingPathComponent:_zipFilename]:_application);
+        gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?[@"/private/var/mobile/Documents/Cracked" stringByAppendingPathComponent:_zipFilename]:_application);
         
         // Do the main work of the operation here.
         [self completeOperation];

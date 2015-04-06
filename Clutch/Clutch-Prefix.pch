@@ -7,7 +7,7 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#define CLUTCH_VERSION @"2.0 PB2"
+#define CLUTCH_VERSION @"2.0 PB3"
 
 #ifdef DEBUG
 # define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one

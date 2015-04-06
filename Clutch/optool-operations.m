@@ -28,6 +28,7 @@
 
 #import "optool-operations.h"
 #import "NSData+Reading.h"
+#import "Dumper.h"
 
 unsigned int OP_SOFT_STRIP = 0x00001337;
 
@@ -307,7 +308,7 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
         return NO;
     }
     
-    printf("Inserting a %s command for architecture: %s\n", LC(type), CPU(macho.header.cputype));
+    NSLog(@"Inserting LC_RPATH command for architecture: %@", [Dumper readableArchFromHeader:macho]);
     
     struct rpath_command command;
     command.cmd = type;

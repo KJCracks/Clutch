@@ -33,14 +33,18 @@
 
 + (NSString *)readableArchFromHeader:(thin_header)macho
 {
-    if (macho.header.cputype == CPU_TYPE_ARM64)
+    if (macho.header.cpusubtype == CPU_SUBTYPE_ARM64_ALL)
         return @"arm64";
+    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM64_V8)
+        return @"arm64v8";
     else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V6)
         return @"armv6";
     else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V7)
         return @"armv7";
     else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V7S)
         return @"armv7s";
+    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V8)
+        return @"armv8";
     
     return @"unknown";
 }
@@ -157,7 +161,7 @@ exit_with_errno (int err, const char *prefix)
         if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
             
             if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
-                switch (SWAP(arch.cputype)) {
+                switch (SWAP(arch.cpusubtype)) {
                     case CPU_SUBTYPE_ARM_V6:
                         arch.cputype = SWAP(CPU_TYPE_I386);
                         arch.cpusubtype = SWAP(CPU_SUBTYPE_ARM_V7EM);
@@ -177,7 +181,7 @@ exit_with_errno (int err, const char *prefix)
                 }
             }else {
                 
-                switch (SWAP(arch.cputype)) {
+                switch (SWAP(arch.cpusubtype)) {
                     case CPU_SUBTYPE_ARM64_ALL:
                         arch.cputype = SWAP(CPU_TYPE_X86_64);
                         arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);

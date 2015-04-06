@@ -10,7 +10,8 @@ Current version: 2.0
 Usage
 ------------
 Clutch [OPTIONS]<br />
--d --dump <value>    Dump specified bundleID<br />
+-b --binary-dump <value> Only dump binary files from specified bundleID<br /> 
+-d --dump <value>        Dump specified bundleID into .ipa file<br /> 
 -i --print-installed Print installed application<br /> 
 --clean           Clean /var/tmp/clutch directory<br /> 
 --version         Display version and exit<br /> 

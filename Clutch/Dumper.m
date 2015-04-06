@@ -62,7 +62,11 @@ exit_with_errno (int err, const char *prefix)
     }
 }
 
-- (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn
+- (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn {
+    return [self posix_spawn:binaryPath disableASLR:yrn suspend:YES];
+}
+
+- (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL) suspend
 {
     
     if ((_thinHeader.header.flags & MH_PIE) && yrn) {
@@ -73,10 +77,10 @@ exit_with_errno (int err, const char *prefix)
         [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else if (_isASLRProtected && !yrn && !(_thinHeader.header.flags & MH_PIE)) {
         
-        DumperLog(@"enabling MH_PIE!!!!");
+        //DumperLog(@"enabling MH_PIE!!!!");
         
-        _thinHeader.header.flags |= MH_PIE;
-        [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
+        //thinHeader.header.flags |= MH_PIE;
+        //[self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else {
         DumperLog(@"to MH_PIE or not to MH_PIE, that is the question");
     }
@@ -89,8 +93,11 @@ exit_with_errno (int err, const char *prefix)
     
     exit_with_errno (posix_spawnattr_init (&attr), "::posix_spawnattr_init (&attr) error: ");
     
-    short flags = POSIX_SPAWN_START_SUSPENDED;
+    short flags;
     
+    if (suspend) {
+        flags = POSIX_SPAWN_START_SUSPENDED;
+    }
     if (yrn)
         flags |= _POSIX_SPAWN_DISABLE_ASLR;
     

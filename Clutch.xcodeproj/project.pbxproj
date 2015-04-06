@@ -42,6 +42,9 @@
 		32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
 		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
 		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
+		AD911DD81AD2840C007B6A11 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AD911DD71AD2840C007B6A11 /* main.m */; };
+		AD911DDD1AD289BD007B6A11 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
+		AD911DDE1AD289CA007B6A11 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
 		ADE1ED321AD1636D00398728 /* ProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE1ED311AD1636D00398728 /* ProgressBar.m */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +129,9 @@
 		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
 		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
+		AD911DCC1AD2840C007B6A11 /* remoteAttach */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = remoteAttach; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD911DD71AD2840C007B6A11 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AD911DDC1AD28504007B6A11 /* CPDistributedMessanging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPDistributedMessanging.h; sourceTree = "<group>"; };
 		ADE1ED291AD02C2000398728 /* AppSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/AppSupport.framework; sourceTree = DEVELOPER_DIR; };
 		ADE1ED301AD1636D00398728 /* ProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressBar.h; sourceTree = "<group>"; };
 		ADE1ED311AD1636D00398728 /* ProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressBar.m; sourceTree = "<group>"; };
@@ -136,9 +142,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD911DDE1AD289CA007B6A11 /* AppSupport.framework in Frameworks */,
 				32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */,
 				324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */,
 				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD911DC91AD2840C007B6A11 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD911DDD1AD289BD007B6A11 /* AppSupport.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,7 +163,9 @@
 		324EA61A1A89258000844540 = {
 			isa = PBXGroup;
 			children = (
+				AD911DDC1AD28504007B6A11 /* CPDistributedMessanging.h */,
 				324EA6281A89258000844540 /* Clutch */,
+				AD911DCD1AD2840C007B6A11 /* remoteAttach */,
 				324EA6251A89258000844540 /* Frameworks */,
 				324EA6241A89258000844540 /* Products */,
 			);
@@ -158,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				324EA6231A89258000844540 /* Clutch */,
+				AD911DCC1AD2840C007B6A11 /* remoteAttach */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -338,6 +356,14 @@
 			name = ClutchBundle;
 			sourceTree = "<group>";
 		};
+		AD911DCD1AD2840C007B6A11 /* remoteAttach */ = {
+			isa = PBXGroup;
+			children = (
+				AD911DD71AD2840C007B6A11 /* main.m */,
+			);
+			path = remoteAttach;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -357,6 +383,22 @@
 			productReference = 324EA6231A89258000844540 /* Clutch */;
 			productType = "com.apple.product-type.tool";
 		};
+		AD911DCB1AD2840C007B6A11 /* remoteAttach */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD911DDB1AD2840C007B6A11 /* Build configuration list for PBXNativeTarget "remoteAttach" */;
+			buildPhases = (
+				AD911DC81AD2840C007B6A11 /* Sources */,
+				AD911DC91AD2840C007B6A11 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = remoteAttach;
+			productName = remoteAttach;
+			productReference = AD911DCC1AD2840C007B6A11 /* remoteAttach */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -367,6 +409,9 @@
 				TargetAttributes = {
 					324EA6221A89258000844540 = {
 						CreatedOnToolsVersion = 6.2;
+					};
+					AD911DCB1AD2840C007B6A11 = {
+						CreatedOnToolsVersion = 6.1;
 					};
 				};
 			};
@@ -383,6 +428,7 @@
 			projectRoot = "";
 			targets = (
 				324EA6221A89258000844540 /* Clutch */,
+				AD911DCB1AD2840C007B6A11 /* remoteAttach */,
 			);
 		};
 /* End PBXProject section */
@@ -425,6 +471,14 @@
 				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
 				323C86B11AC05AE4008949F2 /* Dumper.m in Sources */,
 				328359DE1ACC118D003587F3 /* NSFileHandle+Private.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD911DC81AD2840C007B6A11 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD911DD81AD2840C007B6A11 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,6 +603,65 @@
 			};
 			name = Release;
 		};
+		AD911DD91AD2840C007B6A11 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(iOSOpenDevPath)/frameworks/**",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
+				INSTALL_PATH = /usr/bin;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
+				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevCopyOnBuild = NO;
+				iOSOpenDevDevice = "";
+				iOSOpenDevInstallOnAnyBuild = NO;
+				iOSOpenDevInstallOnProfiling = YES;
+				iOSOpenDevPath = /opt/iOSOpenDev;
+				iOSOpenDevRespringOnInstall = YES;
+				iOSOpenDevUsePackageVersionPList = YES;
+			};
+			name = Debug;
+		};
+		AD911DDA1AD2840C007B6A11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(iOSOpenDevPath)/frameworks/**",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
+				INSTALL_PATH = /usr/bin;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
+				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevCopyOnBuild = NO;
+				iOSOpenDevDevice = "";
+				iOSOpenDevInstallOnAnyBuild = NO;
+				iOSOpenDevInstallOnProfiling = YES;
+				iOSOpenDevPath = /opt/iOSOpenDev;
+				iOSOpenDevRespringOnInstall = YES;
+				iOSOpenDevUsePackageVersionPList = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -569,6 +682,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		AD911DDB1AD2840C007B6A11 /* Build configuration list for PBXNativeTarget "remoteAttach" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD911DD91AD2840C007B6A11 /* Debug */,
+				AD911DDA1AD2840C007B6A11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

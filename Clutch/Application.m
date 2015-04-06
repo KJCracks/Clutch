@@ -131,7 +131,7 @@
     }
 }
 
-- (void)dumpToDirectoryURL:(NSURL *)directoryURL
+- (void)dumpToDirectoryURL:(NSURL *)directoryURL onlyBinaries:(BOOL)yrn
 {
     [super dumpToDirectoryURL:directoryURL];
     
@@ -146,8 +146,11 @@
     BundleDumpOperation *_dumpOperation = self.executable.dumpOperation;
     
     FinalizeDumpOperation *_finalizeDumpOperation = [[FinalizeDumpOperation alloc]initWithApplication:self];
+    _finalizeDumpOperation.onlyBinaries = yrn;
     
-    [_finalizeDumpOperation addDependency:_mainZipOperation];
+    if (!yrn)
+      [_finalizeDumpOperation addDependency:_mainZipOperation];
+    
     [_finalizeDumpOperation addDependency:_dumpOperation];
     
     NSMutableArray *_additionalDumpOpeartions = [NSMutableArray new];
@@ -158,6 +161,7 @@
         [_zipOperation addDependency:_mainZipOperation];
         
         [_additionalZipOpeartions addObject:_zipOperation];
+        
         [_additionalDumpOpeartions addObject:_framework.executable.dumpOperation];
     }
     
@@ -166,27 +170,36 @@
         [_zipOperation addDependency:_mainZipOperation];
         
         [_additionalZipOpeartions addObject:_zipOperation];
+        
         [_additionalDumpOpeartions addObject:_extension.executable.dumpOperation];
     }
     
     for (int i=1; i<_additionalZipOpeartions.count;i++) {
-        BundleDumpOperation *_dumpOperation = _additionalDumpOpeartions[i];
         ZipOperation *_zipOperation = _additionalZipOpeartions[i];
-        [_zipOperation addDependency:_additionalZipOpeartions[i-1]];
+
+        if (!yrn)
+            [_zipOperation addDependency:_additionalZipOpeartions[i-1]];
+        
+        BundleDumpOperation *_dumpOperation = _additionalDumpOpeartions[i];
         [_finalizeDumpOperation addDependency:_dumpOperation];
     }
     
-    if (_additionalZipOpeartions.lastObject) {
+    if (_additionalZipOpeartions.lastObject && !yrn) {
         [_finalizeDumpOperation addDependency:_additionalZipOpeartions.lastObject];
     }
     
+    if (!yrn)
     [_dumpQueue addOperation:_mainZipOperation];
+    
     [_dumpQueue addOperation:_dumpOperation];
     
     for (int i=0; i<_additionalZipOpeartions.count;i++) {
-        BundleDumpOperation *_dumpOperation = _additionalDumpOpeartions[i];
         ZipOperation *_zipOperation = _additionalZipOpeartions[i];
+        
+        if (!yrn)
         [_dumpQueue addOperation:_zipOperation];
+        
+        BundleDumpOperation *_dumpOperation = _additionalDumpOpeartions[i];
         [_dumpQueue addOperation:_dumpOperation];
     }
     

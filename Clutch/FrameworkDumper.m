@@ -31,7 +31,7 @@
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath; // default values if we dont need to swap archs
     
     //check if cpusubtype matches
-    if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && (_originalBinary.hasMultipleARMSlices || (_originalBinary.hasARM64Slice && ([Device cpu_type]==CPU_TYPE_ARM64)))) {
+    if (_thinHeader.header.cpusubtype != [Device cpu_subtype]) {
         
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
@@ -137,14 +137,15 @@
     
     [newFileHandle seekToFileOffset:_thinHeader.offset];
     
-    void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
+    void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LOCAL);
     
     uint32_t imageCount = _dyld_image_count();
     uint32_t dyldIndex = -1;
     for (uint32_t idx = 0; idx < imageCount; idx++) {
         NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
         
-        if ([swappedBinaryPath hasPrefix:dyldPath]) {
+        
+        if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
             dyldIndex = idx;
             break;
         }
@@ -160,7 +161,9 @@
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
     
-    dlclose(handle);
+    if (dlclose(handle)) {
+        DumperLog(@"dlclose error: %s",dlerror());
+    }
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

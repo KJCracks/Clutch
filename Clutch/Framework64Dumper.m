@@ -31,7 +31,7 @@
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath, *newSupf = _originalBinary.supfPath; // default values if we dont need to swap archs
     
     //check if cpusubtype matches
-    if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && _originalBinary.hasMultipleARM64Slices) {
+    if (_thinHeader.header.cpusubtype != [Device cpu_subtype]) {
         
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
@@ -144,7 +144,7 @@
     for (uint32_t idx = 0; idx < imageCount; idx++) {
         NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
         
-        if ([swappedBinaryPath hasPrefix:dyldPath]) {
+        if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
             dyldIndex = idx;
             break;
         }
@@ -160,7 +160,9 @@
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
     
-    dlclose(handle);
+    if (dlclose(handle)) {
+        DumperLog(@"dlclose error: %s",dlerror());
+    }
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

@@ -28,4 +28,6 @@
 @property (readonly) NSArray *extensions;
 @property (readonly) NSArray *frameworks;
 
+- (void)dumpToDirectoryURL:(NSURL *)directoryURL onlyBinaries:(BOOL)yrn;
+
 @end

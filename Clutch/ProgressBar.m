@@ -45,6 +45,8 @@ void progress_percent(int percent)
  */
 void progress_event(char *text)
 {
+    return;
+    
     if (bar_mode == 1)
     {
         // if the bar is there, we need to remove it, print the event, and then print the bar again
@@ -65,6 +67,8 @@ void progress_event(char *text)
  */
 void print_bar(void)
 {
+    return;
+    
     if (bar_mode == 1)
     {
         printf("\033[0G\033[J");
@@ -123,6 +127,8 @@ void print_bar(void)
  */
 void pause_bar(void)
 {
+    return;
+    
     if (bar_mode == 1)
     {
         printf("\033[0G\033[J");
@@ -137,6 +143,7 @@ void pause_bar(void)
  */
 void stop_bar(void)
 {
+    return;
     if (bar_mode == 1)
     {
         printf("\033[0G\033[J");

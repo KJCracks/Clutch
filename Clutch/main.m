@@ -29,7 +29,8 @@ int main (int argc, const char * argv[])
         options.printHelpHeader = ^{ return @"Usage: %APPNAME [OPTIONS]"; };
         //options.printHelpFooter = ^{ return @"Thanks to everyone for their help..."; };
         
-        [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID" flags:GBValueRequired|GBOptionNoPrint];
+        [options registerOption:'b' long:@"binary-dump" description:@"Only dump binary files from specified bundleID" flags:GBValueRequired|GBOptionNoPrint];
+        [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID into .ipa file" flags:GBValueRequired|GBOptionNoPrint];
         [options registerOption:'i' long:@"print-installed" description:@"Print installed applications" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"clean" description:@"Clean /var/tmp/clutch directory" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
@@ -41,6 +42,8 @@ int main (int argc, const char * argv[])
         }
     
         __block NSString *_selectedBundleID;
+        
+        __block BOOL binOnly;
         
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
         [parser registerOptions:options];
@@ -76,7 +79,10 @@ int main (int argc, const char * argv[])
                     break;
                 case GBParseFlagOption:
 
-                    if ([option isEqualToString:@"dump"]) {
+                    if ([option isEqualToString:@"dump"]||[option isEqualToString:@"binary-dump"]) {
+                        
+                        binOnly = [option isEqualToString:@"binary-dump"];
+                        
                         _selectedBundleID = [value copy];
                     }
                     
@@ -103,7 +109,7 @@ int main (int argc, const char * argv[])
             exit(0);
         }
 
-        [_selectedApp dumpToDirectoryURL:nil];
+        [_selectedApp dumpToDirectoryURL:nil onlyBinaries:binOnly];
         
         CFRunLoopRun();
         

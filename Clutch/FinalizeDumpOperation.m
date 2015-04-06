@@ -69,6 +69,39 @@
 - (void)main {
     @try {
         
+        if (_onlyBinaries) {
+            
+            NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:_application.workingPath] includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:nil errorHandler:^BOOL(NSURL *url, NSError *error) {
+                return YES;
+            }];
+            
+            NSMutableArray *plists = [NSMutableArray new];
+            
+            for (NSURL *theURL in dirEnumerator)
+            {
+                NSNumber *isDirectory;
+                [theURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nil];
+                
+                if ([theURL.lastPathComponent isEqualToString:@"filesToAdd.plist"]) {
+                    
+                    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfURL:theURL];
+                    
+                    if (dict)
+                    {
+                        [plists addObject:theURL.path];
+                    }
+                }
+            }
+            
+            __block BOOL status = plists.count == self.expectedBinariesCount;
+            
+            gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?_application.workingPath:_application);
+            
+            [self completeOperation];
+            
+            return;
+        }
+        
         NSString *_zipFilename = _application.zipFilename;
         
         if (_application.parentBundle) {
@@ -79,9 +112,7 @@
             _archive = [[ZipArchive alloc] init];
             [_archive CreateZipFile2:[_application.workingPath stringByAppendingPathComponent:_zipFilename] append:YES];
         }
-        
-        // we need to enum _application.workingPath in order to find all filesToAdd.plist
-        
+                
         NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:_application.workingPath] includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:nil errorHandler:^BOOL(NSURL *url, NSError *error) {
             return YES;
         }];
@@ -119,6 +150,11 @@
 #endif
         
         __block BOOL status = plists.count == self.expectedBinariesCount;
+        
+        if (!status) {
+            // remove .ipa if failed
+            [[NSFileManager defaultManager]removeItemAtPath:[_application.workingPath stringByAppendingPathComponent:_zipFilename] error:nil];
+        }
         
         gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?[_application.workingPath stringByAppendingPathComponent:_zipFilename]:_application);
         

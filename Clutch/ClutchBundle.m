@@ -38,7 +38,10 @@
     
     for (int i = 0; i < numHeaders; i++) {
         thin_header _thinHeader = headers[i];
-        insertRPATHIntoBinary(self.executable.binaryPath.stringByDeletingLastPathComponent, data, _thinHeader);
+        
+        NSString *rpath = self.parentBundle ? [self.parentBundle.bundlePath stringByAppendingPathComponent:@"Frameworks"] : [self.bundlePath stringByAppendingPathComponent:@"Frameworks"] ;
+        
+        insertRPATHIntoBinary(rpath, data, _thinHeader);
     }
     
     [data writeToFile:self.executable.binaryPath atomically:YES];

@@ -12,6 +12,7 @@
 
 @interface FinalizeDumpOperation : NSOperation
 
+@property (assign) BOOL onlyBinaries;
 @property (assign) NSInteger expectedBinariesCount;
 
 - (instancetype)initWithApplication:(Application *)application NS_DESIGNATED_INITIALIZER;

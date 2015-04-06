@@ -192,7 +192,7 @@
                     if (((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype))) {
                         
                         if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
-                            switch (SWAP(arch.cputype)) {
+                            switch (SWAP(arch.cpusubtype)) {
                                 case CPU_SUBTYPE_ARM_V6:
                                     arch.cputype = SWAP(CPU_TYPE_I386);
                                     arch.cpusubtype = SWAP(CPU_SUBTYPE_ARM_V7EM);
@@ -212,7 +212,7 @@
                             }
                         }else {
                             
-                            switch (SWAP(arch.cputype)) {
+                            switch (SWAP(arch.cpusubtype)) {
                                 case CPU_SUBTYPE_ARM64_ALL:
                                     arch.cputype = SWAP(CPU_TYPE_X86_64);
                                     arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
@@ -224,7 +224,7 @@
                             }
                             
                         }
-                        
+                                                
                         [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
                     }
                     

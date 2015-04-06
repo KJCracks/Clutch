@@ -291,13 +291,14 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
     }
     
     // create a new load command
-    unsigned int length = (unsigned int)sizeof(struct rpath_command) + (unsigned int)dylibPath.length+1;
+    unsigned int length = (unsigned int)sizeof(struct rpath_command) + (unsigned int)dylibPath.length;
+    unsigned int padding = (8 - (length % 8));
     
     //unsigned int padding = (12 - (length % 12));
     
     // check if data we are replacing is null
     NSData *occupant = [binary subdataWithRange:NSMakeRange(macho.header.sizeofcmds + macho.offset + macho.size,
-                                                            length)];
+                                                            length+padding)];
     
     // All operations in optool try to maintain a constant byte size of the executable
     // so we don't want to append new bytes to the binary (that would break the executable
@@ -311,29 +312,18 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
     NSLog(@"Inserting LC_RPATH command for architecture: %@", [Dumper readableArchFromHeader:macho]);
     
     struct rpath_command command;
-    command.cmd = type;
-    command.cmdsize = length + sizeof(struct rpath_command) + 1;
-    
     command.path.offset = sizeof(struct rpath_command);
+    command.cmd = type;
+    command.cmdsize = length + padding;
     
     unsigned int zeroByte = 0;
     NSMutableData *commandData = [NSMutableData data];
     [commandData appendBytes:&command length:sizeof(struct rpath_command)];
     [commandData appendData:[dylibPath dataUsingEncoding:NSASCIIStringEncoding]];
-    [commandData appendBytes:&zeroByte length:occupant.length-commandData.length];
-    
-    // insert the data
-    [binary replaceBytesInRange:NSMakeRange(macho.header.sizeofcmds + macho.offset + macho.size, commandData.length) withBytes:commandData.bytes length:commandData.length];
-    
-    // fix the existing header
-    macho.header.ncmds += 1;
-    macho.header.sizeofcmds += command.cmdsize;
-    
-    // this is safe to do in 32bit because the 4 bytes after the header are still being put back
-    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
+    [commandData appendBytes:&zeroByte length:padding];
     
     // remove enough null bytes to account of our inserted data
-    /*[binary replaceBytesInRange:NSMakeRange(macho.offset + macho.header.sizeofcmds + macho.size, commandData.length)
+    [binary replaceBytesInRange:NSMakeRange(macho.offset + macho.header.sizeofcmds + macho.size, commandData.length)
                       withBytes:0
                          length:0];
     // insert the data
@@ -344,7 +334,7 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
     macho.header.sizeofcmds += command.cmdsize;
     
     // this is safe to do in 32bit because the 4 bytes after the header are still being put back
-    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];*/
+    [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
     
     return YES;
 }

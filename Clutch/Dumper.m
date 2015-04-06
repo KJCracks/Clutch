@@ -171,7 +171,7 @@ exit_with_errno (int err, const char *prefix)
                 switch (SWAP(arch.cpusubtype)) {
                     case CPU_SUBTYPE_ARM_V6:
                         arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_ARM_V7EM);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
                         break;
                     case CPU_SUBTYPE_ARM_V7:
                         arch.cputype = SWAP(CPU_TYPE_I386);

@@ -195,7 +195,7 @@
                             switch (SWAP(arch.cpusubtype)) {
                                 case CPU_SUBTYPE_ARM_V6:
                                     arch.cputype = SWAP(CPU_TYPE_I386);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_ARM_V7EM);
+                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
                                     break;
                                 case CPU_SUBTYPE_ARM_V7:
                                     arch.cputype = SWAP(CPU_TYPE_I386);
@@ -224,8 +224,13 @@
                             }
                             
                         }
-                                                
+                        
+                        stripArch.header.cputype = SWAP(arch.cputype);
+                        stripArch.header.cpusubtype = SWAP(arch.cpusubtype);
+                        
                         [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
+                        [_dumpHandle replaceBytesInRange:NSMakeRange(stripArch.offset, sizeof(stripArch.header)) withBytes:&stripArch.header];
+
                     }
                     
                     offset += sizeof(struct fat_arch);

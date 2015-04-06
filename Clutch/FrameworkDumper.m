@@ -16,6 +16,8 @@
 #import <mach/mach_traps.h>
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
+#import "CPDistributedMessanging.h"
+
 
 @implementation FrameworkDumper
 
@@ -137,7 +139,7 @@
     
     [newFileHandle seekToFileOffset:_thinHeader.offset];
     
-    void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LOCAL);
+    /*void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LOCAL);
     
     uint32_t imageCount = _dyld_image_count();
     uint32_t dyldIndex = -1;
@@ -156,15 +158,51 @@
         dlclose(handle);
         return NO;
     }
+    */
     
-    intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
+    center = [CPDistributedMessagingCenter centerNamed:@"com.clutch.remoteAttach"];
+    [center runServerOnCurrentThread];
+
+    pid_t pid = [self posix_spawn:@"/tmp/remoteAttach32" disableASLR:YES];
+    mach_port_t port; // mach port used for moving virtual memory
+    kern_return_t err;
     
-    if (dlclose(handle)) {
-        DumperLog(@"dlclose error: %s",dlerror());
+    if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
+        DumperLog(@"ERROR: Could not obtain mach port for remoteAttach, did you sign with proper entitlements?");
+        return false;
     }
     
+    NSLog(@"sending command waiting pl0x!!!");
+    
+    [center sendMessageName:@"hello" userInfo:nil];
+    
+     
+    NSDictionary *reply;
+    //= [center sendMessageAndReceiveReplyName:@"loadFramework" userInfo:@{@"location": swappedBinaryPath}];
+    
+    sleep(25);
+    
+    NSLog(@"hello");
+    
+    return false;
+  
+    NSLog(@"got command wow %@", reply);
+    
+    
+    intptr_t dyldPointer = [(NSNumber*)reply [@"vmaddr_slide"] longValue];
+    
+    
+    
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
+    
+   /* if (dlclose(handle)) {
+        DumperLog(@"dlclose error: %s",dlerror());
+    }*/
+    
+    kill(pid, SIGTERM);
+    
+
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
@@ -174,6 +212,8 @@
     
     return dumpResult;
 }
+
+
 
 @end
 

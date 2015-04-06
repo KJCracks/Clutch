@@ -7,7 +7,10 @@
 //
 
 #import "Dumper.h"
+#import "CPDistributedMessanging.h"
 
-@interface FrameworkDumper : Dumper <FrameworkBinaryDumpProtocol>
+@interface FrameworkDumper : Dumper <FrameworkBinaryDumpProtocol> {
+    CPDistributedMessagingCenter* center;
+}
 
 @end

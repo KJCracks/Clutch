@@ -16,8 +16,7 @@
 #import <mach/mach_traps.h>
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
-#import "CPDistributedMessanging.h"
-
+#import <spawn.h>
 
 @implementation FrameworkDumper
 
@@ -28,6 +27,7 @@
 
 - (BOOL)dumpBinary
 {
+    
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
 
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath; // default values if we dont need to swap archs
@@ -137,75 +137,47 @@
         return NO;
     }
     
-    [newFileHandle seekToFileOffset:_thinHeader.offset];
+    [newFileHandle closeFile];
     
-    /*void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LOCAL);
+    [self.originalFileHandle closeFile];
     
-    uint32_t imageCount = _dyld_image_count();
-    uint32_t dyldIndex = -1;
-    for (uint32_t idx = 0; idx < imageCount; idx++) {
-        NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
-        
-        
-        if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
-            dyldIndex = idx;
-            break;
+    extern char **environ;
+    posix_spawnattr_t attr;
+    
+    pid_t pid;
+    
+    char *argv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+        "-f",
+        swappedBinaryPath.UTF8String,
+        binaryDumpPath.UTF8String,
+        [NSString stringWithFormat:@"%u",(crypt.cryptsize + crypt.cryptoff)].UTF8String,
+        [NSString stringWithFormat:@"%u",pages].UTF8String,
+        [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
+        [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
+        NULL};
+    
+    posix_spawnattr_init (&attr);
+    
+    size_t ocount = 0;
+    
+    cpu_type_t cpu_type = CPU_TYPE_ARM;
+    
+    posix_spawnattr_setbinpref_np (&attr, 1, &cpu_type, &ocount);
+    
+    int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, argv, environ);
+    
+    if (dumpResult == 0) {
+        DumperDebugLog(@"Child pid: %i", pid);
+        if (waitpid(pid, &dumpResult, 0) != -1) {
+            DumperDebugLog(@"Child exited with status %i", dumpResult);
+        } else {
+            perror("waitpid");
         }
+    } else {
+        DumperDebugLog(@"posix_spawn: %s", strerror(dumpResult));
     }
     
-    if (dyldIndex == -1) {
-        DumperLog(@"dlopen error: %s",dlerror());
-        dlclose(handle);
-        return NO;
-    }
-    */
     
-    
-    center = [CPDistributedMessagingCenter centerNamed:@"com.clutch.remoteAttach"];
-    [center runServerOnCurrentThread];
-
-    pid_t pid = [self posix_spawn:@"/tmp/remoteAttach32" disableASLR:YES];
-    mach_port_t port; // mach port used for moving virtual memory
-    kern_return_t err;
-    
-    if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        DumperLog(@"ERROR: Could not obtain mach port for remoteAttach, did you sign with proper entitlements?");
-        kill(pid, SIGTERM);
-        return NO;
-    }
-    
-    // sleep test
-    
-    NSLog(@"test 1 %@",[NSDate date]);
-    
-    [NSThread sleepForTimeInterval:25];
-    
-    NSLog(@"test 2 %@",[NSDate date]);
-    
-    return NO;
-    
-    NSLog(@"sending command waiting pl0x!!!");
-    
-    [center sendMessageName:@"hello" userInfo:nil];
-    
-    NSDictionary *reply = [center sendMessageAndReceiveReplyName:@"loadFramework" userInfo:@{@"location": swappedBinaryPath}];
-    
-    NSLog(@"got command wow %@", reply);
-    
-    
-    intptr_t dyldPointer = [(NSNumber*)reply [@"vmaddr_slide"] longValue];
-    
-    
-    
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:dyldPointer];
-    
-   /* if (dlclose(handle)) {
-        DumperLog(@"dlclose error: %s",dlerror());
-    }*/
-    
-    kill(pid, SIGTERM);
-    
-
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
@@ -213,10 +185,11 @@
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
     
-    return dumpResult;
+    if (dumpResult == 0)
+        return YES;
+    
+    return NO;
 }
-
-
 
 @end
 

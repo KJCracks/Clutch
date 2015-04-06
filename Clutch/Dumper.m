@@ -243,12 +243,12 @@ exit_with_errno (int err, const char *prefix)
                 DumperLog(@"0x4000 binary detected, attempting to remove MH_PIE flag");
                 DumperLog(@"\n=================\n");
                 free(checksum); // free checksum table
-                kill(pid, SIGKILL); // kill the fork
+                system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
                 _shouldDisableASLR = YES;
                 return [self dumpBinary];
             }
             free(checksum); // free checksum table
-            kill(pid, SIGTERM); // kill the fork
+            system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
             
             return NO;
         }

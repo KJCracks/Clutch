@@ -10,6 +10,7 @@
 #import "GBCli.h"
 #import "ApplicationsManager.h"
 #import "sha1.h"
+#import "Framework32Dumper.h"
 
 int main (int argc, const char * argv[])
 {
@@ -29,6 +30,7 @@ int main (int argc, const char * argv[])
         options.printHelpHeader = ^{ return @"Usage: %APPNAME [OPTIONS]"; };
         //options.printHelpFooter = ^{ return @"Thanks to everyone for their help..."; };
         
+        [options registerOption:'f' long:@"fmwk-dump" description:@"Only dump binary files from specified bundleID" flags:GBValueRequired|GBOptionNoPrint|GBOptionInvisible];
         [options registerOption:'b' long:@"binary-dump" description:@"Only dump binary files from specified bundleID" flags:GBValueRequired|GBOptionNoPrint];
         [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID into .ipa file" flags:GBValueRequired|GBOptionNoPrint];
         [options registerOption:'i' long:@"print-installed" description:@"Print installed applications" flags:GBValueNone|GBOptionNoPrint];
@@ -41,9 +43,7 @@ int main (int argc, const char * argv[])
             exit(0);
         }
     
-        __block NSString *_selectedBundleID;
-        
-        __block BOOL binOnly;
+        __block NSString * _selectedOption, * _selectedBundleID;
         
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
         [parser registerOptions:options];
@@ -68,6 +68,39 @@ int main (int argc, const char * argv[])
                     gbprintln(@"%u) %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app);
                 }
                 exit(0);
+            }else if ([option isEqualToString:@"print-installed"]) {
+                ApplicationsManager *_manager = [ApplicationsManager sharedInstance];
+                
+                NSArray *installedApps = [_manager installedApps].allValues;
+                printf("Installed apps:\n");
+                for (Application *_app in installedApps) {
+                    gbprintln(@"%u) %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app);
+                }
+                exit(0);
+            }else if ([option isEqualToString:@"fmwk-dump"]) {
+                
+                NSArray *arguments = [NSProcessInfo processInfo].arguments;
+                
+                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 8)) {
+                    
+                    Framework32Dumper *fmwk = [Framework32Dumper new];
+                                        
+                    fmwk.binPath = arguments[2];
+                    fmwk.dumpPath = arguments[3];
+                    fmwk.encryptionInfoCommand = [arguments[4]intValue];
+                    fmwk.pages = [arguments[5]intValue];
+                    fmwk.ncmds = [arguments[6]intValue];
+                    fmwk.offset = [arguments[7]intValue];
+
+                    BOOL result = [fmwk dumpBinary];
+                    
+                    if (result) {
+                        exit(0);
+                    }
+                    
+                }
+                
+                exit(-1);
             }
             
             switch (flags) {
@@ -79,9 +112,9 @@ int main (int argc, const char * argv[])
                     break;
                 case GBParseFlagOption:
 
-                    if ([option isEqualToString:@"dump"]||[option isEqualToString:@"binary-dump"]) {
-                        
-                        binOnly = [option isEqualToString:@"binary-dump"];
+                    _selectedOption = option;
+                    
+                    if ([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]) {
                         
                         _selectedBundleID = [value copy];
                     }
@@ -98,6 +131,9 @@ int main (int argc, const char * argv[])
             exit(0);
         }
         
+        if (!([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]))
+            return -1;
+        
         ApplicationsManager *_appsManager = [ApplicationsManager sharedInstance];
         
         NSDictionary *_installedApps = [_appsManager installedApps];
@@ -109,7 +145,7 @@ int main (int argc, const char * argv[])
             exit(0);
         }
 
-        [_selectedApp dumpToDirectoryURL:nil onlyBinaries:binOnly];
+        [_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]];
         
         CFRunLoopRun();
         

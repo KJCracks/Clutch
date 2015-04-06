@@ -171,11 +171,11 @@
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
   
-    kill(pid, SIGTERM);
+    system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
     return dumpResult;
     
 gotofail:
-    kill(pid, SIGTERM);
+    system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
    
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

@@ -170,23 +170,26 @@
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
         DumperLog(@"ERROR: Could not obtain mach port for remoteAttach, did you sign with proper entitlements?");
-        return false;
+        kill(pid, SIGTERM);
+        return NO;
     }
+    
+    // sleep test
+    
+    NSLog(@"test 1 %@",[NSDate date]);
+    
+    [NSThread sleepForTimeInterval:25];
+    
+    NSLog(@"test 2 %@",[NSDate date]);
+    
+    return NO;
     
     NSLog(@"sending command waiting pl0x!!!");
     
     [center sendMessageName:@"hello" userInfo:nil];
     
-     
-    NSDictionary *reply;
-    //= [center sendMessageAndReceiveReplyName:@"loadFramework" userInfo:@{@"location": swappedBinaryPath}];
+    NSDictionary *reply = [center sendMessageAndReceiveReplyName:@"loadFramework" userInfo:@{@"location": swappedBinaryPath}];
     
-    sleep(25);
-    
-    NSLog(@"hello");
-    
-    return false;
-  
     NSLog(@"got command wow %@", reply);
     
     
@@ -194,7 +197,7 @@
     
     
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:dyldPointer];
     
    /* if (dlclose(handle)) {
         DumperLog(@"dlclose error: %s",dlerror());

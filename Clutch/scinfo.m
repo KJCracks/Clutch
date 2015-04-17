@@ -106,7 +106,7 @@ void *generate_supp(uint32_t *suppsize)
 }
 
 // generate a fake .sinf file
-void *generate_sinf(int appid, char *cracker_name, int vendorID)
+void *generate_sinf(int appid, char *person_name, int vendorID)
 {
     // sinf.schi.righ is an atom of several misc. fields related to the application
     void *fakerigh = coalesced_atom(10, *(uint32_t *)"righ",
@@ -144,7 +144,7 @@ void *generate_sinf(int appid, char *cracker_name, int vendorID)
     char *name = malloc(256);
 
     memset(name, 0x0, 256);
-    memcpy(name, cracker_name, strlen(cracker_name));
+    memcpy(name, person_name, strlen(person_name));
     
     void *fakename = create_atom("name", 256, name);
     free(name);

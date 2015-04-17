@@ -8,14 +8,7 @@
 
 #import "Framework64Dumper.h"
 #import "Device.h"
-#import <dlfcn.h>
-#import <mach-o/fat.h>
-#import <mach-o/loader.h>
-#import <mach-o/dyld.h>
-#import <mach/mach.h>
-#import <mach/mach_traps.h>
-#import <mach/mach_init.h>
-#import <mach-o/dyld_images.h>
+#import <spawn.h>
 
 @implementation Framework64Dumper
 
@@ -134,34 +127,45 @@
         DumperLog(@"pages == 0");
         return NO;
     }
-    
-    [newFileHandle seekToFileOffset:_thinHeader.offset];
-    
-    void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
-    
-    uint32_t imageCount = _dyld_image_count();
-    uint32_t dyldIndex = -1;
-    for (uint32_t idx = 0; idx < imageCount; idx++) {
-        NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
         
-        if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
-            dyldIndex = idx;
-            break;
+    [newFileHandle closeFile];
+    
+    [self.originalFileHandle closeFile];
+    
+    extern char **environ;
+    posix_spawnattr_t attr;
+    
+    pid_t pid;
+    
+    char *argv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+        "-f",
+        swappedBinaryPath.UTF8String,
+        binaryDumpPath.UTF8String,
+        [NSString stringWithFormat:@"%u",(crypt.cryptsize + crypt.cryptoff)].UTF8String,
+        [NSString stringWithFormat:@"%u",pages].UTF8String,
+        [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
+        [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
+        NULL};
+    
+    posix_spawnattr_init (&attr);
+    
+    size_t ocount = 0;
+    
+    cpu_type_t cpu_type = CPU_TYPE_ARM64;
+    
+    posix_spawnattr_setbinpref_np (&attr, 1, &cpu_type, &ocount);
+    
+    int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, argv, environ);
+    
+    if (dumpResult == 0) {
+        DumperDebugLog(@"Child pid: %i", pid);
+        if (waitpid(pid, &dumpResult, 0) != -1) {
+            DumperDebugLog(@"Child exited with status %i", dumpResult);
+        } else {
+            perror("waitpid");
         }
-    }
-    
-    if (dyldIndex == -1) {
-        DumperLog(@"dlopen error: %s",dlerror());
-        dlclose(handle);
-        return NO;
-    }
-    
-    intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
-    
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
-    
-    if (dlclose(handle)) {
-        DumperLog(@"dlclose error: %s",dlerror());
+    } else {
+        DumperDebugLog(@"posix_spawn: %s", strerror(dumpResult));
     }
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
@@ -173,7 +177,10 @@
     if (![newSupf isEqualToString:_originalBinary.supfPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupf error:nil];
     
-    return dumpResult;
+    if (dumpResult == 0)
+        return YES;
+    
+    return NO;
 }
 
 @end

@@ -10,7 +10,7 @@
 #import "GBCli.h"
 #import "ApplicationsManager.h"
 #import "sha1.h"
-#import "Framework32Dumper.h"
+#import "FrameworkLoader.h"
 
 int main (int argc, const char * argv[])
 {
@@ -83,7 +83,7 @@ int main (int argc, const char * argv[])
                 
                 if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 8)) {
                     
-                    Framework32Dumper *fmwk = [Framework32Dumper new];
+                    FrameworkLoader *fmwk = [FrameworkLoader new];
                                         
                     fmwk.binPath = arguments[2];
                     fmwk.dumpPath = arguments[3];

@@ -14,7 +14,7 @@
 		324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA63D1A89260A00844540 /* MobileCoreServices.framework */; };
 		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
-		326ABC8A1AD2B94000B21FCC /* Framework32Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 326ABC891AD2B94000B21FCC /* Framework32Dumper.m */; };
+		326ABC8A1AD2B94000B21FCC /* FrameworkLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 326ABC891AD2B94000B21FCC /* FrameworkLoader.m */; };
 		3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMDumper.m */; };
 		3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARM64Dumper.m */; };
 		3277BF991ACD50BD0060935A /* FrameworkDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3277BF981ACD50BD0060935A /* FrameworkDumper.m */; };
@@ -64,8 +64,8 @@
 		324EA6471A892AAD00844540 /* FBApplicationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBApplicationInfo.h; sourceTree = "<group>"; };
 		3258FD621A90AAED007C2E66 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
 		3258FD631A90AAED007C2E66 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
-		326ABC881AD2B94000B21FCC /* Framework32Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework32Dumper.h; sourceTree = "<group>"; };
-		326ABC891AD2B94000B21FCC /* Framework32Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Framework32Dumper.m; sourceTree = "<group>"; };
+		326ABC881AD2B94000B21FCC /* FrameworkLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkLoader.h; sourceTree = "<group>"; };
+		326ABC891AD2B94000B21FCC /* FrameworkLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameworkLoader.m; sourceTree = "<group>"; };
 		3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BinaryDumpProtocol.h; sourceTree = "<group>"; };
 		3274B9561ABEA6E100964049 /* ARMDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMDumper.h; sourceTree = "<group>"; };
 		3274B9571ABEA6E100964049 /* ARMDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMDumper.m; sourceTree = "<group>"; };
@@ -198,26 +198,26 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				ADE1ED301AD1636D00398728 /* ProgressBar.h */,
-				ADE1ED311AD1636D00398728 /* ProgressBar.m */,
-				328CCB711AD004FF00B21225 /* NSTask.h */,
 				328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */,
 				328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */,
-				328CCB3B1ACECF5800B21225 /* README.md */,
+				324EA6431A89270D00844540 /* Clutch.entitlements */,
+				32BC93F11A8F3C0B00805D14 /* mach_vm.h */,
+				328CCB711AD004FF00B21225 /* NSTask.h */,
+				ADE1ED301AD1636D00398728 /* ProgressBar.h */,
+				ADE1ED311AD1636D00398728 /* ProgressBar.m */,
 				328CCB351ACECEB500B21225 /* scinfo.h */,
 				328CCB361ACECEB500B21225 /* scinfo.m */,
 				32BC93E41A8E0E8B00805D14 /* sha1.c */,
 				32BC93E51A8E0E8B00805D14 /* sha1.h */,
-				323C86AB1AC03E3F008949F2 /* .gitignore */,
-				32BC93F11A8F3C0B00805D14 /* mach_vm.h */,
 				3282BE041A8D9A9100E5068A /* optool */,
 				32EFB6CD1A8A4F06005BB56C /* Zip */,
 				32FB77B11A89DC6600BB5ABC /* GBCLI */,
 				324EA6471A892AAD00844540 /* FBApplicationInfo.h */,
 				324EA6341A89258000844540 /* Clutch-Prefix.pch */,
-				324EA6431A89270D00844540 /* Clutch.entitlements */,
 				328359DC1ACC118D003587F3 /* NSFileHandle+Private.h */,
 				328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */,
+				328CCB3B1ACECF5800B21225 /* README.md */,
+				323C86AB1AC03E3F008949F2 /* .gitignore */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -310,10 +310,10 @@
 				3274B95F1ABEB00400964049 /* ARM64Dumper.m */,
 				3277BF971ACD50BD0060935A /* FrameworkDumper.h */,
 				3277BF981ACD50BD0060935A /* FrameworkDumper.m */,
-				326ABC881AD2B94000B21FCC /* Framework32Dumper.h */,
-				326ABC891AD2B94000B21FCC /* Framework32Dumper.m */,
 				328CCB381ACECF4100B21225 /* Framework64Dumper.h */,
 				328CCB391ACECF4100B21225 /* Framework64Dumper.m */,
+				326ABC881AD2B94000B21FCC /* FrameworkLoader.h */,
+				326ABC891AD2B94000B21FCC /* FrameworkLoader.m */,
 			);
 			name = Dumpers;
 			sourceTree = "<group>";
@@ -429,7 +429,7 @@
 				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,
-				326ABC8A1AD2B94000B21FCC /* Framework32Dumper.m in Sources */,
+				326ABC8A1AD2B94000B21FCC /* FrameworkLoader.m in Sources */,
 				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
 				323C86B11AC05AE4008949F2 /* Dumper.m in Sources */,
 				328359DE1ACC118D003587F3 /* NSFileHandle+Private.m in Sources */,

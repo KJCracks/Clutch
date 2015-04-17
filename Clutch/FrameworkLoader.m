@@ -1,12 +1,12 @@
 //
-//  Framework32Dumper.m
+//  FrameworkLoader.m
 //  Clutch
 //
 //  Created by Anton Titkov on 06.04.15.
 //
 //
 
-#import "Framework32Dumper.h"
+#import "FrameworkLoader.h"
 #import "Device.h"
 #import <dlfcn.h>
 #import <mach-o/fat.h>
@@ -17,11 +17,17 @@
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
 
-@implementation Framework32Dumper
+@interface FrameworkLoader ()
+{
+    uint32_t _dyldImageIndex;
+}
+@end
+
+@implementation FrameworkLoader
 
 - (cpu_type_t)supportedCPUType
 {
-    return CPU_TYPE_ARM;
+    return CPU_TYPE_ARM | CPU_TYPE_ARM64;
 }
 
 - (BOOL)dumpBinary {
@@ -53,6 +59,8 @@
         return NO;
     }
     
+    _dyldImageIndex = dyldIndex;
+    
     intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
     
     BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:self.encryptionInfoCommand pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
@@ -66,8 +74,9 @@
 {
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
     
+    const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
     
-    uint32_t headerProgress = sizeof(struct mach_header);
+    uint32_t headerProgress = sizeof(image_header);
     
     uint32_t i_lcmd = 0;
     kern_return_t err;

@@ -7,7 +7,7 @@
 //
 
 #define applistCachePath @"/etc/applist-cache.clutch"
-#define crackedAppPath @"/etc/cracked.clutch"
+#define dumpedAppPath @"/etc/dumped.clutch"
 
 #import <dlfcn.h>
 #import "ApplicationsManager.h"
@@ -128,10 +128,10 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
     return [self _allApplications];
 }
 
-- (NSArray *)crackedApps
+- (NSArray *)dumpedApps
 {
-    NSString *crackedPath = @""; //[NSString stringWithFormat:@"%@/", [[Preferences sharedInstance] ipaDirectory]];
-    NSArray *array=[[NSArray alloc]initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:crackedPath error:nil]];
+    NSString *dumpedPath = @""; //[NSString stringWithFormat:@"%@/", [[Preferences sharedInstance] ipaDirectory]];
+    NSArray *array=[[NSArray alloc]initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:dumpedPath error:nil]];
     
     NSMutableArray *paths=[NSMutableArray new];
     

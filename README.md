@@ -1,8 +1,10 @@
 Clutch
 ------------
-Introducing *Clutch*, the fastest and most advanced cracking utility for the iPhone, iPod Touch, and iPad.
+Introducing *Clutch*, the fastest and most advanced dumping utility for the iPhone, iPod Touch, and iPad.
 
 Works with all devices, iOS versions, architecture types, with most binaries.
+
+This product is meant only for educational purposes and security research.
 
 Current version: 2.0
 

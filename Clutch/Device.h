@@ -1,6 +1,6 @@
 //
 //  Device.h
-//  CrackAddict
+//  Clutch
 //
 //  Created by Zorro on 14/11/13.
 //  Copyright (c) 2013 AppAddict. All rights reserved.

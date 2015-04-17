@@ -8,14 +8,6 @@
 
 #import "FrameworkDumper.h"
 #import "Device.h"
-#import <dlfcn.h>
-#import <mach-o/fat.h>
-#import <mach-o/loader.h>
-#import <mach-o/dyld.h>
-#import <mach/mach.h>
-#import <mach/mach_traps.h>
-#import <mach/mach_init.h>
-#import <mach-o/dyld_images.h>
 #import <spawn.h>
 
 @implementation FrameworkDumper

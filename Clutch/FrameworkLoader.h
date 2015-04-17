@@ -1,5 +1,5 @@
 //
-//  Framework32Dumper.h
+//  FrameworkLoader.h
 //  Clutch
 //
 //  Created by Anton Titkov on 06.04.15.
@@ -8,7 +8,7 @@
 
 #import "Dumper.h"
 
-@interface Framework32Dumper : Dumper
+@interface FrameworkLoader : Dumper
 
 @property (assign) uint32_t ncmds;
 @property (assign) uint32_t offset;

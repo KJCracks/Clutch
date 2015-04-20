@@ -15,6 +15,7 @@
 		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
 		326ABC8A1AD2B94000B21FCC /* FrameworkLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 326ABC891AD2B94000B21FCC /* FrameworkLoader.m */; };
+		326E8D2E1AE53DED00DCDD64 /* NSBundle+Clutch.m in Sources */ = {isa = PBXBuildFile; fileRef = 326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */; };
 		3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMDumper.m */; };
 		3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARM64Dumper.m */; };
 		3277BF991ACD50BD0060935A /* FrameworkDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3277BF981ACD50BD0060935A /* FrameworkDumper.m */; };
@@ -66,6 +67,8 @@
 		3258FD631A90AAED007C2E66 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
 		326ABC881AD2B94000B21FCC /* FrameworkLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkLoader.h; sourceTree = "<group>"; };
 		326ABC891AD2B94000B21FCC /* FrameworkLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameworkLoader.m; sourceTree = "<group>"; };
+		326E8D2C1AE53DED00DCDD64 /* NSBundle+Clutch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Clutch.h"; sourceTree = "<group>"; };
+		326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Clutch.m"; sourceTree = "<group>"; };
 		3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BinaryDumpProtocol.h; sourceTree = "<group>"; };
 		3274B9561ABEA6E100964049 /* ARMDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMDumper.h; sourceTree = "<group>"; };
 		3274B9571ABEA6E100964049 /* ARMDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMDumper.m; sourceTree = "<group>"; };
@@ -216,6 +219,8 @@
 				324EA6341A89258000844540 /* Clutch-Prefix.pch */,
 				328359DC1ACC118D003587F3 /* NSFileHandle+Private.h */,
 				328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */,
+				326E8D2C1AE53DED00DCDD64 /* NSBundle+Clutch.h */,
+				326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */,
 				328CCB3B1ACECF5800B21225 /* README.md */,
 				323C86AB1AC03E3F008949F2 /* .gitignore */,
 			);
@@ -404,6 +409,7 @@
 				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,
 				32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */,
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
+				326E8D2E1AE53DED00DCDD64 /* NSBundle+Clutch.m in Sources */,
 				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
 				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
 				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
@@ -504,6 +510,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
 				CODE_SIGN_IDENTITY = "-";
+				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
@@ -536,6 +543,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
 				CODE_SIGN_IDENTITY = "-";
+				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",

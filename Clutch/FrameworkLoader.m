@@ -6,6 +6,7 @@
 //
 //
 
+
 #import "FrameworkLoader.h"
 #import "Device.h"
 #import <dlfcn.h>
@@ -16,6 +17,9 @@
 #import <mach/mach_traps.h>
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
+#import "NSBundle+Clutch.h"
+
+@import ObjectiveC.runtime;
 
 @interface FrameworkLoader ()
 {
@@ -35,6 +39,14 @@
     NSString *binaryDumpPath = self.dumpPath;
     
     NSString* swappedBinaryPath = self.binPath; // default values if we dont need to swap archs
+    
+    NSDictionary *_infoPlist = [NSDictionary dictionaryWithContentsOfFile:[self.binPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"Info.plist"]];
+    
+    [NSBundle mainBundle].clutchBID = self.bID;//_infoPlist[@"CFBundleIdentifier"];
+    
+    
+    NSLog(@"%@ %@",_infoPlist,[NSBundle mainBundle].bundleIdentifier);
+
     
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
         

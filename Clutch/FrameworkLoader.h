@@ -16,6 +16,7 @@
 @property (assign) uint32_t encryptionInfoCommand;
 @property (nonatomic) NSString *binPath;
 @property (nonatomic) NSString *dumpPath;
+@property (nonatomic) NSString *bID;
 
 - (cpu_type_t)supportedCPUType;
 

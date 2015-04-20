@@ -11,6 +11,7 @@
 #import "Binary.h"
 #import "ASLRDisabler.h"
 #import "mach_vm.h"
+#import "ClutchBundle.h"
 
 @interface Dumper : NSObject
 {

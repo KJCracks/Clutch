@@ -32,7 +32,14 @@
 - (instancetype)initWithBundle:(ClutchBundle *)path
 {
     if (self = [super init]) {
+        
         _bundle = path;
+        
+        // perm. fix
+        
+        NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};
+        
+        [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.binaryPath error:nil];
         
         _sinfPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"sinf" inDirectory:@"SC_Info"];
         _supfPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"supf" inDirectory:@"SC_Info"];

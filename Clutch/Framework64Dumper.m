@@ -19,6 +19,10 @@
 
 - (BOOL)dumpBinary
 {
+
+    ClutchBundle *bundle = [_originalBinary valueForKey:@"_bundle"];
+
+    
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
     
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath, *newSupf = _originalBinary.supfPath; // default values if we dont need to swap archs
@@ -145,6 +149,7 @@
         [NSString stringWithFormat:@"%u",pages].UTF8String,
         [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
         [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
+        bundle.parentBundle.bundleIdentifier.UTF8String,
         NULL};
     
     posix_spawnattr_init (&attr);

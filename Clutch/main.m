@@ -14,13 +14,14 @@
 
 int main (int argc, const char * argv[])
 {
+    
 
     @autoreleasepool
     {
         // yo
         if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
             
-            gbprintln(@"You need iOS 6.0+ to use Clutch 2");
+            gbprintln(@"You need iOS 6.0+ to use Clutch %@",CLUTCH_VERSION);
             
             return 0;
         }
@@ -81,7 +82,7 @@ int main (int argc, const char * argv[])
                 
                 NSArray *arguments = [NSProcessInfo processInfo].arguments;
                 
-                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 8)) {
+                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 9)) {
                     
                     FrameworkLoader *fmwk = [FrameworkLoader new];
                                         
@@ -91,7 +92,8 @@ int main (int argc, const char * argv[])
                     fmwk.pages = [arguments[5]intValue];
                     fmwk.ncmds = [arguments[6]intValue];
                     fmwk.offset = [arguments[7]intValue];
-
+                    fmwk.bID = arguments[8];
+                    
                     BOOL result = [fmwk dumpBinary];
                     
                     if (result) {

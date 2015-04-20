@@ -45,7 +45,10 @@
     }
     
     [data writeToFile:self.executable.binaryPath atomically:YES];
-
+    
+    NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};
+    
+    [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.executable.binaryPath error:nil];
     
 }
 

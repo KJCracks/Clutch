@@ -6,7 +6,7 @@
 //
 //
 
-#define applistCachePath @"/tmp/applist-cache.clutch"
+#define applistCachePath @"applist-cache.plist"
 #define dumpedAppPath @"/etc/dumped.clutch"
 
 #import <dlfcn.h>
@@ -129,12 +129,17 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                     Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
                     returnValue[proxy.bundleIdentifier] = app;
                     [self cacheBundle:bundleInfo];
+                    
                 }
             }
         }
         
     }
-    [_cachedApps writeToFile:applistCachePath atomically:YES];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    dispatch_async(queue, ^{
+        [_cachedApps writeToFile:applistCachePath atomically:YES];
+    });
+    
     return [returnValue copy];
 }
 

@@ -116,7 +116,6 @@
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
         ERROR(@"Could not obtain mach port, did you sign with proper entitlements?");
-        sleep(60);
         goto gotofail;
     }
     

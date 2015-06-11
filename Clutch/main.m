@@ -195,7 +195,7 @@ int main (int argc, const char * argv[])
             gettimeofday(&end, NULL);
             int dif = diff_ms(end,start);
             float sec = ((dif + 500.0f) / 1000.0f);
-            gbprintln(@"Finished dumping %@ in %u s", _selectedApp.bundleIdentifier, sec);
+            gbprintln(@"Finished dumping %@ in %f s", _selectedApp.bundleIdentifier, sec);
             
             
             

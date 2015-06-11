@@ -244,6 +244,7 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
     
     // Loop through compatible LC_LOAD commands until we find one which points
     // to the given dylib and tell the caller where it is and if it exists
+    bool foundRPATH = NO;
     for (int i = 0; i < macho.header.ncmds; i++) {
         if (binary.currentOffset >= binary.length ||
             binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
@@ -251,6 +252,7 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
         
         uint32_t cmd  = [binary intAtOffset:binary.currentOffset];
         uint32_t size = [binary intAtOffset:binary.currentOffset + 4];
+    
         
         switch (cmd) {
             case LC_RPATH: {
@@ -264,6 +266,7 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
                 
                 binary.currentOffset += size;
                 loadOffset = (unsigned int)binary.currentOffset;
+                foundRPATH = YES;
                 break;
             }
             default:
@@ -274,7 +277,11 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
     
     if (lastOffset != NULL)
         *lastOffset = loadOffset;
-    
+    if (!foundRPATH) {
+        NSLog(@"didn't find rpath, no injection!");
+        return YES;
+              
+    }
     return NO;
 }
 

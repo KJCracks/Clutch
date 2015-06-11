@@ -6,12 +6,13 @@
 //
 //
 
-#define applistCachePath @"/etc/applist-cache.clutch"
+#define applistCachePath @"/tmp/applist-cache.clutch"
 #define dumpedAppPath @"/etc/dumped.clutch"
 
 #import <dlfcn.h>
 #import "ApplicationsManager.h"
 #import "FBApplicationInfo.h"
+#import "LSApplicationProxy.h"
 
 typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
@@ -19,6 +20,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 {
     void * _MIHandle;
     MobileInstallationLookup _mobileInstallationLookup;
+    NSMutableArray* _cachedApps;
 }
 @end
 
@@ -48,11 +50,18 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
             _mobileInstallationLookup = dlsym(_MIHandle,"MobileInstallationLookup");
         
     }
+    if ([[NSFileManager defaultManager] fileExistsAtPath:applistCachePath]) {
+        _cachedApps = [[NSMutableArray alloc] initWithContentsOfFile:applistCachePath];
+    }
+    else {
+        _cachedApps = [NSMutableArray new];
+    }
     return self;
 }
 
 - (NSDictionary *)_allApplications
 {
+    _cachedApps = [NSMutableArray new];
     NSMutableDictionary *returnValue = [NSMutableDictionary new];
     
     NSDictionary* options = @{@"ApplicationType":@"User",
@@ -83,9 +92,12 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
             BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
             
             if (purchased && isDirectory) {
-                Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
-                                                                           @"BundleURL":bundleURL}];
-                
+                NSDictionary* bundleInfo = @{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
+                                             @"BundleURL":bundleURL,
+                                             @"DislayName": appI[@"CFBundleDisplayname"],
+                                             @"BundleIdentifier": bundleID};
+                Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
+                [self cacheBundle:bundleInfo];
                 returnValue[bundleID] = app;
             }
         }
@@ -110,16 +122,19 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                 BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
                 
                 if (purchased && isDirectory) {
-                    Application *app =[[Application alloc]initWithBundleInfo:@{@"BundleContainer":proxy.bundleContainerURL,
-                                                                               @"BundleURL":proxy.bundleURL}];
-                    
+                    NSDictionary* bundleInfo = @{@"BundleContainer":proxy.bundleContainerURL,
+                                                 @"BundleURL":proxy.bundleURL,
+                                                 @"DisplayName": ((LSApplicationProxy*) proxy).itemName,
+                                                 @"BundleIdentifier": proxy.bundleIdentifier};
+                    Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
                     returnValue[proxy.bundleIdentifier] = app;
+                    [self cacheBundle:bundleInfo];
                 }
             }
         }
         
     }
-    
+    [_cachedApps writeToFile:applistCachePath atomically:YES];
     return [returnValue copy];
 }
 
@@ -127,6 +142,23 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 {
     return [self _allApplications];
 }
+
+-(NSDictionary*)_allCachedApplications {
+    if ([_cachedApps count] < 1) {
+        return [self _allApplications];
+    }
+    NSMutableDictionary* returnValue = [NSMutableDictionary new];
+    for (NSDictionary* bundleInfo in _cachedApps) {
+        Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
+        returnValue[bundleInfo[@"BundleIdentifier"]] = app;
+    }
+    return returnValue;
+}
+
+-(void)cacheBundle:(NSDictionary*) bundle {
+    [_cachedApps addObject:bundle];
+}
+
 
 - (NSArray *)dumpedApps
 {

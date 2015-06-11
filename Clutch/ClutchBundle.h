@@ -13,6 +13,7 @@
 
 @interface ClutchBundle : NSBundle
 {
+    @public
     NSOperationQueue *_dumpQueue;
 }
 
@@ -23,6 +24,8 @@
 @property (readonly) NSURL *enumURL;
 @property (readonly) NSURL *bundleContainerURL;
 @property (readonly) Binary *executable;
+
+@property (readonly) NSString* displayName;
 
 - (instancetype)initWithBundleInfo:(NSDictionary *)info;
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL;

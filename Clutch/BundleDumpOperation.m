@@ -30,6 +30,15 @@
 
 @implementation BundleDumpOperation
 
+-(void)failedOperation {
+    //NSLog(@"listing da operations");
+    NSArray* wow = [_application->_dumpQueue operations];
+    for (NSOperation* operation in wow) {
+        NSLog(@"operation hash %lu", (unsigned long)operation.hash);
+    }
+    [self completeOperation];
+}
+
 - (instancetype)initWithBundle:(ClutchBundle *)application {
     self = [super init];
     if (self) {
@@ -98,7 +107,7 @@
         
         if (!headersData) {
             gbprintln(@"Failed to extract headers info from binary %@.",originalBinary);
-            [self completeOperation];
+            [self failedOperation];
             return;
         }
         
@@ -122,26 +131,27 @@
         for (uint32_t i = 0; i < numHeaders; i++) {
             
             thin_header macho = headers[i];
-            Dumper<BinaryDumpProtocol> *_dumper;
+            Dumper<BinaryDumpProtocol> *_dumper = nil;
+            
+            NSLog(@"Finding compatible dumper for binary %@", originalBinary);
             for (Class dumperClass in dumpers) {
                 _dumper = [[dumperClass alloc]initWithHeader:macho originalBinary:originalBinary];
                 
                 if ([_dumper compatibilityMode] == ArchCompatibilityNotCompatible) {
-                    NSLog(@"%@ cannot dump binary %@ with arch %@",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
-                    _dumper = nil;
-                }else
+                    //NSLog(@"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper \n\n",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
+                    //_dumper = nil;
+                } else {
                     break;
+                }
             }
             
-            if (!_dumper) {
+            if (_dumper == nil) {
                 NSLog(@"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",originalBinary,[Dumper readableArchFromHeader:macho]);
                 
                 NSValue* archValue = [NSValue value:&macho withObjCType:@encode(thin_header)];
                 [_headersToStrip addObject:archValue];
                 continue;
             }
-            
-            // _dumper.shouldDisableASLR = YES; // yoyoyo
             
             NSLog(@"Found compatible dumper %@ for binary %@ with arch %@",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
             
@@ -155,15 +165,16 @@
                 dumpCount++;
                 gbprintln(@"Finished dumping binary %@ %@ with result: %i",originalBinary,[Dumper readableArchFromHeader:macho],result);
             }else {
-                gbprintln(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
+                ERROR(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
             }
             
             [_handle closeFile];
         }
         
         if (!dumpCount) {
-            gbprintln(@"Failed to dump binary %@",originalBinary);
-            [self completeOperation];
+            ERROR(@"Failed to dump binary %@",originalBinary);
+            [self failedOperation];
+            
             return;
         }
         

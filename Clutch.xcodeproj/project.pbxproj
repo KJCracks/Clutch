@@ -133,6 +133,7 @@
 		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
 		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
+		ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSApplicationProxy.h; path = ../LSApplicationProxy.h; sourceTree = "<group>"; };
 		ADE1ED291AD02C2000398728 /* AppSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/AppSupport.framework; sourceTree = DEVELOPER_DIR; };
 		ADE1ED301AD1636D00398728 /* ProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressBar.h; sourceTree = "<group>"; };
 		ADE1ED311AD1636D00398728 /* ProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressBar.m; sourceTree = "<group>"; };
@@ -212,6 +213,7 @@
 				328CCB361ACECEB500B21225 /* scinfo.m */,
 				32BC93E41A8E0E8B00805D14 /* sha1.c */,
 				32BC93E51A8E0E8B00805D14 /* sha1.h */,
+				ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */,
 				3282BE041A8D9A9100E5068A /* optool */,
 				32EFB6CD1A8A4F06005BB56C /* Zip */,
 				32FB77B11A89DC6600BB5ABC /* GBCLI */,
@@ -503,8 +505,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					armv7s,
+					arm64,
+					armv7,
 				);
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -519,6 +521,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				INSTALL_PATH = /usr/bin;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -536,8 +539,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					armv7s,
+					arm64,
+					armv7,
 				);
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -555,7 +558,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
-				iOSOpenDevBuildPackageOnAnyBuild = NO;
+				iOSOpenDevBuildPackageOnAnyBuild = YES;
 				iOSOpenDevCopyOnBuild = NO;
 				iOSOpenDevDevice = "";
 				iOSOpenDevInstallOnAnyBuild = NO;

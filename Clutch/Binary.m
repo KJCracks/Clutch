@@ -151,7 +151,8 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, executable: %@>",NSStringFromClass([self class]),self,_bundle.executablePath.lastPathComponent];
+    return [NSString stringWithFormat:@"<%@>",_bundle.executablePath.lastPathComponent];
+    //return [NSString stringWithFormat:@"<%@>", _bundle.executablePath.lastPathComponent];
 }
 
 @end

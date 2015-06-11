@@ -45,7 +45,7 @@
     [NSBundle mainBundle].clutchBID = self.bID;//_infoPlist[@"CFBundleIdentifier"];
     
     
-    NSLog(@"%@ %@",_infoPlist,[NSBundle mainBundle].bundleIdentifier);
+    //NSLog(@"%@ %@",_infoPlist,[NSBundle mainBundle].bundleIdentifier);
 
     
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];

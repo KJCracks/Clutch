@@ -57,6 +57,7 @@
     
     self.completionBlock = ^{
         exit(0);
+        CFRunLoopStop(CFRunLoopGetCurrent());
     };
     
     // If the operation is not canceled, begin executing the task.
@@ -95,7 +96,12 @@
             
             __block BOOL status = plists.count == self.expectedBinariesCount;
             
-            gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?_application.workingPath:_application);
+            if (status) {
+                SUCCESS(@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath);
+            }
+            else {
+                ERROR(@"Failed to dump %@ :(", _application.bundleIdentifier);
+            }
             
             [self completeOperation];
             
@@ -176,6 +182,11 @@
     _finished = YES;
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
+    CFRunLoopStop(CFRunLoopGetCurrent());
+}
+
+-(NSUInteger)hash {
+    return 4201234;
 }
 
 @end

@@ -15,4 +15,6 @@
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDictionary *installedApps;
 
+-(NSDictionary*)_allCachedApplications;
+
 @end

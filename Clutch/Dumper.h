@@ -34,10 +34,10 @@
 
 @end
 
-#define DumperLog(fmt,...) printf("\033[0;32mDump | \033[0m %s\n",[NSString stringWithFormat:@"%@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary, ##__VA_ARGS__].UTF8String)
+#define DumperLog(fmt,...) printf("\033[0;34mDUMP |\033[0m %s\n",[NSString stringWithFormat:@"%@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary, ##__VA_ARGS__].UTF8String)
 
 #ifdef DEBUG
-#   define DumperDebugLog(fmt,...) NSLog(@"%@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary,##__VA_ARGS__)
+#   define DumperDebugLog(fmt,...) NSLog(@"DUMP: %@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary,##__VA_ARGS__)
 #else
 #   define DumperDebugLog(...)
 #endif

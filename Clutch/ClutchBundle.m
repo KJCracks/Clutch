@@ -42,7 +42,7 @@
         thin_header _thinHeader = headers[i];
         
         NSString *rpath = self.parentBundle ? [self.parentBundle.bundlePath stringByAppendingPathComponent:@"Frameworks"] : [self.bundlePath stringByAppendingPathComponent:@"Frameworks"] ;
-        
+        NSLog(@"checking rpath for %@", self.executable.binaryPath);
         insertRPATHIntoBinary(rpath, data, _thinHeader);
     }
     

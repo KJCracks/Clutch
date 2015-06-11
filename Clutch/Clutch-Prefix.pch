@@ -23,7 +23,7 @@
 
 #define CLUTCH_VERSION @"2.0 RC3"
 
-#   define SUCCESS(M, ...) fprintf(stderr, "\033[0;31mDONE\033[0m: %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;31mDONE\033[0m: %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
 #ifdef DEBUG
 # define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one

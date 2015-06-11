@@ -102,9 +102,11 @@
             break;
     }
     
+    NSLog(@"binary path %@", swappedBinaryPath);
+    
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        DumperDebugLog(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
+        ERROR(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
         return NO;
     }
     

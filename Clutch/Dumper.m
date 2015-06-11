@@ -108,7 +108,7 @@ exit_with_errno (int err, const char *prefix)
     
     posix_spawnattr_destroy (&attr);
     
-    NSLog(@"got the pid %u %@", pid, binaryPath);l
+    NSLog(@"got the pid %u %@", pid, binaryPath);
     
     return pid;
 }
@@ -123,7 +123,7 @@ exit_with_errno (int err, const char *prefix)
     return NO;
 }
 
-- (void)swapArch
+/*- (void)swapArch
 {
     thin_header macho = _thinHeader;
     
@@ -167,7 +167,10 @@ exit_with_errno (int err, const char *prefix)
     
     struct fat_arch keep_arch;
     char data[20];
+    NSLog(@"sizeof struct fat_arch %lu", sizeof(struct fat_arch));
     memset(data,'\0',sizeof(data));
+    
+    struct fat_arch fat_arches[20]; //don't think an app can have more than 20
     
     for (int i = 0; i < fat.nfat_arch; i++) {
         struct fat_arch arch;
@@ -193,6 +196,98 @@ exit_with_errno (int err, const char *prefix)
     [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&keep_arch];
     
     DumperLog(@"wrote new header to binary!");
+    
+}*/
+
+
+-(void)swapArch {
+    
+    thin_header macho = _thinHeader;
+    
+    DumperLog(@"swapping archs");
+    
+    //time to swap
+    NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
+    
+    NSString *swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
+    NSString *newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
+    NSString *newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
+    
+    NSString *newSupf;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:_originalBinary.supfPath]) {
+        newSupf = [_originalBinary.supfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.supfPath.pathExtension]];
+    }
+    
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:nil];
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
+    
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.suppPath toPath:newSupp error:nil];
+    
+    if (newSupf) {
+        [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.supfPath toPath:newSupf error:nil];
+    }
+    
+    [self.originalFileHandle closeFile];
+    self.originalFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+"))];
+    
+    uint32_t magic = [self.originalFileHandle intAtOffset:0];
+    bool shouldSwap = magic == FAT_CIGAM;
+#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
+    
+    NSData *buffer = [self.originalFileHandle readDataOfLength:4096];
+    
+    struct fat_header fat = *(struct fat_header *)buffer.bytes;
+    fat.nfat_arch = SWAP(fat.nfat_arch);
+    int offset = sizeof(struct fat_header);
+    
+    for (int i = 0; i < fat.nfat_arch; i++) {
+        struct fat_arch arch;
+        arch = *(struct fat_arch *)([buffer bytes] + offset);
+        
+        if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+            
+            if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
+                switch (SWAP(arch.cpusubtype)) {
+                    case CPU_SUBTYPE_ARM_V6:
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
+                        break;
+                    case CPU_SUBTYPE_ARM_V7:
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_4);
+                        break;
+                    case CPU_SUBTYPE_ARM_V7S:
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_ITANIUM);
+                        break;
+                    case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_XEON);
+                        break;
+                }
+            } else {
+                
+                switch (SWAP(arch.cpusubtype)) {
+                    case CPU_SUBTYPE_ARM64_ALL:
+                        arch.cputype = SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
+                        break;
+                    case CPU_SUBTYPE_ARM64_V8:
+                        arch.cputype = SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_H);
+                        break;
+                }
+                
+            }
+            
+            [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
+        }
+        
+        offset += sizeof(struct fat_arch);
+    }
+    
+    
+    DumperLog(@"wrote new header to binary");
     
 }
 

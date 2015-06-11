@@ -137,7 +137,7 @@
     
     [self prepareForDump];
     
-    NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
+    //NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
     
     [[NSFileManager defaultManager]createDirectoryAtPath:_workingPath withIntermediateDirectories:YES attributes:nil error:nil];
         
@@ -204,6 +204,8 @@
     }
     
     _finalizeDumpOperation.expectedBinariesCount = _additionalDumpOpeartions.count + 1;
+    
+    
     
     [_dumpQueue addOperation:_finalizeDumpOperation];
 }

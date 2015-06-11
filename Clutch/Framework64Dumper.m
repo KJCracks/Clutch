@@ -156,7 +156,7 @@
     
     size_t ocount = 0;
     
-    cpu_type_t cpu_type = CPU_TYPE_ARM64;
+    cpu_type_t cpu_type = CPU_TYPE_ARM64; //64bit Clutch to dump 64bit framework
     
     posix_spawnattr_setbinpref_np (&attr, 1, &cpu_type, &ocount);
     
@@ -165,12 +165,13 @@
     if (dumpResult == 0) {
         DumperDebugLog(@"Child pid: %i", pid);
         if (waitpid(pid, &dumpResult, 0) != -1) {
-            DumperDebugLog(@"Child exited with status %i", dumpResult);
+            DumperDebugLog(@"Success! Child exited with status %i", dumpResult);
         } else {
             perror("waitpid");
         }
     } else {
-        DumperDebugLog(@"posix_spawn: %s", strerror(dumpResult));
+        ERROR(@"posix_spawn: %s (Error %u)", strerror(dumpResult), dumpResult);
+        
     }
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])

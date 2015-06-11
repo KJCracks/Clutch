@@ -19,6 +19,7 @@
 {
     if (self = [super initWithURL:info[@"BundleURL"]]) {
         _bundleContainerURL = [info[@"BundleContainer"] copy];
+        _displayName = [info[@"DisplayName"] copy];
         _dumpQueue = [NSOperationQueue new];
     }
     
@@ -26,6 +27,7 @@
 }
 
 - (void)prepareForDump {
+    NSLog(@"preparing for dump");
     _executable = [[Binary alloc]initWithBundle:self];
     
     // experimental

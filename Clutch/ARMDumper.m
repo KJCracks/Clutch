@@ -118,7 +118,8 @@
     pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        DumperLog(@"ERROR: Could not obtain mach port, did you sign with proper entitlements?");
+        ERROR(@"Could not obtain mach port, did you sign with proper entitlements?");
+        sleep(60);
         goto gotofail;
     }
     

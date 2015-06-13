@@ -133,13 +133,13 @@
             thin_header macho = headers[i];
             Dumper<BinaryDumpProtocol> *_dumper = nil;
             
-            NSLog(@"Finding compatible dumper for binary %@", originalBinary);
+            NSLog(@"Finding compatible dumper for binary %@ with arch cputype: %u", originalBinary, macho.header.cputype);
             for (Class dumperClass in dumpers) {
                 _dumper = [[dumperClass alloc]initWithHeader:macho originalBinary:originalBinary];
                 
                 if ([_dumper compatibilityMode] == ArchCompatibilityNotCompatible) {
-                    //NSLog(@"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper \n\n",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
-                    //_dumper = nil;
+                    NSLog(@"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
+                    _dumper = nil;
                 } else {
                     break;
                 }
@@ -147,9 +147,8 @@
             
             if (_dumper == nil) {
                 NSLog(@"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",originalBinary,[Dumper readableArchFromHeader:macho]);
-                
-                NSValue* archValue = [NSValue value:&macho withObjCType:@encode(thin_header)];
-                [_headersToStrip addObject:archValue];
+                NSLog(@"offset %u", macho.offset);
+                [_headersToStrip addObject:[NSNumber numberWithUnsignedInt:macho.offset]];
                 continue;
             }
             
@@ -164,7 +163,7 @@
             if (result) {
                 dumpCount++;
                 gbprintln(@"Finished dumping binary %@ %@ with result: %i",originalBinary,[Dumper readableArchFromHeader:macho],result);
-            }else {
+            } else {
                 ERROR(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
             }
             
@@ -180,74 +179,55 @@
         
         
 #pragma mark "stripping" headers in FAT binary
-        if (isFAT) {
+        if ([_headersToStrip count] > 0) {
             NSFileHandle *_dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
+
+            NSData *buffer = [_dumpHandle readDataOfLength:4096];
             
-            uint32_t magic = [_dumpHandle intAtOffset:0];
-            bool shouldSwap = magic == FAT_CIGAM;
-#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
-            
-            NSData *buffer = _dumpHandle.availableData;
-            
+            NSMutableArray* _headersToKeep = [NSMutableArray new];
             struct fat_header fat = *(struct fat_header *)buffer.bytes;
-            int offset = sizeof(struct fat_header);
+            fat.nfat_arch = CFSwapInt32(fat.nfat_arch);
             
-            for (NSValue *valueWithArch in _headersToStrip) {
-                thin_header stripArch;
-                [valueWithArch getValue:&stripArch];
-                
-                for (int i = 0; i < SWAP(fat.nfat_arch); i++) {
-                    struct fat_arch arch;
-                    arch = *(struct fat_arch *)([buffer bytes] + offset);
-                    
-                    if (((SWAP(arch.cputype) == stripArch.header.cputype) && (SWAP(arch.cpusubtype) == stripArch.header.cpusubtype))) {
-                        
-                        if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
-                            switch (SWAP(arch.cpusubtype)) {
-                                case CPU_SUBTYPE_ARM_V6:
-                                    arch.cputype = SWAP(CPU_TYPE_I386);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
-                                    break;
-                                case CPU_SUBTYPE_ARM_V7:
-                                    arch.cputype = SWAP(CPU_TYPE_I386);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_4);
-                                    break;
-                                case CPU_SUBTYPE_ARM_V7S:
-                                    arch.cputype = SWAP(CPU_TYPE_I386);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_ITANIUM);
-                                    break;
-                                case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
-                                    arch.cputype = SWAP(CPU_TYPE_I386);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_XEON);
-                                    break;
-                            }
-                        }else {
-                            
-                            switch (SWAP(arch.cpusubtype)) {
-                                case CPU_SUBTYPE_ARM64_ALL:
-                                    arch.cputype = SWAP(CPU_TYPE_X86_64);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
-                                    break;
-                                case CPU_SUBTYPE_ARM64_V8:
-                                    arch.cputype = SWAP(CPU_TYPE_X86_64);
-                                    arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_H);
-                                    break;
-                            }
-                            
-                        }
-                        
-                        stripArch.header.cputype = SWAP(arch.cputype);
-                        stripArch.header.cpusubtype = SWAP(arch.cpusubtype);
-                        
-                        [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
-                        [_dumpHandle replaceBytesInRange:NSMakeRange(stripArch.offset, sizeof(stripArch.header)) withBytes:&stripArch.header];
-
-                    }
-                    
-                    offset += sizeof(struct fat_arch);
+            //bunch of zeroes
+            char data[20];
+            memset(data,'\0',sizeof(data));
+            
+            int offset = sizeof(struct fat_header);
+            for (int i = 0; i < fat.nfat_arch; i++) {
+                struct fat_arch arch = *(struct fat_arch *)([buffer bytes] + offset);
+                NSNumber* archOffset = [NSNumber numberWithUnsignedInt:CFSwapInt32(arch.offset)];
+                 NSLog(@"current offset %u", CFSwapInt32(arch.offset));
+                if ([_headersToStrip containsObject:archOffset]) {
+                    NSLog(@"arch to strip %u %u", CFSwapInt32(arch.cpusubtype), CFSwapInt32(arch.cputype));
                 }
-
+                else {
+                    NSValue* archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
+                    [_headersToKeep addObject:archValue];
+                    //NSLog(@"storing the arch we want to keep %u", CFSwapInt32(arch.cpusubtype));
+                }
+                
+                [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&data]; //blank all the archs
+                offset += sizeof(struct fat_arch);
             }
+            
+            //skip 4 bytes for magic, 4 bytes of nfat_arch
+            uint32_t nfat_arch = CFSwapInt32([_headersToKeep count]);
+            [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
+            //NSLog(@"changing nfat_arch to %u %u", nfat_arch, CFSwapInt32(nfat_arch));
+            
+            
+            offset = sizeof(struct fat_header);
+            
+            for (NSValue* archValue in _headersToKeep) {
+                struct fat_arch keepArch;
+                [archValue getValue:&keepArch];
+                NSLog(@"headers to keep: %u %u", CFSwapInt32(keepArch.cpusubtype), CFSwapInt32(keepArch.cputype));
+                [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&keepArch];
+                offset += sizeof(struct fat_arch);
+            }
+
+            NSLog(@"wrote new header to binary!");
+
             
             [_dumpHandle closeFile];
         }

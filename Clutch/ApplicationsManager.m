@@ -84,17 +84,21 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
             NSDictionary *appI=installedApps[bundleID];
             
             NSURL *bundleURL = [NSURL fileURLWithPath:appI[@"Path"]];
-            
+           
             NSString *scinfo=[bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
-            
+           
             BOOL isDirectory;
             
             BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
             
             if (purchased && isDirectory) {
+                NSString* name = appI[@"CFBundleDisplayName"];
+                if (name == nil) {
+                    name = appI[@"CFBundleExecutable"];
+                }
                 NSDictionary* bundleInfo = @{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
                                              @"BundleURL":bundleURL,
-                                             @"DislayName": appI[@"CFBundleDisplayname"],
+                                             @"DisplayName": name,
                                              @"BundleIdentifier": bundleID};
                 Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
                 [self cacheBundle:bundleInfo];

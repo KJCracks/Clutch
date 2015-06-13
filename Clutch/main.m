@@ -166,7 +166,7 @@ int main (int argc, const char * argv[])
         for (NSString* selection in selections) {
             int key;
             struct timeval start, end;
-            NSLog(@"selection wow %@ ", selection);
+            //NSLog(@"selection wow %@ ", selection);
             
             if (!(key = [selection intValue])) {
                 gbprintln(@"Please enter a proper number.");
@@ -195,7 +195,7 @@ int main (int argc, const char * argv[])
             gettimeofday(&end, NULL);
             int dif = diff_ms(end,start);
             float sec = ((dif + 500.0f) / 1000.0f);
-            gbprintln(@"Finished dumping %@ in %f s", _selectedApp.bundleIdentifier, sec);
+            gbprintln(@"Finished dumping %@ in %0.1f seconds", _selectedApp.bundleIdentifier, sec);
             
             
             

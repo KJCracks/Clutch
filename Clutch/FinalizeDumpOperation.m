@@ -104,6 +104,7 @@
             }
             else {
                 ERROR(@"Failed to dump %@ :(", _application.bundleIdentifier);
+                exit(1);
             }
             
             [self completeOperation];

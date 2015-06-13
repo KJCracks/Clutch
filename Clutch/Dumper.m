@@ -386,22 +386,26 @@ exit_with_errno (int err, const char *prefix)
     return YES;
 }
 
-- (ArchCompatibility)compatibilityMode;
-{
-    cpu_type_t cputype = self.supportedCPUType;
-    cpu_subtype_t cpusubtype = _thinHeader.header.cpusubtype;
+- (ArchCompatibility)compatibilityMode {
+
+    NSLog(@"segment cputype: %u, cpusubtype: %u", _thinHeader.header.cputype, _thinHeader.header.cpusubtype);
+    NSLog(@"device  cputype: %u, cpusubtype: %u", Device.cpu_type, Device.cpu_subtype);
+    NSLog(@"dumper supports cputype %u", self.supportedCPUType);
     
     if (self.supportedCPUType != _thinHeader.header.cputype) {
-        //why cut a potato with a pencil?
+        NSLog(@"why cut a potato with a pencil?");
         return ArchCompatibilityNotCompatible;
     }
     
-    else if ((Device.cpu_type == CPU_TYPE_ARM64) && (_thinHeader.header.cputype == CPU_TYPE_ARM))
+    else if ((_thinHeader.header.cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
+        NSLog(@"cannot use dumper %@, device not supported", NSStringFromClass([self class]));
+        return ArchCompatibilityNotCompatible;
+    }
+    
+    else if ((Device.cpu_type == CPU_TYPE_ARM64) && (_thinHeader.header.cputype == CPU_TYPE_ARM)) {
         return ArchCompatibilityCompatible; // god mode on
-    
-    else if ((cputype != _thinHeader.header.cputype) || (cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
-        return ArchCompatibilityNotCompatible;
     }
+   
     
     return ArchCompatibilityCompatible;
     

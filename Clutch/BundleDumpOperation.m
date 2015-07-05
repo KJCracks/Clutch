@@ -14,6 +14,7 @@
 #import "Device.h"
 
 #import "Dumper.h"
+#import "ldid.h"
 
 @import ObjectiveC.runtime;
 
@@ -236,6 +237,27 @@
 #pragma mark checking if everything's fine
         if (dumpCount == (numHeaders-_headersToStrip.count))
         {
+            
+            // codesign properly
+
+            NSString *entitlementsPath = [_binaryDumpPath stringByAppendingPathExtension:@"plist"];
+            
+            FILE *fp = fopen(entitlementsPath.UTF8String , "ab+");
+
+            char *entitlementsArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+                "-e",
+                originalBinary.binaryPath.UTF8String,
+                NULL};
+            
+            int result = ldid_main(3, entitlementsArgv, fp);
+            
+            char *codesignArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+                [@"-S" stringByAppendingString:entitlementsPath].UTF8String,
+                _binaryDumpPath.UTF8String,
+                NULL};
+            
+            result = ldid_main(3, codesignArgv, fp);
+            
             NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
             
             _localPath = [_application.zipPrefix stringByAppendingPathComponent:_localPath];

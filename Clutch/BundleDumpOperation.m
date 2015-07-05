@@ -251,6 +251,8 @@
             
             int result = ldid_main(3, entitlementsArgv, fp);
             
+            fclose(fp);
+            
             char *codesignArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
                 [@"-S" stringByAppendingString:entitlementsPath].UTF8String,
                 _binaryDumpPath.UTF8String,

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		321D74A11B49468C0037CACF /* ldid.mm in Sources */ = {isa = PBXBuildFile; fileRef = 321D749B1B49468C0037CACF /* ldid.mm */; };
+		321D74A21B49468C0037CACF /* lookup2.c in Sources */ = {isa = PBXBuildFile; fileRef = 321D749C1B49468C0037CACF /* lookup2.c */; };
+		321D74A41B4946D30037CACF /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 321D74A31B4946D30037CACF /* libc++.dylib */; };
 		323C86B11AC05AE4008949F2 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 323C86B01AC05AE4008949F2 /* Dumper.m */; };
 		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		324EA6331A89258000844540 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
@@ -50,6 +53,13 @@
 
 /* Begin PBXFileReference section */
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
+		321D749B1B49468C0037CACF /* ldid.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ldid.mm; sourceTree = "<group>"; };
+		321D749C1B49468C0037CACF /* lookup2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lookup2.c; sourceTree = "<group>"; };
+		321D749E1B49468C0037CACF /* ldid_mapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ldid_mapping.h; sourceTree = "<group>"; };
+		321D749F1B49468C0037CACF /* ldid_stdlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ldid_stdlib.h; sourceTree = "<group>"; };
+		321D74A01B49468C0037CACF /* ldid_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ldid_string.h; sourceTree = "<group>"; };
+		321D74A31B4946D30037CACF /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		321D74C21B494B620037CACF /* ldid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldid.h; sourceTree = "<group>"; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
 		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				321D74A41B4946D30037CACF /* libc++.dylib in Frameworks */,
 				AD911DDE1AD289CA007B6A11 /* AppSupport.framework in Frameworks */,
 				32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */,
 				324EA63E1A89260A00844540 /* MobileCoreServices.framework in Frameworks */,
@@ -154,6 +165,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		321D749A1B49468C0037CACF /* ldid */ = {
+			isa = PBXGroup;
+			children = (
+				321D74C21B494B620037CACF /* ldid.h */,
+				321D749B1B49468C0037CACF /* ldid.mm */,
+				321D749C1B49468C0037CACF /* lookup2.c */,
+				321D749D1B49468C0037CACF /* minimal */,
+			);
+			path = ldid;
+			sourceTree = "<group>";
+		};
+		321D749D1B49468C0037CACF /* minimal */ = {
+			isa = PBXGroup;
+			children = (
+				321D749E1B49468C0037CACF /* ldid_mapping.h */,
+				321D749F1B49468C0037CACF /* ldid_stdlib.h */,
+				321D74A01B49468C0037CACF /* ldid_string.h */,
+			);
+			path = minimal;
+			sourceTree = "<group>";
+		};
 		324EA61A1A89258000844540 = {
 			isa = PBXGroup;
 			children = (
@@ -174,6 +206,7 @@
 		324EA6251A89258000844540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				321D74A31B4946D30037CACF /* libc++.dylib */,
 				ADE1ED291AD02C2000398728 /* AppSupport.framework */,
 				32EFB6F21A8A500D005BB56C /* libz.dylib */,
 				324EA63D1A89260A00844540 /* MobileCoreServices.framework */,
@@ -202,6 +235,7 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				321D749A1B49468C0037CACF /* ldid */,
 				328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */,
 				328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */,
 				324EA6431A89270D00844540 /* Clutch.entitlements */,
@@ -377,7 +411,7 @@
 		324EA61B1A89258000844540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0640;
 				TargetAttributes = {
 					324EA6221A89258000844540 = {
 						CreatedOnToolsVersion = 6.2;
@@ -408,6 +442,7 @@
 			files = (
 				3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */,
 				3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */,
+				321D74A11B49468C0037CACF /* ldid.mm in Sources */,
 				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,
 				32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */,
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
@@ -434,6 +469,7 @@
 				32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */,
 				3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */,
 				328CCB371ACECEB500B21225 /* scinfo.m in Sources */,
+				321D74A21B49468C0037CACF /* lookup2.c in Sources */,
 				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,
@@ -450,6 +486,10 @@
 		324EA6351A89258000844540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				COPY_PHASE_STRIP = NO;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -470,7 +510,7 @@
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -481,6 +521,10 @@
 		324EA6361A89258000844540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				COPY_PHASE_STRIP = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -494,6 +538,7 @@
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -504,10 +549,8 @@
 		324EA6381A89258000844540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					arm64,
-					armv7,
-				);
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
@@ -538,10 +581,8 @@
 		324EA6391A89258000844540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					arm64,
-					armv7,
-				);
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";

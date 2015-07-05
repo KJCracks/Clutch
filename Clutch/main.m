@@ -73,9 +73,11 @@ int main (int argc, const char * argv[])
         [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
         
         if (argc == 1) {
-            //[options printHelp];
-           //exit(0);
-            listApps();
+            [options printHelp];
+            exit(0);
+            
+            // :P
+            //listApps();
         }
     
         __block NSString * _selectedOption, * _selectedBundleID;

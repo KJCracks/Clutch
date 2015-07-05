@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		321D74A11B49468C0037CACF /* ldid.mm in Sources */ = {isa = PBXBuildFile; fileRef = 321D749B1B49468C0037CACF /* ldid.mm */; };
-		321D74A21B49468C0037CACF /* lookup2.c in Sources */ = {isa = PBXBuildFile; fileRef = 321D749C1B49468C0037CACF /* lookup2.c */; };
 		321D74A41B4946D30037CACF /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 321D74A31B4946D30037CACF /* libc++.dylib */; };
 		323C86B11AC05AE4008949F2 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 323C86B01AC05AE4008949F2 /* Dumper.m */; };
 		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -53,13 +51,7 @@
 
 /* Begin PBXFileReference section */
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
-		321D749B1B49468C0037CACF /* ldid.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ldid.mm; sourceTree = "<group>"; };
-		321D749C1B49468C0037CACF /* lookup2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lookup2.c; sourceTree = "<group>"; };
-		321D749E1B49468C0037CACF /* ldid_mapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ldid_mapping.h; sourceTree = "<group>"; };
-		321D749F1B49468C0037CACF /* ldid_stdlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ldid_stdlib.h; sourceTree = "<group>"; };
-		321D74A01B49468C0037CACF /* ldid_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ldid_string.h; sourceTree = "<group>"; };
 		321D74A31B4946D30037CACF /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
-		321D74C21B494B620037CACF /* ldid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldid.h; sourceTree = "<group>"; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
 		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,6 +118,12 @@
 		32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleDumpOperation.m; sourceTree = "<group>"; };
 		32EFB6F91A8AE1A3005BB56C /* ZipOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipOperation.h; sourceTree = "<group>"; };
 		32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipOperation.m; sourceTree = "<group>"; };
+		32F9F4E41B49E7A20019E8D5 /* ldid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldid.h; sourceTree = "<group>"; };
+		32F9F4E51B49E7A20019E8D5 /* ldid.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ldid.mm; sourceTree = "<group>"; };
+		32F9F4E61B49E7A20019E8D5 /* lookup2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lookup2.c; sourceTree = "<group>"; };
+		32F9F4E81B49E7A20019E8D5 /* ldid_mapping.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldid_mapping.h; sourceTree = "<group>"; };
+		32F9F4E91B49E7A20019E8D5 /* ldid_stdlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldid_stdlib.h; sourceTree = "<group>"; };
+		32F9F4EA1B49E7A20019E8D5 /* ldid_string.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ldid_string.h; sourceTree = "<group>"; };
 		32FB77A31A89BEAD00BB5ABC /* Framework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework.h; sourceTree = "<group>"; };
 		32FB77A41A89BEAD00BB5ABC /* Framework.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Framework.m; sourceTree = "<group>"; };
 		32FB77A61A89BEBE00BB5ABC /* Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension.h; sourceTree = "<group>"; };
@@ -165,27 +163,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		321D749A1B49468C0037CACF /* ldid */ = {
-			isa = PBXGroup;
-			children = (
-				321D74C21B494B620037CACF /* ldid.h */,
-				321D749B1B49468C0037CACF /* ldid.mm */,
-				321D749C1B49468C0037CACF /* lookup2.c */,
-				321D749D1B49468C0037CACF /* minimal */,
-			);
-			path = ldid;
-			sourceTree = "<group>";
-		};
-		321D749D1B49468C0037CACF /* minimal */ = {
-			isa = PBXGroup;
-			children = (
-				321D749E1B49468C0037CACF /* ldid_mapping.h */,
-				321D749F1B49468C0037CACF /* ldid_stdlib.h */,
-				321D74A01B49468C0037CACF /* ldid_string.h */,
-			);
-			path = minimal;
-			sourceTree = "<group>";
-		};
 		324EA61A1A89258000844540 = {
 			isa = PBXGroup;
 			children = (
@@ -235,7 +212,7 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				321D749A1B49468C0037CACF /* ldid */,
+				32F9F4E31B49E7A20019E8D5 /* ldid */,
 				328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */,
 				328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */,
 				324EA6431A89270D00844540 /* Clutch.entitlements */,
@@ -323,6 +300,27 @@
 				3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */,
 			);
 			name = Operations;
+			sourceTree = "<group>";
+		};
+		32F9F4E31B49E7A20019E8D5 /* ldid */ = {
+			isa = PBXGroup;
+			children = (
+				32F9F4E41B49E7A20019E8D5 /* ldid.h */,
+				32F9F4E51B49E7A20019E8D5 /* ldid.mm */,
+				32F9F4E61B49E7A20019E8D5 /* lookup2.c */,
+				32F9F4E71B49E7A20019E8D5 /* mapping */,
+			);
+			path = ldid;
+			sourceTree = "<group>";
+		};
+		32F9F4E71B49E7A20019E8D5 /* mapping */ = {
+			isa = PBXGroup;
+			children = (
+				32F9F4E81B49E7A20019E8D5 /* ldid_mapping.h */,
+				32F9F4E91B49E7A20019E8D5 /* ldid_stdlib.h */,
+				32F9F4EA1B49E7A20019E8D5 /* ldid_string.h */,
+			);
+			path = mapping;
 			sourceTree = "<group>";
 		};
 		32FB77A91A89CBAF00BB5ABC /* Application */ = {
@@ -442,7 +440,6 @@
 			files = (
 				3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */,
 				3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */,
-				321D74A11B49468C0037CACF /* ldid.mm in Sources */,
 				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,
 				32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */,
 				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
@@ -469,7 +466,6 @@
 				32BC93E61A8E0E8B00805D14 /* sha1.c in Sources */,
 				3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */,
 				328CCB371ACECEB500B21225 /* scinfo.m in Sources */,
-				321D74A21B49468C0037CACF /* lookup2.c in Sources */,
 				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
 				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
 				324EA6331A89258000844540 /* main.m in Sources */,

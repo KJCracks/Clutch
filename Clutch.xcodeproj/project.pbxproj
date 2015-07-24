@@ -45,6 +45,8 @@
 		32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
 		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
 		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
+		6E35EE7A1B62BB4F007AA756 /* ldid.mm in Sources */ = {isa = PBXBuildFile; fileRef = 32F9F4E51B49E7A20019E8D5 /* ldid.mm */; };
+		6E35EE7B1B62BB4F007AA756 /* lookup2.c in Sources */ = {isa = PBXBuildFile; fileRef = 32F9F4E61B49E7A20019E8D5 /* lookup2.c */; };
 		AD911DDE1AD289CA007B6A11 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
 		ADE1ED321AD1636D00398728 /* ProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE1ED311AD1636D00398728 /* ProgressBar.m */; };
 /* End PBXBuildFile section */
@@ -438,6 +440,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E35EE7A1B62BB4F007AA756 /* ldid.mm in Sources */,
+				6E35EE7B1B62BB4F007AA756 /* lookup2.c in Sources */,
 				3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */,
 				3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */,
 				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,

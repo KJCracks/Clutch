@@ -27,7 +27,6 @@ CFLAGS += -include $(PCH) -I. $(foreach sd,$(SRC_DIRS),-I$(sd))
 CODESIGN := $(XCRUN) codesign
 CSFLAGS := -s-
 
-
 # Print all commands executed when VERBOSE is defined
 ifdef VERBOSE
 _v :=

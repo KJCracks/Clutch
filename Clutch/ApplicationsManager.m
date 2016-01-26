@@ -13,6 +13,7 @@
 #import "ApplicationsManager.h"
 #import "FBApplicationInfo.h"
 #import "LSApplicationProxy.h"
+#import "LSApplicationWorkspace.h"
 
 typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
@@ -108,9 +109,9 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         
     }else
     {
-        id applicationWorkspace = [NSClassFromString(@"LSApplicationWorkspace") performSelector:@selector(defaultWorkspace)];
+        LSApplicationWorkspace* applicationWorkspace = [LSApplicationWorkspace defaultWorkspace];
         
-        NSArray *proxies = [applicationWorkspace performSelector:@selector(allApplications)];
+        NSArray *proxies = [applicationWorkspace allApplications];
         
         
         for (FBApplicationInfo * proxy in proxies) {

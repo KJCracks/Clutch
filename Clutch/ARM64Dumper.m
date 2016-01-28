@@ -115,24 +115,27 @@
     pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        ERROR(@"Could not obtain mach port, did you sign with proper entitlements?");
+        ERROR(@"Could not obtain mach port, either the process is dead (codesign error?) or entitlements were not properly signed!");
         goto gotofail;
     }
     
-    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
-    
     codesignblob = malloc(ldid.datasize);
     
+    
+    //seek to ldid offset
+    
+    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
     
-    uint64_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
+    uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
-    for (uint64_t index = 0; index < countBlobs; index++) {
+    for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
-            begin = newFileHandle.offsetInFile + CFSwapInt32(codesignblob->index[index].offset);
-            [newFileHandle seekToFileOffset:begin];
-            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))];
-            break;
+            // we'll find the hash metadata in here
+            begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
+            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
+            DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
+            break; //break (we don't need anything from this the superblob anymore)
         }
     }
     
@@ -159,7 +162,7 @@
         __text_start = main_address;
     }
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start];
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start code_directory:directory];
     
     system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
     

@@ -238,18 +238,24 @@
         if (dumpCount == (numHeaders-_headersToStrip.count))
         {
             
+
+            
             // codesign properly
+            
+            NSLog(@"extracting entitlements");
 
             NSString *entitlementsPath = [_binaryDumpPath stringByAppendingPathExtension:@"plist"];
             
-            FILE *fp = fopen(entitlementsPath.UTF8String , "ab+");
+            FILE *fp = fopen(entitlementsPath.UTF8String , "r+");
 
-            char *entitlementsArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+            char entitlementsArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
                 "-e",
                 originalBinary.binaryPath.UTF8String,
                 NULL};
             
             int result = ldid_main(3, entitlementsArgv, fp);
+            
+            NSLog(@"entitlements ok");
             
             fclose(fp);
             

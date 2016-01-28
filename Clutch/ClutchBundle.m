@@ -38,15 +38,17 @@
     
     headersFromBinary(headers, data, &numHeaders);
     
-    for (int i = 0; i < numHeaders; i++) {
+    NSLog(@"hello");
+    
+    /*for (int i = 0; i < numHeaders; i++) {
         thin_header _thinHeader = headers[i];
         
         NSString *rpath = self.parentBundle ? [self.parentBundle.bundlePath stringByAppendingPathComponent:@"Frameworks"] : [self.bundlePath stringByAppendingPathComponent:@"Frameworks"] ;
-        NSLog(@"checking rpath for %@", self.executable.binaryPath);
-        insertRPATHIntoBinary(rpath, data, _thinHeader);
-    }
+        NSLog(@"checking rpath (%@) for %@", rpath, self.executable.binaryPath);
+        //insertRPATHIntoBinary(rpath, data, _thinHeader);
+    }*/
     
-    [data writeToFile:self.executable.binaryPath atomically:YES];
+    //[data writeToFile:self.executable.binaryPath atomically:YES];
     
     NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};
     

@@ -291,7 +291,9 @@ exit_with_errno (int err, const char *prefix)
     
 }
 
-- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start
+
+
+- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start code_directory:(struct code_directory)directory
 {
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
     
@@ -316,8 +318,8 @@ exit_with_errno (int err, const char *prefix)
     
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
             
-            DumperLog(@"dumping binary: failed to dump a page (32)");
-            if (__text_start == 0x4000 && (_thinHeader.header.flags & MH_PIE)) {
+            DumperLog(@"Failed to dump a page :(");
+            /*if (__text_start == 0x4000 && (_thinHeader.header.flags & MH_PIE)) {
                 DumperLog(@"\n=================");
                 DumperLog(@"0x4000 binary detected, attempting to remove MH_PIE flag");
                 DumperLog(@"\n=================\n");
@@ -325,7 +327,7 @@ exit_with_errno (int err, const char *prefix)
                 system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
                 _shouldDisableASLR = YES;
                 return [self dumpBinary];
-            }
+            }*/
             free(checksum); // free checksum table
             system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
             
@@ -376,12 +378,29 @@ exit_with_errno (int err, const char *prefix)
         }
         
     writedata:
-        [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
-        
+        [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]]; //write the page
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages
     }
+    
+    
+    //nice! now let's write the new checksum data
+    DumperLog("Writing new checksum");
+    
+    DumperLog(@"header offset: %u", CFSwapInt32(_thinHeader.offset));
+    DumperLog(@"directory offset: %u", CFSwapInt32(directory.hashOffset));
+    
+    [fileHandle seekToFileOffset:(_thinHeader.offset + directory.hashOffset)];
+    
+    DumperLog(@"length yo %u", 20*pages_d);
+    
+    unsigned int length = CFSwapInt32(20*pages_d);
+    
+    //[fileHandle writeData:[NSData dataWithBytes:checksum length:length]];
+    
+    DumperLog(@"done writing checksum");
+    
     
     return YES;
 }

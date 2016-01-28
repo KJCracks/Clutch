@@ -129,16 +129,18 @@
     
     codesignblob = malloc(ldid.datasize);
     
+    
+    //read codesign blob
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
     
-    uint64_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
+    uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
-    for (uint64_t index = 0; index < countBlobs; index++) {
+    for (uint32_t index = 0; index < countBlobs; index++) {
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
-            begin = newFileHandle.offsetInFile + CFSwapInt32(codesignblob->index[index].offset);
-            [newFileHandle seekToFileOffset:begin];
-            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))];
-            break;
+            // we'll find the hash metadata in here
+            begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
+            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
+            break; //break (we don't need anything from this the superblob anymore)
         }
     }
     
@@ -165,7 +167,7 @@
         __text_start = main_address;
     }
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start];
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start code_directory:directory];
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

@@ -192,7 +192,8 @@ int main (int argc, const char * argv[])
                 exit(0);
             }
             
-            printf("\033[1;34mNow dumping %s\033[0m\n\n", _selectedApp.bundleIdentifier.UTF8String);
+            VERBOSE(@"Now dumping %@", _selectedApp.bundleIdentifier);
+            
             gettimeofday(&start, NULL);
             [_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]];
             

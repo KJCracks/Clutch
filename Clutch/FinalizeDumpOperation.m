@@ -99,7 +99,7 @@
             __block BOOL status = plists.count == self.expectedBinariesCount;
             
             if (status) {
-                SUCCESS(@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath);
+                SUCCESS_OUT(@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath);
             }
             else {
                 ERROR(@"Failed to dump %@ :(", _application.bundleIdentifier);

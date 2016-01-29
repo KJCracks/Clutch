@@ -27,8 +27,10 @@
 }
 
 - (void)prepareForDump {
-    VERBOSE(@"Preparing to dump %@", _displayName);
+
     _executable = [[Binary alloc]initWithBundle:self];
+
+    VERBOSE(@"Preparing to dump %@", _executable);
     
     // experimental
     NSMutableData *data = [NSMutableData dataWithContentsOfFile:self.executable.binaryPath];

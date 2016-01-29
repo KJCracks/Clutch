@@ -13,11 +13,14 @@
 #import "mach_vm.h"
 #import "ClutchBundle.h"
 
+void *safe_trim(void *p, size_t n);
+
 @interface Dumper : NSObject
 {
     Binary *_originalBinary;
     thin_header _thinHeader;
 }
+
 
 @property (readonly) BOOL isASLRProtected;
 @property NSFileHandle *originalFileHandle;
@@ -30,7 +33,8 @@
 - (ArchCompatibility)compatibilityMode;
 
 - (void)swapArch;
-- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start code_directory:(struct code_directory)directory codesign_begin:(uint32_t)begin;
+
+- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin;
 
 @end
 

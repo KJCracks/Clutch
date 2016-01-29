@@ -103,26 +103,30 @@
         return NO;
     }
     
+    NSLog(@"starting to ldid");
+    
     NSUInteger begin;
     
-    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
+    //seek to ldid offset
     
     codesignblob = malloc(ldid.datasize);
     
+    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
+    NSLog(@"hello it's me");
     
-    uint64_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
+    uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
-    for (uint64_t index = 0; index < countBlobs; index++) {
+    for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
-            begin = newFileHandle.offsetInFile + CFSwapInt32(codesignblob->index[index].offset);
-            [newFileHandle seekToFileOffset:begin];
-            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))];
-            break;
+            // we'll find the hash metadata in here
+            DumperDebugLog(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
+            begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
+            [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
+            DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
+            break; //break (we don't need anything from this the superblob anymore)
         }
     }
-    
-    free(codesignblob);
     
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
@@ -140,7 +144,40 @@
     
     pid_t pid;
     
-    char *argv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+    /* fmwk.binPath = arguments[2];
+     fmwk.dumpPath = arguments[3];
+     fmwk.dumpSize = [arguments[4]intValue];
+     fmwk.pages = [arguments[5]intValue];
+     fmwk.ncmds = [arguments[6]intValue];
+     fmwk.offset = [arguments[7]intValue];
+     fmwk.bID = arguments[8];
+     fmwk.hashOffset = [arguments[9] intValue];
+     fmwk.codesign_begin = [arguments[10] intValue];
+     */
+    
+    NSUUID* workingUUID = [NSUUID new];
+    NSString* workingPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"clutch" stringByAppendingPathComponent:workingUUID.UUIDString]];
+    
+    while ([[NSFileManager defaultManager] fileExistsAtPath:workingPath]) {
+        workingUUID = [NSUUID new];
+        workingPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"clutch" stringByAppendingPathComponent:workingUUID.UUIDString]];
+    }
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:workingPath withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    if (![[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"clutch"] withDestinationPath:[NSProcessInfo processInfo].arguments[0] error:nil]) {
+        ERROR(@"Failed to create symbolic link to %@", workingPath);
+        return NO;
+    }
+    
+    if (_originalBinary.frameworksPath == nil) {
+        ERROR(@"Could not find Frameworks path to create symbolic link to");
+        return NO;
+    }
+    
+    [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"] withDestinationPath:_originalBinary.frameworksPath error:nil];
+    
+    const char *argv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
         "-f",
         swappedBinaryPath.UTF8String,
         binaryDumpPath.UTF8String,
@@ -149,7 +186,26 @@
         [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
         [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
         bundle.parentBundle.bundleIdentifier.UTF8String,
+        [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
+        [NSString stringWithFormat:@"%u",begin].UTF8String,
         NULL};
+    
+    
+    NSLog(@"%s %s %s %s %s %s %s %s %s %s %s", [[NSProcessInfo processInfo].arguments[0] UTF8String],
+          "-f",
+          swappedBinaryPath.UTF8String,
+          binaryDumpPath.UTF8String,
+          [NSString stringWithFormat:@"%u",(crypt.cryptsize + crypt.cryptoff)].UTF8String,
+          [NSString stringWithFormat:@"%u",pages].UTF8String,
+          [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
+          [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
+          
+          bundle.parentBundle.bundleIdentifier.UTF8String,
+          [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
+          [NSString stringWithFormat:@"%u",begin].UTF8String);
+
+    DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv]);
+
     
     posix_spawnattr_init (&attr);
     
@@ -159,12 +215,12 @@
     
     posix_spawnattr_setbinpref_np (&attr, 1, &cpu_type, &ocount);
     
-    int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, argv, environ);
+    int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, (char* const*)argv, environ);
     
     if (dumpResult == 0) {
-        DumperDebugLog(@"Child pid: %i", pid);
+        DumperDebugLog(@"Child pid: %u", pid);
         if (waitpid(pid, &dumpResult, 0) != -1) {
-            DumperDebugLog(@"Child exited with status %i", dumpResult);
+            DumperDebugLog(@"Child exited with status %u", dumpResult);
         } else {
             perror("waitpid");
         }
@@ -179,6 +235,8 @@
         [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:workingPath error:nil];
     
     if (dumpResult == 0)
         return YES;

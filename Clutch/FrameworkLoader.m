@@ -36,6 +36,8 @@
 
 - (BOOL)dumpBinary {
     
+   
+    
     NSString *binaryDumpPath = self.dumpPath;
     
     NSString* swappedBinaryPath = self.binPath; // default values if we dont need to swap archs
@@ -44,22 +46,26 @@
     
     [NSBundle mainBundle].clutchBID = self.bID;//_infoPlist[@"CFBundleIdentifier"];
     
+     _originalBinary = (Binary*)[NSString stringWithFormat:@"<%@>", _infoPlist[@"CFBundleExecutable"]];
     
-    //NSLog(@"%@ %@",_infoPlist,[NSBundle mainBundle].bundleIdentifier);
+    //DumperDebugLog(@"%@ %@",_infoPlist,[NSBundle mainBundle].bundleIdentifier);
 
     
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
         
     [newFileHandle seekToFileOffset:self.offset];
     
-    void * handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
+    void *handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
+    
+    if (!handle) {
+        ERROR(@"Failed to dlopen %@ %s", swappedBinaryPath, dlerror());
+        return NO;
+    }
     
     uint32_t imageCount = _dyld_image_count();
     uint32_t dyldIndex = -1;
     for (uint32_t idx = 0; idx < imageCount; idx++) {
         NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
-        
-        
         if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
             dyldIndex = idx;
             break;
@@ -75,15 +81,24 @@
     
     intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:self.encryptionInfoCommand pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
+    DumperDebugLog(@"dyld offset %u", dyldPointer);
+    
+    BOOL dumpResult;
+    
+    //[self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:self.encryptionInfoCommand pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
+    
+    dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:self.dumpSize pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer codeSignature_hashOffset:self.hashOffset codesign_begin:self.codesign_begin];
+    
     
     dlclose(handle);
     
     return dumpResult;
 }
 
-- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start
+- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
+    
+    DumperDebugLog(@"Using Framework Dumper");
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
     
     const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
@@ -98,12 +113,14 @@
     uint8_t buf_d[0x1000]; // create a single page buffer
     uint8_t *buf = &buf_d[0]; // store the location of the buffer
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
-    
     while (togo > 0) {
         // get a percentage for the progress bar
         
-        if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)
+        if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS) {
+            ERROR(@"Could not read from memory, either the process is dead (codesign error?) or entitlements were not properly signed!");
             return NO;
+        }
+        
         
         if (header) {
             
@@ -126,11 +143,11 @@
                 if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                     struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
                     newcrypt->cryptid = 0; // change the cryptid to 0
-                    //VERBOSE("dumping binary: patched cryptid");
+                    NSLog(@"Patched cryptid (32bit segment)");
                 } else if (l_cmd->cmd == LC_ENCRYPTION_INFO_64) {
                     struct encryption_info_command_64 *newcrypt = (struct encryption_info_command_64 *) curloc;
                     newcrypt->cryptid = 0; // change the cryptid to 0
-                    //VERBOSE("dumping binary: patched cryptid");
+                    NSLog(@"Patched cryptid (64bit segment)");
                 }
                 
                 curloc += lcmd_size;
@@ -154,7 +171,20 @@
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages
     }
+    //nice! now let's write the new checksum data
+    DumperLog("Writing new checksum");
+    [fileHandle seekToFileOffset:(begin + hashOffset)];
     
+    
+    int length = (20*pages_d);
+    void* trimmed_checksum = safe_trim(checksum, length);
+    
+    NSData* data = [NSMutableData dataWithBytes:trimmed_checksum length:length];
+    
+    [fileHandle writeData:data];
+    
+    
+    DumperLog(@"Done writing checksum");
     return YES;
 }
 

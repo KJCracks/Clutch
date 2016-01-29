@@ -21,6 +21,7 @@
 @property (readonly) NSString *sinfPath;
 @property (readonly) NSString *supfPath;
 @property (readonly) NSString *suppPath;
+@property (readonly) NSString* frameworksPath;
 
 @property (readonly) BOOL isFAT;
 @property (readonly) BOOL hasARMSlice;

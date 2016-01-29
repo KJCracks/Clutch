@@ -15,8 +15,6 @@
 #define _POSIX_SPAWN_DISABLE_ASLR       0x0100
 #endif
 
-void *safe_trim(void *p, size_t n);
-
 @implementation Dumper
 
 - (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary {
@@ -220,7 +218,7 @@ exit_with_errno (int err, const char *prefix)
 
 
 
-- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start code_directory:(struct code_directory)directory codesign_begin:(uint32_t)begin
+- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
     DumperDebugLog(@"checksum size %u", pages*20);
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
@@ -303,7 +301,7 @@ exit_with_errno (int err, const char *prefix)
     
     //nice! now let's write the new checksum data
     DumperLog("Writing new checksum");
-    [fileHandle seekToFileOffset:(begin + CFSwapInt32(directory.hashOffset))];
+    [fileHandle seekToFileOffset:(begin + hashOffset)];
     
     
     int length = (20*pages_d);

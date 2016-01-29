@@ -74,7 +74,6 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                                                     @"MinimumOSVersion"]};
     
     if (_mobileInstallationLookup) {
-        
         NSDictionary *installedApps;
         
         installedApps = _mobileInstallationLookup(options);
@@ -97,6 +96,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                 if (name == nil) {
                     name = appI[@"CFBundleExecutable"];
                 }
+                // NSLog(@"initializing %@ %@ %@ %@", bundleURL.URLByDeletingLastPathComponent, bundleURL, proxy.bundleURL, name, bundleID);
                 NSDictionary* bundleInfo = @{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
                                              @"BundleURL":bundleURL,
                                              @"DisplayName": name,
@@ -112,7 +112,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         LSApplicationWorkspace* applicationWorkspace = [LSApplicationWorkspace defaultWorkspace];
         
         NSArray *proxies = [applicationWorkspace allApplications];
-        NSDictionary *bundleInfo = nil;
+        
         
         for (FBApplicationInfo * proxy in proxies) {
             
@@ -128,17 +128,15 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                 
                 if (purchased && isDirectory) {
                     NSString *itemName = ((LSApplicationProxy*) proxy).itemName;
-                    
-                    if (!itemName)
+                    if (!itemName) {
                         itemName = ((LSApplicationProxy*)proxy).localizedName;
+                    }
                     
-                    bundleInfo = @{
-                                                   @"BundleContainer":proxy.bundleContainerURL,
-                                                   @"BundleURL":proxy.bundleURL,
-                                                   @"DisplayName": itemName,
-                                                   @"BundleIdentifier": proxy.bundleIdentifier
-                                   };
-                     
+                    //NSLog(@"initializing %@ %@ %@ %@", proxy.bundleContainerURL, proxy.bundleURL, ((LSApplicationProxy*) proxy).itemName, proxy.bundleIdentifier);
+                    NSDictionary* bundleInfo = @{@"BundleContainer":proxy.bundleContainerURL,
+                                                 @"BundleURL":proxy.bundleURL,
+                                                 @"DisplayName": itemName,
+                                                 @"BundleIdentifier": proxy.bundleIdentifier};
                     Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
                     returnValue[proxy.bundleIdentifier] = app;
                     [self cacheBundle:bundleInfo];

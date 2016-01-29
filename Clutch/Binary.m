@@ -35,6 +35,11 @@
         
         _bundle = path;
         
+        NSLog(@"######## bundle URL %@", _bundle.bundleContainerURL);
+        if ([[_bundle.bundleContainerURL path] hasSuffix:@"Frameworks"]) {
+            _frameworksPath = [_bundle.bundleContainerURL path];
+        }
+        
         // perm. fix
         
         NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};

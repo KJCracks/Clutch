@@ -104,21 +104,24 @@ int main (int argc, const char * argv[])
                 
                 NSArray *arguments = [NSProcessInfo processInfo].arguments;
                 
-                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 9)) {
+                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 11)) {
                     
                     FrameworkLoader *fmwk = [FrameworkLoader new];
                                         
                     fmwk.binPath = arguments[2];
                     fmwk.dumpPath = arguments[3];
-                    fmwk.encryptionInfoCommand = [arguments[4]intValue];
+                    fmwk.dumpSize = [arguments[4]intValue];
                     fmwk.pages = [arguments[5]intValue];
                     fmwk.ncmds = [arguments[6]intValue];
                     fmwk.offset = [arguments[7]intValue];
                     fmwk.bID = arguments[8];
+                    fmwk.hashOffset = [arguments[9] intValue];
+                    fmwk.codesign_begin = [arguments[10] intValue];
                     
                     BOOL result = [fmwk dumpBinary];
-                    
+                   
                     if (result) {
+                        SUCCESS(@"Successfully dumped framework!");
                         exit(0);
                     }
                     

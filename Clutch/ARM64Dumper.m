@@ -56,7 +56,7 @@
     
     uint64_t __text_start = 0;
     
-    DumperLog(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    DumperDebugLog(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
         
@@ -132,6 +132,7 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
+            DumperDebugLog(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
             begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
             DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
@@ -142,6 +143,8 @@
     free(codesignblob);
     
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
+    
+    DumperDebugLog(@"Codesign Pages %u", pages);
     
     if (pages == 0) {
         DumperLog(@"pages == 0");
@@ -162,7 +165,7 @@
         __text_start = main_address;
     }
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start code_directory:directory];
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start code_directory:directory codesign_begin:begin];
     
     system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
     

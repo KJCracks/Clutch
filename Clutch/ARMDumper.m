@@ -59,7 +59,7 @@
     
     uint64_t __text_start = 0;
     
-    DumperLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    DumperDebugLog(@"32bit Dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
         
@@ -102,7 +102,7 @@
             break;
     }
     
-    NSLog(@"binary path %@", swappedBinaryPath);
+    DumperDebugLog(@"binary path %@", swappedBinaryPath);
     
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
@@ -130,16 +130,20 @@
     codesignblob = malloc(ldid.datasize);
     
     
-    //read codesign blob
+    //seek to ldid offset
+    
+    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
-    for (uint32_t index = 0; index < countBlobs; index++) {
+    for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
+            DumperDebugLog(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
             begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
+            DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
             break; //break (we don't need anything from this the superblob anymore)
         }
     }
@@ -159,15 +163,15 @@
     {
         mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid];
         if(main_address == -1) {
-            DumperLog(@"Failed to find address of header!");
+            ERROR(@"Failed to find address of header!");
             goto gotofail;
         }
         
-        DumperLog(@"ASLR slide: 0x%llx", main_address);
+        DumperDebugLog(@"ASLR slide: 0x%llx", main_address);
         __text_start = main_address;
     }
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start code_directory:directory];
+    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start code_directory:directory codesign_begin:begin];
     
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

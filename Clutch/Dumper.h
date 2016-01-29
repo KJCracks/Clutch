@@ -30,14 +30,14 @@
 - (ArchCompatibility)compatibilityMode;
 
 - (void)swapArch;
-- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)crypt pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)aslrSlide code_directory:(struct code_directory)directory;
+- (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withEncryptionInfoCommand:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start code_directory:(struct code_directory)directory codesign_begin:(uint32_t)begin;
 
 @end
 
-#define DumperLog(fmt,...) printf("\033[0;34mDUMP |\033[0m %s\n",[NSString stringWithFormat:@"%@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary, ##__VA_ARGS__].UTF8String)
+#define DumperLog(fmt,...) printf("\033[0;34mDUMP |\033[0m %s\n",[NSString stringWithFormat:@"%@ <%@> %@ " fmt, NSStringFromClass([self class]), [Dumper readableArchFromHeader:_thinHeader], _originalBinary, ##__VA_ARGS__].UTF8String)
 
-//#ifdef DEBUG
+#ifdef DEBUG
 #   define DumperDebugLog(fmt,...) NSLog(@"DUMP: %@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary,##__VA_ARGS__)
-//#else
-//#   define DumperDebugLog(...)
-//#endif
+#else
+#   define DumperDebugLog(...)
+#endif

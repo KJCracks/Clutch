@@ -57,7 +57,6 @@
     
     self.completionBlock = ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"ending the thread bye bye");
             CFRunLoopStop(CFRunLoopGetCurrent());
         });
         

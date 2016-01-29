@@ -14,7 +14,6 @@
 #import "Device.h"
 
 #import "Dumper.h"
-#import "ldid.h"
 
 @import ObjectiveC.runtime;
 
@@ -163,7 +162,7 @@
             
             if (result) {
                 dumpCount++;
-                gbprintln(@"Finished dumping binary %@ %@ with result: %i",originalBinary,[Dumper readableArchFromHeader:macho],result);
+                SUCCESS(@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary);
             } else {
                 ERROR(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
             }
@@ -227,7 +226,8 @@
                 offset += sizeof(struct fat_arch);
             }
 
-            NSLog(@"wrote new header to binary!");
+            VERBOSE(@"Finished 'stripping' binary %@", originalBinary);
+            VERBOSE(@"Note: This binary will be missing some undecryptable architectures\n");
 
             
             [_dumpHandle closeFile];
@@ -237,8 +237,7 @@
 #pragma mark checking if everything's fine
         if (dumpCount == (numHeaders-_headersToStrip.count))
         {
-            
-
+            /*
             
             // codesign properly
             
@@ -264,7 +263,7 @@
                 _binaryDumpPath.UTF8String,
                 NULL};
             
-            result = ldid_main(3, codesignArgv, fp);
+            result = ldid_main(3, codesignArgv, fp);*/
             
             NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
             

@@ -27,7 +27,7 @@
 }
 
 - (void)prepareForDump {
-    NSLog(@"preparing for dump");
+    VERBOSE(@"Preparing to dump %@", _displayName);
     _executable = [[Binary alloc]initWithBundle:self];
     
     // experimental
@@ -37,8 +37,6 @@
     uint32_t numHeaders = 0;
     
     headersFromBinary(headers, data, &numHeaders);
-    
-    NSLog(@"hello");
     
     /*for (int i = 0; i < numHeaders; i++) {
         thin_header _thinHeader = headers[i];

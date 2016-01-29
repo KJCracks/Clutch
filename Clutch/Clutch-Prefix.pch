@@ -21,20 +21,25 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#define CLUTCH_VERSION @"2.0 RC5"
+#define CLUTCH_VERSION @"2.0 RC6"
 
-#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;31mDONE\033[0m: %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
 # define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
 
-#define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#ifdef DEBUG
+
+#   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;33mDEBUG\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#   define VERBOSE(M, ...) fprintf(stderr, "\033[0;33mVERBOSE\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
-//#   define NSLog(...)
+#else
+#   define NSLog(...)
 
-//#   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+#   define VERBOSE(M, ...) fprintf(stdout, "\033[0;33m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
-
+#endif
 
 
 

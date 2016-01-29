@@ -197,7 +197,7 @@ int main (int argc, const char * argv[])
             gettimeofday(&end, NULL);
             int dif = diff_ms(end,start);
             float sec = ((dif + 500.0f) / 1000.0f);
-            gbprintln(@"Finished dumping %@ in %0.1f seconds", _selectedApp.bundleIdentifier, sec);
+            SUCCESS(@"Finished dumping %@ in %0.1f seconds", _selectedApp.bundleIdentifier, sec);
             
             
             
@@ -216,6 +216,7 @@ void sha1(uint8_t *hash, uint8_t *data, size_t size) {
     SHA1Reset(&context);
     SHA1Input(&context, data, (unsigned)size);
     SHA1Result(&context, hash);
+    //NSLog(@"hash %s", hash);
 }
 
 

@@ -160,9 +160,10 @@
     }
     
     [[NSFileManager defaultManager] createDirectoryAtPath:workingPath withIntermediateDirectories:YES attributes:nil error:nil];
+
     
-    if (![[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"clutch"] withDestinationPath:[NSProcessInfo processInfo].arguments[0] error:nil]) {
-        ERROR(@"Failed to create symbolic link to %@", workingPath);
+    if (![[NSFileManager defaultManager] copyItemAtPath:[NSProcessInfo processInfo].arguments[0] toPath:[workingPath stringByAppendingPathComponent:@"clutch"] error:nil]) {
+        ERROR(@"Failed to copy clutch to %@", workingPath);
         return NO;
     }
     
@@ -173,7 +174,7 @@
     
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"] withDestinationPath:_originalBinary.frameworksPath error:nil];
     
-    const char *argv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
+    const char *argv[] = {[[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
         "-f",
         swappedBinaryPath.UTF8String,
         binaryDumpPath.UTF8String,

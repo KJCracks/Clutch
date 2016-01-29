@@ -6,7 +6,7 @@ Works with all devices, iOS versions, architecture types, with most binaries.
 
 This product is meant only for educational purposes and security research.
 
-Current version: *2.0-RC5*
+Current version: *2.0-RC6*
 
 
 Usage
@@ -29,7 +29,6 @@ Licenses
 ------------
 *Clutch* uses the following libraries under their respective licenses.
 
-[ldid] (http://gitweb.saurik.com/ldid.git) by Jay Freeman<br />
 [optool] (https://github.com/alexzielenski/optool) by Alex Zielenski<br />
 [GBCli] (https://github.com/tomaz/GBCli) by Tomaz Kragelj<br />
 [ZipArchive] (https://github.com/mattconnolly/ZipArchive/) by Matt Connolly, Edward Patel, et al.<br />

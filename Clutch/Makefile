@@ -2,7 +2,7 @@
 TARGET := clutch
 ENTITLEMENTS := Clutch.entitlements
 PCH := Clutch-Prefix.pch
-SRC_DIRS := MiniZip ldid ldid/mapping
+SRC_DIRS := MiniZip
 CFLAGS += -fmodules -fobjc-arc -I..
 LDFLAGS += -lz -F/System/Library/PrivateFrameworks -F /System/Library/Frameworks -framework AppSupport -framework Foundation -framework MobileCoreServices
 
@@ -25,7 +25,7 @@ CC := $(CLANG) $(ARCHFLAGS)
 LD := $(CLANGXX) $(ARCHFLAGS)
 CFLAGS += -include $(PCH) -I. $(foreach sd,$(SRC_DIRS),-I$(sd))
 CODESIGN := $(XCRUN) codesign
-CSFLAGS := -s-
+CSFLAGS := -fs-
 
 # Print all commands executed when VERBOSE is defined
 ifdef VERBOSE

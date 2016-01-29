@@ -6,55 +6,25 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		321D74A41B4946D30037CACF /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 321D74A31B4946D30037CACF /* libc++.dylib */; };
-		323C86B11AC05AE4008949F2 /* Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 323C86B01AC05AE4008949F2 /* Dumper.m */; };
-		324EA6271A89258000844540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA6261A89258000844540 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
-		324EA6331A89258000844540 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
-		324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA63B1A8925DB00844540 /* ApplicationsManager.m */; };
-		324EA6421A8926DC00844540 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
-		3258FD641A90AAED007C2E66 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
-		326ABC8A1AD2B94000B21FCC /* FrameworkLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 326ABC891AD2B94000B21FCC /* FrameworkLoader.m */; };
-		326E8D2E1AE53DED00DCDD64 /* NSBundle+Clutch.m in Sources */ = {isa = PBXBuildFile; fileRef = 326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */; };
-		3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B9571ABEA6E100964049 /* ARMDumper.m */; };
-		3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3274B95F1ABEB00400964049 /* ARM64Dumper.m */; };
-		3277BF991ACD50BD0060935A /* FrameworkDumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3277BF981ACD50BD0060935A /* FrameworkDumper.m */; };
-		3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */; };
-		3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE071A8D9ACD00E5068A /* optool-headers.m */; };
-		3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE091A8D9ACD00E5068A /* NSData+Reading.m */; };
-		3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE0B1A8D9ACD00E5068A /* optool-operations.m */; };
-		328359DE1ACC118D003587F3 /* NSFileHandle+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */; };
-		328CCB371ACECEB500B21225 /* scinfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB361ACECEB500B21225 /* scinfo.m */; };
-		328CCB3A1ACECF4100B21225 /* Framework64Dumper.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB391ACECF4100B21225 /* Framework64Dumper.m */; };
-		328CCB3F1ACED00600B21225 /* SCInfoBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */; };
-		32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */ = {isa = PBXBuildFile; fileRef = 32BC93F31A8F726800805D14 /* ASLRDisabler.m */; };
-		32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
-		32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6E91A8A4FEF005BB56C /* ioapi.c */; };
-		32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6EB1A8A4FEF005BB56C /* unzip.c */; };
-		32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6ED1A8A4FEF005BB56C /* zip.c */; };
-		32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32EFB6F21A8A500D005BB56C /* libz.dylib */; };
-		32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */; };
-		32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */; };
-		32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A41A89BEAD00BB5ABC /* Framework.m */; };
-		32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A71A89BEBE00BB5ABC /* Extension.m */; };
-		32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */; };
-		32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */; };
-		32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B81A89DC9200BB5ABC /* GBPrint.m */; };
-		32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
-		32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C01A89F09300BB5ABC /* ClutchBundle.m */; };
-		32FB77C41A89F13000BB5ABC /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77C31A89F13000BB5ABC /* Binary.m */; };
-		AD16CC921C57297C00A624EC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 324EA63D1A89260A00844540 /* MobileCoreServices.framework */; settings = {ATTRIBUTES = (Required, ); }; };
-		AD911DDE1AD289CA007B6A11 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE1ED291AD02C2000398728 /* AppSupport.framework */; };
-		ADAD7C191C5B3C8600644FD6 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = ADAD7C171C5B3C8600644FD6 /* sha1.c */; };
-		ADE1ED321AD1636D00398728 /* ProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE1ED311AD1636D00398728 /* ProgressBar.m */; };
-/* End PBXBuildFile section */
+/* Begin PBXAggregateTarget section */
+		329B80701C5B6745007DD817 /* Clutch */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 329B80711C5B6745007DD817 /* Build configuration list for PBXAggregateTarget "Clutch" */;
+			buildPhases = (
+				329B80741C5B6748007DD817 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Clutch;
+			productName = Clutch;
+		};
+/* End PBXAggregateTarget section */
 
 /* Begin PBXFileReference section */
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		321D74A31B4946D30037CACF /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
-		324EA6231A89258000844540 /* Clutch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Clutch; sourceTree = BUILT_PRODUCTS_DIR; };
 		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		324EA6321A89258000844540 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		324EA6341A89258000844540 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
@@ -99,6 +69,7 @@
 		328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCInfoBuilder.m; sourceTree = "<group>"; };
 		328CCB4B1ACFFBD500B21225 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		328CCB711AD004FF00B21225 /* NSTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
+		329B80751C5B6823007DD817 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		32BC93F11A8F3C0B00805D14 /* mach_vm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mach_vm.h; sourceTree = "<group>"; };
 		32BC93F21A8F726800805D14 /* ASLRDisabler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASLRDisabler.h; sourceTree = "<group>"; };
 		32BC93F31A8F726800805D14 /* ASLRDisabler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASLRDisabler.m; sourceTree = "<group>"; };
@@ -142,21 +113,6 @@
 		ADE1ED311AD1636D00398728 /* ProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressBar.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFrameworksBuildPhase section */
-		324EA6201A89258000844540 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				321D74A41B4946D30037CACF /* libc++.dylib in Frameworks */,
-				AD911DDE1AD289CA007B6A11 /* AppSupport.framework in Frameworks */,
-				32EFB6F31A8A500D005BB56C /* libz.dylib in Frameworks */,
-				324EA6271A89258000844540 /* Foundation.framework in Frameworks */,
-				AD16CC921C57297C00A624EC /* MobileCoreServices.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
 /* Begin PBXGroup section */
 		324EA61A1A89258000844540 = {
 			isa = PBXGroup;
@@ -170,7 +126,6 @@
 		324EA6241A89258000844540 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				324EA6231A89258000844540 /* Clutch */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -207,6 +162,7 @@
 		324EA62D1A89258000844540 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				329B80751C5B6823007DD817 /* Makefile */,
 				328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */,
 				328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */,
 				ADAD7C171C5B3C8600644FD6 /* sha1.c */,
@@ -360,33 +316,14 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXNativeTarget section */
-		324EA6221A89258000844540 /* Clutch */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 324EA6371A89258000844540 /* Build configuration list for PBXNativeTarget "Clutch" */;
-			buildPhases = (
-				324EA61F1A89258000844540 /* Sources */,
-				324EA6201A89258000844540 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Clutch;
-			productName = Clutch;
-			productReference = 324EA6231A89258000844540 /* Clutch */;
-			productType = "com.apple.product-type.tool";
-		};
-/* End PBXNativeTarget section */
-
 /* Begin PBXProject section */
 		324EA61B1A89258000844540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0640;
 				TargetAttributes = {
-					324EA6221A89258000844540 = {
-						CreatedOnToolsVersion = 6.2;
+					329B80701C5B6745007DD817 = {
+						CreatedOnToolsVersion = 7.2;
 					};
 				};
 			};
@@ -402,55 +339,26 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				324EA6221A89258000844540 /* Clutch */,
+				329B80701C5B6745007DD817 /* Clutch */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXSourcesBuildPhase section */
-		324EA61F1A89258000844540 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
+/* Begin PBXShellScriptBuildPhase section */
+		329B80741C5B6748007DD817 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3282BE0D1A8D9ACD00E5068A /* NSData+Reading.m in Sources */,
-				3282BE0C1A8D9ACD00E5068A /* optool-headers.m in Sources */,
-				3282BE0E1A8D9ACD00E5068A /* optool-operations.m in Sources */,
-				32BC93F41A8F726800805D14 /* ASLRDisabler.m in Sources */,
-				32FB77BC1A89DC9200BB5ABC /* GBOptionsHelper.m in Sources */,
-				326E8D2E1AE53DED00DCDD64 /* NSBundle+Clutch.m in Sources */,
-				32EFB6F81A8AC2AF005BB56C /* BundleDumpOperation.m in Sources */,
-				32EFB6EF1A8A4FEF005BB56C /* ioapi.c in Sources */,
-				32FB77A51A89BEAD00BB5ABC /* Framework.m in Sources */,
-				3274B9581ABEA6E100964049 /* ARMDumper.m in Sources */,
-				3258FD641A90AAED007C2E66 /* Device.m in Sources */,
-				32EFB6F11A8A4FEF005BB56C /* zip.c in Sources */,
-				32FB77BD1A89DC9200BB5ABC /* GBPrint.m in Sources */,
-				32FB77BB1A89DC9200BB5ABC /* GBCommandLineParser.m in Sources */,
-				32EFB6D01A8A4F0E005BB56C /* ZipArchive.m in Sources */,
-				32FB77A81A89BEBE00BB5ABC /* Extension.m in Sources */,
-				ADE1ED321AD1636D00398728 /* ProgressBar.m in Sources */,
-				328CCB3A1ACECF4100B21225 /* Framework64Dumper.m in Sources */,
-				324EA6421A8926DC00844540 /* Application.m in Sources */,
-				32EFB6F01A8A4FEF005BB56C /* unzip.c in Sources */,
-				324EA63C1A8925DB00844540 /* ApplicationsManager.m in Sources */,
-				328CCB3F1ACED00600B21225 /* SCInfoBuilder.m in Sources */,
-				32EFB6FB1A8AE1A3005BB56C /* ZipOperation.m in Sources */,
-				32FB77BE1A89DC9200BB5ABC /* GBSettings.m in Sources */,
-				3277BF991ACD50BD0060935A /* FrameworkDumper.m in Sources */,
-				ADAD7C191C5B3C8600644FD6 /* sha1.c in Sources */,
-				3274B9601ABEB00400964049 /* ARM64Dumper.m in Sources */,
-				328CCB371ACECEB500B21225 /* scinfo.m in Sources */,
-				3282BB7C1A8C920D00E5068A /* FinalizeDumpOperation.m in Sources */,
-				32FB77C11A89F09300BB5ABC /* ClutchBundle.m in Sources */,
-				324EA6331A89258000844540 /* main.m in Sources */,
-				326ABC8A1AD2B94000B21FCC /* FrameworkLoader.m in Sources */,
-				32FB77C41A89F13000BB5ABC /* Binary.m in Sources */,
-				323C86B11AC05AE4008949F2 /* Dumper.m in Sources */,
-				328359DE1ACC118D003587F3 /* NSFileHandle+Private.m in Sources */,
+			);
+			inputPaths = (
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $PROJECT_DIR/Clutch;\nmake clean &> /dev/null;\nmake;\nopen .;";
 		};
-/* End PBXSourcesBuildPhase section */
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		324EA6351A89258000844540 /* Debug */ = {
@@ -516,68 +424,17 @@
 			};
 			name = Release;
 		};
-		324EA6381A89258000844540 /* Debug */ = {
+		329B80721C5B6745007DD817 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
-				CODE_SIGN_IDENTITY = "-";
-				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
-				INSTALL_PATH = /usr/bin;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7s";
-				iOSOpenDevBuildPackageOnAnyBuild = NO;
-				iOSOpenDevCopyOnBuild = NO;
-				iOSOpenDevDevice = "";
-				iOSOpenDevInstallOnAnyBuild = NO;
-				iOSOpenDevInstallOnProfiling = YES;
-				iOSOpenDevRespringOnInstall = YES;
-				iOSOpenDevUsePackageVersionPList = YES;
 			};
 			name = Debug;
 		};
-		324EA6391A89258000844540 /* Release */ = {
+		329B80731C5B6745007DD817 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = "${PROJECT_DIR}/Clutch/Clutch.entitlements";
-				CODE_SIGN_IDENTITY = "-";
-				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
-				INSTALL_PATH = /usr/bin;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7s";
-				iOSOpenDevBuildPackageOnAnyBuild = YES;
-				iOSOpenDevCopyOnBuild = NO;
-				iOSOpenDevDevice = "";
-				iOSOpenDevInstallOnAnyBuild = NO;
-				iOSOpenDevInstallOnProfiling = YES;
-				iOSOpenDevRespringOnInstall = YES;
-				iOSOpenDevUsePackageVersionPList = YES;
 			};
 			name = Release;
 		};
@@ -593,11 +450,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		324EA6371A89258000844540 /* Build configuration list for PBXNativeTarget "Clutch" */ = {
+		329B80711C5B6745007DD817 /* Build configuration list for PBXAggregateTarget "Clutch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				324EA6381A89258000844540 /* Debug */,
-				324EA6391A89258000844540 /* Release */,
+				329B80721C5B6745007DD817 /* Debug */,
+				329B80731C5B6745007DD817 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

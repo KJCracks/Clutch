@@ -84,7 +84,7 @@ exit_with_errno (int err, const char *prefix)
         //thinHeader.header.flags |= MH_PIE;
         //[self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else {
-        DumpeDebugLog(@"to MH_PIE or not to MH_PIE, that is the question");
+        DumperDebugLog(@"to MH_PIE or not to MH_PIE, that is the question");
     }
     
     pid_t pid = 0;

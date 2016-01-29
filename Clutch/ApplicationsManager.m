@@ -85,9 +85,9 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
             NSDictionary *appI=installedApps[bundleID];
             
             NSURL *bundleURL = [NSURL fileURLWithPath:appI[@"Path"]];
-           
+            
             NSString *scinfo=[bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
-           
+            
             BOOL isDirectory;
             
             BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
@@ -112,7 +112,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         LSApplicationWorkspace* applicationWorkspace = [LSApplicationWorkspace defaultWorkspace];
         
         NSArray *proxies = [applicationWorkspace allApplications];
-        
+        NSDictionary *bundleInfo = nil;
         
         for (FBApplicationInfo * proxy in proxies) {
             
@@ -127,10 +127,18 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
                 BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
                 
                 if (purchased && isDirectory) {
-                    NSDictionary* bundleInfo = @{@"BundleContainer":proxy.bundleContainerURL,
-                                                 @"BundleURL":proxy.bundleURL,
-                                                 @"DisplayName": ((LSApplicationProxy*) proxy).itemName,
-                                                 @"BundleIdentifier": proxy.bundleIdentifier};
+                    NSString *itemName = ((LSApplicationProxy*) proxy).itemName;
+                    
+                    if (!itemName)
+                        itemName = ((LSApplicationProxy*)proxy).localizedName;
+                    
+                    bundleInfo = @{
+                                                   @"BundleContainer":proxy.bundleContainerURL,
+                                                   @"BundleURL":proxy.bundleURL,
+                                                   @"DisplayName": itemName,
+                                                   @"BundleIdentifier": proxy.bundleIdentifier
+                                   };
+                     
                     Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
                     returnValue[proxy.bundleIdentifier] = app;
                     [self cacheBundle:bundleInfo];

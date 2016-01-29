@@ -20,7 +20,7 @@
     if (self = [super initWithURL:info[@"BundleURL"]]) {
         _bundleContainerURL = [info[@"BundleContainer"] copy];
         _displayName = [info[@"DisplayName"] copy];
-        _dumpQueue = [NSOperationQueue new];
+        _dumpQueue = [NSOperationQueue mainQueue];
     }
     
     return self;

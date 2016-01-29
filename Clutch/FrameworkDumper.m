@@ -55,6 +55,7 @@
     uint64_t __text_start = 0;
     
     DumperLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    uint32_t cryptlc_offset;
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
         
@@ -71,6 +72,7 @@
                 break;
             }
             case LC_ENCRYPTION_INFO: {
+                cryptlc_offset = newFileHandle.offsetInFile;
                 [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command))];
                 foundCrypt = YES;
                 
@@ -103,7 +105,7 @@
         return NO;
     }
     
-    NSLog(@"starting to ldid");
+    DumperDebugLog(@"starting to ldid");
     
     NSUInteger begin;
     
@@ -113,7 +115,8 @@
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
-    NSLog(@"hello it's me");
+    
+    DumperDebugLog(@"hello it's me");
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
@@ -139,21 +142,14 @@
     
     [self.originalFileHandle closeFile];
     
+    DumperDebugLog(@"hello from the other side");
+    
     extern char **environ;
     posix_spawnattr_t attr;
     
     pid_t pid;
     
-    /* fmwk.binPath = arguments[2];
-     fmwk.dumpPath = arguments[3];
-     fmwk.dumpSize = [arguments[4]intValue];
-     fmwk.pages = [arguments[5]intValue];
-     fmwk.ncmds = [arguments[6]intValue];
-     fmwk.offset = [arguments[7]intValue];
-     fmwk.bID = arguments[8];
-     fmwk.hashOffset = [arguments[9] intValue];
-     fmwk.codesign_begin = [arguments[10] intValue];
-     */
+   
     
     NSUUID* workingUUID = [NSUUID new];
     NSString* workingPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"clutch" stringByAppendingPathComponent:workingUUID.UUIDString]];
@@ -179,33 +175,50 @@
     
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"] withDestinationPath:_originalBinary.frameworksPath error:nil];
     
+    /* fmwk.binPath = arguments[2];
+     fmwk.dumpPath = arguments[3];
+     fmwk.dumpSize = [arguments[4]intValue];
+     fmwk.pages = [arguments[5]intValue];
+     fmwk.ncmds = [arguments[6]intValue];
+     fmwk.offset = [arguments[7]intValue];
+     fmwk.bID = arguments[8];
+     fmwk.hashOffset = [arguments[9] intValue];
+     fmwk.codesign_begin = [arguments[10] intValue];
+     fmwk.cryptsize = [arguments[11] intValue];
+     fmwk.cryptoff = [arguments[12] intValue];
+     fmwk.cryptlc_offset = [arguments[13] intValue];
+     */
+    
     const char *argv[] = {[[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
         "-f",
         swappedBinaryPath.UTF8String,
         binaryDumpPath.UTF8String,
-        [NSString stringWithFormat:@"%u",(crypt.cryptsize + crypt.cryptoff)].UTF8String,
         [NSString stringWithFormat:@"%u",pages].UTF8String,
         [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
         [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
         bundle.parentBundle.bundleIdentifier.UTF8String,
         [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
         [NSString stringWithFormat:@"%u",begin].UTF8String,
+        [NSString stringWithFormat:@"%u", crypt.cryptoff].UTF8String,
+        [NSString stringWithFormat:@"%u", crypt.cryptsize].UTF8String,
+        [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String,
         NULL};
     
-    
-    NSLog(@"%s %s %s %s %s %s %s %s %s %s %s", [[NSProcessInfo processInfo].arguments[0] UTF8String],
+     DumperDebugLog(@"i must have called a thousand times!");
+    NSLog(@"%s %s %s %s %s %s %s %s %s %s %s %s %s %s", [[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
           "-f",
           swappedBinaryPath.UTF8String,
           binaryDumpPath.UTF8String,
-          [NSString stringWithFormat:@"%u",(crypt.cryptsize + crypt.cryptoff)].UTF8String,
           [NSString stringWithFormat:@"%u",pages].UTF8String,
           [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
           [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
-          
           bundle.parentBundle.bundleIdentifier.UTF8String,
           [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
-          [NSString stringWithFormat:@"%u",begin].UTF8String);
-
+          [NSString stringWithFormat:@"%u",begin].UTF8String,
+          [NSString stringWithFormat:@"%u", crypt.cryptoff].UTF8String,
+          [NSString stringWithFormat:@"%u", crypt.cryptsize].UTF8String,
+          [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String);
+    
     DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv]);
 
     
@@ -239,6 +252,8 @@
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
     
     [[NSFileManager defaultManager] removeItemAtPath:workingPath error:nil];
+    
+    free(codesignblob);
     
     if (dumpResult == 0)
         return YES;

@@ -192,6 +192,7 @@
     [_dumpQueue addOperation:_mainZipOperation];
     
     [_dumpQueue addOperation:_dumpOperation];
+
     
     for (int i=0; i<_additionalZipOpeartions.count;i++) {
         ZipOperation *_zipOperation = _additionalZipOpeartions[i];

@@ -104,19 +104,23 @@ int main (int argc, const char * argv[])
                 
                 NSArray *arguments = [NSProcessInfo processInfo].arguments;
                 
-                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 11)) {
+                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 13)) {
                     
                     FrameworkLoader *fmwk = [FrameworkLoader new];
                                         
                     fmwk.binPath = arguments[2];
                     fmwk.dumpPath = arguments[3];
-                    fmwk.dumpSize = [arguments[4]intValue];
-                    fmwk.pages = [arguments[5]intValue];
-                    fmwk.ncmds = [arguments[6]intValue];
-                    fmwk.offset = [arguments[7]intValue];
-                    fmwk.bID = arguments[8];
-                    fmwk.hashOffset = [arguments[9] intValue];
-                    fmwk.codesign_begin = [arguments[10] intValue];
+                    fmwk.pages = [arguments[4]intValue];
+                    fmwk.ncmds = [arguments[5]intValue];
+                    fmwk.offset = [arguments[6]intValue];
+                    fmwk.bID = arguments[7];
+                    fmwk.hashOffset = [arguments[8] intValue];
+                    fmwk.codesign_begin = [arguments[9] intValue];
+                    fmwk.cryptsize = [arguments[10] intValue];
+                    fmwk.cryptoff = [arguments[11] intValue];
+                    fmwk.cryptlc_offset = [arguments[12] intValue];
+                    fmwk.dumpSize = fmwk.cryptoff + fmwk.cryptsize;
+                    
                     
                     BOOL result = [fmwk dumpBinary];
                    

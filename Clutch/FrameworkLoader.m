@@ -98,7 +98,7 @@
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
     
-    DumperDebugLog(@"Using Framework Dumper");
+    DumperDebugLog(@"Using Framework Dumper, pages %u", pages);
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
     
     const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
@@ -107,66 +107,51 @@
     
     uint32_t i_lcmd = 0;
     kern_return_t err;
-    uint32_t pages_d = 0;
+    int pages_d = 0;
     BOOL header = TRUE;
     
-    uint8_t buf_d[0x1000]; // create a single page buffer
-    uint8_t *buf = &buf_d[0]; // store the location of the buffer
+    uint8_t* buf = malloc(0x1000);
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
+    
+    void* decrypted = malloc(self.cryptsize);
+    memcpy(decrypted, (unsigned char*)image_header + self.cryptoff, self.cryptsize);
+    
+    [fileHandle seekToFileOffset:self.offset + self.cryptoff];
+    [fileHandle writeData:[NSData dataWithBytes:decrypted length:self.cryptsize]];
+
+    NSData* data;
+    
+    if (image_header->cputype == CPU_TYPE_ARM64) {
+        struct encryption_info_command_64 crypt;
+        
+        [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command_64)];
+        
+        NSLog(@"current cryptid %u", crypt.cryptid);
+        crypt.cryptid = 0;
+        [fileHandle seekToFileOffset:self.cryptlc_offset];
+
+        data = [NSData dataWithBytes:&crypt length:sizeof(struct encryption_info_command_64)];
+        [fileHandle writeData:data];
+    }
+    else {
+        struct encryption_info_command crypt;
+         [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command)];
+        NSLog(@"current cryptid %u", crypt.cryptid);
+        crypt.cryptid = 0;
+        [fileHandle seekToFileOffset:self.cryptlc_offset];
+        data = [NSData dataWithBytes:&crypt length:sizeof(struct encryption_info_command)];
+        [fileHandle writeData:data];
+    }
+    
+    [fileHandle seekToFileOffset:self.offset];
+
+    DumperLog(@"Finished patching cryptid (Framework)");
     while (togo > 0) {
-        // get a percentage for the progress bar
-        
-        if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS) {
-            ERROR(@"Could not read from memory, either the process is dead (codesign error?) or entitlements were not properly signed!");
-            return NO;
-        }
-        
-        
-        if (header) {
-            
-            // iterate over the header (or resume iteration)
-            void *curloc = buf + headerProgress;
-            for (;i_lcmd<self.ncmds;i_lcmd++) {
-                struct load_command *l_cmd = (struct load_command *) curloc;
-                // is the load command size in a different page?
-                uint32_t lcmd_size;
-                if ((int)(((void*)curloc - (void*)buf) + 4) == 0x1000) {
-                    // load command size is at the start of the next page
-                    // we need to get it
-                    //vm_read_overwrite(port, (mach_vm_address_t) __text_start + ((pages_d+1) * 0x1000), (vm_size_t) 0x1, (pointer_t) &lcmd_size, &local_size);
-                    mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + ((pages_d + 1) * 0x1000), (vm_size_t) 0x1, (mach_vm_address_t) &lcmd_size, &local_size);
-                    //printf("ieterating through header\n");
-                } else {
-                    lcmd_size = l_cmd->cmdsize;
-                }
-                
-                if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
-                    struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
-                    newcrypt->cryptid = 0; // change the cryptid to 0
-                    NSLog(@"Patched cryptid (32bit segment)");
-                } else if (l_cmd->cmd == LC_ENCRYPTION_INFO_64) {
-                    struct encryption_info_command_64 *newcrypt = (struct encryption_info_command_64 *) curloc;
-                    newcrypt->cryptid = 0; // change the cryptid to 0
-                    NSLog(@"Patched cryptid (64bit segment)");
-                }
-                
-                curloc += lcmd_size;
-                if ((void *)curloc >= (void *)buf + 0x1000) {
-                    //printf("skipped pass the haeder yo\n");
-                    // we are currently extended past the header page
-                    // offset for the next round:
-                    headerProgress = (((void *)curloc - (void *)buf) % 0x1000);
-                    // prevent attaching overdrive dylib by skipping
-                    goto writedata;
-                }
-            }
-            
-            header = FALSE;
-        }
-        
-    writedata:
-        [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
+        data = [fileHandle readDataOfLength:0x1000];
+        [data getBytes:buf length:0x1000];
+        //NSLog(@"reading page %u", CFSwapInt32(pages_d));
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
+        //NSLog(@"checksum ok");
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages
     }
@@ -178,10 +163,9 @@
     int length = (20*pages_d);
     void* trimmed_checksum = safe_trim(checksum, length);
     
-    NSData* data = [NSMutableData dataWithBytes:trimmed_checksum length:length];
+    data = [NSMutableData dataWithBytes:trimmed_checksum length:length];
     
     [fileHandle writeData:data];
-    
     
     DumperLog(@"Done writing checksum");
     return YES;

@@ -50,7 +50,7 @@
 }
 
 - (BOOL)isConcurrent {
-    return YES;
+    return NO;
 }
 
 - (BOOL)isExecuting {

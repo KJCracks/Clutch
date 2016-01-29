@@ -310,7 +310,7 @@ exit_with_errno (int err, const char *prefix)
     NSData* data = [NSMutableData dataWithBytes:trimmed_checksum length:length];
     
     [fileHandle writeData:data];
-    
+    free(checksum);
     
     DumperLog(@"Done writing checksum");
     

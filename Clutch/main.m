@@ -173,23 +173,34 @@ int main (int argc, const char * argv[])
             struct timeval start, end;
             //NSLog(@"selection wow %@ ", selection);
             
+            Application *_selectedApp;
+            
             if (!(key = [selection intValue])) {
-                gbprintln(@"Please enter a proper number.");
-                exit(0);
+                NSLog(@"using bundle identifier");
+                if (_installedApps[selection] == nil) {
+                    gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);
+                    exit(1);
+                }
+                else {
+                    _selectedApp = _installedApps[selection];
+                }
+            }
+            else {
+                NSLog(@"using number");
+                key = key - 1;
+                
+                if (key > [_installedArray count]) {
+                    gbprintln(@"Couldn't find app with corresponding number!?!");
+                    exit(1);
+                }
+                _selectedApp = [_installedArray objectAtIndex:key];
+                
             }
             
-            key = key - 1;
-            
-            if (key > [_installedArray count]) {
-                gbprintln(@"Couldn't find app with corresponding number!?!");
-                exit(0);
-            }
-            
-            Application *_selectedApp = [_installedArray objectAtIndex:key];
             
             if (!_selectedApp) {
                 gbprintln(@"Couldn't find installed app");
-                exit(0);
+                exit(1);
             }
             
             VERBOSE(@"Now dumping %@", _selectedApp.bundleIdentifier);
@@ -202,7 +213,7 @@ int main (int argc, const char * argv[])
             int dif = diff_ms(end,start);
             float sec = ((dif + 500.0f) / 1000.0f);
             SUCCESS(@"Finished dumping %@ in %0.1f seconds", _selectedApp.bundleIdentifier, sec);
-            
+            exit(0);
             
             
             //NSLog(@"you shouldnt be there pal. exiting with -1 code");

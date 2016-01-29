@@ -166,7 +166,6 @@
         
     writedata:
         [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
-        
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages

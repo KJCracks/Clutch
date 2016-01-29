@@ -23,7 +23,7 @@ CLANGXX := $(XCRUN) clang++
 ARCHFLAGS := -arch armv7 -arch armv7s -arch arm64
 CC := $(CLANG) $(ARCHFLAGS)
 LD := $(CLANGXX) $(ARCHFLAGS)
-CFLAGS += -include $(PCH) -I. $(foreach sd,$(SRC_DIRS),-I$(sd))
+CFLAGS += -include $(PCH) -I. $(foreach sd,$(SRC_DIRS),-I$(sd)) -UNDEBUG
 CODESIGN := $(XCRUN) codesign
 CSFLAGS := -fs-
 
@@ -39,12 +39,12 @@ endif
 all: $(TARGET)
 
 # Build in debug mode (with asserts enabled)
-debug: override CFLAGS += -ggdb -DDEBUG=1 -UNDEBUG
+debug: override CFLAGS += -ggdb -DDEBUG=1
 debug: override OFLAGS :=
 debug: $(TARGET)
 
 # Uses clang's Address Sanitizer to help detect memory errors
-debug+: override CFLAGS += -ggdb -DDEBUG=1 -UNDEBUG -fsanitize=address
+debug+: override CFLAGS += -ggdb -DDEBUG=1 -fsanitize=address
 debug+: override OFLAGS :=
 debug+: override LDFLAGS += -fsanitize=address
 debug+: debug

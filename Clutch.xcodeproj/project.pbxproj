@@ -464,7 +464,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR/Clutch;\nmake clean &> /dev/null;\nmake;\nopen .;";
+			shellScript = "cd $PROJECT_DIR/Clutch;\nmake clean &> /dev/null;\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\nmake debug;\nelse\nmake;\nfi\nopen .;";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -693,6 +693,7 @@
 				32BE3C2B1C5B8C450049ECAD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

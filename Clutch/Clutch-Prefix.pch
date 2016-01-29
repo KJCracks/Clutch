@@ -38,8 +38,7 @@
 #   define NSLog(...)
 
 #   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#   define VERBOSE(M, ...) fprintf(sterr, "\033[0;33m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-
+#   define VERBOSE(M, ...) fprintf(stderr, "\033[0;33m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #endif
 
 

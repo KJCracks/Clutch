@@ -21,7 +21,7 @@
 }
 
 - (BOOL)dumpBinary {
-    
+    __block BOOL dumpResult;
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
     
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
@@ -129,6 +129,7 @@
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
+    
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
@@ -140,7 +141,7 @@
         }
     }
     
-    free(codesignblob);
+   free(codesignblob);
     
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
@@ -165,10 +166,28 @@
         __text_start = main_address;
     }
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start codeSignature_hashOffset:CFSwapInt32(directory.hashOffset) codesign_begin:begin];
     
-    system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
+    {
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+        
+        dispatch_sync(queue, ^{
+            dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start codeSignature_hashOffset:CFSwapInt32(directory.hashOffset) codesign_begin:begin];
+        });
+
+    }
+    NSLog(@"done dumping");
+   
+    //done dumping, let's wait for pid
     
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        int result;
+        waitpid(pid, result, 0);
+        waitpid(pid, result, 0);
+        kill(pid, SIGKILL); //just in case;
+    });
+    
+    kill(pid, SIGCONT);
+    kill(pid, SIGKILL);
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
@@ -181,9 +200,16 @@
     return dumpResult;
     
 gotofail:
-    //kill(pid, SIGTERM);
-    system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
     
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        int result;
+        waitpid(pid, result, 0);
+        waitpid(pid, result, 0);
+        kill(pid, SIGKILL); //just in case;
+    });
+    
+    kill(pid, SIGCONT);
+    kill(pid, SIGKILL);
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])

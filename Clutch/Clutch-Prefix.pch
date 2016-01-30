@@ -21,7 +21,7 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#define CLUTCH_VERSION @"2.0 RC6.5"
+#define CLUTCH_VERSION @"2.0 RC7"
 
 #   define SUCCESS(M, ...) fprintf(stderr, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define SUCCESS_OUT(M, ...) fprintf(stdout, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);

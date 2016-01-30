@@ -89,7 +89,6 @@
     
     dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:self.dumpSize pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer codeSignature_hashOffset:self.hashOffset codesign_begin:self.codesign_begin];
     
-    
     dlclose(handle);
     
     return dumpResult;
@@ -103,21 +102,24 @@
     
     const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
     
+    SUCCESS(@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]);
+    
     uint32_t headerProgress = sizeof(image_header);
     
     uint32_t i_lcmd = 0;
     kern_return_t err;
-    int pages_d = 0;
+    uint32_t pages_d = 0;
     BOOL header = TRUE;
     
     uint8_t* buf = malloc(0x1000);
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
     
-    void* decrypted = malloc(self.cryptsize);
-    memcpy(decrypted, (unsigned char*)image_header + self.cryptoff, self.cryptsize);
+    //void* decrypted = malloc(self.cryptsize);
+    //memcpy(decrypted, (unsigned char*)image_header + self.cryptoff, self.cryptsize);
     
-    [fileHandle seekToFileOffset:self.offset + self.cryptoff];
-    [fileHandle writeData:[NSData dataWithBytes:decrypted length:self.cryptsize]];
+    [fileHandle seekToFileOffset:self.offset + CFSwapInt32(self.cryptoff)];
+    DumperLog(@"self.offset %u cryptoff: %u", self.offset, self.cryptoff);
+    [fileHandle writeData:[NSData dataWithBytes:(unsigned char*)image_header + self.cryptoff length:self.cryptsize]];
 
     NSData* data;
     
@@ -145,7 +147,7 @@
     
     [fileHandle seekToFileOffset:self.offset];
 
-    DumperLog(@"Finished patching cryptid (Framework)");
+    DumperDebugLog(@"Finished patching cryptid");
     while (togo > 0) {
         data = [fileHandle readDataOfLength:0x1000];
         [data getBytes:buf length:0x1000];
@@ -155,19 +157,19 @@
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages
     }
+    free(buf);
     //nice! now let's write the new checksum data
-    DumperLog("Writing new checksum");
+    DumperDebugLog("Writing new checksum");
+    //DumperLog(@"begin %u", begin);
     [fileHandle seekToFileOffset:(begin + hashOffset)];
     
     
-    int length = (20*pages_d);
-    void* trimmed_checksum = safe_trim(checksum, length);
-    
-    data = [NSMutableData dataWithBytes:trimmed_checksum length:length];
-    
+    NSData* trimmed_checksum = [[NSData dataWithBytes:checksum length:pages*20] subdataWithRange:NSMakeRange(0, 20*pages_d)];
+    free(checksum);
     [fileHandle writeData:data];
     
-    DumperLog(@"Done writing checksum");
+    
+    DumperDebugLog(@"Done writing checksum");
     return YES;
 }
 

@@ -5,6 +5,7 @@ PCH := Clutch-Prefix.pch
 SRC_DIRS := MiniZip
 CFLAGS += -fmodules -fobjc-arc -I..
 LDFLAGS += -lz -F/System/Library/PrivateFrameworks -F /System/Library/Frameworks -framework AppSupport -framework Foundation -framework MobileCoreServices
+LDLIBS = -lncurses
 
 # Macro to find all source files in a directory
 get_srcs = $(wildcard $1*.[cm]) $(wildcard $1*.cpp) $(wildcard $1*.mm)

@@ -33,7 +33,7 @@
 }
 
 - (BOOL)isConcurrent {
-    return NO;
+    return YES;
 }
 
 - (BOOL)isExecuting {

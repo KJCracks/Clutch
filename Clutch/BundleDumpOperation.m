@@ -50,7 +50,7 @@
 }
 
 - (BOOL)isConcurrent {
-    return NO;
+    return YES;
 }
 
 - (BOOL)isExecuting {
@@ -162,7 +162,7 @@
             
             if (result) {
                 dumpCount++;
-                SUCCESS(@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary);
+                //SUCCESS(@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary);
             } else {
                 ERROR(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
             }

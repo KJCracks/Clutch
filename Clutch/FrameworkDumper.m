@@ -54,7 +54,7 @@
     
     uint64_t __text_start = 0;
     
-    DumperLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    DumperDebugLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
     uint32_t cryptlc_offset;
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
@@ -120,6 +120,8 @@
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
+    
+    
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
@@ -130,6 +132,7 @@
             break; //break (we don't need anything from this the superblob anymore)
         }
     }
+    free(codesignblob);
     
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
@@ -228,17 +231,30 @@
     
     cpu_type_t cpu_type = CPU_TYPE_ARM;
     
+    
     posix_spawnattr_setbinpref_np (&attr, 1, &cpu_type, &ocount);
+    
+    
+    short flags = POSIX_SPAWN_START_SUSPENDED;
+    // Set the flags we just made into our posix spawn attributes
+    exit_with_errno (posix_spawnattr_setflags (&attr, flags), "::posix_spawnattr_setflags (&attr, flags) error: ");
     
     int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, (char* const*)argv, environ);
     
     if (dumpResult == 0) {
-        DumperDebugLog(@"Child pid: %u", pid);
-        if (waitpid(pid, &dumpResult, 0) != -1) {
-            DumperDebugLog(@"Child exited with status %u", dumpResult);
-        } else {
-            perror("waitpid");
-        }
+        DumperDebugLog(@"Child pid: %i", pid);
+        
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+        
+        dispatch_sync(queue, ^{
+            kill(pid, SIGCONT);
+            if (waitpid(pid, &dumpResult, 0) != -1) {
+                DumperDebugLog(@"Success! Child exited with status %u", dumpResult);
+            } else {
+                perror("waitpid");
+            }
+        });
+                      
     } else {
         DumperDebugLog(@"posix_spawn: %s", strerror(dumpResult));
     }
@@ -253,7 +269,7 @@
     
     [[NSFileManager defaultManager] removeItemAtPath:workingPath error:nil];
     
-    free(codesignblob);
+   
     
     if (dumpResult == 0)
         return YES;

@@ -24,7 +24,7 @@
 
 
 - (BOOL)dumpBinary {
-    
+    __block BOOL dumpResult;
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
     
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
@@ -171,8 +171,16 @@
         __text_start = main_address;
     }
     
-    BOOL dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start codeSignature_hashOffset:CFSwapInt32(directory.hashOffset) codesign_begin:begin];
+    {
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+        
+        dispatch_sync(queue, ^{
+            dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start codeSignature_hashOffset:CFSwapInt32(directory.hashOffset) codesign_begin:begin];
+        });
+        
+    }
     
+    NSLog(@"done dumping");
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
@@ -180,11 +188,29 @@
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
   
-    system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        int result;
+        waitpid(pid, result, 0);
+        waitpid(pid, result, 0);
+        kill(pid, SIGKILL); //just in case;
+    });
+    
+    kill(pid, SIGCONT);
+    kill(pid, SIGKILL);
+    
     return dumpResult;
     
 gotofail:
-    system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
+    
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        int result;
+        waitpid(pid, result, 0);
+        waitpid(pid, result, 0);
+        kill(pid, SIGKILL); //just in case;
+    });
+    
+    kill(pid, SIGCONT);
+    kill(pid, SIGKILL);
    
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

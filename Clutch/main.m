@@ -125,7 +125,7 @@ int main (int argc, const char * argv[])
                     BOOL result = [fmwk dumpBinary];
                    
                     if (result) {
-                        SUCCESS(@"Successfully dumped framework!");
+                        //SUCCESS(@"Successfully dumped framework!");
                         exit(0);
                     }
                     
@@ -236,6 +236,18 @@ void sha1(uint8_t *hash, uint8_t *data, size_t size) {
     SHA1Input(&context, data, (unsigned)size);
     SHA1Result(&context, hash);
     //NSLog(@"hash %s", hash);
+}
+void exit_with_errno (int err, const char *prefix);
+void exit_with_errno (int err, const char *prefix)
+{
+    if (err)
+    {
+        fprintf (stderr,
+                 "%s%s",
+                 prefix ? prefix : "",
+                 strerror(err));
+        exit (err);
+    }
 }
 
 

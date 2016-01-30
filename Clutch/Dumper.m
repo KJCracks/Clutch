@@ -8,7 +8,8 @@
 
 #import "Dumper.h"
 #import "Device.h"
-#import "ProgressBar.h"
+#import "progressbar.h"
+#import "statusbar.h"
 #import <spawn.h>
 
 #ifndef _POSIX_SPAWN_DISABLE_ASLR
@@ -31,36 +32,33 @@
     return self;
 }
 
-+ (NSString *)readableArchFromHeader:(thin_header)macho
+
++ (NSString *)readableArchFromMachHeader:(struct mach_header)header
 {
-    if (macho.header.cpusubtype == CPU_SUBTYPE_ARM64_ALL)
+    if (header.cpusubtype == CPU_SUBTYPE_ARM64_ALL)
         return @"arm64";
-    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM64_V8)
+    else if (header.cpusubtype == CPU_SUBTYPE_ARM64_V8)
         return @"arm64v8";
-    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V6)
+    else if (header.cpusubtype == CPU_SUBTYPE_ARM_V6)
         return @"armv6";
-    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V7)
+    else if (header.cpusubtype == CPU_SUBTYPE_ARM_V7)
         return @"armv7";
-    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V7S)
+    else if (header.cpusubtype == CPU_SUBTYPE_ARM_V7S)
         return @"armv7s";
-    else if (macho.header.cpusubtype == CPU_SUBTYPE_ARM_V8)
+    else if (header.cpusubtype == CPU_SUBTYPE_ARM_V8)
         return @"armv8";
     
     return @"unknown";
 }
 
-static void
-exit_with_errno (int err, const char *prefix)
+
+
++ (NSString *)readableArchFromHeader:(thin_header)macho
 {
-    if (err)
-    {
-        fprintf (stderr,
-                 "%s%s",
-                 prefix ? prefix : "",
-                 strerror(err));
-        exit (err);
-    }
+    return [Dumper readableArchFromMachHeader:macho.header];
 }
+
+
 
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn {
     return [self posix_spawn:binaryPath disableASLR:yrn suspend:YES];
@@ -71,19 +69,20 @@ exit_with_errno (int err, const char *prefix)
     
     if ((_thinHeader.header.flags & MH_PIE) && yrn) {
         
-        DumperLog(@"disabling MH_PIE!!!!");
+        DumperDebugLog(@"disabling MH_PIE!!!!");
         
         _thinHeader.header.flags &= ~MH_PIE;
         [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else if (_isASLRProtected && !yrn && !(_thinHeader.header.flags & MH_PIE)) {
         
-        //DumperLog(@"enabling MH_PIE!!!!");
+        //DumperDebugLog(@"enabling MH_PIE!!!!");
         
         //thinHeader.header.flags |= MH_PIE;
         //[self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else {
         DumperDebugLog(@"to MH_PIE or not to MH_PIE, that is the question");
     }
+    
     
     pid_t pid = 0;
     
@@ -212,7 +211,7 @@ exit_with_errno (int err, const char *prefix)
     }
     
     
-    DumperLog(@"wrote new header to binary");
+    DumperDebugLog(@"wrote new header to binary");
     
 }
 
@@ -237,17 +236,31 @@ exit_with_errno (int err, const char *prefix)
     
     uint32_t total = togo;
     
+    unsigned long percent;
+    
+    progressbar* progress = progressbar_new([NSString stringWithFormat:@"\033[1;35mDumping %@ (%@)\033[0m", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]].UTF8String, 100);
     while (togo > 0) {
         // get a percentage for the progress bar
     
-        
-        PERCENT((int)ceil((((double)total - togo) / (double)total) * 100));
     
+        percent = ceil((((double)total - togo) / (double)total) * 100);
+        PROGRESS(progress, percent);
+        
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
             
             DumperLog(@"Failed to dump a page :(");
             free(checksum); // free checksum table
-            system([NSString stringWithFormat:@"kill -9 %i",pid].UTF8String);
+            
+            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+                int result;
+                waitpid(pid, result, 0);
+                waitpid(pid, result, 0);
+                kill(pid, SIGKILL); //just in case;
+            });
+            
+            kill(pid, SIGCONT);
+            kill(pid, SIGKILL);
+            
             return NO;
         }
         
@@ -300,19 +313,17 @@ exit_with_errno (int err, const char *prefix)
     
     
     //nice! now let's write the new checksum data
-    DumperLog("Writing new checksum");
+    printf("\n\n");
+    DumperLog(@"Writing new checksum");
     [fileHandle seekToFileOffset:(begin + hashOffset)];
     
-    
-    int length = (20*pages_d);
-    void* trimmed_checksum = safe_trim(checksum, length);
-    
-    NSData* data = [NSMutableData dataWithBytes:trimmed_checksum length:length];
-    
-    [fileHandle writeData:data];
+
+    NSData* trimmed_checksum = [[NSData dataWithBytes:checksum length:pages*20] subdataWithRange:NSMakeRange(0, 20*pages_d)];
     free(checksum);
+    [fileHandle writeData:trimmed_checksum];
     
-    DumperLog(@"Done writing checksum");
+    
+    DumperDebugLog(@"Done writing checksum");
     
     
     return YES;

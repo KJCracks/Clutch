@@ -188,29 +188,13 @@
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
   
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        int result;
-        waitpid(pid, result, 0);
-        waitpid(pid, result, 0);
-        kill(pid, SIGKILL); //just in case;
-    });
-    
-    kill(pid, SIGCONT);
-    kill(pid, SIGKILL);
+    _kill(pid);
     
     return dumpResult;
     
 gotofail:
     
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        int result;
-        waitpid(pid, result, 0);
-        waitpid(pid, result, 0);
-        kill(pid, SIGKILL); //just in case;
-    });
-    
-    kill(pid, SIGCONT);
-    kill(pid, SIGKILL);
+    _kill(pid);
    
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];

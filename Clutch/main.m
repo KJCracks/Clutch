@@ -250,4 +250,17 @@ void exit_with_errno (int err, const char *prefix)
     }
 }
 
+void _kill(pid_t pid);
+void _kill(pid_t pid) {
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        int result;
+        waitpid(pid, &result, 0);
+        waitpid(pid, &result, 0);
+        kill(pid, SIGKILL); //just in case;
+    });
+    
+    kill(pid, SIGCONT);
+    kill(pid, SIGKILL);
+}
+
 

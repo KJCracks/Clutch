@@ -179,15 +179,7 @@
    
     //done dumping, let's wait for pid
     
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        int result;
-        waitpid(pid, result, 0);
-        waitpid(pid, result, 0);
-        kill(pid, SIGKILL); //just in case;
-    });
-    
-    kill(pid, SIGCONT);
-    kill(pid, SIGKILL);
+    _kill(pid);
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])
@@ -201,15 +193,7 @@
     
 gotofail:
     
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        int result;
-        waitpid(pid, result, 0);
-        waitpid(pid, result, 0);
-        kill(pid, SIGKILL); //just in case;
-    });
-    
-    kill(pid, SIGCONT);
-    kill(pid, SIGKILL);
+    _kill(pid);
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])

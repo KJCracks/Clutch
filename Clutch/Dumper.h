@@ -21,6 +21,7 @@ void *safe_trim(void *p, size_t n);
     thin_header _thinHeader;
 }
 void exit_with_errno (int err, const char *prefix);
+void _kill(pid_t pid);
 
 @property (readonly) BOOL isASLRProtected;
 @property NSFileHandle *originalFileHandle;

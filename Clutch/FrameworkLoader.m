@@ -18,6 +18,7 @@
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
 #import "NSBundle+Clutch.h"
+#import "progressbar.h"
 
 @import ObjectiveC.runtime;
 
@@ -113,14 +114,42 @@
     
     uint8_t* buf = malloc(0x1000);
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
-    
-    //void* decrypted = malloc(self.cryptsize);
-    //memcpy(decrypted, (unsigned char*)image_header + self.cryptoff, self.cryptsize);
-    
-    [fileHandle seekToFileOffset:self.offset + CFSwapInt32(self.cryptoff)];
-    DumperLog(@"self.offset %u cryptoff: %u", self.offset, self.cryptoff);
-    [fileHandle writeData:[NSData dataWithBytes:(unsigned char*)image_header + self.cryptoff length:self.cryptsize]];
 
+    [fileHandle seekToFileOffset:self.offset];
+
+    unsigned long percent;
+    //uint32_t total = togo;
+
+    
+    //progressbar* progress = progressbar_new([NSString stringWithFormat:@"\033[1;35mDumping %@ (%@)\033[0m", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]].UTF8String, 100);
+    
+    while (togo > 0) {
+        
+        /*progress bars messes up console output
+        percent = ceil((((double)total - togo) / (double)total) * 100);
+        PROGRESS(progress, percent);*/
+
+        memcpy(buf, (unsigned char*)image_header + (pages_d * 0x1000), 0x1000);
+        [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
+        sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
+        togo -= 0x1000; // remove a page from the togo
+        pages_d += 1; // increase the amount of completed pages
+    }
+    free(buf);
+    
+    //nice! now let's write the new checksum data
+    DumperDebugLog("Writing new checksum");
+
+    [fileHandle seekToFileOffset:(begin + hashOffset)];
+    
+    NSData* trimmed_checksum = [[NSData dataWithBytes:checksum length:pages*20] subdataWithRange:NSMakeRange(0, 20*pages_d)];
+    free(checksum);
+    [fileHandle writeData:trimmed_checksum];
+    
+    DumperDebugLog(@"Done writing checksum");
+    
+    DumperDebugLog(@"Patching cryptid");
+    
     NSData* data;
     
     if (image_header->cputype == CPU_TYPE_ARM64) {
@@ -131,45 +160,20 @@
         NSLog(@"current cryptid %u", crypt.cryptid);
         crypt.cryptid = 0;
         [fileHandle seekToFileOffset:self.cryptlc_offset];
-
+        
         data = [NSData dataWithBytes:&crypt length:sizeof(struct encryption_info_command_64)];
-        [fileHandle writeData:data];
+        
     }
     else {
         struct encryption_info_command crypt;
-         [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command)];
+        [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command)];
         NSLog(@"current cryptid %u", crypt.cryptid);
         crypt.cryptid = 0;
         [fileHandle seekToFileOffset:self.cryptlc_offset];
         data = [NSData dataWithBytes:&crypt length:sizeof(struct encryption_info_command)];
-        [fileHandle writeData:data];
     }
     
-    [fileHandle seekToFileOffset:self.offset];
-
-    DumperDebugLog(@"Finished patching cryptid");
-    while (togo > 0) {
-        data = [fileHandle readDataOfLength:0x1000];
-        [data getBytes:buf length:0x1000];
-        //NSLog(@"reading page %u", CFSwapInt32(pages_d));
-        sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
-        //NSLog(@"checksum ok");
-        togo -= 0x1000; // remove a page from the togo
-        pages_d += 1; // increase the amount of completed pages
-    }
-    free(buf);
-    //nice! now let's write the new checksum data
-    DumperDebugLog("Writing new checksum");
-    //DumperLog(@"begin %u", begin);
-    [fileHandle seekToFileOffset:(begin + hashOffset)];
-    
-    
-    NSData* trimmed_checksum = [[NSData dataWithBytes:checksum length:pages*20] subdataWithRange:NSMakeRange(0, 20*pages_d)];
-    free(checksum);
     [fileHandle writeData:data];
-    
-    
-    DumperDebugLog(@"Done writing checksum");
     return YES;
 }
 

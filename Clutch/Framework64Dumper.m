@@ -237,7 +237,7 @@
         dispatch_sync(queue, ^{
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult, 0) != -1) {
-                DumperDebugLog(@"Success! Child exited with status %u", dumpResult);
+                DumperLog(@"Success! Child exited with status %u", dumpResult);
             } else {
                 perror("waitpid");
             }

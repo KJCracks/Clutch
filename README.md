@@ -6,7 +6,7 @@ Works with all devices, iOS versions, architecture types, with most binaries.
 
 This product is meant only for educational purposes and security research.
 
-Current version: *2.0-RC6*
+Current version: *2.0-RC8*
 
 
 Usage
@@ -46,5 +46,5 @@ TheSexyPenguin - Inspiration<br />
 
 
 
-(c) Kim Jong-Cracks 1819-2015
+(c) Kim Jong-Cracks 1819-2016
 

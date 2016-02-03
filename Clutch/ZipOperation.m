@@ -110,7 +110,7 @@
             NSArray *_pathComponents = _localPath.pathComponents;
             
             if (_pathComponents.count > 2) {
-                if ([_pathComponents[2] isEqualToString:@"SC_Info"]||[_pathComponents[2] isEqualToString:@"Frameworks"]||[_pathComponents[2] isEqualToString:@"PlugIns"]) {
+                if ([_pathComponents[2] isEqualToString:@"SC_Info"]||[_pathComponents[2] isEqualToString:@"Watch"]||[_pathComponents[2] isEqualToString:@"Frameworks"]||[_pathComponents[2] isEqualToString:@"PlugIns"]) {
                     if ([_localPath.lastPathComponent hasPrefix:@"libswift"] && ![_localPath.pathExtension caseInsensitiveCompare:@"dylib"]) {
                         [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
 #if PRINT_ZIP_LOGS

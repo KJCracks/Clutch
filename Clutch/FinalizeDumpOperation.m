@@ -10,6 +10,7 @@
 #import "ZipArchive.h"
 #import "Application.h"
 #import "GBPrint.h"
+#import "ZipOperation.h"
 
 @interface FinalizeDumpOperation ()
 {
@@ -121,7 +122,7 @@
             _archive = [[ZipArchive alloc] init];
             [_archive CreateZipFile2:[_application.workingPath stringByAppendingPathComponent:_zipFilename] append:YES];
         }
-                
+        
         NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:_application.workingPath] includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:nil errorHandler:^BOOL(NSURL *url, NSError *error) {
             return YES;
         }];
@@ -142,6 +143,9 @@
                     for (NSString *key in dict.allKeys) {
                         NSString *zipPath = dict[key];
                         [_archive addFileToZip:key newname:zipPath];
+#if PRINT_ZIP_LOGS
+                        gbprintln(@"Added %@",zipPath);
+#endif
                     }
                     
                     [plists addObject:theURL.path];
@@ -160,15 +164,49 @@
         
         __block BOOL status = plists.count == self.expectedBinariesCount;
         
+        NSString *_ipaPath = [@"/private/var/mobile/Documents/Dumped" stringByAppendingPathComponent:_zipFilename];
+        
         if (!status) {
             // remove .ipa if failed
             [[NSFileManager defaultManager]removeItemAtPath:[_application.workingPath stringByAppendingPathComponent:_zipFilename] error:nil];
         }else {
             [[NSFileManager defaultManager] createDirectoryAtPath:@"/private/var/mobile/Documents/Dumped" withIntermediateDirectories:YES attributes:nil error:nil];
-            [[NSFileManager defaultManager]moveItemAtPath:[_application.workingPath stringByAppendingPathComponent:_zipFilename] toPath:[@"/private/var/mobile/Documents/Dumped" stringByAppendingPathComponent:_zipFilename] error:nil];
+            
+            NSURL *ipaSrcURL = [NSURL fileURLWithPath:[_application.workingPath stringByAppendingPathComponent:_zipFilename]];
+            NSError *anError;
+            if ([[NSFileManager defaultManager] fileExistsAtPath:_ipaPath]) {
+                for (int i = 2; i < 999; ++i) {
+                    NSFileManager *fileMgr = [NSFileManager defaultManager];
+                    NSString *newName =
+                    [_ipaPath.lastPathComponent.stringByDeletingPathExtension
+                     stringByAppendingFormat:@"-%i.%@", i, _ipaPath.pathExtension];
+                    NSString *currentFile = [_ipaPath.stringByDeletingLastPathComponent
+                                             stringByAppendingPathComponent:newName];
+                    BOOL fileExists = [fileMgr fileExistsAtPath:currentFile];
+                    if (!fileExists) {
+                        _ipaPath = currentFile;
+                        if (![[NSFileManager defaultManager]
+                              moveItemAtURL:ipaSrcURL
+                              toURL:[NSURL fileURLWithPath:currentFile]
+                              error:&anError]) {
+                            NSLog(@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
+                                  [NSURL fileURLWithPath:currentFile], anError);
+                        }
+                        break;
+                    }
+                }
+            } else {
+                if (![[NSFileManager defaultManager]
+                      moveItemAtURL:ipaSrcURL
+                      toURL:[NSURL fileURLWithPath:_ipaPath]
+                      error:&anError]) {
+                    NSLog(@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
+                          [NSURL fileURLWithPath:_ipaPath], anError);
+                }
+            }
         }
         
-        gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?[@"/private/var/mobile/Documents/Dumped" stringByAppendingPathComponent:_zipFilename]:_application);
+        gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?_ipaPath:_application);
         
         // Do the main work of the operation here.
         [self completeOperation];

@@ -18,6 +18,7 @@
     NSUUID *_workingUUID;
     NSMutableArray *_frameworks;
     NSMutableArray *_extensions;
+    NSMutableArray *_watchOSApps;
     NSString *_workingPath;
 }
 @end
@@ -33,6 +34,8 @@
         
         [self reloadFrameworksInfo];
         [self reloadPluginsInfo];
+        [self reloadWatchOSAppsInfo];
+
     }
     return self;
 }
@@ -46,6 +49,54 @@
     for (ClutchBundle *bundle in _extensions)
         [bundle prepareForDump];
     
+#ifdef DEBUG
+    for (Application *bundle in _watchOSApps) {
+        for (ClutchBundle *_watchOSApp in bundle.extensions) {
+            [_watchOSApp prepareForDump];
+        }
+    }
+#endif
+    
+}
+
+- (void)reloadWatchOSAppsInfo
+{
+    _watchOSApps = [NSMutableArray new];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *directoryURL = [NSURL fileURLWithPath:[self.bundlePath stringByAppendingPathComponent:@"Watch"]]; // URL pointing to the directory you want to browse
+    NSArray *keys = @[NSURLIsDirectoryKey];
+    
+    NSDirectoryEnumerator *enumerator = [fileManager
+                                         enumeratorAtURL:directoryURL
+                                         includingPropertiesForKeys:keys
+                                         options:0
+                                         errorHandler:^(NSURL *url, NSError *error) {
+                                             // Handle the error.
+                                             // Return YES if the enumeration should continue after the error.
+                                             return YES;
+                                         }];
+    
+    for (NSURL *url in enumerator) {
+        NSError *error;
+        NSNumber *isDirectory = nil;
+        
+        if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
+            // handle error
+        }
+        else if (![[url.path pathExtension] caseInsensitiveCompare:@"app"] && [isDirectory boolValue])
+        {
+            Application *watchOSApp = [[Application alloc]initWithBundleInfo:@{@"BundleContainer":url.URLByDeletingLastPathComponent,
+                                                                     @"BundleURL":url}];
+            
+            if (watchOSApp && watchOSApp.hasAppleWatchApp) {
+                _hasAppleWatchApp = YES;
+                watchOSApp.parentBundle = self;
+                [_watchOSApps addObject:watchOSApp];
+            }
+
+        }
+    }
 }
 
 - (void)reloadFrameworksInfo
@@ -156,6 +207,19 @@
     NSMutableArray *_additionalDumpOpeartions = [NSMutableArray new];
     NSMutableArray *_additionalZipOpeartions = [NSMutableArray new];
     
+#ifdef DEBUG
+    for (Application *_application in self.watchOSApps) {
+        for (Extension *_extension in _application.extensions) {
+            ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_extension];
+            [_zipOperation addDependency:_mainZipOperation];
+            
+            [_additionalZipOpeartions addObject:_zipOperation];
+            
+            [_additionalDumpOpeartions addObject:_extension.executable.dumpOperation];
+        }
+    }
+#endif
+    
     for (Framework *_framework in self.frameworks) {
         ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_framework];
         [_zipOperation addDependency:_mainZipOperation];
@@ -205,8 +269,6 @@
     }
     
     _finalizeDumpOperation.expectedBinariesCount = _additionalDumpOpeartions.count + 1;
-    
-    
     
     [_dumpQueue addOperation:_finalizeDumpOperation];
 }

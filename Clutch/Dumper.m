@@ -43,6 +43,8 @@
         return @"armv6";
     else if (header.cpusubtype == CPU_SUBTYPE_ARM_V7)
         return @"armv7";
+    else if (header.cpusubtype == CPU_SUBTYPE_ARM_V7K)
+        return @"armv7k";
     else if (header.cpusubtype == CPU_SUBTYPE_ARM_V7S)
         return @"armv7s";
     else if (header.cpusubtype == CPU_SUBTYPE_ARM_V8)

@@ -1,10 +1,11 @@
 # Target specific variables
 TARGET := clutch
+IPHONEOS_DEPLOYMENT_TARGET = 6.0
 ENTITLEMENTS := Clutch.entitlements
 PCH := Clutch-Prefix.pch
 SRC_DIRS := MiniZip
 CFLAGS += -fmodules -fobjc-arc -I..
-LDFLAGS += -lz -F/System/Library/PrivateFrameworks -F /System/Library/Frameworks -framework AppSupport -framework Foundation -framework MobileCoreServices
+LDFLAGS += -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET) -lz -F/System/Library/PrivateFrameworks -F /System/Library/Frameworks -framework AppSupport -framework Foundation -framework MobileCoreServices
 LDLIBS = -lncurses
 
 # Macro to find all source files in a directory
@@ -24,7 +25,7 @@ CLANGXX := $(XCRUN) clang++
 ARCHFLAGS := -arch armv7 -arch armv7s -arch arm64
 CC := $(CLANG) $(ARCHFLAGS)
 LD := $(CLANGXX) $(ARCHFLAGS)
-CFLAGS += -include $(PCH) -I. $(foreach sd,$(SRC_DIRS),-I$(sd)) -UNDEBUG
+CFLAGS += -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET) -include $(PCH) -I. $(foreach sd,$(SRC_DIRS),-I$(sd)) -UNDEBUG
 CODESIGN := $(XCRUN) codesign
 CSFLAGS := -fs-
 

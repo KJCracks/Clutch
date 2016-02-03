@@ -181,90 +181,89 @@
 #pragma mark "stripping" headers in FAT binary
         if ([_headersToStrip count] > 0) {
             NSFileHandle *_dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
-
-            NSData *buffer = [_dumpHandle readDataOfLength:4096];
             
+            uint32_t magic = [_dumpHandle intAtOffset:0];
+            NSData *buffer = [_dumpHandle readDataOfLength:4096];
+
+            [_dumpHandle closeFile];
+
+            bool shouldSwap = magic == MH_CIGAM || magic == MH_CIGAM_64 || magic == FAT_CIGAM;
+#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
+
             NSMutableArray* _headersToKeep = [NSMutableArray new];
             struct fat_header fat = *(struct fat_header *)buffer.bytes;
-            fat.nfat_arch = CFSwapInt32(fat.nfat_arch);
-            
-            //bunch of zeroes
-            char data[20];
-            memset(data,'\0',sizeof(data));
+            fat.nfat_arch = SWAP(fat.nfat_arch);
             
             int offset = sizeof(struct fat_header);
             for (int i = 0; i < fat.nfat_arch; i++) {
                 struct fat_arch arch = *(struct fat_arch *)([buffer bytes] + offset);
-                NSNumber* archOffset = [NSNumber numberWithUnsignedInt:CFSwapInt32(arch.offset)];
-                 NSLog(@"current offset %u", CFSwapInt32(arch.offset));
+                NSNumber* archOffset = [NSNumber numberWithUnsignedInt:SWAP(arch.offset)];
+                NSLog(@"current offset %u", SWAP(arch.offset));
                 if ([_headersToStrip containsObject:archOffset]) {
-                    NSLog(@"arch to strip %u %u", CFSwapInt32(arch.cpusubtype), CFSwapInt32(arch.cputype));
+                    NSLog(@"arch to strip %u %u", SWAP(arch.cpusubtype), SWAP(arch.cputype));
                 }
                 else {
                     NSValue* archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
                     [_headersToKeep addObject:archValue];
-                    //NSLog(@"storing the arch we want to keep %u", CFSwapInt32(arch.cpusubtype));
+                    NSLog(@"storing the arch we want to keep %u", SWAP(arch.cpusubtype));
                 }
-                
-                [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&data]; //blank all the archs
                 offset += sizeof(struct fat_arch);
             }
             
-            //skip 4 bytes for magic, 4 bytes of nfat_arch
-            uint32_t nfat_arch = CFSwapInt32([_headersToKeep count]);
-            [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
-            //NSLog(@"changing nfat_arch to %u %u", nfat_arch, CFSwapInt32(nfat_arch));
+#pragma mark lipo ftw
             
+            [[NSFileManager defaultManager]moveItemAtPath:_binaryDumpPath toPath:[_binaryDumpPath stringByAppendingPathExtension:@"fatty"] error:nil];
+            NSFileHandle *_fattyHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen([_binaryDumpPath stringByAppendingPathExtension:@"fatty"].UTF8String, "r+"))];
+
+            [[NSFileManager defaultManager] createFileAtPath:_binaryDumpPath contents:nil attributes:nil];
+            _dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
+
+            [_dumpHandle replaceBytesInRange:NSMakeRange(0, sizeof(uint32_t)) withBytes:&magic];
+            
+            //skip 4 bytes for magic, 4 bytes of nfat_arch
+            uint32_t nfat_arch = SWAP([_headersToKeep count]);
+            [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
+            NSLog(@"changing nfat_arch to %u", SWAP(nfat_arch));
             
             offset = sizeof(struct fat_header);
             
-            for (NSValue* archValue in _headersToKeep) {
+            for (int i = 0,macho_offset = 0; i < _headersToKeep.count; i++) {
+                NSValue* archValue = _headersToKeep[i];
                 struct fat_arch keepArch;
                 [archValue getValue:&keepArch];
-                NSLog(@"headers to keep: %u %u", CFSwapInt32(keepArch.cpusubtype), CFSwapInt32(keepArch.cputype));
+                NSLog(@"headers to keep: %u %u", SWAP(keepArch.cpusubtype), SWAP(keepArch.cputype));
+                
+                int origOffset = SWAP(keepArch.offset);
+                
+                if (!macho_offset) {
+                    macho_offset =  pow(2.0, SWAP(keepArch.align));
+                }
+                
+                keepArch.offset = SWAP(macho_offset);
+                
+                [_fattyHandle seekToFileOffset:origOffset];
+                
+                NSData *machOData = [_fattyHandle readDataOfLength:SWAP(keepArch.size)];
+                
                 [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&keepArch];
+                [_dumpHandle replaceBytesInRange:NSMakeRange(macho_offset, SWAP(keepArch.size)) withBytes:[machOData bytes]];
                 offset += sizeof(struct fat_arch);
+                macho_offset += SWAP(keepArch.size);
             }
+            
+            [_dumpHandle closeFile];
+            [_fattyHandle closeFile];
+            
+            [[NSFileManager defaultManager]removeItemAtPath:[_binaryDumpPath stringByAppendingPathExtension:@"fatty"]  error:nil];
 
             VERBOSE(@"Finished 'stripping' binary %@", originalBinary);
             VERBOSE(@"Note: This binary will be missing some undecryptable architectures\n");
-
-            
-            [_dumpHandle closeFile];
-        }
+    }
         
         
 #pragma mark checking if everything's fine
         if (dumpCount == (numHeaders-_headersToStrip.count))
         {
-            /*
-            
-            // codesign properly
-            
-            NSLog(@"extracting entitlements");
-
-            NSString *entitlementsPath = [_binaryDumpPath stringByAppendingPathExtension:@"plist"];
-            
-            FILE *fp = fopen(entitlementsPath.UTF8String , "r+");
-
-            char entitlementsArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
-                "-e",
-                originalBinary.binaryPath.UTF8String,
-                NULL};
-            
-            int result = ldid_main(3, entitlementsArgv, fp);
-            
-            NSLog(@"entitlements ok");
-            
-            fclose(fp);
-            
-            char *codesignArgv[] = {[[NSProcessInfo processInfo].arguments[0] UTF8String],
-                [@"-S" stringByAppendingString:entitlementsPath].UTF8String,
-                _binaryDumpPath.UTF8String,
-                NULL};
-            
-            result = ldid_main(3, codesignArgv, fp);*/
-            
             NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
             
             _localPath = [_application.zipPrefix stringByAppendingPathComponent:_localPath];

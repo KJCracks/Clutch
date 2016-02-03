@@ -191,7 +191,7 @@
         [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
         bundle.parentBundle.bundleIdentifier.UTF8String,
         [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
-        [NSString stringWithFormat:@"%u",begin].UTF8String,
+        [NSString stringWithFormat:@"%u",(unsigned int)begin].UTF8String,
         [NSString stringWithFormat:@"%u", crypt.cryptoff].UTF8String,
         [NSString stringWithFormat:@"%u", crypt.cryptsize].UTF8String,
         [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String,
@@ -235,6 +235,7 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         
         dispatch_sync(queue, ^{
+			int dumpResult = 0;
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult, 0) != -1) {
                 DumperLog(@"Success! Child exited with status %u", dumpResult);

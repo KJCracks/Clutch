@@ -29,6 +29,6 @@
 @property (readonly) BOOL hasMultipleARMSlices;
 @property (readonly) BOOL hasMultipleARM64Slices;
 
-- (instancetype)initWithBundle:(ClutchBundle *)bundle NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithBundle:(ClutchBundle *)bundle;
 
 @end

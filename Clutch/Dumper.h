@@ -31,7 +31,7 @@ void _kill(pid_t pid);
 + (NSString *)readableArchFromMachHeader:(struct mach_header)header;
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn;
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL) suspend;
-- (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary;
 - (ArchCompatibility)compatibilityMode;
 
 - (void)swapArch;

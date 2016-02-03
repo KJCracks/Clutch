@@ -201,7 +201,7 @@
         [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
         bundle.parentBundle.bundleIdentifier.UTF8String,
         [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
-        [NSString stringWithFormat:@"%u",begin].UTF8String,
+        [NSString stringWithFormat:@"%u",(unsigned int)begin].UTF8String,
         [NSString stringWithFormat:@"%u", crypt.cryptoff].UTF8String,
         [NSString stringWithFormat:@"%u", crypt.cryptsize].UTF8String,
         [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String,
@@ -222,7 +222,7 @@
           [NSString stringWithFormat:@"%u", crypt.cryptsize].UTF8String,
           [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String);
     
-    DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv]);
+    DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv[0]]);
 
     
     posix_spawnattr_init (&attr);
@@ -248,6 +248,7 @@
         
         dispatch_sync(queue, ^{
             kill(pid, SIGCONT);
+			int dumpResult = 0;
             if (waitpid(pid, &dumpResult, 0) != -1) {
                 DumperDebugLog(@"Success! Child exited with status %u", dumpResult);
             } else {

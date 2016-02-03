@@ -17,10 +17,9 @@
 #endif
 
 @implementation Dumper
-
 - (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary {
-    
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
         _thinHeader = macho;
         _originalBinary = binary;
         _shouldDisableASLR = NO;
@@ -116,7 +115,7 @@
 
 - (cpu_type_t)supportedCPUType
 {
-    return NULL;
+    return 0;
 }
 
 - (BOOL)dumpBinary

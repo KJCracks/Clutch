@@ -124,7 +124,7 @@ static int progressbar_max(int x, int y) {
 static unsigned int get_screen_width(void) {
   /*char termbuf[2048];
   if (tgetent(termbuf, getenv("TERM")) >= 0) {
-    return tgetnum("co") /* -2;
+    return tgetnum("co")  -2;
   } else {
     return DEFAULT_SCREEN_WIDTH;
   }*/

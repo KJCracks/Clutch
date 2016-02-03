@@ -12,6 +12,6 @@
 
 @interface BundleDumpOperation : NSOperation
 
-- (instancetype)initWithBundle:(ClutchBundle *)application NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithBundle:(ClutchBundle *)application;
 
 @end

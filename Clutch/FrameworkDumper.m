@@ -207,21 +207,8 @@
         [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String,
         NULL};
     
-     DumperDebugLog(@"i must have called a thousand times!");
-    NSLog(@"%s %s %s %s %s %s %s %s %s %s %s %s %s %s", [[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
-          "-f",
-          swappedBinaryPath.UTF8String,
-          binaryDumpPath.UTF8String,
-          [NSString stringWithFormat:@"%u",pages].UTF8String,
-          [NSString stringWithFormat:@"%u",_thinHeader.header.ncmds].UTF8String,
-          [NSString stringWithFormat:@"%u",_thinHeader.offset].UTF8String,
-          bundle.parentBundle.bundleIdentifier.UTF8String,
-          [NSString stringWithFormat:@"%u",CFSwapInt32(directory.hashOffset)].UTF8String,
-          [NSString stringWithFormat:@"%u",begin].UTF8String,
-          [NSString stringWithFormat:@"%u", crypt.cryptoff].UTF8String,
-          [NSString stringWithFormat:@"%u", crypt.cryptsize].UTF8String,
-          [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String);
-    
+    DumperDebugLog(@"i must have called a thousand times!");
+        
     DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv[0]]);
 
     

@@ -59,6 +59,13 @@
     
 }
 
+- (BOOL)isAppleWatchApp {
+    if ([self.infoDictionary[@"CFBundleSupportedPlatforms"] containsObject:@"WatchOS"] || [self.infoDictionary[@"DTPlatformName"] isEqualToString:@"watchos"])
+        return  YES;
+    
+    return NO;
+}
+
 - (void)reloadWatchOSAppsInfo
 {
     _watchOSApps = [NSMutableArray new];
@@ -89,7 +96,7 @@
             Application *watchOSApp = [[Application alloc]initWithBundleInfo:@{@"BundleContainer":url.URLByDeletingLastPathComponent,
                                                                      @"BundleURL":url}];
             
-            if (watchOSApp && watchOSApp.hasAppleWatchApp) {
+            if (watchOSApp.isAppleWatchApp) {
                 _hasAppleWatchApp = YES;
                 watchOSApp.parentBundle = self;
                 [_watchOSApps addObject:watchOSApp];

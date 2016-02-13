@@ -178,20 +178,6 @@
     
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"] withDestinationPath:_originalBinary.frameworksPath error:nil];
     
-    /* fmwk.binPath = arguments[2];
-     fmwk.dumpPath = arguments[3];
-     fmwk.dumpSize = [arguments[4]intValue];
-     fmwk.pages = [arguments[5]intValue];
-     fmwk.ncmds = [arguments[6]intValue];
-     fmwk.offset = [arguments[7]intValue];
-     fmwk.bID = arguments[8];
-     fmwk.hashOffset = [arguments[9] intValue];
-     fmwk.codesign_begin = [arguments[10] intValue];
-     fmwk.cryptsize = [arguments[11] intValue];
-     fmwk.cryptoff = [arguments[12] intValue];
-     fmwk.cryptlc_offset = [arguments[13] intValue];
-     */
-    
     const char *argv[] = {[[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
         "-f",
         swappedBinaryPath.UTF8String,
@@ -266,32 +252,3 @@
 }
 
 @end
-
-/*
- // debug
- 
- static void image_added(const struct mach_header *mh, intptr_t slide) {
- Dl_info image_info;
- int result = dladdr(mh, &image_info);
- 
- gbprintln(@"loaded lib %@",[NSString stringWithUTF8String:image_info.dli_fname]);
- 
- //dumptofile(image_info.dli_fname, mh);
- }
- 
- static void image_removed(const struct mach_header *mh, intptr_t slide) {
- Dl_info image_info;
- int result = dladdr(mh, &image_info);
- 
- gbprintln(@"unloaded lib %@",[NSString stringWithUTF8String:image_info.dli_fname]);
- 
- //dumptofile(image_info.dli_fname, mh);
- }
- 
- 
- __attribute__((constructor))
- static void dumpexecutable() {
- _dyld_register_func_for_add_image(&image_added);
- _dyld_register_func_for_remove_image(&image_removed);
-
- }*/

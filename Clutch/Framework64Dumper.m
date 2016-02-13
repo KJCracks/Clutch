@@ -146,17 +146,6 @@
     
     pid_t pid;
     
-    /* fmwk.binPath = arguments[2];
-     fmwk.dumpPath = arguments[3];
-     fmwk.dumpSize = [arguments[4]intValue];
-     fmwk.pages = [arguments[5]intValue];
-     fmwk.ncmds = [arguments[6]intValue];
-     fmwk.offset = [arguments[7]intValue];
-     fmwk.bID = arguments[8];
-     fmwk.hashOffset = [arguments[9] intValue];
-     fmwk.codesign_begin = [arguments[10] intValue];
-     */
-    
     NSUUID* workingUUID = [NSUUID new];
     NSString* workingPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"clutch" stringByAppendingPathComponent:workingUUID.UUIDString]];
     

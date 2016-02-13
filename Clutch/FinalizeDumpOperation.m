@@ -91,9 +91,9 @@
                     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfURL:theURL];
                     
                     if (dict)
-                    {
                         [plists addObject:theURL.path];
-                    }
+                
+                    [[NSFileManager defaultManager] removeItemAtURL:theURL error:nil];
                 }
             }
             

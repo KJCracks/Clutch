@@ -175,7 +175,6 @@ int main (int argc, const char * argv[])
         for (NSString* selection in selections) {
             int key;
             struct timeval start, end;
-            //NSLog(@"selection wow %@ ", selection);
             
             Application *_selectedApp;
             
@@ -208,6 +207,11 @@ int main (int argc, const char * argv[])
             }
             
             VERBOSE(@"Now dumping %@", _selectedApp.bundleIdentifier);
+
+#ifndef DEBUG
+            if (_selectedApp.hasAppleWatchApp)
+                gbprintln(@"%@ contains watchOS 2 compatible application. It's not possible to dump watchOS 2 apps with Clutch %@ at this moment.",_selectedApp.bundleIdentifier,CLUTCH_VERSION);
+#endif
             
             gettimeofday(&start, NULL);
             [_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]];
@@ -218,10 +222,6 @@ int main (int argc, const char * argv[])
             float sec = ((dif + 500.0f) / 1000.0f);
             SUCCESS(@"Finished dumping %@ in %0.1f seconds", _selectedApp.bundleIdentifier, sec);
             exit(0);
-            
-            
-            //NSLog(@"you shouldnt be there pal. exiting with -1 code");
-            //return -1;
         }
         
     }
@@ -235,8 +235,8 @@ void sha1(uint8_t *hash, uint8_t *data, size_t size) {
     SHA1Reset(&context);
     SHA1Input(&context, data, (unsigned)size);
     SHA1Result(&context, hash);
-    //NSLog(@"hash %s", hash);
 }
+
 void exit_with_errno (int err, const char *prefix);
 void exit_with_errno (int err, const char *prefix)
 {

@@ -95,13 +95,8 @@
             return YES;
         }];
         
-        // int count = [[dirEnumerator allObjects] count];
-        // int i;
         for (NSURL *theURL in dirEnumerator)
         {
-            //i++;
-            //PERCENT((int)(ceil(i/count)));
-            
             NSNumber *isDirectory;
             [theURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nil];
             

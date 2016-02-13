@@ -157,7 +157,6 @@
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@>",_bundle.executablePath.lastPathComponent];
-    //return [NSString stringWithFormat:@"<%@>", _bundle.executablePath.lastPathComponent];
 }
 
 @end

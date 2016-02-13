@@ -33,24 +33,6 @@
     VERBOSE(@"Preparing to dump %@", _executable);
 	VERBOSE(@"Path: %@", self.executable.binaryPath);
     
-    // experimental
-    NSMutableData *data = [NSMutableData dataWithContentsOfFile:self.executable.binaryPath];
-    
-    thin_header headers[4];
-    uint32_t numHeaders = 0;
-    
-    headersFromBinary(headers, data, &numHeaders);
-    
-    /*for (int i = 0; i < numHeaders; i++) {
-        thin_header _thinHeader = headers[i];
-        
-        NSString *rpath = self.parentBundle ? [self.parentBundle.bundlePath stringByAppendingPathComponent:@"Frameworks"] : [self.bundlePath stringByAppendingPathComponent:@"Frameworks"] ;
-        NSLog(@"checking rpath (%@) for %@", rpath, self.executable.binaryPath);
-        //insertRPATHIntoBinary(rpath, data, _thinHeader);
-    }*/
-    
-    //[data writeToFile:self.executable.binaryPath atomically:YES];
-    
     NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};
     
     [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.executable.binaryPath error:nil];

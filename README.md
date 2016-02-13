@@ -6,7 +6,7 @@ Works with all devices, iOS versions, architecture types, with most binaries.
 
 This product is meant only for educational purposes and security research.
 
-Current version: *2.0-RC8*
+Current version: *2.0*
 
 
 Usage

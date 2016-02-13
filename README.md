@@ -22,7 +22,7 @@ Clutch [OPTIONS]<br />
 
 Compiling
 ------------
-Use Xcode with iOSOpenDev installed 
+Use Xcode
 
 
 Licenses

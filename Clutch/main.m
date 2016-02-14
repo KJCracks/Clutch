@@ -13,8 +13,6 @@
 #import "FrameworkLoader.h"
 #import <sys/time.h>
 
-int diff_ms(struct timeval t1, struct timeval t2);
-
 int diff_ms(struct timeval t1, struct timeval t2)
 {
     return (int)((((t1.tv_sec - t2.tv_sec) * 1000000) +
@@ -174,7 +172,6 @@ int main (int argc, const char * argv[])
         
         for (NSString* selection in selections) {
             int key;
-            struct timeval start, end;
             
             Application *_selectedApp;
             
@@ -217,13 +214,10 @@ int main (int argc, const char * argv[])
             [_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]];
             
             CFRunLoopRun();
-            gettimeofday(&end, NULL);
-            int dif = diff_ms(end,start);
-            float sec = ((dif + 500.0f) / 1000.0f);
-            SUCCESS(@"Finished dumping %@ in %0.1f seconds", _selectedApp.bundleIdentifier, sec);
-            exit(0);
+            
+            NSLog(@"you shouldnt be there pal. exiting with -1 code");
+            return -1;
         }
-        
     }
 	return 0;
 }

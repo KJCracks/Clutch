@@ -184,7 +184,7 @@
     }
 }
 
-- (void)dumpToDirectoryURL:(NSURL *)directoryURL onlyBinaries:(BOOL)yrn
+- (void)dumpToDirectoryURL:(NSURL *)directoryURL onlyBinaries:(BOOL)_onlyBinaries
 {
     [super dumpToDirectoryURL:directoryURL];
     
@@ -199,78 +199,96 @@
     BundleDumpOperation *_dumpOperation = self.executable.dumpOperation;
     
     FinalizeDumpOperation *_finalizeDumpOperation = [[FinalizeDumpOperation alloc]initWithApplication:self];
-    _finalizeDumpOperation.onlyBinaries = yrn;
+    _finalizeDumpOperation.onlyBinaries = _onlyBinaries;
     
-    if (!yrn)
-      [_finalizeDumpOperation addDependency:_mainZipOperation];
+    if (!_onlyBinaries)
+    [_finalizeDumpOperation addDependency:_mainZipOperation];
     
     [_finalizeDumpOperation addDependency:_dumpOperation];
     
-    NSMutableArray *_additionalDumpOpeartions = [NSMutableArray new];
-    NSMutableArray *_additionalZipOpeartions = [NSMutableArray new];
-    
+    NSMutableArray *_additionalDumpOpeartions = ({
+      NSMutableArray *array =  [NSMutableArray new];
+       
 #ifdef DEBUG
-    for (Application *_application in self.watchOSApps) {
-        for (Extension *_extension in _application.extensions) {
+        for (Application *_application in self.watchOSApps) {
+            for (Extension *_extension in _application.extensions) {
+
+                [array addObject:_extension.executable.dumpOperation];
+            }
+        }
+#endif
+        
+        for (Framework *_framework in self.frameworks) {
+            [array addObject:_framework.executable.dumpOperation];
+        }
+        
+        for (Extension *_extension in self.extensions) {
+            [array addObject:_extension.executable.dumpOperation];
+        }
+        array;
+    });
+    
+    _finalizeDumpOperation.expectedBinariesCount = _additionalDumpOpeartions.count + 1;
+    
+    NSMutableArray *_additionalZipOpeartions = ({
+        
+        NSMutableArray *array =  [NSMutableArray new];
+        
+#ifdef DEBUG
+        for (Application *_application in self.watchOSApps) {
+            for (Extension *_extension in _application.extensions) {
+                ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_extension];
+                [_zipOperation addDependency:_mainZipOperation];
+                
+                [array addObject:_zipOperation];
+            }
+        }
+#endif
+        
+        for (Framework *_framework in self.frameworks) {
+            ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_framework];
+            [_zipOperation addDependency:_mainZipOperation];
+            
+            [array addObject:_zipOperation];
+        }
+        
+        for (Extension *_extension in self.extensions) {
             ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_extension];
             [_zipOperation addDependency:_mainZipOperation];
             
-            [_additionalZipOpeartions addObject:_zipOperation];
-            
-            [_additionalDumpOpeartions addObject:_extension.executable.dumpOperation];
+            [array addObject:_zipOperation];
         }
-    }
-#endif
+        array;
+    });
     
-    for (Framework *_framework in self.frameworks) {
-        ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_framework];
-        [_zipOperation addDependency:_mainZipOperation];
-        
-        [_additionalZipOpeartions addObject:_zipOperation];
-        
-        [_additionalDumpOpeartions addObject:_framework.executable.dumpOperation];
-    }
-    
-    for (Extension *_extension in self.extensions) {
-        ZipOperation *_zipOperation = [[ZipOperation alloc]initWithApplication:_extension];
-        [_zipOperation addDependency:_mainZipOperation];
-        
-        [_additionalZipOpeartions addObject:_zipOperation];
-        
-        [_additionalDumpOpeartions addObject:_extension.executable.dumpOperation];
-    }
+    if (_onlyBinaries)
+        [_additionalZipOpeartions removeAllObjects];
     
     for (int i=1; i<_additionalZipOpeartions.count;i++) {
         ZipOperation *_zipOperation = _additionalZipOpeartions[i];
-
-        if (!yrn)
-            [_zipOperation addDependency:_additionalZipOpeartions[i-1]];
-        
-        BundleDumpOperation *_dumpOperation = _additionalDumpOpeartions[i];
-        [_finalizeDumpOperation addDependency:_dumpOperation];
+        [_zipOperation addDependency:_additionalZipOpeartions[i-1]];
     }
     
-    if (_additionalZipOpeartions.lastObject && !yrn) {
+    for (NSOperation *operation in _additionalDumpOpeartions) {
+        [_finalizeDumpOperation addDependency:operation];
+    }
+    
+    if (_additionalZipOpeartions.lastObject) {
         [_finalizeDumpOperation addDependency:_additionalZipOpeartions.lastObject];
     }
     
-    if (!yrn)
-    [_dumpQueue addOperation:_mainZipOperation];
+    if (!_onlyBinaries)
+        [_dumpQueue addOperation:_mainZipOperation];
     
     [_dumpQueue addOperation:_dumpOperation];
-
     
-    for (int i=0; i<_additionalZipOpeartions.count;i++) {
-        ZipOperation *_zipOperation = _additionalZipOpeartions[i];
-        
-        if (!yrn)
-        [_dumpQueue addOperation:_zipOperation];
-        
-        BundleDumpOperation *_dumpOperation = _additionalDumpOpeartions[i];
-        [_dumpQueue addOperation:_dumpOperation];
+    for (NSOperation *operation in _additionalDumpOpeartions) {
+        [_dumpQueue addOperation:operation];
     }
     
-    _finalizeDumpOperation.expectedBinariesCount = _additionalDumpOpeartions.count + 1;
+    for (NSOperation *operation in _additionalZipOpeartions) {
+        [_dumpQueue addOperation:operation];
+    }
     
     [_dumpQueue addOperation:_finalizeDumpOperation];
 }

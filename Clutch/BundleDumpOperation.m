@@ -49,6 +49,10 @@
     return self;
 }
 
+- (BOOL)isAsynchronous {
+    return YES;
+}
+
 - (BOOL)isConcurrent {
     return YES;
 }
@@ -298,5 +302,8 @@
     return @[NSClassFromString(@"FrameworkDumper"),NSClassFromString(@"Framework64Dumper")];
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),self,_application.bundleIdentifier,_application.bundleURL];
+}
 
 @end

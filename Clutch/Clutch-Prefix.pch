@@ -21,10 +21,15 @@
     #import <Foundation/Foundation.h>
 #endif
 
+struct timeval start, end;
+int diff_ms(struct timeval t1, struct timeval t2);
+
+#define CLUTCH_VERSION_ @"2.0.1"
+
 #ifdef DEBUG
-#define CLUTCH_VERSION @"2.0 DEBUG"
+#define CLUTCH_VERSION [NSString stringWithFormat:@"%@ DEBUG",CLUTCH_VERSION_]
 #else
-#define CLUTCH_VERSION @"2.0"
+#define CLUTCH_VERSION CLUTCH_VERSION_
 #endif
 
 

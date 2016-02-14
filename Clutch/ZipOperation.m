@@ -10,7 +10,6 @@
 #import "ZipArchive.h"
 #import "ClutchBundle.h"
 #import "GBPrint.h"
-#import "ProgressBar.h"
 
 @interface ZipOperation ()
 {
@@ -31,6 +30,10 @@
         _application = application;
     }
     return self;
+}
+
+- (BOOL)isAsynchronous {
+    return YES;
 }
 
 - (BOOL)isConcurrent {
@@ -72,9 +75,7 @@
         
         NSString *_zipFilename = _application.zipFilename, *_localPrefix = _application.zipPrefix;
         
-        if (_application.parentBundle) {
-            NSLog(@"Zipping %@",_application.bundleURL.lastPathComponent);
-        }
+        gbprintln(@"Zipping %@",_application.bundleURL.lastPathComponent);
         
         if (_archive == nil) {
             _archive = [[ZipArchive alloc] init];

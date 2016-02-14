@@ -43,9 +43,7 @@ void _kill(pid_t pid);
 #define DumperLog(fmt,...) fprintf(stderr, "\033[0;34mDUMP |\033[0m %s\n",[NSString stringWithFormat:@"%@ <%@> %@ " fmt, NSStringFromClass([self class]), [Dumper readableArchFromHeader:_thinHeader], _originalBinary, ##__VA_ARGS__].UTF8String)
 
 #ifdef DEBUG
-#   define PROGRESS(progress, percent)
 #   define DumperDebugLog(fmt,...) NSLog(@"DUMP: %@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary,##__VA_ARGS__)
 #else
 #   define DumperDebugLog(...)
-#   define PROGRESS(progress, percent) progressbar_update(progress, percent);
 #endif

@@ -43,7 +43,7 @@
         [self swapArch];
         
     }
-    
+        
     //actual dumping
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + _thinHeader.size];

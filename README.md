@@ -6,7 +6,7 @@ Works with all devices, iOS versions, architecture types, with most binaries.
 
 This product is meant only for educational purposes and security research.
 
-Current version: *2.0*
+Current version: *2.0.1*
 
 
 Usage
@@ -22,7 +22,7 @@ Clutch [OPTIONS]<br />
 
 Compiling
 ------------
-Use Xcode with iOSOpenDev installed 
+Use Xcode 5 or newer
 
 
 Licenses

@@ -18,7 +18,6 @@
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
 #import "NSBundle+Clutch.h"
-#import "progressbar.h"
 
 @import ObjectiveC.runtime;
 
@@ -118,17 +117,9 @@
     [fileHandle seekToFileOffset:self.offset];
 
     unsigned long percent;
-    //uint32_t total = togo;
 
-    
-    //progressbar* progress = progressbar_new([NSString stringWithFormat:@"\033[1;35mDumping %@ (%@)\033[0m", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]].UTF8String, 100);
     
     while (togo > 0) {
-        
-        /*progress bars messes up console output
-        percent = ceil((((double)total - togo) / (double)total) * 100);
-        PROGRESS(progress, percent);*/
-
         memcpy(buf, (unsigned char*)image_header + (pages_d * 0x1000), 0x1000);
         [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
         sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page

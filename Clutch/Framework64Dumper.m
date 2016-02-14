@@ -28,7 +28,7 @@
     NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath, *newSupf = _originalBinary.supfPath; // default values if we dont need to swap archs
     
     //check if cpusubtype matches
-    if (_thinHeader.header.cpusubtype != [Device cpu_subtype]) {
+    if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && _originalBinary.hasMultipleARM64Slices) {
         
         NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
         
@@ -39,7 +39,7 @@
         
         [self swapArch];
     }
-    
+        
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + _thinHeader.size];
@@ -138,9 +138,7 @@
     }
         
     [newFileHandle closeFile];
-    
-    [self.originalFileHandle closeFile];
-    
+        
     extern char **environ;
     posix_spawnattr_t attr;
     

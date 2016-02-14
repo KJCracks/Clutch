@@ -8,8 +8,6 @@
 
 #import "Dumper.h"
 #import "Device.h"
-#import "progressbar.h"
-#import "statusbar.h"
 #import <spawn.h>
 
 #ifndef _POSIX_SPAWN_DISABLE_ASLR
@@ -124,9 +122,7 @@
 }
 
 -(void)swapArch {
-    
-    thin_header macho = _thinHeader;
-    
+        
     DumperLog(@"Swapping architectures..");
     
     //time to swap
@@ -141,7 +137,16 @@
         newSupf = [_originalBinary.supfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.supfPath.pathExtension]];
     }
     
-    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:nil];
+    NSError *error;
+    
+    [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:&error];
+    
+    DumperDebugLog(@"%@",error);
+    
+    [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:&error];
+    
+    DumperDebugLog(@"%@",error);
+    
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
     
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.suppPath toPath:newSupp error:nil];
@@ -161,62 +166,31 @@
     
     struct fat_header fat = *(struct fat_header *)buffer.bytes;
     fat.nfat_arch = SWAP(fat.nfat_arch);
-    int offset = sizeof(struct fat_header);
+    uint32_t offset = sizeof(struct fat_header);
     
     for (int i = 0; i < fat.nfat_arch; i++) {
         struct fat_arch arch;
         arch = *(struct fat_arch *)([buffer bytes] + offset);
         
-        if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
-            
-            //replaces all unwanted architectures with nonsensical cputypes
-            
-            if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
-                switch (SWAP(arch.cpusubtype)) {
-                    case CPU_SUBTYPE_ARM_V6:
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
-                        break;
-                    case CPU_SUBTYPE_ARM_V7:
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_4);
-                        break;
-                    case CPU_SUBTYPE_ARM_V7S:
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_ITANIUM);
-                        break;
-                    case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_XEON);
-                        break;
-                }
-            } else {
-                
-                switch (SWAP(arch.cpusubtype)) {
-                    case CPU_SUBTYPE_ARM64_ALL:
-                        arch.cputype = SWAP(CPU_TYPE_X86_64);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
-                        break;
-                    case CPU_SUBTYPE_ARM64_V8:
-                        arch.cputype = SWAP(CPU_TYPE_X86_64);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_H);
-                        break;
-                }
-                
-            }
-            
-            [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
+        if (((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+            int origOffset = SWAP(arch.offset);
+            arch.offset = SWAP(pow(2.0, SWAP(arch.align)));
+            [self.originalFileHandle seekToFileOffset:origOffset];
+            NSData *machOData = [self.originalFileHandle readDataOfLength:SWAP(arch.size)];
+            [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(struct fat_header), sizeof(struct fat_arch)) withBytes:&arch];
+            [self.originalFileHandle replaceBytesInRange:NSMakeRange(SWAP(arch.offset), SWAP(arch.size)) withBytes:[machOData bytes]];
+            offset = SWAP(arch.offset) + SWAP(arch.size);
+            break;
         }
         
         offset += sizeof(struct fat_arch);
     }
     
-    
+    uint32_t nfat_arch = SWAP(1);
+    [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
+    [self.originalFileHandle truncateFileAtOffset:offset];
     DumperDebugLog(@"wrote new header to binary");
-    
 }
-
-
 
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
@@ -239,13 +213,13 @@
     
     unsigned long percent;
     
-    progressbar* progress = progressbar_new([NSString stringWithFormat:@"\033[1;35mDumping %@ (%@)\033[0m", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]].UTF8String, 100);
+    gbprintln([NSString stringWithFormat:@"\033[1;35mDumping %@ (%@)\033[0m", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]]);
+    
     while (togo > 0) {
         // get a percentage for the progress bar
     
     
         percent = ceil((((double)total - togo) / (double)total) * 100);
-        PROGRESS(progress, percent);
         
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
             
@@ -306,7 +280,6 @@
     
     
     //nice! now let's write the new checksum data
-    printf("\n\n");
     DumperLog(@"Writing new checksum");
     [fileHandle seekToFileOffset:(begin + hashOffset)];
     

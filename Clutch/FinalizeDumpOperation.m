@@ -11,6 +11,7 @@
 #import "Application.h"
 #import "GBPrint.h"
 #import "ZipOperation.h"
+#import <sys/time.h>
 
 @interface FinalizeDumpOperation ()
 {
@@ -31,6 +32,10 @@
         _application = application;
     }
     return self;
+}
+
+- (BOOL)isAsynchronous {
+    return YES;
 }
 
 - (BOOL)isConcurrent {
@@ -57,10 +62,11 @@
     }
     
     self.completionBlock = ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            CFRunLoopStop(CFRunLoopGetCurrent());
-        });
-        
+        gettimeofday(&end, NULL);
+        int dif = diff_ms(end,start);
+        float sec = ((dif + 500.0f) / 1000.0f);
+        SUCCESS(@"Finished dumping %@ in %0.1f seconds", _application.bundleIdentifier, sec);
+        exit(0);
     };
     
     // If the operation is not canceled, begin executing the task.
@@ -223,7 +229,6 @@
     _finished = YES;
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
-    CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 -(NSUInteger)hash {

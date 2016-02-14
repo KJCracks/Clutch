@@ -61,8 +61,6 @@
 		32BE3C541C5B8C8D0049ECAD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 328CCB4B1ACFFBD500B21225 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		32BE3C581C5B8C9B0049ECAD /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 321D74A31B4946D30037CACF /* libc++.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		32BE3C591C5B8C9D0049ECAD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32EFB6F21A8A500D005BB56C /* libz.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
-		ADEF328B1C5C9FBB0058942D /* progressbar.c in Sources */ = {isa = PBXBuildFile; fileRef = ADEF32891C5C9FBB0058942D /* progressbar.c */; };
-		ADEF328C1C5C9FBB0058942D /* statusbar.c in Sources */ = {isa = PBXBuildFile; fileRef = ADEF328A1C5C9FBB0058942D /* statusbar.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,10 +155,6 @@
 		ADAD7C181C5B3C8600644FD6 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSApplicationProxy.h; path = ../LSApplicationProxy.h; sourceTree = "<group>"; };
 		ADE1ED291AD02C2000398728 /* AppSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/AppSupport.framework; sourceTree = DEVELOPER_DIR; };
-		ADEF32891C5C9FBB0058942D /* progressbar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = progressbar.c; sourceTree = "<group>"; };
-		ADEF328A1C5C9FBB0058942D /* statusbar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = statusbar.c; sourceTree = "<group>"; };
-		ADEF328D1C5C9FCA0058942D /* progressbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = progressbar.h; sourceTree = "<group>"; };
-		ADEF328E1C5C9FCA0058942D /* statusbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = statusbar.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,10 +232,6 @@
 				324EA6431A89270D00844540 /* Clutch.entitlements */,
 				32BC93F11A8F3C0B00805D14 /* mach_vm.h */,
 				328CCB711AD004FF00B21225 /* NSTask.h */,
-				ADEF328D1C5C9FCA0058942D /* progressbar.h */,
-				ADEF328E1C5C9FCA0058942D /* statusbar.h */,
-				ADEF32891C5C9FBB0058942D /* progressbar.c */,
-				ADEF328A1C5C9FBB0058942D /* statusbar.c */,
 				328CCB351ACECEB500B21225 /* scinfo.h */,
 				328CCB361ACECEB500B21225 /* scinfo.m */,
 				ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */,
@@ -483,7 +473,6 @@
 				32BE3C4B1C5B8C810049ECAD /* GBCommandLineParser.m in Sources */,
 				32BE3C4C1C5B8C810049ECAD /* GBOptionsHelper.m in Sources */,
 				32BE3C4D1C5B8C810049ECAD /* GBPrint.m in Sources */,
-				ADEF328C1C5C9FBB0058942D /* statusbar.c in Sources */,
 				32BE3C4E1C5B8C810049ECAD /* GBSettings.m in Sources */,
 				32BE3C4F1C5B8C810049ECAD /* NSFileHandle+Private.m in Sources */,
 				32BE3C501C5B8C810049ECAD /* NSBundle+Clutch.m in Sources */,
@@ -500,7 +489,6 @@
 				32BE3C371C5B8C6E0049ECAD /* Binary.m in Sources */,
 				32BE3C381C5B8C6E0049ECAD /* ClutchBundle.m in Sources */,
 				32BE3C391C5B8C6E0049ECAD /* Application.m in Sources */,
-				ADEF328B1C5C9FBB0058942D /* progressbar.c in Sources */,
 				32BE3C3A1C5B8C6E0049ECAD /* Extension.m in Sources */,
 				32BE3C3B1C5B8C6E0049ECAD /* Framework.m in Sources */,
 				32BE3C3C1C5B8C6E0049ECAD /* ApplicationsManager.m in Sources */,

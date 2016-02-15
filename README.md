@@ -68,7 +68,6 @@ Contributors:
 [DoubleDoughnut](https://github.com/DoubleDoughnut)  
 [iD70my](https://github.com/iD70my)  
 [OdNairy](https://github.com/OdNairy)  
-[ZorroAA](https://github.com/ZorroAA)  
-  
+
   
 (c) [Kim Jong-Cracks](http://cracksby.kim) 1819-2016

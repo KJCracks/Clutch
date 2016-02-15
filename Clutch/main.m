@@ -21,34 +21,28 @@ int diff_ms(struct timeval t1, struct timeval t2)
 
 void listApps();
 void listApps() {
-    struct timeval start1, end1;
-    gettimeofday(&start1, NULL);
-
-    ApplicationsManager *_manager = [[ApplicationsManager alloc] init];
+    ApplicationsManager *manager = [[ApplicationsManager alloc] init];
     
-    NSArray *installedApps = [_manager installedApps].allValues;
+    NSArray *installedApps = [manager installedApps].allValues;
     printf("Installed apps:\n");
     
     int count;
-    NSString* space;
-    for (Application *_app in installedApps) {
-        //gbprintln(@"%u) %@\n",(unsigned int)([installedApps indexOfObject:_app]+1),_app);
-        
+    NSString *space;
+    for (Application *_app in installedApps)
+    {
         count = [installedApps indexOfObject:_app] + 1;
-        if (count < 10) {
+        if (count < 10)
+        {
             space = @"  ";
         }
-        else if (count < 100) {
+        else if (count < 100)
+        {
             space = @" ";
         }
         
         printf("\033[1;3%um %u: %s%s <%s>\033[0m\n", 5 + ((count) % 2), count, space.UTF8String ,[_app.displayName UTF8String], [_app.bundleIdentifier UTF8String]);
     }
-    gettimeofday(&end1, NULL);
-    int dif = diff_ms(end1, start1);
-    float sec = ((dif + 500.0f) / 1000.0f);
-    printf("Finished in %f seconds\n", sec);
-
+    
     exit(0);
 }
 

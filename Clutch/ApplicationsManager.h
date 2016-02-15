@@ -11,7 +11,7 @@
 
 @interface ApplicationsManager : NSObject
 
-+ (instancetype)sharedInstance;
+- (instancetype)init;
 
 @property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDictionary *installedApps;
 

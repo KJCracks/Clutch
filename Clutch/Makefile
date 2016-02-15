@@ -1,6 +1,6 @@
 # Target specific variables
 TARGET := clutch
-IPHONEOS_DEPLOYMENT_TARGET = 6.0
+IPHONEOS_DEPLOYMENT_TARGET = 8.0
 ENTITLEMENTS := Clutch.entitlements
 PCH := Clutch-Prefix.pch
 SRC_DIRS := MiniZip

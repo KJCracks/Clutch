@@ -21,7 +21,10 @@ int diff_ms(struct timeval t1, struct timeval t2)
 
 void listApps();
 void listApps() {
-    ApplicationsManager *_manager = [ApplicationsManager sharedInstance];
+    struct timeval start1, end1;
+    gettimeofday(&start1, NULL);
+
+    ApplicationsManager *_manager = [[ApplicationsManager alloc] init];
     
     NSArray *installedApps = [_manager installedApps].allValues;
     printf("Installed apps:\n");
@@ -38,8 +41,14 @@ void listApps() {
         else if (count < 100) {
             space = @" ";
         }
+        
         printf("\033[1;3%um %u: %s%s <%s>\033[0m\n", 5 + ((count) % 2), count, space.UTF8String ,[_app.displayName UTF8String], [_app.bundleIdentifier UTF8String]);
     }
+    gettimeofday(&end1, NULL);
+    int dif = diff_ms(end1, start1);
+    float sec = ((dif + 500.0f) / 1000.0f);
+    printf("Finished in %f seconds\n", sec);
+
     exit(0);
 }
 
@@ -163,7 +172,7 @@ int main (int argc, const char * argv[])
         if (!([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]))
             return -1;
         
-        ApplicationsManager *_appsManager = [ApplicationsManager sharedInstance];
+        ApplicationsManager *_appsManager = [[ApplicationsManager alloc] init];
         
         NSDictionary *_installedApps = [_appsManager _allCachedApplications];
         NSArray* _installedArray = _installedApps.allValues;

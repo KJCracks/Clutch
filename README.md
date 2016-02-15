@@ -41,17 +41,7 @@ Clutch
 ```
 _Note: you may need to `chmod +x Clutch`_  
   
-Usage
-------------
-```sh 
-Clutch [OPTIONS]
--b --binary-dump     Only dump binary files from specified bundleID
--d --dump            Dump specified bundleID into .ipa file
--i --print-installed Print installed application
---clean              Clean /var/tmp/clutch directory
---version            Display version and exit
--? --help            Display this help and exit
-```  
+  
 Licenses
 ------------
 *Clutch* uses the following libraries under their respective licenses.

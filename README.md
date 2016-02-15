@@ -2,6 +2,17 @@ Clutch
 ------------
 *Clutch* is a high-speed iOS decryption tool. Clutch supports the iPhone, iPod Touch, and iPad as well as all iOS version, architecture types, and most binaries. **Clutch is meant only for educational purposes and security research.**
 
+Usage
+------------
+```sh 
+Clutch [OPTIONS]
+-b --binary-dump     Only dump binary files from specified bundleID
+-d --dump            Dump specified bundleID into .ipa file
+-i --print-installed Print installed application
+--clean              Clean /var/tmp/clutch directory
+--version            Display version and exit
+-? --help            Display this help and exit
+```  
 Getting started
 ------------
 #### Have Xcode installed, install the additional command line tools

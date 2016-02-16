@@ -14,6 +14,7 @@
 #import <mach/mach_traps.h>
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
+#import "ClutchPrint.h"
 
 @implementation ARMDumper
 
@@ -59,7 +60,7 @@
     
     uint64_t __text_start = 0;
     
-    DumperDebugLog(@"32bit Dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    [[ClutchPrint sharedInstance] printDeveloper: @"32bit Dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
         
@@ -71,7 +72,7 @@
                 [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
                 
-                DumperDebugLog(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize);
+                [[ClutchPrint sharedInstance] printDeveloper: @"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize];
                 
                 break;
             }
@@ -79,7 +80,7 @@
                 [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command))];
                 foundCrypt = YES;
                 
-                DumperDebugLog(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid);
+                [[ClutchPrint sharedInstance] printDeveloper: @"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid];
                 
                 break;
             }
@@ -89,7 +90,7 @@
                 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
-                    DumperDebugLog(@"FOUND %s SEGMENT",__text.segname);
+                    [[ClutchPrint sharedInstance] printDeveloper: @"FOUND %s SEGMENT",__text.segname];
                     __text_start = __text.vmaddr;
                 }
                 break;
@@ -102,15 +103,15 @@
             break;
     }
     
-    DumperDebugLog(@"binary path %@", swappedBinaryPath);
+    [[ClutchPrint sharedInstance] printDeveloper: @"binary path %@", swappedBinaryPath];
     
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        ERROR(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
+        [[ClutchPrint sharedInstance] printError:@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO"];
         return NO;
     }
     
-    DumperDebugLog(@"found all required load commands for %@ %@",_originalBinary,[Dumper readableArchFromHeader:_thinHeader]);
+    [[ClutchPrint sharedInstance] printDeveloper: @"found all required load commands for %@ %@",_originalBinary,[Dumper readableArchFromHeader:_thinHeader]];
     
     pid_t pid; // store the process ID of the fork
     mach_port_t port; // mach port used for moving virtual memory
@@ -120,7 +121,7 @@
     pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        ERROR(@"Could not obtain mach port, did you sign with proper entitlements?");
+        [[ClutchPrint sharedInstance] printError:@"Could not obtain mach port, did you sign with proper entitlements?"];
         sleep(60);
         goto gotofail;
     }
@@ -140,10 +141,10 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
-            DumperDebugLog(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
+            [[ClutchPrint sharedInstance] printDeveloper: @"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset];
             begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
-            DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
+            [[ClutchPrint sharedInstance] printDeveloper: @"Found CSSLOT_CODEDIRECTORY"];
             break; //break (we don't need anything from this the superblob anymore)
         }
     }
@@ -153,7 +154,7 @@
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
     if (pages == 0) {
-        DumperLog(@"pages == 0");
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"pages == 0"];
         goto gotofail;
     }
     
@@ -163,11 +164,11 @@
     {
         mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid];
         if(main_address == -1) {
-            ERROR(@"Failed to find address of header!");
+            [[ClutchPrint sharedInstance] printError:@"Failed to find address of header!"];
             goto gotofail;
         }
         
-        DumperDebugLog(@"ASLR slide: 0x%llx", main_address);
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"ASLR slide: 0x%llx", main_address];
         __text_start = main_address;
     }
     
@@ -180,7 +181,7 @@
         
     }
     
-    NSLog(@"done dumping");
+    [[ClutchPrint sharedInstance] printDeveloper:@"done dumping"];
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])

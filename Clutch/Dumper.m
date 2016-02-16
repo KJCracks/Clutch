@@ -68,18 +68,17 @@
     
     if ((_thinHeader.header.flags & MH_PIE) && yrn) {
         
-        DumperDebugLog(@"disabling MH_PIE!!!!");
+        [[ClutchPrint sharedInstance] printDeveloper: @"disabling MH_PIE!!!!"];
         
         _thinHeader.header.flags &= ~MH_PIE;
         [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else if (_isASLRProtected && !yrn && !(_thinHeader.header.flags & MH_PIE)) {
         
-        //DumperDebugLog(@"enabling MH_PIE!!!!");
         
         //thinHeader.header.flags |= MH_PIE;
         //[self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else {
-        DumperDebugLog(@"to MH_PIE or not to MH_PIE, that is the question");
+        [[ClutchPrint sharedInstance] printDeveloper: @"to MH_PIE or not to MH_PIE, that is the question"];
     }
     
     
@@ -106,7 +105,7 @@
     
     posix_spawnattr_destroy (&attr);
     
-    NSLog(@"got the pid %u %@", pid, binaryPath);
+    [[ClutchPrint sharedInstance] printDeveloper:@"got the pid %u %@", pid, binaryPath];
     
     return pid;
 }
@@ -123,7 +122,7 @@
 
 -(void)swapArch {
         
-    DumperLog(@"Swapping architectures..");
+    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Swapping architectures.."];
     
     //time to swap
     NSString* suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
@@ -141,11 +140,11 @@
     
     [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:&error];
     
-    DumperDebugLog(@"%@",error);
+    [[ClutchPrint sharedInstance] printDeveloper: @"%@",error];
     
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:&error];
     
-    DumperDebugLog(@"%@",error);
+    [[ClutchPrint sharedInstance] printDeveloper: @"%@",error];
     
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
     
@@ -189,12 +188,12 @@
     uint32_t nfat_arch = SWAP(1);
     [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
     [self.originalFileHandle truncateFileAtOffset:offset];
-    DumperDebugLog(@"wrote new header to binary");
+    [[ClutchPrint sharedInstance] printDeveloper: @"wrote new header to binary"];
 }
 
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
-    DumperDebugLog(@"checksum size %u", pages*20);
+    [[ClutchPrint sharedInstance] printDeveloper: @"checksum size %u", pages*20];
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
     
     
@@ -213,7 +212,7 @@
     
     unsigned long percent;
     
-    gbprintln([NSString stringWithFormat:@"\033[1;35mDumping %@ (%@)\033[0m", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]]);
+    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Dumping %@ (%@)", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]];
     
     while (togo > 0) {
         // get a percentage for the progress bar
@@ -223,7 +222,7 @@
         
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
             
-            DumperLog(@"Failed to dump a page :(");
+            [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump a page :("];
             free(checksum); // free checksum table
             
             _kill(pid);
@@ -251,11 +250,11 @@
                 if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                     struct encryption_info_command *newcrypt = (struct encryption_info_command *) curloc;
                     newcrypt->cryptid = 0; // change the cryptid to 0
-                    DumperLog(@"Patched cryptid (32bit segment)");
+                    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Patched cryptid (32bit segment)"];
                 } else if (l_cmd->cmd == LC_ENCRYPTION_INFO_64) {
                     struct encryption_info_command_64 *newcrypt = (struct encryption_info_command_64 *) curloc;
                     newcrypt->cryptid = 0; // change the cryptid to 0
-                    DumperLog(@"Patched cryptid (64bit segment)");
+                    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Patched cryptid (64bit segment)"];
                 }
                 
                 curloc += lcmd_size;
@@ -280,7 +279,7 @@
     
     
     //nice! now let's write the new checksum data
-    DumperLog(@"Writing new checksum");
+    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Writing new checksum"];
     [fileHandle seekToFileOffset:(begin + hashOffset)];
     
 
@@ -289,7 +288,7 @@
     [fileHandle writeData:trimmed_checksum];
     
     
-    DumperDebugLog(@"Done writing checksum");
+    [[ClutchPrint sharedInstance] printDeveloper: @"Done writing checksum"];
     
     
     return YES;
@@ -310,23 +309,23 @@ void *safe_trim(void *p, size_t n) {
 
 - (ArchCompatibility)compatibilityMode {
 
-    DumperDebugLog(@"Segment cputype: %u, cpusubtype: %u", _thinHeader.header.cputype, _thinHeader.header.cpusubtype);
-    DumperDebugLog(@"Device cputype: %u, cpusubtype: %u", Device.cpu_type, Device.cpu_subtype);
-    DumperDebugLog(@"Dumper supports cputype %u", self.supportedCPUType);
+    [[ClutchPrint sharedInstance] printDeveloper: @"Segment cputype: %u, cpusubtype: %u", _thinHeader.header.cputype, _thinHeader.header.cpusubtype];
+    [[ClutchPrint sharedInstance] printDeveloper: @"Device cputype: %u, cpusubtype: %u", Device.cpu_type, Device.cpu_subtype];
+    [[ClutchPrint sharedInstance] printDeveloper: @"Dumper supports cputype %u", self.supportedCPUType];
     
 
     if (self.supportedCPUType != _thinHeader.header.cputype) {
-        NSLog(@"why cut a potato with a pencil?");
+        [[ClutchPrint sharedInstance] printDeveloper:@"why cut a potato with a pencil?"];
         return ArchCompatibilityNotCompatible;
     }
     
     else if ((Device.cpu_type == CPU_TYPE_ARM64) && (_thinHeader.header.cputype == CPU_TYPE_ARM)) {
-        DumperDebugLog(@"God Mode On")
+        [[ClutchPrint sharedInstance] printDeveloper: @"God Mode On"];
         return ArchCompatibilityCompatible;
     }
     
     else if ((_thinHeader.header.cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
-        DumperDebugLog(@"Cannot use dumper %@, device not supported", NSStringFromClass([self class]));
+        [[ClutchPrint sharedInstance] printDeveloper: @"Cannot use dumper %@, device not supported", NSStringFromClass([self class])];
         return ArchCompatibilityNotCompatible;
     }
     

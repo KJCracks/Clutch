@@ -12,6 +12,7 @@
 #import "ASLRDisabler.h"
 #import "mach_vm.h"
 #import "ClutchBundle.h"
+#import "ClutchPrint.h"
 
 void *safe_trim(void *p, size_t n);
 
@@ -39,11 +40,3 @@ void _kill(pid_t pid);
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin;
 
 @end
-
-#define DumperLog(fmt,...) fprintf(stderr, "\033[0;34mDUMP |\033[0m %s\n",[NSString stringWithFormat:@"%@ <%@> %@ " fmt, NSStringFromClass([self class]), [Dumper readableArchFromHeader:_thinHeader], _originalBinary, ##__VA_ARGS__].UTF8String)
-
-#ifdef DEBUG
-#   define DumperDebugLog(fmt,...) NSLog(@"DUMP: %@ %@ %@ " fmt, self, [Dumper readableArchFromHeader:_thinHeader], _originalBinary,##__VA_ARGS__)
-#else
-#   define DumperDebugLog(...)
-#endif

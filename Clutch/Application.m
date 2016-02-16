@@ -189,9 +189,7 @@
     [super dumpToDirectoryURL:directoryURL];
     
     [self prepareForDump];
-    
-    //NSLog(@"SCInfo SINF for %@:\n %@",self,[SCInfoBuilder parseOriginaleSinfForBundle:self]);
-    
+        
     [[NSFileManager defaultManager]createDirectoryAtPath:_workingPath withIntermediateDirectories:YES attributes:nil error:nil];
         
     ZipOperation *_mainZipOperation = [[ZipOperation alloc]initWithApplication:self];

@@ -12,6 +12,7 @@
 #import "GBPrint.h"
 #import "ZipOperation.h"
 #import <sys/time.h>
+#import "ClutchPrint.h"
 
 @interface FinalizeDumpOperation ()
 {
@@ -65,7 +66,7 @@
         gettimeofday(&end, NULL);
         int dif = diff_ms(end,start);
         float sec = ((dif + 500.0f) / 1000.0f);
-        SUCCESS(@"Finished dumping %@ in %0.1f seconds", _application.bundleIdentifier, sec);
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Finished dumping %@ in %0.1f seconds", _application.bundleIdentifier, sec];
         exit(0);
     };
     
@@ -106,10 +107,10 @@
             __block BOOL status = plists.count == self.expectedBinariesCount;
             
             if (status) {
-                SUCCESS_OUT(@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath);
+                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath];
             }
             else {
-                ERROR(@"Failed to dump %@ :(", _application.bundleIdentifier);
+                [[ClutchPrint sharedInstance] printError:@"Failed to dump %@ :(", _application.bundleIdentifier];
                 exit(1);
             }
             
@@ -121,7 +122,7 @@
         NSString *_zipFilename = _application.zipFilename;
         
         if (_application.parentBundle) {
-            NSLog(@"Zipping %@",_application.bundleURL.lastPathComponent);
+            [[ClutchPrint sharedInstance] printDeveloper:@"Zipping %@",_application.bundleURL.lastPathComponent];
         }
         
         if (_archive == nil) {
@@ -195,8 +196,8 @@
                               moveItemAtURL:ipaSrcURL
                               toURL:[NSURL fileURLWithPath:currentFile]
                               error:&anError]) {
-                            NSLog(@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
-                                  [NSURL fileURLWithPath:currentFile], anError);
+                            [[ClutchPrint sharedInstance] printDeveloper:@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
+                                  [NSURL fileURLWithPath:currentFile], anError];
                         }
                         break;
                     }
@@ -206,8 +207,8 @@
                       moveItemAtURL:ipaSrcURL
                       toURL:[NSURL fileURLWithPath:_ipaPath]
                       error:&anError]) {
-                    NSLog(@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
-                          [NSURL fileURLWithPath:_ipaPath], anError);
+                    [[ClutchPrint sharedInstance] printDeveloper:@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
+                          [NSURL fileURLWithPath:_ipaPath], anError];
                 }
             }
         }

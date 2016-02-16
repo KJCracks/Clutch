@@ -8,6 +8,7 @@
 
 #import "ClutchBundle.h"
 #import "optool.h"
+#import "ClutchPrint.h"
 
 @interface ClutchBundle ()
 
@@ -30,8 +31,8 @@
 
     _executable = [[Binary alloc]initWithBundle:self];
 
-    VERBOSE(@"Preparing to dump %@", _executable);
-	VERBOSE(@"Path: %@", self.executable.binaryPath);
+    [[ClutchPrint sharedInstance] printVerbose:@"Preparing to dump %@", _executable];
+	[[ClutchPrint sharedInstance] printVerbose:@"Path: %@", self.executable.binaryPath];
     
     NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};
     

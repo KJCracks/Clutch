@@ -12,6 +12,7 @@
 #include <mach-o/fat.h>
 #import "optool.h"
 #import "NSFileHandle+Private.h"
+#import "ClutchPrint.h"
 
 @interface Binary ()
 {
@@ -35,7 +36,7 @@
         
         _bundle = path;
         
-        NSLog(@"######## bundle URL %@", _bundle.bundleContainerURL);
+        [[ClutchPrint sharedInstance] printDeveloper:@"######## bundle URL %@", _bundle.bundleContainerURL];
         if ([[_bundle.bundleContainerURL path] hasSuffix:@"Frameworks"]) {
             _frameworksPath = [_bundle.bundleContainerURL path];
         }

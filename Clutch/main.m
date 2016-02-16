@@ -12,6 +12,7 @@
 #import "sha1.h"
 #import "FrameworkLoader.h"
 #import <sys/time.h>
+#import "ClutchPrint.h"
 
 int diff_ms(struct timeval t1, struct timeval t2)
 {
@@ -21,10 +22,10 @@ int diff_ms(struct timeval t1, struct timeval t2)
 
 void listApps();
 void listApps() {
-    ApplicationsManager *manager = [[ApplicationsManager alloc] init];
+    ApplicationsManager *_manager = [[ApplicationsManager alloc] init];
     
-    NSArray *installedApps = [manager installedApps].allValues;
-    printf("Installed apps:\n");
+    NSArray *installedApps = [_manager installedApps].allValues;
+    [[ClutchPrint sharedInstance] print:@"Installed apps:"];
     
     int count;
     NSString *space;
@@ -40,7 +41,17 @@ void listApps() {
             space = @" ";
         }
         
-        printf("\033[1;3%um %u: %s%s <%s>\033[0m\n", 5 + ((count) % 2), count, space.UTF8String ,[_app.displayName UTF8String], [_app.bundleIdentifier UTF8String]);
+        ClutchPrinterColor color;
+        if (count % 2 == 0)
+        {
+            color = ClutchPrinterColorPurple;
+        }
+        else
+        {
+            color = ClutchPrinterColorPink;
+        }
+        
+        [[ClutchPrint sharedInstance] printColor:color format:@"%d: %@%@ <%@>", count, space, _app.displayName, _app.bundleIdentifier];
     }
     
     exit(0);
@@ -52,6 +63,10 @@ int main (int argc, const char * argv[])
 
     @autoreleasepool
     {
+        [[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelFull];
+        [[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelNone];
+
+        //exit(0);
         // yo
         if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
             
@@ -72,6 +87,8 @@ int main (int argc, const char * argv[])
         [options registerOption:0 long:@"clean" description:@"Clean /var/tmp/clutch directory" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
+        [options registerOption:'p' long:@"no-color" description:@"Print with colors disabled" flags:GBValueNone|GBOptionNoPrint];
+        [options registerOption:'v' long:@"verbose" description:@"Print verbose messages" flags:GBValueNone|GBOptionNoPrint];
         
         if (argc == 1) {
             [options printHelp];
@@ -82,30 +99,52 @@ int main (int argc, const char * argv[])
         }
     
         __block NSString * _selectedOption, * _selectedBundleID;
+        __block ClutchPrinterColorLevel colorLevel = ClutchPrinterColorLevelFull;
+        __block ClutchPrinterVerboseLevel verboseLevel = ClutchPrinterVerboseLevelNone;
+        
         
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
         [parser registerOptions:options];
         [parser parseOptionsWithArguments:(char **)argv count:argc block:^(GBParseFlags flags, NSString *option, id value, BOOL *stop) {
             
-            if ([option isEqualToString:@"help"]) {
+            if ([option isEqualToString:@"help"])
+            {
                 [options printHelp];
                 exit(0);
-            }else if ([option isEqualToString:@"version"]) {
+            }
+            else if ([option isEqualToString:@"no-color"])
+            {
+                //[[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
+                colorLevel = ClutchPrinterColorLevelNone;
+            }
+            else if ([option isEqualToString:@"verbose"])
+            {
+                //[[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelDeveloper];
+                verboseLevel = ClutchPrinterVerboseLevelFull;
+            }
+            else if ([option isEqualToString:@"version"])
+            {
                 [options printVersion];
                 exit(0);
-            }else if ([option isEqualToString:@"clean"]) {
+            }
+            else if ([option isEqualToString:@"clean"])
+            {
                 [[NSFileManager defaultManager]removeItemAtPath:@"/var/tmp/clutch" error:nil];
                 [[NSFileManager defaultManager]createDirectoryAtPath:@"/var/tmp/clutch" withIntermediateDirectories:YES attributes:nil error:nil];
                 exit(0);
-            }else if ([option isEqualToString:@"print-installed"]) {
+            }
+            else if ([option isEqualToString:@"print-installed"])
+            {
                 listApps();
             }
             
-            else if ([option isEqualToString:@"fmwk-dump"]) {
+            else if ([option isEqualToString:@"fmwk-dump"])
+            {
                 
                 NSArray *arguments = [NSProcessInfo processInfo].arguments;
                 
-                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 13)) {
+                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 13))
+                {
                     
                     FrameworkLoader *fmwk = [FrameworkLoader new];
                                         
@@ -125,8 +164,9 @@ int main (int argc, const char * argv[])
                     
                     BOOL result = [fmwk dumpBinary];
                    
-                    if (result) {
-                        //SUCCESS(@"Successfully dumped framework!");
+                    if (result)
+                    {
+                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework!"];
                         exit(0);
                     }
                     
@@ -135,12 +175,13 @@ int main (int argc, const char * argv[])
                 exit(-1);
             }
             
-            switch (flags) {
+            switch (flags)
+            {
                 case GBParseFlagUnknownOption:
-                    printf("Unknown command line option %s, try --help!\n", [option UTF8String]);
+                    [[ClutchPrint sharedInstance] print:@"Unknown command line option %@, try --help!", option];
                     break;
                 case GBParseFlagMissingValue:
-                    printf("Missing value for %s option, try --help!\n", [option UTF8String]);
+                    [[ClutchPrint sharedInstance] print:@"Missing value for %@ option, try --help!", option];
                     break;
                 case GBParseFlagOption:
 
@@ -153,18 +194,23 @@ int main (int argc, const char * argv[])
                     
                     break;
                 case GBParseFlagArgument:
-                    //NSLog(@"GBParseFlagArgument %@",value);
                     break;
             }
         }];
         
-        if (!_selectedBundleID) {
+        [[ClutchPrint sharedInstance] setColorLevel:colorLevel];
+        [[ClutchPrint sharedInstance] setVerboseLevel:verboseLevel];
+    
+        if (!_selectedBundleID)
+        {
             [options printHelp];
             exit(0);
         }
         
         if (!([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]))
+        {
             return -1;
+        }
         
         ApplicationsManager *_appsManager = [[ApplicationsManager alloc] init];
         
@@ -173,26 +219,32 @@ int main (int argc, const char * argv[])
         
         NSArray* selections = [_selectedBundleID componentsSeparatedByString:@" "];
         
-        for (NSString* selection in selections) {
+        for (NSString* selection in selections)
+        {
             int key;
             
             Application *_selectedApp;
             
-            if (!(key = [selection intValue])) {
-                NSLog(@"using bundle identifier");
-                if (_installedApps[selection] == nil) {
+            if (!(key = [selection intValue]))
+            {
+                [[ClutchPrint sharedInstance] printDeveloper:@"using bundle identifier"];
+                if (_installedApps[selection] == nil)
+                {
                     gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);
                     exit(1);
                 }
-                else {
+                else
+                {
                     _selectedApp = _installedApps[selection];
                 }
             }
-            else {
-                NSLog(@"using number");
+            else
+            {
+                [[ClutchPrint sharedInstance] printDeveloper:@"using number"];
                 key = key - 1;
                 
-                if (key > [_installedArray count]) {
+                if (key > [_installedArray count])
+                {
                     gbprintln(@"Couldn't find app with corresponding number!?!");
                     exit(1);
                 }
@@ -201,16 +253,19 @@ int main (int argc, const char * argv[])
             }
             
             
-            if (!_selectedApp) {
+            if (!_selectedApp)
+            {
                 gbprintln(@"Couldn't find installed app");
                 exit(1);
             }
             
-            VERBOSE(@"Now dumping %@", _selectedApp.bundleIdentifier);
+            [[ClutchPrint sharedInstance] printVerbose:@"Now dumping %@", _selectedApp.bundleIdentifier];
 
 #ifndef DEBUG
             if (_selectedApp.hasAppleWatchApp)
+            {
                 gbprintln(@"%@ contains watchOS 2 compatible application. It's not possible to dump watchOS 2 apps with Clutch %@ at this moment.",_selectedApp.bundleIdentifier,CLUTCH_VERSION);
+            }
 #endif
             
             gettimeofday(&start, NULL);
@@ -218,7 +273,7 @@ int main (int argc, const char * argv[])
             
             CFRunLoopRun();
             
-            NSLog(@"you shouldnt be there pal. exiting with -1 code");
+            [[ClutchPrint sharedInstance] printDeveloper:@"you shouldnt be there pal. exiting with -1 code"];
             return -1;
         }
     }
@@ -227,7 +282,8 @@ int main (int argc, const char * argv[])
 
 void sha1(uint8_t *hash, uint8_t *data, size_t size);
 
-void sha1(uint8_t *hash, uint8_t *data, size_t size) {
+void sha1(uint8_t *hash, uint8_t *data, size_t size)
+{
     SHA1Context context;
     SHA1Reset(&context);
     SHA1Input(&context, data, (unsigned)size);
@@ -248,7 +304,8 @@ void exit_with_errno (int err, const char *prefix)
 }
 
 void _kill(pid_t pid);
-void _kill(pid_t pid) {
+void _kill(pid_t pid)
+{
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         int result;
         waitpid(pid, &result, 0);

@@ -24,6 +24,8 @@
 struct timeval start, end;
 int diff_ms(struct timeval t1, struct timeval t2);
 
+
+
 #define CLUTCH_VERSION_ @"2.0.1"
 
 #ifdef DEBUG
@@ -33,12 +35,12 @@ int diff_ms(struct timeval t1, struct timeval t2);
 #endif
 
 
-#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#   define SUCCESS_OUT(M, ...) fprintf(stdout, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+//#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
+//#   define SUCCESS_OUT(M, ...) fprintf(stdout, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 
 # define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
 
-#ifdef DEBUG
+/*#ifdef DEBUG
 
 #   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define NSLog(M, ...) fprintf(stderr, "\033[0;33mDEBUG\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
@@ -50,7 +52,7 @@ int diff_ms(struct timeval t1, struct timeval t2);
 #   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #   define VERBOSE(M, ...) fprintf(stderr, "\033[0;33m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 #endif
-
+*/
 
 
 #define SYSTEM_VERSION_EQUAL_TO(_v)                  ( floor(NSFoundationVersionNumber) == _v ? YES : NO )

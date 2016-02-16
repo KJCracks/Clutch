@@ -163,7 +163,7 @@
             goto gotofail;
         }
         
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"ASLR slide: 0x%llx", main_address];
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"ASLR slide: 0x%llx", main_address];
         __text_start = main_address;
     }
     

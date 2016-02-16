@@ -66,7 +66,7 @@
         gettimeofday(&end, NULL);
         int dif = diff_ms(end,start);
         float sec = ((dif + 500.0f) / 1000.0f);
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Finished dumping %@ in %0.1f seconds", _application.bundleIdentifier, sec];
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"Finished dumping %@ in %0.1f seconds", _application.bundleIdentifier, sec];
         exit(0);
     };
     
@@ -107,7 +107,7 @@
             __block BOOL status = plists.count == self.expectedBinariesCount;
             
             if (status) {
-                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath];
+                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath];
             }
             else {
                 [[ClutchPrint sharedInstance] printError:@"Failed to dump %@ :(", _application.bundleIdentifier];

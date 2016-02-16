@@ -18,6 +18,7 @@
 #import <mach/mach_init.h>
 #import <mach-o/dyld_images.h>
 #import "NSBundle+Clutch.h"
+#import "ClutchPrint.h"
 
 @import ObjectiveC.runtime;
 
@@ -48,8 +49,6 @@
     
      _originalBinary = (Binary*)[NSString stringWithFormat:@"<%@>", _infoPlist[@"CFBundleExecutable"]];
     
-    //DumperDebugLog(@"%@ %@",_infoPlist,[NSBundle mainBundle].bundleIdentifier);
-
     
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
         
@@ -58,7 +57,7 @@
     void *handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
     
     if (!handle) {
-        ERROR(@"Failed to dlopen %@ %s", swappedBinaryPath, dlerror());
+        [[ClutchPrint sharedInstance] printError:@"Failed to dlopen %@ %s", swappedBinaryPath, dlerror()];
         return NO;
     }
     
@@ -81,7 +80,7 @@
     
     intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
     
-    DumperDebugLog(@"dyld offset %u", dyldPointer);
+    [[ClutchPrint sharedInstance] printDeveloper: @"dyld offset %u", dyldPointer];
     
     BOOL dumpResult;
     
@@ -97,12 +96,12 @@
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
     
-    DumperDebugLog(@"Using Framework Dumper, pages %u", pages);
+    [[ClutchPrint sharedInstance] printDeveloper: @"Using Framework Dumper, pages %u", pages];
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
     
     const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
     
-    SUCCESS(@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]);
+    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]];
     
     uint32_t headerProgress = sizeof(image_header);
     
@@ -129,7 +128,7 @@
     free(buf);
     
     //nice! now let's write the new checksum data
-    DumperDebugLog("Writing new checksum");
+    [[ClutchPrint sharedInstance] printDeveloper:@"Writing new checksum"];
 
     [fileHandle seekToFileOffset:(begin + hashOffset)];
     
@@ -137,9 +136,9 @@
     free(checksum);
     [fileHandle writeData:trimmed_checksum];
     
-    DumperDebugLog(@"Done writing checksum");
+    [[ClutchPrint sharedInstance] printDeveloper: @"Done writing checksum"];
     
-    DumperDebugLog(@"Patching cryptid");
+    [[ClutchPrint sharedInstance] printDeveloper: @"Patching cryptid"];
     
     NSData* data;
     
@@ -148,7 +147,7 @@
         
         [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command_64)];
         
-        NSLog(@"current cryptid %u", crypt.cryptid);
+        [[ClutchPrint sharedInstance] printDeveloper:@"current cryptid %u", crypt.cryptid];
         crypt.cryptid = 0;
         [fileHandle seekToFileOffset:self.cryptlc_offset];
         
@@ -158,7 +157,7 @@
     else {
         struct encryption_info_command crypt;
         [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command)];
-        NSLog(@"current cryptid %u", crypt.cryptid);
+        [[ClutchPrint sharedInstance] printDeveloper:@"current cryptid %u", crypt.cryptid];
         crypt.cryptid = 0;
         [fileHandle seekToFileOffset:self.cryptlc_offset];
         data = [NSData dataWithBytes:&crypt length:sizeof(struct encryption_info_command)];

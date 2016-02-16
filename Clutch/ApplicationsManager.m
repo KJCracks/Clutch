@@ -19,173 +19,205 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
 @interface ApplicationsManager ()
 {
-    void * _MIHandle;
-    MobileInstallationLookup _mobileInstallationLookup;
     NSMutableArray* _cachedApps;
 }
+
 @end
+
 
 @implementation ApplicationsManager
 
-+ (instancetype)sharedInstance
-{
-    static dispatch_once_t pred;
-    static id shared = nil;
-    
-    dispatch_once(&pred, ^{
-        shared = [self new];
-    });
-    
-    return shared;
-}
-
 - (instancetype)init
 {
-    self = [super init];
-    if (self) {
-        _MIHandle = dlopen("/System/Library/PrivateFrameworks/MobileInstallation.framework/MobileInstallation", RTLD_NOW);
+    if (self = [super init])
+    {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:applistCachePath])
+        {
+            _cachedApps = [[NSMutableArray alloc] initWithContentsOfFile:applistCachePath];
+        }
+        else
+        {
+            _cachedApps = [NSMutableArray new];
+        }
         
-        _mobileInstallationLookup = NULL;
-        
-        if (_MIHandle)
-            _mobileInstallationLookup = dlsym(_MIHandle,"MobileInstallationLookup");
-        
+        return self;
     }
-    if ([[NSFileManager defaultManager] fileExistsAtPath:applistCachePath]) {
-        _cachedApps = [[NSMutableArray alloc] initWithContentsOfFile:applistCachePath];
-    }
-    else {
-        _cachedApps = [NSMutableArray new];
-    }
-    return self;
 }
 
-- (NSDictionary *)_allApplications
+
+- (NSDictionary *)listApplicationsForiOS7AndLower
 {
-    _cachedApps = [NSMutableArray new];
+    MobileInstallationLookup mobileInstallationLookup;
+    void * MIHandle;
+    
     NSMutableDictionary *returnValue = [NSMutableDictionary new];
+    MIHandle = dlopen("/System/Library/PrivateFrameworks/MobileInstallation.framework/MobileInstallation", RTLD_NOW);
+    mobileInstallationLookup = NULL;
     
-    NSDictionary* options = @{@"ApplicationType":@"User",
-                              @"ReturnAttributes":@[@"CFBundleShortVersionString",
-                                                    @"CFBundleVersion",
-                                                    @"Path",
-                                                    @"CFBundleDisplayName",
-                                                    @"CFBundleExecutable",
-                                                    @"MinimumOSVersion"]};
-    
-    if (_mobileInstallationLookup) {
-        
-        NSDictionary *installedApps;
-        
-        installedApps = _mobileInstallationLookup(options);
-        
-        
-        for (NSString *bundleID in [installedApps allKeys])
-        {
-            NSDictionary *appI=installedApps[bundleID];
-            
-            NSURL *bundleURL = [NSURL fileURLWithPath:appI[@"Path"]];
-            
-            NSString *scinfo=[bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
-            
-            BOOL isDirectory;
-            
-            BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
-            
-            if (purchased && isDirectory) {
-                NSString* name = appI[@"CFBundleDisplayName"];
-                if (name == nil) {
-                    name = appI[@"CFBundleExecutable"];
-                }
-                NSDictionary* bundleInfo = @{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
-                                             @"BundleURL":bundleURL,
-                                             @"DisplayName": name,
-                                             @"BundleIdentifier": bundleID};
-                Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
-                [self cacheBundle:bundleInfo];
-                returnValue[bundleID] = app;
-            }
-        }
-        
-    }else
+    if (MIHandle)
     {
-        LSApplicationWorkspace* applicationWorkspace = [LSApplicationWorkspace defaultWorkspace];
-        
-        NSArray *proxies = [applicationWorkspace allApplications];
-        NSDictionary *bundleInfo = nil;
-        
-        for (FBApplicationInfo * proxy in proxies) {
+        mobileInstallationLookup = dlsym(MIHandle,"MobileInstallationLookup");
+        if (mobileInstallationLookup)
+        {
             
-            NSString *appType = [proxy performSelector:@selector(applicationType)];
+            NSDictionary *installedApps;
+            NSDictionary* options = @{@"ApplicationType":@"User",
+                                      @"ReturnAttributes":@[@"CFBundleShortVersionString",
+                                                            @"CFBundleVersion",
+                                                            @"Path",
+                                                            @"CFBundleDisplayName",
+                                                            @"CFBundleExecutable",
+                                                            @"MinimumOSVersion"]};
             
-            if ([appType isEqualToString:@"User"] && proxy.bundleContainerURL && proxy.bundleURL) {
-                
-                NSString *scinfo=[proxy.bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
+            installedApps = mobileInstallationLookup(options);
+            
+            
+            for (NSString *bundleID in installedApps.allKeys)
+            {
+                NSDictionary *appI = installedApps[bundleID];
+                NSURL *bundleURL = [NSURL fileURLWithPath:appI[@"Path"]];
+                NSString *scinfo = [bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
                 
                 BOOL isDirectory;
-                
                 BOOL purchased = [[NSFileManager defaultManager]fileExistsAtPath:scinfo isDirectory:&isDirectory];
                 
-                if (purchased && isDirectory) {
-                    NSString *itemName = ((LSApplicationProxy*) proxy).itemName;
+                if (purchased && isDirectory)
+                {
+                    NSString *name = appI[@"CFBundleDisplayName"];
+                    if (name == nil)
+                    {
+                        name = appI[@"CFBundleExecutable"];
+                    }
                     
-                    if (!itemName)
-                        itemName = ((LSApplicationProxy*)proxy).localizedName;
+                    NSDictionary *bundleInfo = @{@"BundleContainer":bundleURL.URLByDeletingLastPathComponent,
+                                                 @"BundleURL":bundleURL,
+                                                 @"DisplayName": name,
+                                                 @"BundleIdentifier": bundleID};
+                    Application *app = [[Application alloc] initWithBundleInfo:bundleInfo];
+                    returnValue[bundleID] = app;
                     
-                    bundleInfo = @{
-                                   @"BundleContainer":proxy.bundleContainerURL,
-                                   @"BundleURL":proxy.bundleURL,
-                                   @"DisplayName": itemName,
-                                   @"BundleIdentifier": proxy.bundleIdentifier
-                                   };
-                    
-                    Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
-                    returnValue[proxy.bundleIdentifier] = app;
                     [self cacheBundle:bundleInfo];
-                    
                 }
             }
         }
-        
     }
+    
+    [self writeToCache];
+    
+    return returnValue;
+}
+
+- (NSDictionary *)listApplicationsForiOS8AndHigher
+{
+    NSMutableDictionary *returnValue = [NSMutableDictionary new];
+    LSApplicationWorkspace *applicationWorkspace = [LSApplicationWorkspace defaultWorkspace];
+    
+    NSArray *proxies = [applicationWorkspace allApplications];
+    NSDictionary *bundleInfo = nil;
+    
+    for (FBApplicationInfo *proxy in proxies)
+    {
+        NSString *appType = [proxy performSelector:@selector(applicationType)];
+        
+        if ([appType isEqualToString:@"User"] && proxy.bundleContainerURL && proxy.bundleURL)
+        {
+            NSString *scinfo = [proxy.bundleURL.path stringByAppendingPathComponent:@"SC_Info"];
+            
+            BOOL isDirectory;
+            BOOL purchased = [[NSFileManager defaultManager] fileExistsAtPath:scinfo isDirectory:&isDirectory];
+            
+            if (purchased && isDirectory)
+            {
+                NSString *itemName = ((LSApplicationProxy*)proxy).itemName;
+                
+                if (!itemName)
+                {
+                    itemName = ((LSApplicationProxy*)proxy).localizedName;
+                }
+                
+                bundleInfo = @{
+                               @"BundleContainer":proxy.bundleContainerURL,
+                               @"BundleURL":proxy.bundleURL,
+                               @"DisplayName": itemName,
+                               @"BundleIdentifier": proxy.bundleIdentifier
+                               };
+                
+                Application *app = [[Application alloc] initWithBundleInfo:bundleInfo];
+                returnValue[proxy.bundleIdentifier] = app;
+                
+                [self cacheBundle:bundleInfo];
+            }
+        }
+    }
+    
+    [self writeToCache];
+    
+    return returnValue.copy;
+}
+
+- (void)writeToCache
+{
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
     dispatch_async(queue, ^{
         [_cachedApps writeToFile:applistCachePath atomically:YES];
     });
-    
-    return [returnValue copy];
 }
+
+
+- (NSDictionary *)_allApplications
+{
+    NSDictionary *returnValue;
+    if (SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_7_0))
+    {
+        returnValue = [self listApplicationsForiOS7AndLower];
+    }
+    else
+    {
+        returnValue = [self listApplicationsForiOS8AndHigher];
+    }
+    
+    return returnValue.copy;
+}
+
 
 - (NSDictionary *)installedApps
 {
     return [self _allApplications];
 }
 
--(NSDictionary*)_allCachedApplications {
-    if ([_cachedApps count] < 1) {
+
+-(NSDictionary*)_allCachedApplications
+{
+    if ([_cachedApps count] < 1)
+    {
         return [self _allApplications];
     }
+    
     NSMutableDictionary* returnValue = [NSMutableDictionary new];
-    for (NSDictionary* bundleInfo in _cachedApps) {
+    for (NSDictionary* bundleInfo in _cachedApps)
+    {
         Application *app =[[Application alloc]initWithBundleInfo:bundleInfo];
         returnValue[bundleInfo[@"BundleIdentifier"]] = app;
     }
+    
     return returnValue;
 }
 
--(void)cacheBundle:(NSDictionary*) bundle {
+
+-(void)cacheBundle:(NSDictionary*) bundle
+{
     [_cachedApps addObject:bundle];
 }
 
 
 - (NSArray *)dumpedApps
 {
-    NSString *dumpedPath = @""; //[NSString stringWithFormat:@"%@/", [[Preferences sharedInstance] ipaDirectory]];
-    NSArray *array=[[NSArray alloc]initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:dumpedPath error:nil]];
+    NSString *dumpedPath = @"";
+    NSArray *array = [[NSArray alloc] initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:dumpedPath error:nil]];
     
-    NSMutableArray *paths=[NSMutableArray new];
+    NSMutableArray *paths = [NSMutableArray new];
     
-    for (int i=0; i<array.count; i++)
+    for (int i = 0; i < array.count; i++)
     {
         if (![[array[i] pathExtension] caseInsensitiveCompare:@"ipa"])
         {
@@ -195,6 +227,5 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
     
     return paths;
 }
-
 
 @end

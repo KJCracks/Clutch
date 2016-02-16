@@ -9,6 +9,7 @@
 #import "FrameworkDumper.h"
 #import "Device.h"
 #import <spawn.h>
+#import "ClutchPrint.h"
 
 @implementation FrameworkDumper
 
@@ -54,7 +55,7 @@
     
     uint64_t __text_start = 0;
     
-    DumperDebugLog(@"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    [[ClutchPrint sharedInstance] printDeveloper: @"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     uint32_t cryptlc_offset;
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
@@ -67,7 +68,7 @@
                 [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
                 
-                DumperDebugLog(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize);
+                [[ClutchPrint sharedInstance] printDeveloper: @"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize];
                 
                 break;
             }
@@ -76,7 +77,7 @@
                 [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command))];
                 foundCrypt = YES;
                 
-                DumperDebugLog(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid);
+                [[ClutchPrint sharedInstance] printDeveloper: @"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid];
                 
                 break;
             }
@@ -86,7 +87,7 @@
                 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
-                    DumperDebugLog(@"FOUND %s SEGMENT",__text.segname);
+                    [[ClutchPrint sharedInstance] printDeveloper: @"FOUND %s SEGMENT",__text.segname];
                     __text_start = __text.vmaddr;
                 }
                 break;
@@ -101,11 +102,11 @@
     
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        DumperDebugLog(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
+        [[ClutchPrint sharedInstance] printDeveloper: @"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO"];
         return NO;
     }
     
-    DumperDebugLog(@"starting to ldid");
+    [[ClutchPrint sharedInstance] printDeveloper: @"starting to ldid"];
     
     NSUInteger begin;
     
@@ -116,7 +117,7 @@
     [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
     
-    DumperDebugLog(@"hello it's me");
+    [[ClutchPrint sharedInstance] printDeveloper: @"hello it's me"];
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
@@ -125,10 +126,10 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
-            DumperDebugLog(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
+            [[ClutchPrint sharedInstance] printDeveloper: @"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset];
             begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
-            DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
+            [[ClutchPrint sharedInstance] printDeveloper: @"Found CSSLOT_CODEDIRECTORY"];
             break; //break (we don't need anything from this the superblob anymore)
         }
     }
@@ -137,14 +138,14 @@
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
     if (pages == 0) {
-        DumperLog(@"pages == 0");
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"pages == 0"];
         return NO;
     }
     
     [newFileHandle closeFile];
     
     
-    DumperDebugLog(@"hello from the other side");
+    [[ClutchPrint sharedInstance] printDeveloper: @"hello from the other side"];
     
     extern char **environ;
     posix_spawnattr_t attr;
@@ -166,12 +167,12 @@
     
     
     if (![[NSFileManager defaultManager] copyItemAtPath:[NSProcessInfo processInfo].arguments[0] toPath:[workingPath stringByAppendingPathComponent:@"clutch"] error:nil]) {
-        ERROR(@"Failed to copy clutch to %@", workingPath);
+        [[ClutchPrint sharedInstance] printError:@"Failed to copy clutch to %@", workingPath];
         return NO;
     }
     
     if (_originalBinary.frameworksPath == nil) {
-        ERROR(@"Could not find Frameworks path to create symbolic link to");
+        [[ClutchPrint sharedInstance] printError:@"Could not find Frameworks path to create symbolic link to"];
         return NO;
     }
     
@@ -192,9 +193,9 @@
         [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String,
         NULL};
     
-    DumperDebugLog(@"i must have called a thousand times!");
+    [[ClutchPrint sharedInstance] printDeveloper: @"i must have called a thousand times!"];
         
-    DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv[0]]);
+    [[ClutchPrint sharedInstance] printDeveloper: @"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv[0]]];
 
     
     posix_spawnattr_init (&attr);
@@ -214,7 +215,7 @@
     int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, (char* const*)argv, environ);
     
     if (dumpResult == 0) {
-        DumperDebugLog(@"Child pid: %i", pid);
+        [[ClutchPrint sharedInstance] printDeveloper: @"Child pid: %i", pid];
         
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         
@@ -222,14 +223,14 @@
             kill(pid, SIGCONT);
 			int dumpResult = 0;
             if (waitpid(pid, &dumpResult, 0) != -1) {
-                DumperDebugLog(@"Success! Child exited with status %u", dumpResult);
+                [[ClutchPrint sharedInstance] printDeveloper: @"Success! Child exited with status %u", dumpResult];
             } else {
                 perror("waitpid");
             }
         });
                       
     } else {
-        DumperDebugLog(@"posix_spawn: %s", strerror(dumpResult));
+        [[ClutchPrint sharedInstance] printDeveloper: @"posix_spawn: %s", strerror(dumpResult)];
     }
     
     

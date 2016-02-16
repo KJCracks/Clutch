@@ -9,6 +9,7 @@
 #import "Framework64Dumper.h"
 #import "Device.h"
 #import <spawn.h>
+#import "ClutchPrint.h"
 
 @implementation Framework64Dumper
 
@@ -55,7 +56,7 @@
     
     uint64_t __text_start = 0;
     
-    DumperDebugLog(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    [[ClutchPrint sharedInstance] printDeveloper: @"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     
     uint32_t cryptlc_offset;
     
@@ -69,7 +70,7 @@
                 [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
                 
-                DumperDebugLog(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize);
+                [[ClutchPrint sharedInstance] printDeveloper: @"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize];
                 
                 break;
             }
@@ -78,7 +79,7 @@
                 [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command_64))];
                 foundCrypt = YES;
                 
-                DumperDebugLog(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid);
+                [[ClutchPrint sharedInstance] printDeveloper: @"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid];
                 
                 break;
             }
@@ -88,7 +89,7 @@
                 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
-                    DumperDebugLog(@"FOUND %s SEGMENT",__text.segname);
+                    [[ClutchPrint sharedInstance] printDeveloper: @"FOUND %s SEGMENT",__text.segname];
                     __text_start = __text.vmaddr;
                 }
                 break;
@@ -103,7 +104,7 @@
     
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        DumperDebugLog(@"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO");
+        [[ClutchPrint sharedInstance] printDeveloper: @"dumping binary: some load commands were not found %@ %@ %@",foundCrypt?@"YES":@"NO",foundSignature?@"YES":@"NO",foundStartText?@"YES":@"NO"];
         return NO;
     }
     
@@ -121,10 +122,10 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
-            DumperDebugLog(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
+            [[ClutchPrint sharedInstance] printDeveloper: @"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset];
             begin = _thinHeader.offset + ldid.dataoff + CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle getBytes:&directory inRange:NSMakeRange(begin, sizeof(struct code_directory))]; //read the blob from its beginning
-            DumperDebugLog(@"Found CSSLOT_CODEDIRECTORY");
+            [[ClutchPrint sharedInstance] printDeveloper: @"Found CSSLOT_CODEDIRECTORY"];
             break; //break (we don't need anything from this the superblob anymore)
         }
     }
@@ -133,7 +134,7 @@
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
     
     if (pages == 0) {
-        DumperLog(@"pages == 0");
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"pages == 0"];
         return NO;
     }
         
@@ -156,16 +157,16 @@
 
     
     if (![[NSFileManager defaultManager] copyItemAtPath:[NSProcessInfo processInfo].arguments[0] toPath:[workingPath stringByAppendingPathComponent:@"clutch"] error:nil]) {
-        ERROR(@"Failed to copy clutch to %@", workingPath);
+        [[ClutchPrint sharedInstance] printError:@"Failed to copy clutch to %@", workingPath];
         return NO;
     }
     
     if (_originalBinary.frameworksPath == nil) {
-        ERROR(@"Could not find Frameworks path to create symbolic link to");
+        [[ClutchPrint sharedInstance] printError:@"Could not find Frameworks path to create symbolic link to"];
         return NO;
     }
     
-    NSLog(@"cryptlc_offset %u", cryptlc_offset);
+    [[ClutchPrint sharedInstance] printDeveloper:@"cryptlc_offset %u", cryptlc_offset];
     
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"] withDestinationPath:_originalBinary.frameworksPath error:nil];
     
@@ -185,7 +186,7 @@
         NULL};
     
     
-    DumperDebugLog(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv]);
+    [[ClutchPrint sharedInstance] printDeveloper: @"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv]];
     
     posix_spawnattr_init (&attr);
     
@@ -202,7 +203,7 @@
     int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, (char* const*)argv, environ);
     
     if (dumpResult == 0) {
-        DumperDebugLog(@"Child pid: %i", pid);
+        [[ClutchPrint sharedInstance] printDeveloper: @"Child pid: %i", pid];
         
         
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
@@ -211,14 +212,14 @@
 			int dumpResult = 0;
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult, 0) != -1) {
-                DumperLog(@"Success! Child exited with status %u", dumpResult);
+                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Success! Child exited with status %u", dumpResult];
             } else {
                 perror("waitpid");
             }
         });
         
     } else {
-        ERROR(@"posix_spawn: %s (Error %u)", strerror(dumpResult), dumpResult);
+        [[ClutchPrint sharedInstance] printError:@"posix_spawn: %s (Error %u)", strerror(dumpResult), dumpResult];
         
     }
     

@@ -61,52 +61,53 @@
 		32BE3C541C5B8C8D0049ECAD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 328CCB4B1ACFFBD500B21225 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		32BE3C581C5B8C9B0049ECAD /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 321D74A31B4946D30037CACF /* libc++.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		32BE3C591C5B8C9D0049ECAD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32EFB6F21A8A500D005BB56C /* libz.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D7F341D91C7212F3006E7700 /* ClutchPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = D7F341D81C7212F3006E7700 /* ClutchPrint.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		321D74A31B4946D30037CACF /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
-		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dumper.m; sourceTree = "<group>"; };
+		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Dumper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		324EA6321A89258000844540 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		324EA6341A89258000844540 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
+		324EA6321A89258000844540 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		324EA6341A89258000844540 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		324EA63A1A8925DB00844540 /* ApplicationsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationsManager.h; sourceTree = "<group>"; };
 		324EA63B1A8925DB00844540 /* ApplicationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationsManager.m; sourceTree = "<group>"; };
 		324EA63D1A89260A00844540 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		324EA6401A8926DC00844540 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
-		324EA6411A8926DC00844540 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Application.m; sourceTree = "<group>"; };
+		324EA6411A8926DC00844540 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Application.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		324EA6431A89270D00844540 /* Clutch.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Clutch.entitlements; sourceTree = "<group>"; };
 		324EA6471A892AAD00844540 /* FBApplicationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FBApplicationInfo.h; sourceTree = "<group>"; };
 		3258FD621A90AAED007C2E66 /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
 		3258FD631A90AAED007C2E66 /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Device.m; sourceTree = "<group>"; };
 		326ABC881AD2B94000B21FCC /* FrameworkLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkLoader.h; sourceTree = "<group>"; };
-		326ABC891AD2B94000B21FCC /* FrameworkLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameworkLoader.m; sourceTree = "<group>"; };
+		326ABC891AD2B94000B21FCC /* FrameworkLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FrameworkLoader.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		326E8D2C1AE53DED00DCDD64 /* NSBundle+Clutch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Clutch.h"; sourceTree = "<group>"; };
 		326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Clutch.m"; sourceTree = "<group>"; };
 		3274B9551ABEA60500964049 /* BinaryDumpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BinaryDumpProtocol.h; sourceTree = "<group>"; };
 		3274B9561ABEA6E100964049 /* ARMDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMDumper.h; sourceTree = "<group>"; };
-		3274B9571ABEA6E100964049 /* ARMDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMDumper.m; sourceTree = "<group>"; };
-		3274B95B1ABEA92800964049 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dumper.h; sourceTree = "<group>"; };
+		3274B9571ABEA6E100964049 /* ARMDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ARMDumper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3274B95B1ABEA92800964049 /* Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Dumper.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		3274B95E1ABEB00400964049 /* ARM64Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARM64Dumper.h; sourceTree = "<group>"; };
-		3274B95F1ABEB00400964049 /* ARM64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARM64Dumper.m; sourceTree = "<group>"; };
+		3274B95F1ABEB00400964049 /* ARM64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ARM64Dumper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3277BF971ACD50BD0060935A /* FrameworkDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameworkDumper.h; sourceTree = "<group>"; };
 		3277BF981ACD50BD0060935A /* FrameworkDumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FrameworkDumper.m; sourceTree = "<group>"; };
 		3282BB7A1A8C920D00E5068A /* FinalizeDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinalizeDumpOperation.h; sourceTree = "<group>"; };
-		3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinalizeDumpOperation.m; sourceTree = "<group>"; };
+		3282BB7B1A8C920D00E5068A /* FinalizeDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FinalizeDumpOperation.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3282BE051A8D9ACD00E5068A /* optool-defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-defines.h"; sourceTree = "<group>"; };
 		3282BE061A8D9ACD00E5068A /* optool-headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-headers.h"; sourceTree = "<group>"; };
 		3282BE071A8D9ACD00E5068A /* optool-headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "optool-headers.m"; sourceTree = "<group>"; };
 		3282BE081A8D9ACD00E5068A /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
 		3282BE091A8D9ACD00E5068A /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
 		3282BE0A1A8D9ACD00E5068A /* optool-operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "optool-operations.h"; sourceTree = "<group>"; };
-		3282BE0B1A8D9ACD00E5068A /* optool-operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "optool-operations.m"; sourceTree = "<group>"; };
+		3282BE0B1A8D9ACD00E5068A /* optool-operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "optool-operations.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		328359DC1ACC118D003587F3 /* NSFileHandle+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileHandle+Private.h"; sourceTree = "<group>"; };
 		328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileHandle+Private.m"; sourceTree = "<group>"; };
 		328CCB351ACECEB500B21225 /* scinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scinfo.h; sourceTree = "<group>"; };
 		328CCB361ACECEB500B21225 /* scinfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = scinfo.m; sourceTree = "<group>"; };
 		328CCB381ACECF4100B21225 /* Framework64Dumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework64Dumper.h; sourceTree = "<group>"; };
-		328CCB391ACECF4100B21225 /* Framework64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Framework64Dumper.m; sourceTree = "<group>"; };
+		328CCB391ACECF4100B21225 /* Framework64Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Framework64Dumper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		328CCB3B1ACECF5800B21225 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		328CCB3D1ACED00600B21225 /* SCInfoBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCInfoBuilder.h; sourceTree = "<group>"; };
 		328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCInfoBuilder.m; sourceTree = "<group>"; };
@@ -130,7 +131,7 @@
 		32EFB6EE1A8A4FEF005BB56C /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		32EFB6F21A8A500D005BB56C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		32EFB6F61A8AC2AF005BB56C /* BundleDumpOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleDumpOperation.h; sourceTree = "<group>"; };
-		32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleDumpOperation.m; sourceTree = "<group>"; };
+		32EFB6F71A8AC2AF005BB56C /* BundleDumpOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BundleDumpOperation.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		32EFB6F91A8AE1A3005BB56C /* ZipOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipOperation.h; sourceTree = "<group>"; };
 		32EFB6FA1A8AE1A3005BB56C /* ZipOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZipOperation.m; sourceTree = "<group>"; };
 		32FB77A31A89BEAD00BB5ABC /* Framework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework.h; sourceTree = "<group>"; };
@@ -149,12 +150,14 @@
 		32FB77BF1A89F09300BB5ABC /* ClutchBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchBundle.h; sourceTree = "<group>"; };
 		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
-		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = "<group>"; };
+		32FB77C31A89F13000BB5ABC /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Binary.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AD16CC911C57291600A624EC /* LSApplicationWorkspace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LSApplicationWorkspace.h; sourceTree = "<group>"; };
 		ADAD7C171C5B3C8600644FD6 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		ADAD7C181C5B3C8600644FD6 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSApplicationProxy.h; path = ../LSApplicationProxy.h; sourceTree = "<group>"; };
 		ADE1ED291AD02C2000398728 /* AppSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/AppSupport.framework; sourceTree = DEVELOPER_DIR; };
+		D7F341D71C7212F3006E7700 /* ClutchPrint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchPrint.h; sourceTree = "<group>"; };
+		D7F341D81C7212F3006E7700 /* ClutchPrint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchPrint.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +220,8 @@
 				3258FD631A90AAED007C2E66 /* Device.m */,
 				324EA6321A89258000844540 /* main.m */,
 				324EA62D1A89258000844540 /* Supporting Files */,
+				D7F341D71C7212F3006E7700 /* ClutchPrint.h */,
+				D7F341D81C7212F3006E7700 /* ClutchPrint.m */,
 			);
 			path = Clutch;
 			sourceTree = "<group>";
@@ -459,7 +464,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR/Clutch;\nmake clean &> /dev/null;\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\nmake debug;\nelse\nmake;\nfi\nopen .;";
+			shellScript = "cd $PROJECT_DIR/Clutch;\nmake clean &> /dev/null;\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\nmake debug;\nelse\nmake;\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -492,6 +497,7 @@
 				32BE3C3A1C5B8C6E0049ECAD /* Extension.m in Sources */,
 				32BE3C3B1C5B8C6E0049ECAD /* Framework.m in Sources */,
 				32BE3C3C1C5B8C6E0049ECAD /* ApplicationsManager.m in Sources */,
+				D7F341D91C7212F3006E7700 /* ClutchPrint.m in Sources */,
 				32BE3C3D1C5B8C6E0049ECAD /* Device.m in Sources */,
 				32BE3C3E1C5B8C6E0049ECAD /* main.m in Sources */,
 				32BE3C3F1C5B8C6E0049ECAD /* SCInfoBuilder.m in Sources */,
@@ -574,6 +580,7 @@
 		329B80721C5B6745007DD817 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -581,6 +588,7 @@
 		329B80731C5B6745007DD817 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

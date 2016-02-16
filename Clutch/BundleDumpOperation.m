@@ -12,8 +12,8 @@
 #import "optool.h"
 #import "NSData+Reading.h"
 #import "Device.h"
-
 #import "Dumper.h"
+#import "ClutchPrint.h"
 
 @import ObjectiveC.runtime;
 
@@ -31,10 +31,9 @@
 @implementation BundleDumpOperation
 
 -(void)failedOperation {
-    //NSLog(@"listing da operations");
     NSArray* wow = [_application->_dumpQueue operations];
     for (NSOperation* operation in wow) {
-        NSLog(@"operation hash %lu", (unsigned long)operation.hash);
+        [[ClutchPrint sharedInstance] printDeveloper:@"operation hash %lu", (unsigned long)operation.hash];
     }
     [self completeOperation];
 }
@@ -137,12 +136,12 @@
             thin_header macho = headers[i];
             Dumper<BinaryDumpProtocol> *_dumper = nil;
             
-            NSLog(@"Finding compatible dumper for binary %@ with arch cputype: %u", originalBinary, macho.header.cputype);
+            [[ClutchPrint sharedInstance] printDeveloper:@"Finding compatible dumper for binary %@ with arch cputype: %u", originalBinary, macho.header.cputype];
             for (Class dumperClass in dumpers) {
                 _dumper = [[dumperClass alloc]initWithHeader:macho originalBinary:originalBinary];
                 
                 if ([_dumper compatibilityMode] == ArchCompatibilityNotCompatible) {
-                    NSLog(@"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
+                    [[ClutchPrint sharedInstance] printDeveloper:@"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]];
                     _dumper = nil;
                 } else {
                     break;
@@ -150,13 +149,13 @@
             }
             
             if (_dumper == nil) {
-                NSLog(@"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",originalBinary,[Dumper readableArchFromHeader:macho]);
-                NSLog(@"offset %u", macho.offset);
+                [[ClutchPrint sharedInstance] printDeveloper:@"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",originalBinary,[Dumper readableArchFromHeader:macho]];
+                [[ClutchPrint sharedInstance] printDeveloper:@"offset %u", macho.offset];
                 [_headersToStrip addObject:[NSNumber numberWithUnsignedInt:macho.offset]];
                 continue;
             }
             
-            NSLog(@"Found compatible dumper %@ for binary %@ with arch %@",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]);
+            [[ClutchPrint sharedInstance] printDeveloper:@"Found compatible dumper %@ for binary %@ with arch %@",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]];
             
             NSFileHandle *_handle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];
             
@@ -168,14 +167,14 @@
                 dumpCount++;
                 //SUCCESS(@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary);
             } else {
-                ERROR(@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]);
+                [[ClutchPrint sharedInstance] printError:@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]];
             }
             
             [_handle closeFile];
         }
         
         if (!dumpCount) {
-            ERROR(@"Failed to dump binary %@",originalBinary);
+            [[ClutchPrint sharedInstance] printError:@"Failed to dump binary %@", originalBinary];
             [self failedOperation];
             
             return;
@@ -202,14 +201,14 @@
             for (int i = 0; i < fat.nfat_arch; i++) {
                 struct fat_arch arch = *(struct fat_arch *)([buffer bytes] + offset);
                 NSNumber* archOffset = [NSNumber numberWithUnsignedInt:SWAP(arch.offset)];
-                NSLog(@"current offset %u", SWAP(arch.offset));
+                [[ClutchPrint sharedInstance] printDeveloper:@"current offset %u", SWAP(arch.offset)];
                 if ([_headersToStrip containsObject:archOffset]) {
-                    NSLog(@"arch to strip %u %u", SWAP(arch.cpusubtype), SWAP(arch.cputype));
+                    [[ClutchPrint sharedInstance] printDeveloper:@"arch to strip %u %u", SWAP(arch.cpusubtype), SWAP(arch.cputype)];
                 }
                 else {
                     NSValue* archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
                     [_headersToKeep addObject:archValue];
-                    NSLog(@"storing the arch we want to keep %u", SWAP(arch.cpusubtype));
+                    [[ClutchPrint sharedInstance] printDeveloper:@"storing the arch we want to keep %u", SWAP(arch.cpusubtype)];
                 }
                 offset += sizeof(struct fat_arch);
             }
@@ -227,7 +226,7 @@
             //skip 4 bytes for magic, 4 bytes of nfat_arch
             uint32_t nfat_arch = SWAP([_headersToKeep count]);
             [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
-            NSLog(@"changing nfat_arch to %u", SWAP(nfat_arch));
+            [[ClutchPrint sharedInstance] printDeveloper:@"changing nfat_arch to %u", SWAP(nfat_arch)];
             
             offset = sizeof(struct fat_header);
             
@@ -235,7 +234,7 @@
                 NSValue* archValue = _headersToKeep[i];
                 struct fat_arch keepArch;
                 [archValue getValue:&keepArch];
-                NSLog(@"headers to keep: %u %u", SWAP(keepArch.cpusubtype), SWAP(keepArch.cputype));
+                [[ClutchPrint sharedInstance] printDeveloper:@"headers to keep: %u %u", SWAP(keepArch.cpusubtype), SWAP(keepArch.cputype)];
                 
                 int origOffset = SWAP(keepArch.offset);
                 
@@ -260,8 +259,8 @@
             
             [[NSFileManager defaultManager]removeItemAtPath:[_binaryDumpPath stringByAppendingPathExtension:@"fatty"]  error:nil];
 
-            VERBOSE(@"Finished 'stripping' binary %@", originalBinary);
-            VERBOSE(@"Note: This binary will be missing some undecryptable architectures\n");
+            [[ClutchPrint sharedInstance] printVerbose:@"Finished 'stripping' binary %@", originalBinary];
+            [[ClutchPrint sharedInstance] printVerbose:@"Note: This binary will be missing some undecryptable architectures"];
     }
         
         

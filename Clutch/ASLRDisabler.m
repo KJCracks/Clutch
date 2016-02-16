@@ -13,6 +13,7 @@
 #import <mach/mach_init.h>
 #import <mach/vm_map.h>
 #import "mach_vm.h"
+#import "ClutchPrint.h"
 
 @import MachO.loader;
 
@@ -23,7 +24,7 @@
     kern_return_t kr = 0;
     if (task_for_pid(mach_task_self(), pid, &targetTask))
     {
-        NSLog(@"[ERROR] Can't execute task_for_pid! Do you have the right permissions/entitlements?\n");
+        [[ClutchPrint sharedInstance] printError:@"Can't execute task_for_pid! Do you have the right permissions/entitlements?"];
         return -1;
     }
     
@@ -48,7 +49,7 @@
             if ((mh.magic == MH_MAGIC || mh.magic == MH_MAGIC_64) && mh.filetype == MH_EXECUTE)
             {
 #if DEBUG
-                NSLog(@"Found main binary mach-o image @ %p!\n", (void*)addr);
+                [[ClutchPrint sharedInstance] printDeveloper:@"Found main binary mach-o image @ %p!", (void*)addr];
 #endif
                 return addr;
                 break;

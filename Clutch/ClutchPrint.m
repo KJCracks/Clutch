@@ -111,7 +111,8 @@
         {
             NSString *colorString;
             NSString *escapeString = @"\033[0m";
-            switch (color) {
+            switch (color)
+            {
                 case ClutchPrinterColorPink:
                     colorString = @"\033[1;35m";
                     break;

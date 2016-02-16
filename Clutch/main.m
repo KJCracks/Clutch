@@ -63,9 +63,6 @@ int main (int argc, const char * argv[])
 
     @autoreleasepool
     {
-        [[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelFull];
-        [[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelNone];
-
         //exit(0);
         // yo
         if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
@@ -87,7 +84,7 @@ int main (int argc, const char * argv[])
         [options registerOption:0 long:@"clean" description:@"Clean /var/tmp/clutch directory" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
-        [options registerOption:'p' long:@"no-color" description:@"Print with colors disabled" flags:GBValueNone|GBOptionNoPrint];
+        [options registerOption:'n' long:@"no-color" description:@"Print with colors disabled" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'v' long:@"verbose" description:@"Print verbose messages" flags:GBValueNone|GBOptionNoPrint];
         
         if (argc == 1) {
@@ -107,12 +104,8 @@ int main (int argc, const char * argv[])
         [parser registerOptions:options];
         [parser parseOptionsWithArguments:(char **)argv count:argc block:^(GBParseFlags flags, NSString *option, id value, BOOL *stop) {
             
-            if ([option isEqualToString:@"help"])
-            {
-                [options printHelp];
-                exit(0);
-            }
-            else if ([option isEqualToString:@"no-color"])
+            
+            if ([option isEqualToString:@"no-color"])
             {
                 //[[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
                 colorLevel = ClutchPrinterColorLevelNone;
@@ -121,6 +114,13 @@ int main (int argc, const char * argv[])
             {
                 //[[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelDeveloper];
                 verboseLevel = ClutchPrinterVerboseLevelFull;
+            }
+
+            
+            if ([option isEqualToString:@"help"])
+            {
+                [options printHelp];
+                exit(0);
             }
             else if ([option isEqualToString:@"version"])
             {
@@ -255,7 +255,7 @@ int main (int argc, const char * argv[])
             
             if (!_selectedApp)
             {
-                gbprintln(@"Couldn't find installed app");
+                [[ClutchPrint sharedInstance] print:@"Couldn't find installed app"];
                 exit(1);
             }
             
@@ -264,7 +264,7 @@ int main (int argc, const char * argv[])
 #ifndef DEBUG
             if (_selectedApp.hasAppleWatchApp)
             {
-                gbprintln(@"%@ contains watchOS 2 compatible application. It's not possible to dump watchOS 2 apps with Clutch %@ at this moment.",_selectedApp.bundleIdentifier,CLUTCH_VERSION);
+                [[ClutchPrint sharedInstance] print:@"%@ contains watchOS 2 compatible application. It's not possible to dump watchOS 2 apps with Clutch %@ at this moment.",_selectedApp.bundleIdentifier,CLUTCH_VERSION];
             }
 #endif
             

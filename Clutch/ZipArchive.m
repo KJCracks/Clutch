@@ -60,7 +60,7 @@
     // close any open file operations
     [self CloseZipFile2];
     [self UnzipCloseFile];
-
+    
 }
 
 /**
@@ -134,8 +134,9 @@
             // some application does use dosDate, but tmz_date instead
             //	zipInfo.dosDate = [fileDate timeIntervalSinceDate:[self Date1980] ];
             NSCalendar* currCalendar = [NSCalendar currentCalendar];
-            uint flags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
-            NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ;
+            // Use CF constants to avoid deprecation warnings and stay compatible with < iOS 8
+            uint flags = kCFCalendarUnitYear | kCFCalendarUnitMonth | kCFCalendarUnitDay |
+            kCFCalendarUnitHour | kCFCalendarUnitMinute | kCFCalendarUnitSecond;
             NSDateComponents* dc = [currCalendar components:flags fromDate:fileDate];
             zipInfo.tmz_date.tm_sec = (uInt)[dc second];
             zipInfo.tmz_date.tm_min = (uInt)[dc minute];

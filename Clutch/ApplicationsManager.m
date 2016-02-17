@@ -29,7 +29,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
 - (instancetype)init
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         if ([[NSFileManager defaultManager] fileExistsAtPath:applistCachePath])
         {
@@ -39,9 +39,9 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
         {
             _cachedApps = [NSMutableArray new];
         }
-        
-        return self;
     }
+    
+    return self;
 }
 
 

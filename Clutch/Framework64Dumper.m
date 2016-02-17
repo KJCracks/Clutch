@@ -20,9 +20,9 @@
 
 - (BOOL)dumpBinary
 {
-
+    
     ClutchBundle *bundle = [_originalBinary valueForKey:@"_bundle"];
-
+    
     
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
     
@@ -40,7 +40,7 @@
         
         [self swapArch];
     }
-        
+    
     NSFileHandle *newFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + _thinHeader.size];
@@ -137,9 +137,9 @@
         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"pages == 0"];
         return NO;
     }
-        
+    
     [newFileHandle closeFile];
-        
+    
     extern char **environ;
     posix_spawnattr_t attr;
     
@@ -154,7 +154,7 @@
     }
     
     [[NSFileManager defaultManager] createDirectoryAtPath:workingPath withIntermediateDirectories:YES attributes:nil error:nil];
-
+    
     
     if (![[NSFileManager defaultManager] copyItemAtPath:[NSProcessInfo processInfo].arguments[0] toPath:[workingPath stringByAppendingPathComponent:@"clutch"] error:nil]) {
         [[ClutchPrint sharedInstance] printError:@"Failed to copy clutch to %@", workingPath];
@@ -185,8 +185,11 @@
         [NSString stringWithFormat:@"%u", cryptlc_offset].UTF8String,
         NULL};
     
-    
-    [[ClutchPrint sharedInstance] printDeveloper: @"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv]];
+    NSString *ns_argv = @"";
+    for (size_t i = 0; argv[i] != NULL; i++) {
+        ns_argv = [ns_argv stringByAppendingFormat:@"%s", argv[i]];
+    }
+    [[ClutchPrint sharedInstance] printDeveloper: @"hello potato posix_spawn %@", ns_argv];
     
     posix_spawnattr_init (&attr);
     
@@ -209,7 +212,7 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         
         dispatch_sync(queue, ^{
-			int dumpResult = 0;
+            int dumpResult = 0;
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult, 0) != -1) {
                 [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Success! Child exited with status %u", dumpResult];

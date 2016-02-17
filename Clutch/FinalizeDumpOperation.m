@@ -62,11 +62,12 @@
         return;
     }
     
+    NSString __weak *bundleIdentifier = _application.bundleIdentifier;
     self.completionBlock = ^{
         gettimeofday(&end, NULL);
         int dif = diff_ms(end,start);
         float sec = ((dif + 500.0f) / 1000.0f);
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"Finished dumping %@ in %0.1f seconds", _application.bundleIdentifier, sec];
+        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"Finished dumping %@ in %0.1f seconds", bundleIdentifier, sec];
         exit(0);
     };
     
@@ -99,7 +100,7 @@
                     
                     if (dict)
                         [plists addObject:theURL.path];
-                
+                    
                     [[NSFileManager defaultManager] removeItemAtURL:theURL error:nil];
                 }
             }
@@ -197,7 +198,7 @@
                               toURL:[NSURL fileURLWithPath:currentFile]
                               error:&anError]) {
                             [[ClutchPrint sharedInstance] printDeveloper:@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
-                                  [NSURL fileURLWithPath:currentFile], anError];
+                             [NSURL fileURLWithPath:currentFile], anError];
                         }
                         break;
                     }
@@ -208,7 +209,7 @@
                       toURL:[NSURL fileURLWithPath:_ipaPath]
                       error:&anError]) {
                     [[ClutchPrint sharedInstance] printDeveloper:@"Failed to move from %@ to %@ with error %@", ipaSrcURL,
-                          [NSURL fileURLWithPath:_ipaPath], anError];
+                     [NSURL fileURLWithPath:_ipaPath], anError];
                 }
             }
         }

@@ -464,7 +464,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR/Clutch;\nmake clean &> /dev/null;\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\nmake debug;\nelse\nmake;\nfi";
+			shellScript = "cd \"$PROJECT_DIR/Clutch\"\nmake clean >/dev/null 2>&1\nif [ \"$CONFIGURATION\" = 'Debug' ]; then\n    make debug\nelse\n    make\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

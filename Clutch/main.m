@@ -63,8 +63,7 @@ int main (int argc, const char * argv[])
 
     @autoreleasepool
     {
-        //exit(0);
-        // yo
+
         if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
             
             gbprintln(@"You need iOS 6.0+ to use Clutch %@",CLUTCH_VERSION);

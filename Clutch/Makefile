@@ -5,7 +5,7 @@ ENTITLEMENTS := Clutch.entitlements
 PCH := Clutch-Prefix.pch
 SRC_DIRS := MiniZip
 CFLAGS += -fmodules -fobjc-arc -I..
-LDFLAGS += -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET) -lz -F/System/Library/PrivateFrameworks -F /System/Library/Frameworks -framework AppSupport -framework Foundation -framework MobileCoreServices
+LDFLAGS += -miphoneos-version-min=$(IPHONEOS_DEPLOYMENT_TARGET) -lz -F /System/Library/Frameworks -framework Foundation -framework MobileCoreServices
 LDLIBS = -lncurses
 
 # Macro to find all source files in a directory

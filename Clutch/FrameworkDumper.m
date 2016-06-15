@@ -223,7 +223,7 @@
             kill(pid, SIGCONT);
 			int dumpResult = 0;
             if (waitpid(pid, &dumpResult, 0) != -1) {
-                [[ClutchPrint sharedInstance] printDeveloper: @"Success! Child exited with status %u", dumpResult];
+                [[ClutchPrint sharedInstance] printDeveloper: @"Child exited with status %u", dumpResult];
             } else {
                 perror("waitpid");
             }

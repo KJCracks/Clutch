@@ -168,6 +168,10 @@ int main (int argc, const char * argv[])
                         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework!"];
                         exit(0);
                     }
+                    else {
+                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dumped framework! :("];
+                        exit(-2);
+                    }
                     
                 }
                 

@@ -315,7 +315,7 @@ void *safe_trim(void *p, size_t n) {
     
 
     if (self.supportedCPUType != _thinHeader.header.cputype) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"why cut a potato with a pencil?"];
+        [[ClutchPrint sharedInstance] printDeveloper:@"Dumper <%@> does not support the %@ architecture", NSStringFromClass([self class]), [Dumper readableArchFromHeader:_thinHeader]];
         return ArchCompatibilityNotCompatible;
     }
     

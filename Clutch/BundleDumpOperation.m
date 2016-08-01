@@ -271,6 +271,12 @@
             
             _localPath = [_application.zipPrefix stringByAppendingPathComponent:_localPath];
             
+            //Move binary to correct path on iOS 9.2+
+            if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/containers/Bundle/Application/"]) {
+                NSArray* pathArray = [_localPath componentsSeparatedByString:@"/"];
+                 _localPath = [NSString stringWithFormat:@"%@/%@/%@",pathArray[0],pathArray[6],pathArray[7]];
+            }
+            
             [@{_binaryDumpPath:_localPath} writeToFile:[originalBinary.workingPath stringByAppendingPathComponent:@"filesToAdd.plist"] atomically:YES];
         }
         

@@ -269,6 +269,12 @@
         {
             NSString *_localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
             
+            //Move binary to correct path on iOS 9.2+
+            if ([_application.bundleContainerURL.path hasPrefix:@"/private/var/containers/Bundle/Application/"]) {
+                NSString *iOS92BundleContainerURL = [_application.bundleContainerURL.path stringByReplacingOccurrencesOfString:@"/private" withString:@""];
+                _localPath = [originalBinary.binaryPath stringByReplacingOccurrencesOfString:iOS92BundleContainerURL withString:@""];
+            }
+            
             _localPath = [_application.zipPrefix stringByAppendingPathComponent:_localPath];
             
             [@{_binaryDumpPath:_localPath} writeToFile:[originalBinary.workingPath stringByAppendingPathComponent:@"filesToAdd.plist"] atomically:YES];

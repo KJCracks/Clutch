@@ -204,6 +204,7 @@
     exit_with_errno (posix_spawnattr_setflags (&attr, flags), "::posix_spawnattr_setflags (&attr, flags) error: ");
     
     int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, (char* const*)argv, environ);
+    __block int finalDumpResult = 9999;
     
     if (dumpResult == 0) {
         [[ClutchPrint sharedInstance] printDeveloper: @"Child pid: %i", pid];
@@ -216,6 +217,7 @@
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult, 0) != -1) {
                 [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Child exited with status %u", dumpResult];
+                finalDumpResult = dumpResult;
             } else {
                 perror("waitpid");
             }
@@ -237,8 +239,13 @@
     
     [[NSFileManager defaultManager] removeItemAtPath:workingPath error:nil];
     
-    if (dumpResult == 0)
+     [[ClutchPrint sharedInstance] printDeveloper: @"Final dump result %u", finalDumpResult];
+    
+    if (finalDumpResult == 0)
         return YES;
+    
+   
+    
     
     return NO;
 }

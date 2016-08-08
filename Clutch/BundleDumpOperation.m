@@ -31,6 +31,8 @@
 @implementation BundleDumpOperation
 
 -(void)failedOperation {
+    NSLog(@"failed operation :(");
+    NSLog(@"application %@", _application->_dumpQueue);
     NSArray* wow = [_application->_dumpQueue operations];
     for (NSOperation* operation in wow) {
         [[ClutchPrint sharedInstance] printDeveloper:@"operation hash %lu", (unsigned long)operation.hash];
@@ -163,18 +165,19 @@
             
             BOOL result = [_dumper dumpBinary];
             
-            if (result) {
+            if (result == YES) {
                 dumpCount++;
-                //SUCCESS(@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary);
+                [[ClutchPrint sharedInstance] printDeveloper:@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary];
             } else {
-                [[ClutchPrint sharedInstance] printError:@"Failed to dump binary %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]];
+                [[ClutchPrint sharedInstance] printError:@"Failed to dump %@ with arch %@",originalBinary,[Dumper readableArchFromHeader:macho]];
+                [self failedOperation];
             }
             
             [_handle closeFile];
         }
         
         if (!dumpCount) {
-            [[ClutchPrint sharedInstance] printError:@"Failed to dump binary %@", originalBinary];
+            [[ClutchPrint sharedInstance] printError:@"Failed to dump %@", originalBinary];
             [self failedOperation];
             
             return;

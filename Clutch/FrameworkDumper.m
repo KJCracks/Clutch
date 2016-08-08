@@ -213,6 +213,7 @@
     exit_with_errno (posix_spawnattr_setflags (&attr, flags), "::posix_spawnattr_setflags (&attr, flags) error: ");
     
     int dumpResult = posix_spawnp(&pid, argv[0], NULL, &attr, (char* const*)argv, environ);
+    __block finalDumpResult = 9999; //it shouldn't be 9999
     
     if (dumpResult == 0) {
         [[ClutchPrint sharedInstance] printDeveloper: @"Child pid: %i", pid];
@@ -224,6 +225,7 @@
 			int dumpResult = 0;
             if (waitpid(pid, &dumpResult, 0) != -1) {
                 [[ClutchPrint sharedInstance] printDeveloper: @"Child exited with status %u", dumpResult];
+                finalDumpResult = dumpResult;
             } else {
                 perror("waitpid");
             }
@@ -245,7 +247,7 @@
     
    
     
-    if (dumpResult == 0)
+    if (finalDumpResult == 0)
         return YES;
     
     return NO;

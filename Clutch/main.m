@@ -165,17 +165,18 @@ int main (int argc, const char * argv[])
                    
                     if (result)
                     {
-                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework!"];
+                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent];
+                        
                         exit(0);
                     }
                     else {
-                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dumped framework! :("];
-                        exit(-2);
+                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent];
+                        exit(2);
                     }
                     
                 }
                 
-                exit(-1);
+                exit(1);
             }
             
             switch (flags)

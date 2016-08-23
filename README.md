@@ -5,9 +5,10 @@ Clutch
 Usage
 ------------
 
-*Important*
-Clutch may encounter `Segmentation Fault: 11` when dumping apps with a large number of frameworks. Increase your device's maximum number of open file descriptors
-`ulimit -n 512` (default is 256)
+**Important!**
+
+Clutch may encounter `Segmentation Fault: 11` when dumping apps with a large number of frameworks. 
+Increase your device's maximum number of open file descriptors with `ulimit -n 512` (default is 256)
 
 ```sh 
 Clutch [OPTIONS]
@@ -59,6 +60,7 @@ Licenses
 Thanks
 ------------
 *Clutch* woudn't be what it is without these people:
+
 dissident - The original creator of *Clutch* (pre 1.2.6)  
 Nighthawk - Code contributor (pre 1.2.6)  
 Rastignac - Inspiration and genius  

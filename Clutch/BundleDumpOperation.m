@@ -104,7 +104,7 @@
         //if (![_application isKindOfClass:[Framework class]])
         [_fileManager copyItemAtPath:originalBinary.binaryPath toPath:_binaryDumpPath error:nil];
                 
-        NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];
+        NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+")) closeOnDealloc:YES];
         
         NSData *headersData = tmpHandle.availableData;
         
@@ -120,6 +120,7 @@
         uint32_t numHeaders = 0;
         
         headersFromBinary(headers, headersData, &numHeaders);
+        
         
         if (numHeaders == 0) {
             gbprintln(@"No compatible architecture found");
@@ -159,7 +160,7 @@
             
             [[ClutchPrint sharedInstance] printDeveloper:@"Found compatible dumper %@ for binary %@ with arch %@",_dumper,originalBinary,[Dumper readableArchFromHeader:macho]];
             
-            NSFileHandle *_handle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))];
+            NSFileHandle *_handle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+")) closeOnDealloc:YES];
             
             _dumper.originalFileHandle = _handle;
             
@@ -186,7 +187,7 @@
         
 #pragma mark "stripping" headers in FAT binary
         if ([_headersToStrip count] > 0) {
-            NSFileHandle *_dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
+            NSFileHandle *_dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+")) closeOnDealloc:YES];
             
             uint32_t magic = [_dumpHandle intAtOffset:0];
             NSData *buffer = [_dumpHandle readDataOfLength:4096];
@@ -219,10 +220,10 @@
 #pragma mark lipo ftw
             
             [[NSFileManager defaultManager]moveItemAtPath:_binaryDumpPath toPath:[_binaryDumpPath stringByAppendingPathExtension:@"fatty"] error:nil];
-            NSFileHandle *_fattyHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen([_binaryDumpPath stringByAppendingPathExtension:@"fatty"].UTF8String, "r+"))];
+            NSFileHandle *_fattyHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen([_binaryDumpPath stringByAppendingPathExtension:@"fatty"].UTF8String, "r+")) closeOnDealloc:YES];
 
             [[NSFileManager defaultManager] createFileAtPath:_binaryDumpPath contents:nil attributes:nil];
-            _dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))];
+            _dumpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+")) closeOnDealloc:YES];
 
             [_dumpHandle replaceBytesInRange:NSMakeRange(0, sizeof(uint32_t)) withBytes:&magic];
             

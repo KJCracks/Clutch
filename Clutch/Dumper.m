@@ -136,11 +136,14 @@
         newSupf = [_originalBinary.supfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.supfPath.pathExtension]];
     }
     
+    
+    
     NSError *error;
     
-    [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:&error];
-    
-    [[ClutchPrint sharedInstance] printDeveloper: @"%@",error];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:swappedBinaryPath isDirectory:NO]){
+         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
+    }
+   
     
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:&error];
     
@@ -155,7 +158,7 @@
     }
     
     [self.originalFileHandle closeFile];
-    self.originalFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+"))];
+    self.originalFileHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+")) closeOnDealloc:YES];
     
     uint32_t magic = [self.originalFileHandle intAtOffset:0];
     bool shouldSwap = magic == FAT_CIGAM;
@@ -165,30 +168,68 @@
     
     struct fat_header fat = *(struct fat_header *)buffer.bytes;
     fat.nfat_arch = SWAP(fat.nfat_arch);
-    uint32_t offset = sizeof(struct fat_header);
+    int offset = sizeof(struct fat_header);
     
     for (int i = 0; i < fat.nfat_arch; i++) {
         struct fat_arch arch;
         arch = *(struct fat_arch *)([buffer bytes] + offset);
         
-        if (((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
-            int origOffset = SWAP(arch.offset);
-            arch.offset = SWAP(pow(2.0, SWAP(arch.align)));
-            [self.originalFileHandle seekToFileOffset:origOffset];
-            NSData *machOData = [self.originalFileHandle readDataOfLength:SWAP(arch.size)];
-            [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(struct fat_header), sizeof(struct fat_arch)) withBytes:&arch];
-            [self.originalFileHandle replaceBytesInRange:NSMakeRange(SWAP(arch.offset), SWAP(arch.size)) withBytes:[machOData bytes]];
-            offset = SWAP(arch.offset) + SWAP(arch.size);
-            break;
+        if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+            
+            if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
+                switch (SWAP(arch.cpusubtype)) {
+                    case CPU_SUBTYPE_ARM_V6:
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
+                        break;
+                    case CPU_SUBTYPE_ARM_V7:
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_4);
+                        break;
+                    case CPU_SUBTYPE_ARM_V7S:
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_ITANIUM);
+                        break;
+                    case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_XEON);
+                        break;
+                    default:
+                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Warning: A wild 32-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype)];
+                        arch.cputype = SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON); //pentium 3 ftw
+                        break;
+                        
+                }
+            }else {
+                
+                switch (SWAP(arch.cpusubtype)) {
+                    case CPU_SUBTYPE_ARM64_ALL:
+                        arch.cputype = SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
+                        break;
+                    case CPU_SUBTYPE_ARM64_V8:
+                        arch.cputype = SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_H);
+                        break;
+                    default:
+                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Warning: A wild 64-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype)];
+                        arch.cputype = SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
+                        break;
+                }
+                
+            }
+            
+            [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
         }
         
         offset += sizeof(struct fat_arch);
     }
     
-    uint32_t nfat_arch = SWAP(1);
-    [self.originalFileHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
-    [self.originalFileHandle truncateFileAtOffset:offset];
+    
     [[ClutchPrint sharedInstance] printDeveloper: @"wrote new header to binary"];
+    //we don't close file handle here since it's reused later in dumping!
 }
 
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin

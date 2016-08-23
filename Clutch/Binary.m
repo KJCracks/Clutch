@@ -53,7 +53,7 @@
                 
         _dumpOperation = [[BundleDumpOperation alloc]initWithBundle:_bundle];
         
-        NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_bundle.executablePath.UTF8String, "r+"))];
+        NSFileHandle *tmpHandle = [[NSFileHandle alloc]initWithFileDescriptor:fileno(fopen(_bundle.executablePath.UTF8String, "r+")) closeOnDealloc:YES];
         
         NSData *headersData = tmpHandle.availableData;
         

@@ -4,6 +4,11 @@ Clutch
 
 Usage
 ------------
+
+*Important*
+Clutch may encounter `Segmentation Fault: 11` when dumping apps with a large number of frameworks. Increase your device's maximum number of open file descriptors
+`ulimit -n 512` (default is 256)
+
 ```sh 
 Clutch [OPTIONS]
 -b --binary-dump     Only dump binary files from specified bundleID

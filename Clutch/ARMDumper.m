@@ -40,11 +40,11 @@
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
         newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
         newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
-
+        
         [self swapArch];
         
     }
-        
+    
     //actual dumping
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + _thinHeader.size];
@@ -121,8 +121,7 @@
     pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        [[ClutchPrint sharedInstance] printError:@"Could not obtain mach port, did you sign with proper entitlements?"];
-        sleep(60);
+        [[ClutchPrint sharedInstance] printError:@"Could not obtain mach port, either the process is dead (codesign error?) or entitlements were not properly signed!?"];
         goto gotofail;
     }
     
@@ -188,7 +187,7 @@
         [[NSFileManager defaultManager]removeItemAtPath:newSinf error:nil];
     if (![newSupp isEqualToString:_originalBinary.suppPath])
         [[NSFileManager defaultManager]removeItemAtPath:newSupp error:nil];
-  
+   [newFileHandle closeFile];
     _kill(pid);
     
     return dumpResult;
@@ -196,7 +195,7 @@
 gotofail:
     
     _kill(pid);
-   
+    [newFileHandle closeFile];
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
         [[NSFileManager defaultManager]removeItemAtPath:swappedBinaryPath error:nil];
     if (![newSinf isEqualToString:_originalBinary.sinfPath])

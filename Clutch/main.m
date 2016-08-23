@@ -13,6 +13,7 @@
 #import "FrameworkLoader.h"
 #import <sys/time.h>
 #import "ClutchPrint.h"
+#import "NSTask.h"
 
 int diff_ms(struct timeval t1, struct timeval t2)
 {
@@ -70,6 +71,7 @@ int main (int argc, const char * argv[])
             
             return 0;
         }
+      
 
         GBOptionsHelper *options = [[GBOptionsHelper alloc] init];
         options.applicationVersion = ^{ return CLUTCH_VERSION; };
@@ -84,7 +86,9 @@ int main (int argc, const char * argv[])
         [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
         [options registerOption:'n' long:@"no-color" description:@"Print with colors disabled" flags:GBValueNone|GBOptionNoPrint];
+#ifdef DEBUG
         [options registerOption:'v' long:@"verbose" description:@"Print verbose messages" flags:GBValueNone|GBOptionNoPrint];
+#endif
         
         if (argc == 1) {
             [options printHelp];

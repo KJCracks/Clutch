@@ -28,6 +28,7 @@ void _kill(pid_t pid);
 @property NSFileHandle *originalFileHandle;
 @property BOOL shouldDisableASLR;
 
+
 + (NSString *)readableArchFromHeader:(thin_header)macho;
 + (NSString *)readableArchFromMachHeader:(struct mach_header)header;
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn;

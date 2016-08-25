@@ -71,10 +71,14 @@
     {
         if (format != nil)
         {
+            NSString *stackSymobolsString = [NSThread callStackSymbols][1];
+            NSMutableArray *stackSymbols = [NSMutableArray arrayWithArray:[stackSymobolsString  componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"]]];
+            [stackSymbols removeObject:@""];
+
             va_list args;
             va_start(args, format);
             NSString *formatString = [[NSString alloc] initWithFormat:format arguments:args];
-            NSString *printString = [NSString stringWithFormat:@"%s : %d | %@\n", __FILE__, __LINE__, formatString];
+            NSString *printString = [NSString stringWithFormat:@"%@ | %@\n", stackSymbols[3], formatString];
             printf("%s", printString.UTF8String);
             va_end(args);
         }

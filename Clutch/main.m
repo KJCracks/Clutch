@@ -14,6 +14,7 @@
 #import <sys/time.h>
 #import "ClutchPrint.h"
 #import "NSTask.h"
+#include <unistd.h>
 
 int diff_ms(struct timeval t1, struct timeval t2)
 {
@@ -64,6 +65,11 @@ int main (int argc, const char * argv[])
 
     @autoreleasepool
     {
+        if (getuid() != 0) { // Clutch needs to be root user to run
+            [[ClutchPrint sharedInstance] print:@"Clutch needs to be run as the root user, please change user and rerun."];
+            
+            return 0;
+        }
 
         if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
             

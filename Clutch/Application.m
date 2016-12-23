@@ -289,6 +289,7 @@
     }
     
     [_dumpQueue addOperation:_finalizeDumpOperation];
+    [_dumpQueue waitUntilAllOperationsAreFinished];
 }
 
 - (NSString *)zipFilename

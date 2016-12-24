@@ -12,6 +12,7 @@
 #import "FinalizeDumpOperation.h"
 #import "SCInfoBuilder.h"
 #import "Device.h"
+#import "ClutchPrint.h"
 
 @interface Application ()
 {
@@ -274,7 +275,7 @@
     if (_additionalZipOpeartions.lastObject) {
         [_finalizeDumpOperation addDependency:_additionalZipOpeartions.lastObject];
     }
-    
+
     if (!_onlyBinaries)
         [_dumpQueue addOperation:_mainZipOperation];
     
@@ -289,6 +290,27 @@
     }
     
     [_dumpQueue addOperation:_finalizeDumpOperation];
+
+    // Kill output (example use case is remote SSH without TTY), #
+    // Still provide IPA path or working path as output
+    // FIXME: Find the correct solution to fclose(stdout/stderr) when not in a TTY for sshd
+    // http://www.snailbook.com/faq/background-jobs.auto.html
+    // Theory: this may be caused by the many threads launched by NSOperation that also print. Perhaps forcing all prints to be on the main thread is the solution?
+    if (!isatty(1) || !isatty(2)) {
+        if (!_onlyBinaries) {
+            NSString *dumpedPath = @"/private/var/mobile/Documents/Dumped";
+            [[ClutchPrint sharedInstance] print:[dumpedPath stringByAppendingPathComponent:self.zipFilename]];
+        } else {
+            [[ClutchPrint sharedInstance] print:self.workingPath];
+        }
+        fflush(stdout);
+        fflush(stderr);
+
+        fclose(stdin);
+        fclose(stdout);
+        fclose(stderr);
+    }
+
     [_dumpQueue waitUntilAllOperationsAreFinished];
 }
 

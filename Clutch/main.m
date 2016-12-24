@@ -100,7 +100,8 @@ int main (int argc, const char * argv[])
             //listApps();
         }
 
-        __block NSString * _selectedOption, * _selectedBundleID;
+        __block NSString *_selectedOption = @"";
+        __block NSString *_selectedBundleID;
         __block ClutchPrinterColorLevel colorLevel = ClutchPrinterColorLevelFull;
         __block ClutchPrinterVerboseLevel verboseLevel = ClutchPrinterVerboseLevelNone;
 
@@ -108,8 +109,6 @@ int main (int argc, const char * argv[])
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
         [parser registerOptions:options];
         [parser parseOptionsWithArguments:(char **)argv count:argc block:^(GBParseFlags flags, NSString *option, id value, BOOL *stop) {
-
-
             if ([option isEqualToString:@"no-color"])
             {
                 //[[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
@@ -121,10 +120,8 @@ int main (int argc, const char * argv[])
                 verboseLevel = ClutchPrinterVerboseLevelFull;
             }
 
-
             if ([option isEqualToString:@"help"])
             {
-                [options printHelp];
                 return;
             }
             else if ([option isEqualToString:@"version"])
@@ -209,18 +206,24 @@ int main (int argc, const char * argv[])
             }
         }];
 
+        if ([parser valueForOption:@"print-installed"] ||
+            [parser valueForOption:@"clean"] ||
+            [parser valueForOption:@"version"]) {
+            return 0;
+        }
+
         [[ClutchPrint sharedInstance] setColorLevel:colorLevel];
         [[ClutchPrint sharedInstance] setVerboseLevel:verboseLevel];
 
         if (!_selectedBundleID)
         {
             [options printHelp];
-            return 0;
+            return [parser valueForOption:@"help"] ? 0 : 1;
         }
 
-        if (!([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]))
+        if (!([_selectedOption isEqualToString:@"dump"] || [_selectedOption isEqualToString:@"binary-dump"]))
         {
-            return -1;
+            return 1;
         }
 
         ApplicationsManager *_appsManager = [[ApplicationsManager alloc] init];

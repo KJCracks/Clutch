@@ -55,8 +55,6 @@ void listApps() {
 
         [[ClutchPrint sharedInstance] printColor:color format:@"%d: %@%@ <%@>", count, space, _app.displayName, _app.bundleIdentifier];
     }
-
-    exit(0);
 }
 
 int main (int argc, const char * argv[])
@@ -96,13 +94,14 @@ int main (int argc, const char * argv[])
 
         if (argc == 1) {
             [options printHelp];
-            exit(0);
+            return 0;
 
             // :P
             //listApps();
         }
 
-        __block NSString * _selectedOption, * _selectedBundleID;
+        __block NSString *_selectedOption = @"";
+        __block NSString *_selectedBundleID;
         __block ClutchPrinterColorLevel colorLevel = ClutchPrinterColorLevelFull;
         __block ClutchPrinterVerboseLevel verboseLevel = ClutchPrinterVerboseLevelNone;
 
@@ -110,8 +109,6 @@ int main (int argc, const char * argv[])
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
         [parser registerOptions:options];
         [parser parseOptionsWithArguments:(char **)argv count:argc block:^(GBParseFlags flags, NSString *option, id value, BOOL *stop) {
-
-
             if ([option isEqualToString:@"no-color"])
             {
                 //[[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
@@ -123,26 +120,25 @@ int main (int argc, const char * argv[])
                 verboseLevel = ClutchPrinterVerboseLevelFull;
             }
 
-
             if ([option isEqualToString:@"help"])
             {
-                [options printHelp];
-                exit(0);
+                return;
             }
             else if ([option isEqualToString:@"version"])
             {
                 [options printVersion];
-                exit(0);
+                return;
             }
             else if ([option isEqualToString:@"clean"])
             {
                 [[NSFileManager defaultManager]removeItemAtPath:@"/var/tmp/clutch" error:nil];
                 [[NSFileManager defaultManager]createDirectoryAtPath:@"/var/tmp/clutch" withIntermediateDirectories:YES attributes:nil error:nil];
-                exit(0);
+                return;
             }
             else if ([option isEqualToString:@"print-installed"])
             {
                 listApps();
+                return;
             }
 
             else if ([option isEqualToString:@"fmwk-dump"])
@@ -175,16 +171,16 @@ int main (int argc, const char * argv[])
                     {
                         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent];
 
-                        exit(0);
+                        return;
                     }
                     else {
                         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent];
-                        exit(2);
+                        return;
                     }
 
                 }
 
-                exit(1);
+                return;
             }
 
             switch (flags)
@@ -210,18 +206,24 @@ int main (int argc, const char * argv[])
             }
         }];
 
+        if ([parser valueForOption:@"print-installed"] ||
+            [parser valueForOption:@"clean"] ||
+            [parser valueForOption:@"version"]) {
+            return 0;
+        }
+
         [[ClutchPrint sharedInstance] setColorLevel:colorLevel];
         [[ClutchPrint sharedInstance] setVerboseLevel:verboseLevel];
 
         if (!_selectedBundleID)
         {
             [options printHelp];
-            exit(0);
+            return [parser valueForOption:@"help"] ? 0 : 1;
         }
 
-        if (!([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]))
+        if (!([_selectedOption isEqualToString:@"dump"] || [_selectedOption isEqualToString:@"binary-dump"]))
         {
-            return -1;
+            return 1;
         }
 
         ApplicationsManager *_appsManager = [[ApplicationsManager alloc] init];
@@ -243,7 +245,7 @@ int main (int argc, const char * argv[])
                 if (_installedApps[selection] == nil)
                 {
                     gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);
-                    exit(1);
+                    return 1;
                 }
                 else
                 {
@@ -258,7 +260,7 @@ int main (int argc, const char * argv[])
                 if (key > [_installedArray count])
                 {
                     gbprintln(@"Couldn't find app with corresponding number!?!");
-                    exit(1);
+                    return 1;
                 }
                 _selectedApp = [_installedArray objectAtIndex:key];
 
@@ -268,7 +270,7 @@ int main (int argc, const char * argv[])
             if (!_selectedApp)
             {
                 [[ClutchPrint sharedInstance] print:@"Couldn't find installed app"];
-                exit(1);
+                return 1;
             }
 
             [[ClutchPrint sharedInstance] printVerbose:@"Now dumping %@", _selectedApp.bundleIdentifier];

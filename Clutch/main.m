@@ -104,6 +104,8 @@ int main (int argc, const char * argv[])
         __block NSString *_selectedBundleID;
         __block ClutchPrinterColorLevel colorLevel = ClutchPrinterColorLevelFull;
         __block ClutchPrinterVerboseLevel verboseLevel = ClutchPrinterVerboseLevelNone;
+        __block BOOL dumpedFramework = NO;
+        __block BOOL successfullyDumpedFramework = NO;
 
 
         GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
@@ -148,7 +150,7 @@ int main (int argc, const char * argv[])
 
                 if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 13))
                 {
-
+                    dumpedFramework = YES;
                     FrameworkLoader *fmwk = [FrameworkLoader new];
 
                     fmwk.binPath = arguments[2];
@@ -165,7 +167,7 @@ int main (int argc, const char * argv[])
                     fmwk.dumpSize = fmwk.cryptoff + fmwk.cryptsize;
 
 
-                    BOOL result = [fmwk dumpBinary];
+                    BOOL result = successfullyDumpedFramework = [fmwk dumpBinary];
 
                     if (result)
                     {
@@ -210,6 +212,13 @@ int main (int argc, const char * argv[])
             [parser valueForOption:@"clean"] ||
             [parser valueForOption:@"version"]) {
             return 0;
+        }
+
+        if (dumpedFramework) {
+            if (successfullyDumpedFramework) {
+                return 0;
+            }
+            return 1;
         }
 
         [[ClutchPrint sharedInstance] setColorLevel:colorLevel];

@@ -215,6 +215,10 @@ int main (int argc, const char * argv[])
         }
 
         if (dumpedFramework) {
+            fclose(stdin);
+            fclose(stdout);
+            fclose(stderr);
+
             if (successfullyDumpedFramework) {
                 return 0;
             }
@@ -292,7 +296,9 @@ int main (int argc, const char * argv[])
 #endif
 
             gettimeofday(&start, NULL);
-            [_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]];
+            if (![_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]]) {
+                return 1;
+            }
         }
     }
 

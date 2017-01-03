@@ -1,0 +1,2 @@
+language: objective-c
+script: xcodebuild -project Clutch.xcodeproj -configuration Release ARCHS="armv7 armv7s arm64" build

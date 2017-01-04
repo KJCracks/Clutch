@@ -4,7 +4,7 @@
 
 
 /* credits: some guy on stackoverflow, sorry!
- 
+
  #define KNRM  "\x1B[0m"
  #define KRED  "\x1B[31m"
  #define KGRN  "\x1B[32m"
@@ -14,14 +14,14 @@
  #define KCYN  "\x1B[36m"
  #define KWHT  "\x1B[37m"
  #define RESET "\033[0m"
- 
+
  */
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 #endif
 
-struct timeval start, end;
+//struct timeval start, end;
 int diff_ms(struct timeval t1, struct timeval t2);
 
 

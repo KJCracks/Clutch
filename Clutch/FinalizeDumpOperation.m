@@ -14,6 +14,9 @@
 #import <sys/time.h>
 #import "ClutchPrint.h"
 
+int diff_ms(struct timeval, struct timeval);
+extern struct timeval gStart;
+
 @interface FinalizeDumpOperation ()
 {
     Application *_application;
@@ -64,8 +67,9 @@
 
     NSString __weak *bundleIdentifier = _application.bundleIdentifier;
     self.completionBlock = ^{
+        struct timeval end;
         gettimeofday(&end, NULL);
-        int dif = diff_ms(end,start);
+        int dif = diff_ms(end, gStart);
         float sec = ((dif + 500.0f) / 1000.0f);
         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"Finished dumping %@ in %0.1f seconds", bundleIdentifier, sec];
     };

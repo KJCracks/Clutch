@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "329B80701C5B6745007DD817"
-               BuildableName = "Clutch"
+               BlueprintIdentifier = "266FD1651E1D7C6200935807"
+               BuildableName = "Clutch.app"
                BlueprintName = "Clutch"
                ReferencedContainer = "container:Clutch.xcodeproj">
             </BuildableReference>
@@ -33,8 +33,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "329B80701C5B6745007DD817"
-            BuildableName = "Clutch"
-            BlueprintName = "Clutch"
+            BuildableName = "ClutchMake"
+            BlueprintName = "ClutchMake"
             ReferencedContainer = "container:Clutch.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -51,16 +51,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "329B80701C5B6745007DD817"
-            BuildableName = "Clutch"
-            BlueprintName = "Clutch"
-            ReferencedContainer = "container:Clutch.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "329B80701C5B6745007DD817"
-            BuildableName = "Clutch"
-            BlueprintName = "Clutch"
-            ReferencedContainer = "container:Clutch.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

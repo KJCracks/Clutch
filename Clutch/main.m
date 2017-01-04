@@ -16,6 +16,8 @@
 #import "NSTask.h"
 #include <unistd.h>
 
+struct timeval gStart;
+
 int diff_ms(struct timeval t1, struct timeval t2)
 {
     return (int)((((t1.tv_sec - t2.tv_sec) * 1000000) +
@@ -295,7 +297,7 @@ int main (int argc, const char * argv[])
             }
 #endif
 
-            gettimeofday(&start, NULL);
+            gettimeofday(&gStart, NULL);
             if (![_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]]) {
                 return 1;
             }

@@ -37,7 +37,7 @@ xcodebuild clean build
 #### Install
 
 ```sh
-scp ./_clutch root@<your.device.ip>:/usr/bin/
+scp ./_clutch root@<your.device.ip>:/usr/bin/clutch
 ```
 ```sh
 ssh root@<your.device.ip>

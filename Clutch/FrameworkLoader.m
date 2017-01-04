@@ -103,19 +103,11 @@
     
     [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]];
     
-    uint32_t headerProgress = sizeof(image_header);
-    
-    uint32_t i_lcmd = 0;
-    kern_return_t err;
     uint32_t pages_d = 0;
-    BOOL header = TRUE;
     
     uint8_t* buf = malloc(0x1000);
-    mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 
     [fileHandle seekToFileOffset:self.offset];
-
-    unsigned long percent;
 
     
     while (togo > 0) {

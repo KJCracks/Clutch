@@ -24,14 +24,14 @@ int diff_ms(struct timeval t1, struct timeval t2)
                   (t1.tv_usec - t2.tv_usec)) / 1000);
 }
 
-void listApps();
+void listApps(void);
 void listApps() {
     ApplicationsManager *_manager = [[ApplicationsManager alloc] init];
 
     NSArray *installedApps = [_manager installedApps].allValues;
     [[ClutchPrint sharedInstance] print:@"Installed apps:"];
 
-    int count;
+    NSUInteger count;
     NSString *space;
     for (Application *_app in installedApps)
     {

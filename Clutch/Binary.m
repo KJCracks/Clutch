@@ -85,7 +85,7 @@
         
         struct thin_header macho = headers[0];
         
-        NSUInteger size = [tmpHandle seekToEndOfFile];
+        unsigned long long size = [tmpHandle seekToEndOfFile];
         
         [tmpHandle seekToFileOffset:macho.offset + macho.size];
         
@@ -101,7 +101,7 @@
             
             command = malloc(sizeof(struct segment_command));
             
-            [tmpHandle getBytes:command inRange:NSMakeRange(tmpHandle.offsetInFile,sizeof(struct segment_command))];
+            [tmpHandle getBytes:command inRange:NSMakeRange((NSUInteger)(tmpHandle.offsetInFile),sizeof(struct segment_command))];
             
             if (((cmd == LC_SEGMENT) || (cmd == LC_SEGMENT_64)) && (strcmp(command->segname, "__RESTRICT") == 0)) {
                 _hasRestrictedSegment = YES;

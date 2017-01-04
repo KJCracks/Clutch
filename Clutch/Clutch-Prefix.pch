@@ -21,7 +21,7 @@
     #import <Foundation/Foundation.h>
 #endif
 
-//struct timeval start, end;
+#include <sys/time.h>
 int diff_ms(struct timeval t1, struct timeval t2);
 
 

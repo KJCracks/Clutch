@@ -58,7 +58,7 @@
     
     [[ClutchPrint sharedInstance] printDeveloper: @"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     
-    uint32_t cryptlc_offset;
+    uint32_t cryptlc_offset = 0;
     
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
         
@@ -67,7 +67,7 @@
         
         switch (cmd) {
             case LC_CODE_SIGNATURE: {
-                [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
+                [newFileHandle getBytes:&ldid inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
                 
                 [[ClutchPrint sharedInstance] printDeveloper: @"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize];
@@ -76,7 +76,7 @@
             }
             case LC_ENCRYPTION_INFO_64: {
                 cryptlc_offset = newFileHandle.offsetInFile;
-                [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command_64))];
+                [newFileHandle getBytes:&crypt inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct encryption_info_command_64))];
                 foundCrypt = YES;
                 
                 [[ClutchPrint sharedInstance] printDeveloper: @"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid];
@@ -85,7 +85,7 @@
             }
             case LC_SEGMENT_64:
             {
-                [newFileHandle getBytes:&__text inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct segment_command_64))];
+                [newFileHandle getBytes:&__text inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct segment_command_64))];
                 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
@@ -108,12 +108,12 @@
         return NO;
     }
     
-    NSUInteger begin;
+    NSUInteger begin = 0;
     codesignblob = malloc(ldid.datasize);
     //seek to ldid offset
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
-    [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
+    [newFileHandle getBytes:codesignblob inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile), ldid.datasize)];
     
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?

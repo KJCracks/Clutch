@@ -10,7 +10,7 @@
 
 @interface NSFileHandle (Private)
 
-- (uint32_t)intAtOffset:(NSUInteger)offset;
+- (uint32_t)intAtOffset:(unsigned long long)offset;
 - (void)replaceBytesInRange:(NSRange)range withBytes:(const void *)bytes;
 - (void)getBytes:(void*)result atOffset:(NSUInteger)offset length:(NSUInteger)length;
 - (void)getBytes:(void*)result inRange:(NSRange)range;

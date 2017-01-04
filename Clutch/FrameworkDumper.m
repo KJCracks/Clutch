@@ -59,7 +59,7 @@
     uint64_t __text_start = 0;
 
     [[ClutchPrint sharedInstance] printDeveloper: @"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
-    uint32_t cryptlc_offset;
+    uint32_t cryptlc_offset = 0;
 
     for (int i = 0; i < _thinHeader.header.ncmds; i++) {
 
@@ -68,7 +68,7 @@
 
         switch (cmd) {
             case LC_CODE_SIGNATURE: {
-                [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
+                [newFileHandle getBytes:&ldid inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
 
                 [[ClutchPrint sharedInstance] printDeveloper: @"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize];
@@ -76,8 +76,8 @@
                 break;
             }
             case LC_ENCRYPTION_INFO: {
-                cryptlc_offset = newFileHandle.offsetInFile;
-                [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command))];
+                cryptlc_offset = (uint32_t)(newFileHandle.offsetInFile);
+                [newFileHandle getBytes:&crypt inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct encryption_info_command))];
                 foundCrypt = YES;
 
                 [[ClutchPrint sharedInstance] printDeveloper: @"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid];
@@ -86,7 +86,7 @@
             }
             case LC_SEGMENT:
             {
-                [newFileHandle getBytes:&__text inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct segment_command))];
+                [newFileHandle getBytes:&__text inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct segment_command))];
 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
@@ -111,14 +111,14 @@
 
     [[ClutchPrint sharedInstance] printDeveloper: @"starting to ldid"];
 
-    NSUInteger begin;
+    NSUInteger begin = 0;
 
     //seek to ldid offset
 
     codesignblob = malloc(ldid.datasize);
 
     [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
-    [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
+    [newFileHandle getBytes:codesignblob inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile), ldid.datasize)];
 
     [[ClutchPrint sharedInstance] printDeveloper: @"hello it's me"];
 

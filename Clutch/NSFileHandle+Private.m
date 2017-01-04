@@ -64,7 +64,7 @@
     return result;
 }
 
-- (uint32_t)intAtOffset:(NSUInteger)offset
+- (uint32_t)intAtOffset:(unsigned long long)offset
 {
     unsigned long long oldOffset = self.offsetInFile;
     

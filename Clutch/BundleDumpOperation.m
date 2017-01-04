@@ -128,8 +128,6 @@
             gbprintln(@"No compatible architecture found");
         }
 
-        BOOL isFAT = numHeaders > 1;
-
         uint32_t dumpCount = 0;
 
         NSMutableArray *_headersToStrip = [NSMutableArray new];
@@ -230,7 +228,7 @@
             [_dumpHandle replaceBytesInRange:NSMakeRange(0, sizeof(uint32_t)) withBytes:&magic];
 
             //skip 4 bytes for magic, 4 bytes of nfat_arch
-            uint32_t nfat_arch = SWAP([_headersToKeep count]);
+            uint32_t nfat_arch = SWAP((uint32_t)[_headersToKeep count]);
             [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
             [[ClutchPrint sharedInstance] printDeveloper:@"changing nfat_arch to %u", SWAP(nfat_arch)];
 

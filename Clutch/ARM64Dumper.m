@@ -55,6 +55,7 @@
     struct code_directory directory; // codesign directory index
     
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
+    crypt.cryptid = crypt.cryptoff = crypt.cryptsize = 0;
     
     uint64_t __text_start = 0;
     
@@ -67,7 +68,7 @@
         
         switch (cmd) {
             case LC_CODE_SIGNATURE: {
-                [newFileHandle getBytes:&ldid inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct linkedit_data_command))];
+                [newFileHandle getBytes:&ldid inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
                 
                 [[ClutchPrint sharedInstance] printDeveloper: @"FOUND CODE SIGNATURE: dataoff %u | datasize %u",ldid.dataoff,ldid.datasize];
@@ -75,7 +76,7 @@
                 break;
             }
             case LC_ENCRYPTION_INFO_64: {
-                [newFileHandle getBytes:&crypt inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct encryption_info_command_64))];
+                [newFileHandle getBytes:&crypt inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct encryption_info_command_64))];
                 foundCrypt = YES;
                 
                 [[ClutchPrint sharedInstance] printDeveloper: @"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",crypt.cryptoff,crypt.cryptsize,crypt.cryptid];
@@ -84,7 +85,7 @@
             }
             case LC_SEGMENT_64:
             {
-                [newFileHandle getBytes:&__text inRange:NSMakeRange(newFileHandle.offsetInFile,sizeof(struct segment_command_64))];
+                [newFileHandle getBytes:&__text inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct segment_command_64))];
                 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
@@ -112,7 +113,7 @@
     pid_t pid; // store the process ID of the fork
     mach_port_t port; // mach port used for moving virtual memory
     kern_return_t err; // any kernel return codes
-    NSUInteger begin;
+    NSUInteger begin = 0;
     
     pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
     
@@ -127,7 +128,7 @@
     //seek to ldid offset
     
     [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
-    [newFileHandle getBytes:codesignblob inRange:NSMakeRange(newFileHandle.offsetInFile, ldid.datasize)];
+    [newFileHandle getBytes:codesignblob inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile), ldid.datasize)];
     
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
     
@@ -173,7 +174,7 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         
         dispatch_sync(queue, ^{
-            dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start codeSignature_hashOffset:CFSwapInt32(directory.hashOffset) codesign_begin:begin];
+            dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:(crypt.cryptsize + crypt.cryptoff) pages:pages fromPort:port pid:pid aslrSlide:__text_start codeSignature_hashOffset:CFSwapInt32(directory.hashOffset) codesign_begin:(uint32_t)begin];
         });
 
     }

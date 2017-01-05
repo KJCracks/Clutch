@@ -1,6 +1,6 @@
 /*
  Generates SC_Info keys (.sinf and .supp)
- see http://hackulo.us/wiki/SC_Info
+ see https://archive.fo/PNfJ5
  */
 
 #import "scinfo.h"

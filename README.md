@@ -31,7 +31,14 @@ git clone git@github.com:KJCracks/Clutch.git
 cd Clutch
 ```
 #### Build
+
 ```sh
+# Disable Xcode's code signing requirement
+killall Xcode
+cp /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/SDKSettings.plist ~/
+/usr/libexec/PlistBuddy -c "Set :DefaultProperties:CODE_SIGNING_REQUIRED NO" /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/SDKSettings.plist
+/usr/libexec/PlistBuddy -c "Set :DefaultProperties:AD_HOC_CODE_SIGNING_ALLOWED YES" /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/SDKSettings.plist
+
 xcodebuild clean build
 ```
 #### Install
@@ -43,7 +50,7 @@ scp ./_clutch root@<your.device.ip>:/usr/bin/clutch
 ssh root@<your.device.ip>
 ```
 ```sh
-Clutch
+clutch
 ```
 _Note: you may need to `chmod +x Clutch`_
 

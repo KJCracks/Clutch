@@ -22,3 +22,6 @@ Pods
 Clutch/clutch
 Clutch/build
 _clutch
+# OS junk
+.DS_Store
+.DS_Store?

@@ -413,7 +413,6 @@
 				266FD1621E1D7C6200935807 /* Sources */,
 				266FD1631E1D7C6200935807 /* Frameworks */,
 				266FD1A31E1D7D5E00935807 /* Headers */,
-				26AB705D1E1D897A00BDAE34 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -479,22 +478,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		26AB705D1E1D897A00BDAE34 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\ncodesign -fs- --entitlements \"$CODE_SIGN_ENTITLEMENTS\" \"${CODESIGNING_FOLDER_PATH}/${TARGET_NAME}\"\nrm -fv \"${SOURCE_ROOT}/_clutch\"\ncp -v \"${CODESIGNING_FOLDER_PATH}/${TARGET_NAME}\" \"${SOURCE_ROOT}/_clutch\"";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		266FD1621E1D7C6200935807 /* Sources */ = {

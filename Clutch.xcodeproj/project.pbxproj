@@ -79,7 +79,6 @@
 		26AB705B1E1D857E00BDAE34 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
 		26AB705F1E1D8E5C00BDAE34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26AB70791E1DC67500BDAE34 /* libMiniZip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMiniZip.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		26AB70881E1DC80300BDAE34 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Dumper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -208,7 +207,6 @@
 		324EA61A1A89258000844540 = {
 			isa = PBXGroup;
 			children = (
-				26AB70881E1DC80300BDAE34 /* Default-568h@2x.png */,
 				324EA6281A89258000844540 /* Clutch */,
 				26AB70651E1DC5D300BDAE34 /* MiniZip */,
 				324EA6251A89258000844540 /* Frameworks */,

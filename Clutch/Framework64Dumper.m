@@ -51,10 +51,10 @@
     
     struct super_blob *codesignblob; // codesign blob pointer
     struct code_directory directory; // codesign directory index
-    
+
+    directory.nCodeSlots = 0;
+    directory.hashOffset = 0;
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
-    
-    uint64_t __text_start = 0;
     
     [[ClutchPrint sharedInstance] printDeveloper: @"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     
@@ -75,7 +75,7 @@
                 break;
             }
             case LC_ENCRYPTION_INFO_64: {
-                cryptlc_offset = newFileHandle.offsetInFile;
+                cryptlc_offset = (uint32_t)(newFileHandle.offsetInFile);
                 [newFileHandle getBytes:&crypt inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile),sizeof(struct encryption_info_command_64))];
                 foundCrypt = YES;
                 
@@ -90,7 +90,6 @@
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
                     [[ClutchPrint sharedInstance] printDeveloper: @"FOUND %s SEGMENT",__text.segname];
-                    __text_start = __text.vmaddr;
                 }
                 break;
             }

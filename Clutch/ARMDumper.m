@@ -56,6 +56,7 @@
     
     struct super_blob *codesignblob; // codesign blob pointer
     struct code_directory directory; // codesign directory index
+    directory.nCodeSlots = 0;
     
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
     

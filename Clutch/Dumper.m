@@ -90,7 +90,7 @@
 
     exit_with_errno (posix_spawnattr_init (&attr), "::posix_spawnattr_init (&attr) error: ");
 
-    short flags;
+    short flags = 0;
 
     if (suspend) {
         flags = POSIX_SPAWN_START_SUSPENDED;
@@ -250,18 +250,9 @@
     uint8_t *buf = &buf_d[0]; // store the location of the buffer
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 
-    uint32_t total = togo;
-
-    unsigned long percent;
-
     [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Dumping %@ (%@)", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]];
 
     while (togo > 0) {
-        // get a percentage for the progress bar
-
-
-        percent = ceil((((double)total - togo) / (double)total) * 100);
-
         if ((err = mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + (pages_d * 0x1000), (vm_size_t) 0x1000, (pointer_t) buf, &local_size)) != KERN_SUCCESS)	{
 
             [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump a page :("];

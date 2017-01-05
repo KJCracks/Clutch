@@ -26,7 +26,7 @@
     NSString *binaryDumpPath = [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
 
 
-    NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath, *newSupf = _originalBinary.supfPath; // default values if we dont need to swap archs
+    NSString* swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath, *newSupp = _originalBinary.suppPath; // default values if we dont need to swap archs
 
     //check if cpusubtype matches
     if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && (_originalBinary.hasMultipleARMSlices || (_originalBinary.hasARM64Slice && ([Device cpu_type]==CPU_TYPE_ARM64)))) {
@@ -36,7 +36,6 @@
         swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
         newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
         newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
-        newSupf = [_originalBinary.supfPath.stringByDeletingPathExtension stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.supfPath.pathExtension]];
 
 
         [self swapArch];
@@ -55,8 +54,7 @@
     struct code_directory directory; // codesign directory index
 
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
-
-    uint64_t __text_start = 0;
+    directory.nCodeSlots = directory.hashOffset = 0;
 
     [[ClutchPrint sharedInstance] printDeveloper: @"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     uint32_t cryptlc_offset = 0;
@@ -91,7 +89,6 @@
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
                     [[ClutchPrint sharedInstance] printDeveloper: @"FOUND %s SEGMENT",__text.segname];
-                    __text_start = __text.vmaddr;
                 }
                 break;
             }

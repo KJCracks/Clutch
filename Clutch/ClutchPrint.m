@@ -116,7 +116,6 @@
         else if (colorLevel == ClutchPrinterColorLevelFull)
         {
             NSString *colorString;
-            NSString *escapeString = @"\033[0m";
             switch (color)
             {
                 case ClutchPrinterColorPink:
@@ -130,7 +129,6 @@
                     break;
                 default:
                     colorString = @"";
-                    escapeString = @"";
                     break;
             }
             

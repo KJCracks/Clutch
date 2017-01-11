@@ -21,7 +21,7 @@ Clutch may encounter `Segmentation Fault: 11` when dumping apps with a large num
 
 # Building
 
-## Requiremenets
+## Requirements
 
 * Xcode (install from [App Store](https://itunes.apple.com/us/app/xcode/id497799835?mt=12) or from [Apple's developer site](http://adcdownload.apple.com/Developer_Tools/Xcode_8.2.1/Xcode_8.2.1.xip))
 * Xcode command line tools: `xcode-select --install` (or use Xcode)

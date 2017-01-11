@@ -69,9 +69,9 @@ int main (int argc, const char * argv[])
             return 0;
         }
 
-        if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
+        if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_8_0)) {
 
-            gbprintln(@"You need iOS 6.0+ to use Clutch %@",CLUTCH_VERSION);
+            gbprintln(@"You need iOS 8.0+ to use Clutch %@",CLUTCH_VERSION);
 
             return 0;
         }

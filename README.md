@@ -2,6 +2,8 @@ Clutch
 ------------
 *Clutch* is a high-speed iOS decryption tool. Clutch supports the iPhone, iPod Touch, and iPad as well as all iOS version, architecture types, and most binaries. **Clutch is meant only for educational purposes and security research.**
 
+Clutch requires a jailbroken iOS device with version 8.0 or greater.
+
 Usage
 ------------
 

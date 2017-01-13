@@ -9,7 +9,6 @@
 #import "FinalizeDumpOperation.h"
 #import "ZipArchive.h"
 #import "Application.h"
-#import "GBPrint.h"
 #import "ZipOperation.h"
 #import <sys/time.h>
 #import "ClutchPrint.h"
@@ -155,7 +154,7 @@ extern struct timeval gStart;
                         NSString *zipPath = dict[key];
                         [_archive addFileToZip:key newname:zipPath];
 #if PRINT_ZIP_LOGS
-                        gbprintln(@"Added %@",zipPath);
+                        [[ClutchPrint sharedInstance] print:@"Added %@",zipPath];
 #endif
                     }
 
@@ -217,7 +216,7 @@ extern struct timeval gStart;
             }
         }
 
-        gbprintln(@"%@: %@",status?@"DONE":@"FAILED",status?_ipaPath:_application);
+        [[ClutchPrint sharedInstance] print:@"%@: %@",status?@"DONE":@"FAILED",status?_ipaPath:_application];
 
         // Do the main work of the operation here.
         [self completeOperation];

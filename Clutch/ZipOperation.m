@@ -9,7 +9,7 @@
 #import "ZipOperation.h"
 #import "ZipArchive.h"
 #import "ClutchBundle.h"
-#import "GBPrint.h"
+#import "ClutchPrint.h"
 
 @interface ZipOperation ()
 {
@@ -75,7 +75,7 @@
         
         NSString *_zipFilename = _application.zipFilename, *_localPrefix = _application.zipPrefix;
         
-        gbprintln(@"Zipping %@",_application.bundleURL.lastPathComponent);
+        [[ClutchPrint sharedInstance] print:@"Zipping %@",_application.bundleURL.lastPathComponent];
         
         if (_archive == nil) {
             _archive = [[ZipArchive alloc] init];
@@ -110,29 +110,29 @@
                     if ([_localPath.lastPathComponent hasPrefix:@"libswift"] && ![_localPath.pathExtension caseInsensitiveCompare:@"dylib"]) {
                         [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
 #if PRINT_ZIP_LOGS
-                        gbprintln(@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                        [[ClutchPrint sharedInstance] print:@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
                     }else {
 #if PRINT_ZIP_LOGS
-                        gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                        [[ClutchPrint sharedInstance] print:@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
                     }
                 }
                 else if (![isDirectory boolValue] && ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent]) {
                     [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
 #if PRINT_ZIP_LOGS
-                    gbprintln(@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                    [[ClutchPrint sharedInstance] print:@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
                 }
                 else {
 #if PRINT_ZIP_LOGS
-                    gbprintln(@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]);
+                    [[ClutchPrint sharedInstance] print:@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
                 }
             }
             else {
 #if PRINT_ZIP_LOGS
-                gbprintln(@"Skipping %@",_localPath);
+                [[ClutchPrint sharedInstance] print:@"Skipping %@",_localPath];
 #endif
             }
             

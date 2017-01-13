@@ -31,10 +31,6 @@
 		266FD1921E1D7CD300935807 /* optool-operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE0B1A8D9ACD00E5068A /* optool-operations.m */; };
 		266FD1931E1D7CD300935807 /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 3282BE091A8D9ACD00E5068A /* NSData+Reading.m */; };
 		266FD1971E1D7CD300935807 /* ZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 32EFB6CF1A8A4F0E005BB56C /* ZipArchive.m */; };
-		266FD1981E1D7CD300935807 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */; };
-		266FD1991E1D7CD300935807 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */; };
-		266FD19A1E1D7CD300935807 /* GBPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77B81A89DC9200BB5ABC /* GBPrint.m */; };
-		266FD19B1E1D7CD300935807 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77BA1A89DC9200BB5ABC /* GBSettings.m */; };
 		266FD19C1E1D7CD300935807 /* NSFileHandle+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 328359DD1ACC118D003587F3 /* NSFileHandle+Private.m */; };
 		266FD19D1E1D7CD300935807 /* NSBundle+Clutch.m in Sources */ = {isa = PBXBuildFile; fileRef = 326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */; };
 		266FD19E1E1D7CD300935807 /* ClutchPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = D7F341D81C7212F3006E7700 /* ClutchPrint.m */; };
@@ -48,6 +44,8 @@
 		26EDA1FC1E1DFF6700108AA0 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EDA1F61E1DFF6700108AA0 /* ioapi.c */; };
 		26EDA1FD1E1DFF6700108AA0 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EDA1F81E1DFF6700108AA0 /* unzip.c */; };
 		26EDA1FE1E1DFF6700108AA0 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EDA1FA1E1DFF6700108AA0 /* zip.c */; };
+		D7C6DCC01E250B7000B5AFEE /* ClutchCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = D7C6DCBE1E250B7000B5AFEE /* ClutchCommands.h */; };
+		D7C6DCC11E250B7000B5AFEE /* ClutchCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C6DCBF1E250B7000B5AFEE /* ClutchCommands.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,15 +144,6 @@
 		32FB77A41A89BEAD00BB5ABC /* Framework.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Framework.m; sourceTree = "<group>"; };
 		32FB77A61A89BEBE00BB5ABC /* Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension.h; sourceTree = "<group>"; };
 		32FB77A71A89BEBE00BB5ABC /* Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extension.m; sourceTree = "<group>"; };
-		32FB77B21A89DC9200BB5ABC /* GBCli.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCli.h; sourceTree = "<group>"; };
-		32FB77B31A89DC9200BB5ABC /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
-		32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
-		32FB77B51A89DC9200BB5ABC /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
-		32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOptionsHelper.m; sourceTree = "<group>"; };
-		32FB77B71A89DC9200BB5ABC /* GBPrint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBPrint.h; sourceTree = "<group>"; };
-		32FB77B81A89DC9200BB5ABC /* GBPrint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBPrint.m; sourceTree = "<group>"; };
-		32FB77B91A89DC9200BB5ABC /* GBSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSettings.h; sourceTree = "<group>"; };
-		32FB77BA1A89DC9200BB5ABC /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
 		32FB77BF1A89F09300BB5ABC /* ClutchBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchBundle.h; sourceTree = "<group>"; };
 		32FB77C01A89F09300BB5ABC /* ClutchBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchBundle.m; sourceTree = "<group>"; };
 		32FB77C21A89F13000BB5ABC /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = "<group>"; };
@@ -163,6 +152,9 @@
 		ADAD7C171C5B3C8600644FD6 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		ADAD7C181C5B3C8600644FD6 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		ADD6D6C71B29A857005FDFB5 /* LSApplicationProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSApplicationProxy.h; path = ../LSApplicationProxy.h; sourceTree = "<group>"; };
+		D7C6DCBE1E250B7000B5AFEE /* ClutchCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchCommands.h; sourceTree = "<group>"; };
+		D7C6DCBF1E250B7000B5AFEE /* ClutchCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchCommands.m; sourceTree = "<group>"; };
+		D7C6DCC41E25A18200B5AFEE /* move_and_sign.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = move_and_sign.sh; sourceTree = "<group>"; };
 		D7F341D71C7212F3006E7700 /* ClutchPrint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClutchPrint.h; sourceTree = "<group>"; };
 		D7F341D81C7212F3006E7700 /* ClutchPrint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClutchPrint.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -238,6 +230,8 @@
 		324EA6281A89258000844540 /* Clutch */ = {
 			isa = PBXGroup;
 			children = (
+				D7C6DCC31E25A16C00B5AFEE /* scripts */,
+				D7C6DCBD1E250B3000B5AFEE /* Commands */,
 				32EFB6F51A8AC29D005BB56C /* Operations */,
 				32FB77AA1A89D6C500BB5ABC /* Dumpers */,
 				32FB77A91A89CBAF00BB5ABC /* Application */,
@@ -270,7 +264,6 @@
 				AD16CC911C57291600A624EC /* LSApplicationWorkspace.h */,
 				3282BE041A8D9A9100E5068A /* optool */,
 				32EFB6CD1A8A4F06005BB56C /* Zip */,
-				32FB77B11A89DC6600BB5ABC /* GBCLI */,
 				324EA6471A892AAD00844540 /* FBApplicationInfo.h */,
 				26AB705F1E1D8E5C00BDAE34 /* Info.plist */,
 				324EA6341A89258000844540 /* Clutch-Prefix.pch */,
@@ -365,22 +358,6 @@
 			name = Dumpers;
 			sourceTree = "<group>";
 		};
-		32FB77B11A89DC6600BB5ABC /* GBCLI */ = {
-			isa = PBXGroup;
-			children = (
-				32FB77B21A89DC9200BB5ABC /* GBCli.h */,
-				32FB77B31A89DC9200BB5ABC /* GBCommandLineParser.h */,
-				32FB77B41A89DC9200BB5ABC /* GBCommandLineParser.m */,
-				32FB77B51A89DC9200BB5ABC /* GBOptionsHelper.h */,
-				32FB77B61A89DC9200BB5ABC /* GBOptionsHelper.m */,
-				32FB77B71A89DC9200BB5ABC /* GBPrint.h */,
-				32FB77B81A89DC9200BB5ABC /* GBPrint.m */,
-				32FB77B91A89DC9200BB5ABC /* GBSettings.h */,
-				32FB77BA1A89DC9200BB5ABC /* GBSettings.m */,
-			);
-			name = GBCLI;
-			sourceTree = "<group>";
-		};
 		32FB77C51A89F3BE00BB5ABC /* ClutchBundle */ = {
 			isa = PBXGroup;
 			children = (
@@ -392,6 +369,23 @@
 			name = ClutchBundle;
 			sourceTree = "<group>";
 		};
+		D7C6DCBD1E250B3000B5AFEE /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				D7C6DCBE1E250B7000B5AFEE /* ClutchCommands.h */,
+				D7C6DCBF1E250B7000B5AFEE /* ClutchCommands.m */,
+			);
+			name = Commands;
+			sourceTree = "<group>";
+		};
+		D7C6DCC31E25A16C00B5AFEE /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				D7C6DCC41E25A18200B5AFEE /* move_and_sign.sh */,
+			);
+			name = scripts;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -400,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26AB705C1E1D857E00BDAE34 /* Clutch-Prefix.pch in Headers */,
+				D7C6DCC01E250B7000B5AFEE /* ClutchCommands.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +408,7 @@
 				266FD1621E1D7C6200935807 /* Sources */,
 				266FD1631E1D7C6200935807 /* Frameworks */,
 				266FD1A31E1D7D5E00935807 /* Headers */,
+				D7C6DCC21E252E5800B5AFEE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -479,6 +475,22 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		D7C6DCC21E252E5800B5AFEE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh Clutch/move_and_sign.sh";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		266FD1621E1D7C6200935807 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -503,16 +515,13 @@
 				266FD18C1E1D7CD300935807 /* ApplicationsManager.m in Sources */,
 				266FD18D1E1D7CD300935807 /* Device.m in Sources */,
 				266FD18E1E1D7CD300935807 /* SCInfoBuilder.m in Sources */,
+				D7C6DCC11E250B7000B5AFEE /* ClutchCommands.m in Sources */,
 				266FD18F1E1D7CD300935807 /* sha1.c in Sources */,
 				266FD1901E1D7CD300935807 /* scinfo.m in Sources */,
 				266FD1911E1D7CD300935807 /* optool-headers.m in Sources */,
 				266FD1921E1D7CD300935807 /* optool-operations.m in Sources */,
 				266FD1931E1D7CD300935807 /* NSData+Reading.m in Sources */,
 				266FD1971E1D7CD300935807 /* ZipArchive.m in Sources */,
-				266FD1981E1D7CD300935807 /* GBCommandLineParser.m in Sources */,
-				266FD1991E1D7CD300935807 /* GBOptionsHelper.m in Sources */,
-				266FD19A1E1D7CD300935807 /* GBPrint.m in Sources */,
-				266FD19B1E1D7CD300935807 /* GBSettings.m in Sources */,
 				266FD19C1E1D7CD300935807 /* NSFileHandle+Private.m in Sources */,
 				266FD19D1E1D7CD300935807 /* NSBundle+Clutch.m in Sources */,
 				266FD19E1E1D7CD300935807 /* ClutchPrint.m in Sources */,
@@ -566,7 +575,7 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = Clutch/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "-v";
@@ -604,7 +613,7 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = Clutch/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-v";

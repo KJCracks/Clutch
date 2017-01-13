@@ -7,7 +7,17 @@
 		<key>Clutch.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
+		</dict>
+		<key>ClutchAnalyse.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>MiniZip.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 		<key>[DEBUG] Clutch.xcscheme_^#shared#^_</key>
 		<dict>
@@ -17,17 +27,37 @@
 		<key>xcodewtf.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>266FD1651E1D7C6200935807</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>26AB70781E1DC67500BDAE34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>329B80701C5B6745007DD817</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>32BE3C241C5B8C450049ECAD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D7C6DCC81E2920A700B5AFEE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D7C6DCD81E29224600B5AFEE</key>
 		<dict>
 			<key>primary</key>
 			<true/>

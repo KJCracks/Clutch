@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GBCli.h"
 #import "ApplicationsManager.h"
 #import "sha1.h"
 #import "FrameworkLoader.h"
@@ -15,6 +14,7 @@
 #import "ClutchPrint.h"
 #import "NSTask.h"
 #include <unistd.h>
+#import "ClutchCommands.h"
 
 struct timeval gStart;
 
@@ -69,151 +69,192 @@ int main (int argc, const char * argv[])
             return 0;
         }
 
-        if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_6_0)) {
+        if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_8_0)) {
 
-            gbprintln(@"You need iOS 6.0+ to use Clutch %@",CLUTCH_VERSION);
+            [[ClutchPrint sharedInstance] print:@"You need iOS 8.0+ to use Clutch %@", CLUTCH_VERSION];
 
             return 0;
         }
+        
+        [[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelFull];
+        [[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelNone];
+        
+        BOOL dumpedFramework = NO;
+        BOOL successfullyDumpedFramework = NO;
+        NSString *_selectedOption = @"";
+        NSString *_selectedBundleID;
+        
+        NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
-
-        GBOptionsHelper *options = [[GBOptionsHelper alloc] init];
-        options.applicationVersion = ^{ return CLUTCH_VERSION; };
-        options.printHelpHeader = ^{ return @"Usage: %APPNAME [OPTIONS]"; };
-        //options.printHelpFooter = ^{ return @"Thanks to everyone for their help..."; };
-
-        [options registerOption:'f' long:@"fmwk-dump" description:@"Only dump binary files from specified bundleID" flags:GBValueRequired|GBOptionNoPrint|GBOptionInvisible];
-        [options registerOption:'b' long:@"binary-dump" description:@"Only dump binary files from specified bundleID" flags:GBValueRequired|GBOptionNoPrint];
-        [options registerOption:'d' long:@"dump" description:@"Dump specified bundleID into .ipa file" flags:GBValueRequired|GBOptionNoPrint];
-        [options registerOption:'i' long:@"print-installed" description:@"Print installed applications" flags:GBValueNone|GBOptionNoPrint];
-        [options registerOption:0 long:@"clean" description:@"Clean /var/tmp/clutch directory" flags:GBValueNone|GBOptionNoPrint];
-        [options registerOption:0 long:@"version" description:@"Display version and exit" flags:GBValueNone|GBOptionNoPrint];
-        [options registerOption:'?' long:@"help" description:@"Display this help and exit" flags:GBValueNone|GBOptionNoPrint];
-        [options registerOption:'n' long:@"no-color" description:@"Print with colors disabled" flags:GBValueNone|GBOptionNoPrint];
-#ifdef DEBUG
-        [options registerOption:'v' long:@"verbose" description:@"Print verbose messages" flags:GBValueNone|GBOptionNoPrint];
-#endif
-
-        if (argc == 1) {
-            [options printHelp];
-            return 0;
-
-            // :P
-            //listApps();
-        }
-
-        __block NSString *_selectedOption = @"";
-        __block NSString *_selectedBundleID;
-        __block ClutchPrinterColorLevel colorLevel = ClutchPrinterColorLevelFull;
-        __block ClutchPrinterVerboseLevel verboseLevel = ClutchPrinterVerboseLevelNone;
-        __block BOOL dumpedFramework = NO;
-        __block BOOL successfullyDumpedFramework = NO;
-
-
-        GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
-        [parser registerOptions:options];
-        [parser parseOptionsWithArguments:(char **)argv count:argc block:^(GBParseFlags flags, NSString *option, id value, BOOL *stop) {
-            if ([option isEqualToString:@"no-color"])
+        ClutchCommands *commands = [[ClutchCommands alloc] initWithArguments:arguments];
+                                    
+        NSArray *values;
+    
+        if (commands.commands)
+        {
+            for (ClutchCommand *command in commands.commands)
             {
-                //[[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
-                colorLevel = ClutchPrinterColorLevelNone;
-            }
-            else if ([option isEqualToString:@"verbose"])
-            {
-                //[[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelDeveloper];
-                verboseLevel = ClutchPrinterVerboseLevelFull;
-            }
-
-            if ([option isEqualToString:@"help"])
-            {
-                return;
-            }
-            else if ([option isEqualToString:@"version"])
-            {
-                [options printVersion];
-                return;
-            }
-            else if ([option isEqualToString:@"clean"])
-            {
-                [[NSFileManager defaultManager]removeItemAtPath:@"/var/tmp/clutch" error:nil];
-                [[NSFileManager defaultManager]createDirectoryAtPath:@"/var/tmp/clutch" withIntermediateDirectories:YES attributes:nil error:nil];
-                return;
-            }
-            else if ([option isEqualToString:@"print-installed"])
-            {
-                listApps();
-                return;
-            }
-
-            else if ([option isEqualToString:@"fmwk-dump"])
-            {
-
-                NSArray *arguments = [NSProcessInfo processInfo].arguments;
-
-                if (([arguments[1]isEqualToString:@"--fmwk-dump"]||[arguments[1]isEqualToString:@"-f"]) && (arguments.count == 13))
-                {
-                    dumpedFramework = YES;
-                    FrameworkLoader *fmwk = [FrameworkLoader new];
-
-                    fmwk.binPath = arguments[2];
-                    fmwk.dumpPath = arguments[3];
-                    fmwk.pages = [arguments[4]intValue];
-                    fmwk.ncmds = [arguments[5]intValue];
-                    fmwk.offset = [arguments[6]intValue];
-                    fmwk.bID = arguments[7];
-                    fmwk.hashOffset = [arguments[8] intValue];
-                    fmwk.codesign_begin = [arguments[9] intValue];
-                    fmwk.cryptsize = [arguments[10] intValue];
-                    fmwk.cryptoff = [arguments[11] intValue];
-                    fmwk.cryptlc_offset = [arguments[12] intValue];
-                    fmwk.dumpSize = fmwk.cryptoff + fmwk.cryptsize;
-
-
-                    BOOL result = successfullyDumpedFramework = [fmwk dumpBinary];
-
-                    if (result)
+                NSLog(@"command: %@", command.commandDescription);
+                // Switch flags
+                switch (command.flag) {
+                    case ClutchCommandFlagArgumentRequired:
                     {
-                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent];
-
-                        return;
+                        values = commands.values;
                     }
-                    else {
-                        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent];
-                        return;
-                    }
-
+                    default:
+                        break;
                 }
-
-                return;
-            }
-
-            switch (flags)
-            {
-                case GBParseFlagUnknownOption:
-                    [[ClutchPrint sharedInstance] print:@"Unknown command line option %@, try --help!", option];
-                    break;
-                case GBParseFlagMissingValue:
-                    [[ClutchPrint sharedInstance] print:@"Missing value for %@ option, try --help!", option];
-                    break;
-                case GBParseFlagOption:
-
-                    _selectedOption = option;
-
-                    if ([_selectedOption isEqualToString:@"dump"]||[_selectedOption isEqualToString:@"binary-dump"]) {
-
-                        _selectedBundleID = [value copy];
+                
+                // Switch optionals
+                switch (command.option)
+                {
+                    case ClutchCommandOptionNoColor:
+                        [[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
+                        break;
+                    case ClutchCommandOptionVerbose:
+                        [[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelFull];
+                        break;
+                    default:
+                        break;
+                }
+                
+                switch (command.option) {
+                    case ClutchCommandOptionNone:
+                    {
+                        [[ClutchPrint sharedInstance] print:@"%@", commands.helpString];
+                        break;
                     }
+                    case ClutchCommandOptionFrameworkDump:
+                    {
+                        NSArray *arguments = [NSProcessInfo processInfo].arguments;
+                        
+                        if (([arguments[1] isEqualToString:@"--fmwk-dump"] || [arguments[1] isEqualToString:@"-f"]) && (arguments.count == 13))
+                        {
+                            dumpedFramework = YES;
+                            FrameworkLoader *fmwk = [FrameworkLoader new];
+                            
+                            fmwk.binPath = arguments[2];
+                            fmwk.dumpPath = arguments[3];
+                            fmwk.pages = [arguments[4] intValue];
+                            fmwk.ncmds = [arguments[5] intValue];
+                            fmwk.offset = [arguments[6] intValue];
+                            fmwk.bID = arguments[7];
+                            fmwk.hashOffset = [arguments[8] intValue];
+                            fmwk.codesign_begin = [arguments[9] intValue];
+                            fmwk.cryptsize = [arguments[10] intValue];
+                            fmwk.cryptoff = [arguments[11] intValue];
+                            fmwk.cryptlc_offset = [arguments[12] intValue];
+                            fmwk.dumpSize = fmwk.cryptoff + fmwk.cryptsize;
+                            
+                            
+                            BOOL result = successfullyDumpedFramework = [fmwk dumpBinary];
+                            
+                            if (result)
+                            {
+                                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent];
+                                
+                                return 1;
+                            }
+                            else {
+                                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent];
+                                return 0;
+                            }
+                            
+                        }
+                        else if (arguments.count != 13)
+                        {
+                            [[ClutchPrint sharedInstance] printError:@"Incorrect amount of arguments - see source if you're using this."];
+                        }
 
-                    break;
-                case GBParseFlagArgument:
-                    break;
+                        break;
+                    }
+                    case ClutchCommandOptionBinaryDump:
+                    case ClutchCommandOptionDump:
+                    {
+                        NSDictionary *_installedApps = [[[ApplicationsManager alloc] init] _allCachedApplications];
+                        NSArray* _installedArray = _installedApps.allValues;
+                        
+                        for (NSString* selection in values)
+                        {
+                            int key;
+                            Application *_selectedApp;
+                            
+                            if (!(key = selection.intValue))
+                            {
+                                [[ClutchPrint sharedInstance] printDeveloper:@"using bundle identifier"];
+                                if (_installedApps[selection] == nil)
+                                {
+                                    [[ClutchPrint sharedInstance] print:@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID];
+                                    return 1;
+                                }
+                                else
+                                {
+                                    _selectedApp = _installedApps[selection];
+                                }
+                            }
+                            else
+                            {
+                                [[ClutchPrint sharedInstance] printDeveloper:@"using number"];
+                                key = key - 1;
+                                
+                                if (key > [_installedArray count])
+                                {
+                                    [[ClutchPrint sharedInstance] print:@"Couldn't find app with corresponding number!?!"];
+                                    return 1;
+                                }
+                                _selectedApp = [_installedArray objectAtIndex:key];
+                                
+                            }
+                            
+                            
+                            if (!_selectedApp)
+                            {
+                                [[ClutchPrint sharedInstance] print:@"Couldn't find installed app"];
+                                return 1;
+                            }
+                            
+                            [[ClutchPrint sharedInstance] printVerbose:@"Now dumping %@", _selectedApp.bundleIdentifier];
+                            
+#ifndef DEBUG
+                            if (_selectedApp.hasAppleWatchApp)
+                            {
+                                [[ClutchPrint sharedInstance] print:@"%@ contains watchOS 2 compatible application. It's not possible to dump watchOS 2 apps with Clutch %@ at this moment.",_selectedApp.bundleIdentifier,CLUTCH_VERSION];
+                            }
+#endif
+                            
+                            gettimeofday(&gStart, NULL);
+                            if (![_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]]) {
+                                return 1;
+                            }
+                        }
+                        break;
+                    }
+                    case ClutchCommandOptionPrintInstalled:
+                    {
+                        listApps();
+                        break;
+                    }
+                    case ClutchCommandOptionClean:
+                    {
+                        [[NSFileManager defaultManager]removeItemAtPath:@"/var/tmp/clutch" error:nil];
+                        [[NSFileManager defaultManager]createDirectoryAtPath:@"/var/tmp/clutch" withIntermediateDirectories:YES attributes:nil error:nil];
+                        break;
+                    }
+                    case ClutchCommandOptionVersion:
+                    {
+                        [[ClutchPrint sharedInstance] print:CLUTCH_VERSION];
+                        break;
+                    }
+                    case ClutchCommandOptionHelp:
+                    {
+                        [[ClutchPrint sharedInstance] print:@"%@", commands.helpString];
+                        break;
+                    }
+                    default:
+                        // no command found.
+                        break;
+                }
             }
-        }];
-
-        if ([parser valueForOption:@"print-installed"] ||
-            [parser valueForOption:@"clean"] ||
-            [parser valueForOption:@"version"]) {
-            return 0;
         }
 
         if (dumpedFramework) {
@@ -225,82 +266,6 @@ int main (int argc, const char * argv[])
                 return 0;
             }
             return 1;
-        }
-
-        [[ClutchPrint sharedInstance] setColorLevel:colorLevel];
-        [[ClutchPrint sharedInstance] setVerboseLevel:verboseLevel];
-
-        if (!_selectedBundleID)
-        {
-            [options printHelp];
-            return [parser valueForOption:@"help"] ? 0 : 1;
-        }
-
-        if (!([_selectedOption isEqualToString:@"dump"] || [_selectedOption isEqualToString:@"binary-dump"]))
-        {
-            return 1;
-        }
-
-        ApplicationsManager *_appsManager = [[ApplicationsManager alloc] init];
-
-        NSDictionary *_installedApps = [_appsManager _allCachedApplications];
-        NSArray* _installedArray = _installedApps.allValues;
-
-        NSArray* selections = [_selectedBundleID componentsSeparatedByString:@" "];
-
-        for (NSString* selection in selections)
-        {
-            int key;
-
-            Application *_selectedApp;
-
-            if (!(key = [selection intValue]))
-            {
-                [[ClutchPrint sharedInstance] printDeveloper:@"using bundle identifier"];
-                if (_installedApps[selection] == nil)
-                {
-                    gbprintln(@"Couldn't find installed app with bundle identifier: %@",_selectedBundleID);
-                    return 1;
-                }
-                else
-                {
-                    _selectedApp = _installedApps[selection];
-                }
-            }
-            else
-            {
-                [[ClutchPrint sharedInstance] printDeveloper:@"using number"];
-                key = key - 1;
-
-                if (key > [_installedArray count])
-                {
-                    gbprintln(@"Couldn't find app with corresponding number!?!");
-                    return 1;
-                }
-                _selectedApp = [_installedArray objectAtIndex:key];
-
-            }
-
-
-            if (!_selectedApp)
-            {
-                [[ClutchPrint sharedInstance] print:@"Couldn't find installed app"];
-                return 1;
-            }
-
-            [[ClutchPrint sharedInstance] printVerbose:@"Now dumping %@", _selectedApp.bundleIdentifier];
-
-#ifndef DEBUG
-            if (_selectedApp.hasAppleWatchApp)
-            {
-                [[ClutchPrint sharedInstance] print:@"%@ contains watchOS 2 compatible application. It's not possible to dump watchOS 2 apps with Clutch %@ at this moment.",_selectedApp.bundleIdentifier,CLUTCH_VERSION];
-            }
-#endif
-
-            gettimeofday(&gStart, NULL);
-            if (![_selectedApp dumpToDirectoryURL:nil onlyBinaries:[_selectedOption isEqualToString:@"binary-dump"]]) {
-                return 1;
-            }
         }
     }
 

@@ -8,7 +8,6 @@
 
 #import "BundleDumpOperation.h"
 #import "Application.h"
-#import "GBPrint.h"
 #import "optool.h"
 #import "NSData+Reading.h"
 #import "Device.h"
@@ -113,7 +112,7 @@
         [tmpHandle closeFile];
 
         if (!headersData) {
-            gbprintln(@"Failed to extract headers info from binary %@.",originalBinary);
+            [[ClutchPrint sharedInstance] print:@"Failed to extract headers info from binary %@.",originalBinary];
             [self failedOperation];
             return;
         }
@@ -125,7 +124,7 @@
 
 
         if (numHeaders == 0) {
-            gbprintln(@"No compatible architecture found");
+            [[ClutchPrint sharedInstance] print:@"No compatible architecture found"];
         }
 
         uint32_t dumpCount = 0;

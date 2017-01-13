@@ -28,13 +28,23 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D7C6DCC81E2920A700B5AFEE"
+               BuildableName = "ClutchTests.xctest"
+               BlueprintName = "ClutchTests"
+               ReferencedContainer = "container:Clutch.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "329B80701C5B6745007DD817"
-            BuildableName = "ClutchMake"
-            BlueprintName = "ClutchMake"
+            BlueprintIdentifier = "266FD1651E1D7C6200935807"
+            BuildableName = "Clutch.app"
+            BlueprintName = "Clutch"
             ReferencedContainer = "container:Clutch.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -76,6 +86,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "266FD1651E1D7C6200935807"
+            BuildableName = "Clutch.app"
+            BlueprintName = "Clutch"
+            ReferencedContainer = "container:Clutch.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

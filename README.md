@@ -45,26 +45,25 @@ xcode clean build
 
 ## Installation
 
-After building, a copy of the binary named `_clutch` is placed in the clone directory. Copy this to your device:
+After building, a copy of the binary named `Clutch` is placed in the build directory. Copy this to your device:
 
 ```sh
-scp ./_clutch root@<your.device.ip>:/usr/bin/clutch
+scp ./build/Clutch root@<your.device.ip>:/usr/bin/Clutch
 ```
 
 If you are using [iproxy](http://iphonedevwiki.net/index.php/SSH_Over_USB), use this line (replace `2222` with a different port if necessary):
 
 ```sh
-scp -P 2222 ./_clutch root@localhost:/usr/bin/clutch
+scp -P 2222 ./build/Clutch root@localhost:/usr/bin/Clutch
 ```
 
-When you SSH into your device, run `clutch`.
+When you SSH into your device, run `Clutch`.
 
 # Licenses
 
 Clutch uses the following libraries under their respective licenses.
 
 * [optool](https://github.com/alexzielenski/optool) by Alex Zielenski
-* [GBCli](https://github.com/tomaz/GBCli) by Tomaz Kragelj
 * [ZipArchive](https://github.com/mattconnolly/ZipArchive/) by Matt Connolly, Edward Patel, et al.
 * [MiniZip](http://www.winimage.com/zLibDll/minizip.html) by Gilles Vollant and Mathias Svensson.
 

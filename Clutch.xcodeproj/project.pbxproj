@@ -487,7 +487,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh Clutch/move_and_sign.sh";
+			shellScript = "bash -xv \"${PROJECT_DIR}/Clutch/move_and_sign.sh\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -565,7 +565,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Clutch/Clutch.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = EU5R2QY9HJ;
@@ -575,7 +575,7 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = Clutch/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "-v";
@@ -601,7 +601,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Clutch/Clutch.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -613,7 +613,7 @@
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = Clutch/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-v";

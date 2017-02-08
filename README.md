@@ -40,7 +40,7 @@ Note that if you update Xcode you may need to run these commands again.
 ## Compiling
 
 ```sh
-xcode clean build
+xcodebuild clean build
 ```
 
 ## Installation

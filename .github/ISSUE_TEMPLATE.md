@@ -1,3 +1,5 @@
+（下面有中文版）
+
 Before filing an issue, please ensure you are using the master branch at the latest version and [building correctly](../README.md#building).
 
 Please search issues to make sure your issue has not been reported before.

@@ -145,6 +145,17 @@
             zipInfo.tmz_date.tm_mon = (uInt)[dc month] - 1;
             zipInfo.tmz_date.tm_year = (uInt)[dc year];
         }
+
+        NSNumber *permissionsValue = (NSNumber*)[attr objectForKey:NSFilePosixPermissions];
+        if( permissionsValue )
+        {
+            short permissionsShort = permissionsValue.shortValue;
+            // Convert this into an octal by adding 010000, 010000 being the flag for a regular file
+            NSInteger permissionsOctal = 0100000 + permissionsShort;
+            uLong permissionsLong = @(permissionsOctal).unsignedLongValue;
+            // Store this into the external file attributes once it has been shifted 16 places left to form part of the second from last byte
+            zipInfo.external_fa = permissionsLong << 16L;
+        }
     }
     
     int ret ;

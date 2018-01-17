@@ -73,6 +73,7 @@
 /* Begin PBXFileReference section */
 		266FD1661E1D7C6200935807 /* Clutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		266FD19F1E1D7CFF00935807 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
+		269A62DD200FBF300001EC06 /* Stub.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Stub.storyboard; sourceTree = "<group>"; };
 		26AB70591E1D81D400BDAE34 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		26AB705B1E1D857E00BDAE34 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
 		26AB705F1E1D8E5C00BDAE34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -273,6 +274,7 @@
 				326E8D2D1AE53DED00DCDD64 /* NSBundle+Clutch.m */,
 				328CCB3B1ACECF5800B21225 /* README.md */,
 				323C86AB1AC03E3F008949F2 /* .gitignore */,
+				269A62DD200FBF300001EC06 /* Stub.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

@@ -27,7 +27,9 @@
         NSDictionary<NSErrorUserInfoKey, NSString *> *userInfo = @{
             NSLocalizedDescriptionKey: @"Failed to execute task_for_pid",
             };
-        *error = [NSError errorWithDomain:NSMachErrorDomain code:-1 userInfo:userInfo];
+        if (error) {
+            *error = [NSError errorWithDomain:NSMachErrorDomain code:-1 userInfo:userInfo];
+        }
         return 0;
     }
     
@@ -63,7 +65,9 @@
     NSDictionary<NSErrorUserInfoKey, NSString *> *userInfo = @{
         NSLocalizedDescriptionKey: @"Should not reach here",
     };
-    *error = [NSError errorWithDomain:NSMachErrorDomain code:-1 userInfo:userInfo];
+    if (error) {
+        *error = [NSError errorWithDomain:NSMachErrorDomain code:-1 userInfo:userInfo];
+    }
     return 0;
 }
 

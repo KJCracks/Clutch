@@ -133,7 +133,6 @@ int main (int argc, const char * argv[])
                         
                         if (([args[1] isEqualToString:@"--fmwk-dump"] || [args[1] isEqualToString:@"-f"]) && (args.count == 13))
                         {
-                            dumpedFramework = YES;
                             FrameworkLoader *fmwk = [FrameworkLoader new];
                             
                             fmwk.binPath = args[2];

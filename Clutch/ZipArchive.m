@@ -147,7 +147,7 @@
         }
 
         NSNumber *permissionsValue = (NSNumber*)[attr objectForKey:NSFilePosixPermissions];
-        if( permissionsValue )
+        if(permissionsValue.boolValue)
         {
             short permissionsShort = permissionsValue.shortValue;
             // Convert this into an octal by adding 010000, 010000 being the flag for a regular file

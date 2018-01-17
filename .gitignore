@@ -6,3 +6,9 @@ xcuserdata
 # OS junk
 .DS_Store
 .DS_Store?
+# CLion
+.idea
+# Build dirs
+cmake-build-debug
+ldid
+bin

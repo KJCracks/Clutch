@@ -6,7 +6,7 @@
 #import "scinfo.h"
 
 // create a SINF atom
-void *create_atom(char *name, int len, void *content)
+void *create_atom(char *name, uint32_t len, void *content)
 {
     uint32_t atomsize = len + 8;
     void *buf = malloc(atomsize);
@@ -14,13 +14,13 @@ void *create_atom(char *name, int len, void *content)
     atomsize = CFSwapInt32(atomsize);
     
     memcpy(buf, &atomsize, 4); // copy atomsize
-    memcpy(buf+4, name, 4); // copy atom name
-    memcpy(buf+8, content, len); // copy atom content
+    memcpy((char *)buf+4, name, 4); // copy atom name
+    memcpy((char *)buf+8, content, len); // copy atom content
     
     return buf;
 }
 
-void *coalesced_atom(int amount, uint32_t name, ...)
+void *coalesced_atom(uint32_t amount, uint32_t name, ...)
 {
     va_list vl;
     va_start(vl, name);
@@ -33,11 +33,11 @@ void *coalesced_atom(int amount, uint32_t name, ...)
     atomsize = CFSwapInt32(atomsize);
     
     memcpy(buf, &atomsize, 4); // copy atom size
-    memcpy(buf + 4, &name, 4); // copy name
+    memcpy((char *)buf + 4, &name, 4); // copy name
     
     uint32_t *curpos = (uint32_t *) buf + 2;
     
-    for (int i=0;i<amount;i++)
+    for (uint32_t i=0;i<amount;i++)
     {
         uint32_t arg = va_arg(vl, uint32_t);
         if (i%2)
@@ -71,11 +71,11 @@ void *combine_atoms(char *name, int amount, ...)
     atomsize = CFSwapInt32(atomsize);
     
     memcpy(buf, &atomsize, 4); // atom size
-    memcpy(buf+4, name, 4); // atom name
+    memcpy((char *)buf+4, name, 4); // atom name
     
     va_start(vl, amount);
     
-    void *curloc = (void *)buf + 8;
+    char *curloc = (char *)buf + 8;
     
     for (int i=0;i<amount;i++)
     {

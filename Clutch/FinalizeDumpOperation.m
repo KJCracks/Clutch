@@ -16,8 +16,7 @@
 int diff_ms(struct timeval, struct timeval);
 extern struct timeval gStart;
 
-@interface FinalizeDumpOperation ()
-{
+@interface FinalizeDumpOperation () {
     Application *_application;
     BOOL _executing, _finished;
     ZipArchive *_archive;
@@ -86,6 +85,8 @@ extern struct timeval gStart;
         if (_onlyBinaries) {
 
             NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:_application.workingPath] includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error) {
+                CLUTCH_UNUSED(url);
+                CLUTCH_UNUSED(error);
                 return YES;
             }];
 
@@ -134,6 +135,8 @@ extern struct timeval gStart;
         }
 
         NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:[NSURL fileURLWithPath:_application.workingPath] includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error) {
+            CLUTCH_UNUSED(url);
+            CLUTCH_UNUSED(error);
             return YES;
         }];
 

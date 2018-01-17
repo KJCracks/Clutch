@@ -23,9 +23,9 @@ void *safe_trim(void *p, size_t n);
 void exit_with_errno (int err, const char *prefix);
 void _kill(pid_t pid);
 
-@property (readonly) BOOL isASLRProtected;
-@property NSFileHandle *originalFileHandle;
-@property BOOL shouldDisableASLR;
+@property (nonatomic, readonly) BOOL isASLRProtected;
+@property (nonatomic, retain) NSFileHandle *originalFileHandle;
+@property (nonatomic, assign) BOOL shouldDisableASLR;
 
 
 + (NSString *)readableArchFromHeader:(thin_header)macho;

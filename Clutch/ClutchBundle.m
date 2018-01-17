@@ -42,12 +42,13 @@
 
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL
 {
+    CLUTCH_UNUSED(directoryURL);
     if (_dumpQueue.operationCount)
         [_dumpQueue cancelAllOperations];
 }
 
 - (NSString *)debugDescription {
-    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),self,self.bundleIdentifier,self.bundleURL];
+    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),(void *)self,self.bundleIdentifier,self.bundleURL];
 }
 
 - (NSString *)description {

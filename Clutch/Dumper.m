@@ -22,7 +22,7 @@
         _originalBinary = binary;
         _shouldDisableASLR = NO;
 
-        _isASLRProtected = (_thinHeader.header.flags & MH_PIE);
+        _isASLRProtected = (_thinHeader.header.flags & MH_PIE) ? YES : NO;
 
     }
 
@@ -70,7 +70,7 @@
 
         [[ClutchPrint sharedInstance] printDeveloper: @"disabling MH_PIE!!!!"];
 
-        _thinHeader.header.flags &= ~MH_PIE;
+        _thinHeader.header.flags &= ~(uint32_t)MH_PIE;
         [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header)) withBytes:&_thinHeader.header];
     }else if (_isASLRProtected && !yrn && !(_thinHeader.header.flags & MH_PIE)) {
 
@@ -163,7 +163,7 @@
 
     uint32_t magic = [self.originalFileHandle intAtOffset:0];
     bool shouldSwap = magic == FAT_CIGAM;
-#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
+#define SWAP(NUM) (shouldSwap ? CFSwapInt32((uint32_t)NUM) : (uint32_t)NUM)
 
     NSData *buffer = [self.originalFileHandle readDataOfLength:4096];
 
@@ -171,34 +171,35 @@
     fat.nfat_arch = SWAP(fat.nfat_arch);
     int offset = sizeof(struct fat_header);
 
-    for (int i = 0; i < fat.nfat_arch; i++) {
+    for (unsigned int i = 0; i < fat.nfat_arch; i++) {
         struct fat_arch arch;
-        arch = *(struct fat_arch *)([buffer bytes] + offset);
+        arch = *(struct fat_arch *)((char *)buffer.bytes + offset);
 
-        if (!((SWAP(arch.cputype) == _thinHeader.header.cputype) && (SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
+        if (!(((int)SWAP(arch.cputype) == _thinHeader.header.cputype) &&
+              ((int)SWAP(arch.cpusubtype) == _thinHeader.header.cpusubtype))) {
 
             if (SWAP(arch.cputype) == CPU_TYPE_ARM) {
                 switch (SWAP(arch.cpusubtype)) {
                     case CPU_SUBTYPE_ARM_V6:
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
+                        arch.cputype = (cpu_type_t)SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_PENTIUM_3_XEON);
                         break;
                     case CPU_SUBTYPE_ARM_V7:
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_4);
+                        arch.cputype = (cpu_type_t)SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_PENTIUM_4);
                         break;
                     case CPU_SUBTYPE_ARM_V7S:
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_ITANIUM);
+                        arch.cputype = (cpu_type_t)SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_ITANIUM);
                         break;
                     case CPU_SUBTYPE_ARM_V7K: // Apple Watch FTW
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_XEON);
+                        arch.cputype = (cpu_type_t)SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_XEON);
                         break;
                     default:
                         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Warning: A wild 32-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype)];
-                        arch.cputype = SWAP(CPU_TYPE_I386);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_PENTIUM_3_XEON); //pentium 3 ftw
+                        arch.cputype = (cpu_type_t)SWAP(CPU_TYPE_I386);
+                        arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_PENTIUM_3_XEON); //pentium 3 ftw
                         break;
 
                 }
@@ -206,23 +207,23 @@
 
                 switch (SWAP(arch.cpusubtype)) {
                     case CPU_SUBTYPE_ARM64_ALL:
-                        arch.cputype = SWAP(CPU_TYPE_X86_64);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
+                        arch.cputype = (int)SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = (int)SWAP(CPU_SUBTYPE_X86_64_ALL);
                         break;
                     case CPU_SUBTYPE_ARM64_V8:
-                        arch.cputype = SWAP(CPU_TYPE_X86_64);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_H);
+                        arch.cputype = (int)SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = (int)SWAP(CPU_SUBTYPE_X86_64_H);
                         break;
                     default:
                         [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Warning: A wild 64-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype)];
-                        arch.cputype = SWAP(CPU_TYPE_X86_64);
-                        arch.cpusubtype = SWAP(CPU_SUBTYPE_X86_64_ALL);
+                        arch.cputype = (int)SWAP(CPU_TYPE_X86_64);
+                        arch.cpusubtype = (int)SWAP(CPU_SUBTYPE_X86_64_ALL);
                         break;
                 }
 
             }
 
-            [self.originalFileHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&arch];
+            [self.originalFileHandle replaceBytesInRange:NSMakeRange((NSUInteger)offset, sizeof(struct fat_arch)) withBytes:&arch];
         }
 
         offset += sizeof(struct fat_arch);
@@ -267,12 +268,12 @@
         if (header) {
 
             // iterate over the header (or resume iteration)
-            void *curloc = buf + headerProgress;
+            uint8_t *curloc = buf + headerProgress;
             for (;i_lcmd<_thinHeader.header.ncmds;i_lcmd++) {
                 struct load_command *l_cmd = (struct load_command *) curloc;
                 // is the load command size in a different page?
                 uint32_t lcmd_size;
-                if ((int)(((void*)curloc - (void*)buf) + 4) == 0x1000) {
+                if ((int)((curloc - buf) + 4) == 0x1000) {
                     // load command size is at the start of the next page
                     // we need to get it
                     mach_vm_read_overwrite(port, (mach_vm_address_t) __text_start + ((pages_d + 1) * 0x1000), (vm_size_t) 0x1, (mach_vm_address_t) &lcmd_size, &local_size);
@@ -291,10 +292,10 @@
                 }
 
                 curloc += lcmd_size;
-                if ((void *)curloc >= (void *)buf + 0x1000) {
+                if (curloc >= buf + 0x1000) {
                     // we are currently extended past the header page
                     // offset for the next round:
-                    headerProgress = (((void *)curloc - (void *)buf) % 0x1000);
+                    headerProgress = (((char *)curloc - (char *)buf) % 0x1000);
                     // prevent attaching overdrive dylib by skipping
                     goto writedata;
                 }
@@ -305,7 +306,7 @@
 
     writedata:
         [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]]; //write the page
-        sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
+        sha1((uint8_t *)checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages
     }

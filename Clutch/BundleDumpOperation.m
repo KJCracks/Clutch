@@ -16,10 +16,9 @@
 
 @import ObjectiveC.runtime;
 
-@interface BundleDumpOperation ()
-{
+@interface BundleDumpOperation () {
     ClutchBundle *_application;
-    BOOL _executing, _finished, failed;
+    BOOL _executing, _finished;
     NSString *_binaryDumpPath;
 }
 
@@ -28,7 +27,6 @@
 @end
 
 @implementation BundleDumpOperation
-@synthesize failed;
 
 -(void)failedOperation {
     self.failed = YES;
@@ -194,24 +192,24 @@
             [_dumpHandle closeFile];
 
             bool shouldSwap = magic == MH_CIGAM || magic == MH_CIGAM_64 || magic == FAT_CIGAM;
-#define SWAP(NUM) (shouldSwap ? CFSwapInt32(NUM) : NUM)
+#define SWAP(NUM) (shouldSwap ? CFSwapInt32((uint32_t)NUM) : (uint32_t)NUM)
 
             NSMutableArray* _headersToKeep = [NSMutableArray new];
             struct fat_header fat = *(struct fat_header *)buffer.bytes;
             fat.nfat_arch = SWAP(fat.nfat_arch);
 
             int offset = sizeof(struct fat_header);
-            for (int i = 0; i < fat.nfat_arch; i++) {
-                struct fat_arch arch = *(struct fat_arch *)([buffer bytes] + offset);
+            for (uint32_t i = 0; i < fat.nfat_arch; i++) {
+                struct fat_arch arch = *(struct fat_arch *)((char *)buffer.bytes + offset);
                 NSNumber* archOffset = [NSNumber numberWithUnsignedInt:SWAP(arch.offset)];
                 [[ClutchPrint sharedInstance] printDeveloper:@"current offset %u", SWAP(arch.offset)];
                 if ([_headersToStrip containsObject:archOffset]) {
-                    [[ClutchPrint sharedInstance] printDeveloper:@"arch to strip %u %u", SWAP(arch.cpusubtype), SWAP(arch.cputype)];
+                    [[ClutchPrint sharedInstance] printDeveloper:@"arch to strip %u %u", (cpu_subtype_t)SWAP(arch.cpusubtype), (cpu_type_t)SWAP(arch.cputype)];
                 }
                 else {
                     NSValue* archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
                     [_headersToKeep addObject:archValue];
-                    [[ClutchPrint sharedInstance] printDeveloper:@"storing the arch we want to keep %u", SWAP(arch.cpusubtype)];
+                    [[ClutchPrint sharedInstance] printDeveloper:@"storing the arch we want to keep %u", (cpu_subtype_t)SWAP(arch.cpusubtype)];
                 }
                 offset += sizeof(struct fat_arch);
             }
@@ -233,16 +231,16 @@
 
             offset = sizeof(struct fat_header);
 
-            for (int i = 0,macho_offset = 0; i < _headersToKeep.count; i++) {
+            for (NSUInteger i = 0,macho_offset = 0; i < _headersToKeep.count; i++) {
                 NSValue* archValue = _headersToKeep[i];
                 struct fat_arch keepArch;
                 [archValue getValue:&keepArch];
-                [[ClutchPrint sharedInstance] printDeveloper:@"headers to keep: %u %u", SWAP(keepArch.cpusubtype), SWAP(keepArch.cputype)];
+                [[ClutchPrint sharedInstance] printDeveloper:@"headers to keep: %u %u", (uint32_t)SWAP(keepArch.cpusubtype), SWAP(keepArch.cputype)];
 
-                int origOffset = SWAP(keepArch.offset);
+                uint32_t origOffset = (uint32_t)SWAP(keepArch.offset);
 
                 if (!macho_offset) {
-                    macho_offset =  pow(2.0, SWAP(keepArch.align));
+                    macho_offset = (NSUInteger)pow(2.0, SWAP(keepArch.align));
                 }
 
                 keepArch.offset = SWAP(macho_offset);
@@ -251,7 +249,7 @@
 
                 NSData *machOData = [_fattyHandle readDataOfLength:SWAP(keepArch.size)];
 
-                [_dumpHandle replaceBytesInRange:NSMakeRange(offset, sizeof(struct fat_arch)) withBytes:&keepArch];
+                [_dumpHandle replaceBytesInRange:NSMakeRange((NSUInteger)offset, sizeof(struct fat_arch)) withBytes:&keepArch];
                 [_dumpHandle replaceBytesInRange:NSMakeRange(macho_offset, SWAP(keepArch.size)) withBytes:[machOData bytes]];
                 offset += sizeof(struct fat_arch);
                 macho_offset += SWAP(keepArch.size);
@@ -311,7 +309,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),self,_application.bundleIdentifier,_application.bundleURL];
+    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),(void *)self,_application.bundleIdentifier,_application.bundleURL];
 }
 
 @end

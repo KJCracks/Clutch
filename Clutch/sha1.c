@@ -129,8 +129,8 @@ int SHA1Result( SHA1Context *context,
 	
     for(i = 0; i < SHA1HashSize; ++i)
     {
-        Message_Digest[i] = context->Intermediate_Hash[i>>2]
-		>> 8 * ( 3 - ( i & 0x03 ) );
+        Message_Digest[i] = (uint8_t)(context->Intermediate_Hash[i>>2]
+		>> 8 * ( 3 - ( i & 0x03 ) ));
     }
 	
     return shaSuccess;
@@ -247,9 +247,9 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
      */
     for(t = 0; t < 16; t++)
     {
-        W[t] = context->Message_Block[t * 4] << 24;
-        W[t] |= context->Message_Block[t * 4 + 1] << 16;
-        W[t] |= context->Message_Block[t * 4 + 2] << 8;
+        W[t] = (uint32_t)(context->Message_Block[t * 4] << 24);
+        W[t] |= (uint32_t)(context->Message_Block[t * 4 + 1] << 16);
+        W[t] |= (uint32_t)(context->Message_Block[t * 4 + 2] << 8);
         W[t] |= context->Message_Block[t * 4 + 3];
     }
 	
@@ -377,13 +377,13 @@ void SHA1PadMessage(SHA1Context *context)
      *  Store the message length as the last 8 octets
      */
     context->Message_Block[56] = context->Length_High >> 24;
-    context->Message_Block[57] = context->Length_High >> 16;
-    context->Message_Block[58] = context->Length_High >> 8;
-    context->Message_Block[59] = context->Length_High;
-    context->Message_Block[60] = context->Length_Low >> 24;
-    context->Message_Block[61] = context->Length_Low >> 16;
-    context->Message_Block[62] = context->Length_Low >> 8;
-    context->Message_Block[63] = context->Length_Low;
+    context->Message_Block[57] = (uint8_t)(context->Length_High >> 16);
+    context->Message_Block[58] = (uint8_t)(context->Length_High >> 8);
+    context->Message_Block[59] = (uint8_t)context->Length_High;
+    context->Message_Block[60] = (uint8_t)(context->Length_Low >> 24);
+    context->Message_Block[61] = (uint8_t)(context->Length_Low >> 16);
+    context->Message_Block[62] = (uint8_t)(context->Length_Low >> 8);
+    context->Message_Block[63] = (uint8_t)context->Length_Low;
 	
     SHA1ProcessMessageBlock(context);
 }

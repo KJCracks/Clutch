@@ -41,7 +41,7 @@ BOOL stripCodeSignatureFromBinary(NSMutableData *binary, thin_header macho, BOOL
     // or change LC_CODE_SIGNATURE to OP_SOFT_STRIP, so the compiler
     // can't interpret the load command for the code signature and treats
     // the binary as if it doesn't exist
-    for (int i = 0; i < macho.header.ncmds; i++) {
+    for (uint32_t i = 0; i < macho.header.ncmds; i++) {
         if (binary.currentOffset >= binary.length ||
             binary.currentOffset > macho.header.sizeofcmds + macho.size + macho.offset) // dont go past the header
             break;
@@ -51,7 +51,7 @@ BOOL stripCodeSignatureFromBinary(NSMutableData *binary, thin_header macho, BOOL
         
         switch (cmd) {
             case LC_CODE_SIGNATURE: {
-                struct linkedit_data_command command = *(struct linkedit_data_command *)(binary.bytes + binary.currentOffset);
+                struct linkedit_data_command command = *(struct linkedit_data_command *)((char *)binary.bytes + binary.currentOffset);
                 printf("stripping code signature for architecture %s...\n", CPU(macho.header.cputype));
                 
                 if (!softStrip) {
@@ -88,7 +88,7 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSStrin
     
     uint32_t num = 0;
     uint32_t cumulativeSize = 0;
-    for (int i = 0; i < macho.header.ncmds; i++) {
+    for (unsigned int i = 0; i < macho.header.ncmds; i++) {
         if (binary.currentOffset >= binary.length ||
             binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
             break;
@@ -102,7 +102,7 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSStrin
             case LC_LOAD_UPWARD_DYLIB:
             case LC_LOAD_WEAK_DYLIB:
             case LC_LOAD_DYLIB: {
-                struct dylib_command command = *(struct dylib_command *)(binary.bytes + binary.currentOffset);
+                struct dylib_command command = *(struct dylib_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset, command.cmdsize - command.dylib.name.offset)] bytes];
                 if ([@(name) isEqualToString:payload]) {
                     printf("removing payload from %s...\n", LC(cmd));
@@ -146,7 +146,7 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
 
     // Loop through compatible LC_LOAD commands until we find one which points
     // to the given dylib and tell the caller where it is and if it exists
-    for (int i = 0; i < macho.header.ncmds; i++) {
+    for (unsigned int i = 0; i < macho.header.ncmds; i++) {
         if (binary.currentOffset >= binary.length ||
             binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
             break;
@@ -159,7 +159,7 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
             case LC_LOAD_UPWARD_DYLIB:
             case LC_LOAD_WEAK_DYLIB:
             case LC_LOAD_DYLIB: {
-                struct dylib_command command = *(struct dylib_command *)(binary.bytes + binary.currentOffset);
+                struct dylib_command command = *(struct dylib_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset, command.cmdsize - command.dylib.name.offset)] bytes];
                 
                 if ([@(name) isEqualToString:dylib]) {
@@ -189,7 +189,7 @@ BOOL removeRPATHFromBinary(NSMutableData *binary, thin_header macho) {
     
     uint32_t num = 0;
     uint32_t cumulativeSize = 0;
-    for (int i = 0; i < macho.header.ncmds; i++) {
+    for (unsigned int i = 0; i < macho.header.ncmds; i++) {
         if (binary.currentOffset >= binary.length ||
             binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
             break;
@@ -200,7 +200,7 @@ BOOL removeRPATHFromBinary(NSMutableData *binary, thin_header macho) {
         // delete the bytes in all of the load commands matching the description
         switch (cmd) {
             case LC_RPATH: {
-                struct rpath_command command = *(struct rpath_command *)(binary.bytes + binary.currentOffset);
+                struct rpath_command command = *(struct rpath_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset, command.cmdsize - command.path.offset)] bytes];
                 if ([@(name) hasPrefix:@"/private/var/mobile"]||[@(name) hasPrefix:@"/var/mobile"]) {
                     printf("removing payload from %s...\n", LC(cmd));
@@ -245,7 +245,7 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
     // Loop through compatible LC_LOAD commands until we find one which points
     // to the given dylib and tell the caller where it is and if it exists
     bool foundRPATH = NO;
-    for (int i = 0; i < macho.header.ncmds; i++) {
+    for (unsigned int i = 0; i < macho.header.ncmds; i++) {
         if (binary.currentOffset >= binary.length ||
             binary.currentOffset > macho.offset + macho.size + macho.header.sizeofcmds)
             break;
@@ -256,7 +256,7 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
         
         switch (cmd) {
             case LC_RPATH: {
-                struct rpath_command command = *(struct rpath_command *)(binary.bytes + binary.currentOffset);
+                struct rpath_command command = *(struct rpath_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name = (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset, command.cmdsize - command.path.offset)] bytes];
                 
                 if ([@(name) isEqualToString:dylib]) {
@@ -359,7 +359,7 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_
     uint32_t lastOffset = 0;
     if (binaryHasLoadCommandForDylib(binary, dylibPath, &lastOffset, macho)) {
         // there already exists a load command for this payload so change the command type
-        uint32_t originalType = *(uint32_t *)(binary.bytes + lastOffset);
+        uint32_t originalType = *(uint32_t *)((char *)binary.bytes + lastOffset);
         if (originalType != type) {
             printf("A load command already exists for %s. Changing command type from %s to desired %s\n", dylibPath.UTF8String, LC(originalType), LC(type));
             [binary replaceBytesInRange:NSMakeRange(lastOffset, sizeof(type)) withBytes:&type];
@@ -426,7 +426,7 @@ BOOL removeASLRFromBinary(NSMutableData *binary, thin_header macho) {
     // MH_PIE is a flag on the macho header whcih indicates that the address space of the executable
     // should be randomized
     if (macho.header.flags & MH_PIE) {
-        macho.header.flags &= ~MH_PIE;
+        macho.header.flags &= ~(uint32_t)MH_PIE;
         [binary replaceBytesInRange:NSMakeRange(macho.offset, sizeof(macho.header)) withBytes:&macho.header];
     } else {
         printf("binary is not protected by ASLR\n");

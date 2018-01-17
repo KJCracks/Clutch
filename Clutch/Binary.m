@@ -63,7 +63,7 @@
         headersFromBinary(headers, headersData, &numHeaders);
         
         int m32=0,m64=0;
-        for (int i= 0; i<numHeaders; i++) {
+        for (unsigned int i= 0; i<numHeaders; i++) {
             thin_header macho = headers[i];
             
             switch (macho.header.cputype) {
@@ -89,13 +89,13 @@
         
         [tmpHandle seekToFileOffset:macho.offset + macho.size];
         
-        for (int i = 0; i < macho.header.ncmds; i++) {
+        for (unsigned int i = 0; i < macho.header.ncmds; i++) {
             if (tmpHandle.offsetInFile >= size ||
                 tmpHandle.offsetInFile > macho.header.sizeofcmds + macho.size + macho.offset)
                 break;
             
             uint32_t cmd  = [tmpHandle intAtOffset:tmpHandle.offsetInFile];
-            uint32_t size = [tmpHandle intAtOffset:tmpHandle.offsetInFile + sizeof(uint32_t)];
+            uint32_t size_ = [tmpHandle intAtOffset:tmpHandle.offsetInFile + sizeof(uint32_t)];
             
             struct segment_command * command;
             
@@ -107,7 +107,7 @@
                 _hasRestrictedSegment = YES;
                 break;
             } else
-             [tmpHandle seekToFileOffset:tmpHandle.offsetInFile + size];
+             [tmpHandle seekToFileOffset:tmpHandle.offsetInFile + size_];
 
             free(command);
             

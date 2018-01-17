@@ -93,6 +93,8 @@
         }
         
         NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:_application.bundleURL includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error) {
+            CLUTCH_UNUSED(url);
+            CLUTCH_UNUSED(error);
             return YES;
         }];
         

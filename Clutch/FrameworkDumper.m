@@ -59,7 +59,7 @@
     [[ClutchPrint sharedInstance] printDeveloper: @"32bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     uint32_t cryptlc_offset = 0;
 
-    for (int i = 0; i < _thinHeader.header.ncmds; i++) {
+    for (unsigned int i = 0; i < _thinHeader.header.ncmds; i++) {
 
         uint32_t cmd = [newFileHandle intAtOffset:newFileHandle.offsetInFile];
         uint32_t size = [newFileHandle intAtOffset:newFileHandle.offsetInFile+sizeof(uint32_t)];
@@ -222,10 +222,10 @@
 
         dispatch_sync(queue, ^{
             kill(pid, SIGCONT);
-			int dumpResult = 0;
-            if (waitpid(pid, &dumpResult, 0) != -1) {
+			int dumpResult_ = 0;
+            if (waitpid(pid, &dumpResult_, 0) != -1) {
                 [[ClutchPrint sharedInstance] printDeveloper: @"Child exited with status %u", dumpResult];
-                finalDumpResult = dumpResult;
+                finalDumpResult = (NSUInteger)dumpResult_;
             } else {
                 perror("waitpid");
             }

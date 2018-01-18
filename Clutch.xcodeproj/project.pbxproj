@@ -447,7 +447,7 @@
 				TargetAttributes = {
 					266FD1651E1D7C6200935807 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = EU5R2QY9HJ;
+						DevelopmentTeam = 22NY965Z97;
 						ProvisioningStyle = Automatic;
 					};
 					26AB70781E1DC67500BDAE34 = {
@@ -568,7 +568,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = EU5R2QY9HJ;
+				DEVELOPMENT_TEAM = 22NY965Z97;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
@@ -576,7 +576,6 @@
 				INFOPLIST_FILE = Clutch/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "-v";
 				PRODUCT_BUNDLE_IDENTIFIER = kjc.Clutch;
@@ -605,7 +604,7 @@
 				COPY_PHASE_STRIP = NO;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = EU5R2QY9HJ;
+				DEVELOPMENT_TEAM = 22NY965Z97;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREFIX_HEADER = "Clutch/Clutch-Prefix.pch";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -614,7 +613,6 @@
 				INFOPLIST_FILE = Clutch/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-v";
 				PRODUCT_BUNDLE_IDENTIFIER = kjc.Clutch;

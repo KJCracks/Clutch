@@ -10,10 +10,10 @@
 
 typedef NS_OPTIONS(NSInteger, ClutchCommandFlag) {
     ClutchCommandFlagNone = 0,
-    ClutchCommandFlagInvisible = 1 << 0, // don't print to help
+    ClutchCommandFlagInvisible = 1 << 0,        // don't print to help
     ClutchCommandFlagArgumentRequired = 1 << 1, // requires args
-    ClutchCommandFlagNoArguments = 1 << 2, // will not take args
-    ClutchCommandFlagOptional = 1 << 3, // can be optionally added to any other command (i.e. --verbose)
+    ClutchCommandFlagNoArguments = 1 << 2,      // will not take args
+    ClutchCommandFlagOptional = 1 << 3,         // can be optionally added to any other command (i.e. --verbose)
 };
 
 typedef NS_ENUM(NSUInteger, ClutchCommandOption) {

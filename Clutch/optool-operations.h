@@ -25,9 +25,8 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-#import <Foundation/Foundation.h>
 #import "optool-defines.h"
+#import <Foundation/Foundation.h>
 
 BOOL stripCodeSignatureFromBinary(NSMutableData *binary, thin_header macho, BOOL soft);
 BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSString *payload);

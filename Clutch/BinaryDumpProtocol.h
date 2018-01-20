@@ -6,14 +6,14 @@
 //
 //
 
+#import "NSFileHandle+Private.h"
+#import "optool.h"
 #import <Foundation/Foundation.h>
 #import <mach/machine.h>
-#import "optool.h"
-#import "NSFileHandle+Private.h"
 
 typedef NS_ENUM(NSUInteger, ArchCompatibility) {
     ArchCompatibilityCompatible,
-    //ArchCompatibilityStrip,
+    // ArchCompatibilityStrip,
     ArchCompatibilitySwap,
     ArchCompatibilityNotCompatible,
 };
@@ -45,7 +45,7 @@ struct code_directory {
     unsigned int hashOffset;
     unsigned int identOffset;
     unsigned int nSpecialSlots;
-    unsigned int nCodeSlots;      /* number of ordinary (code) hash slots */
+    unsigned int nCodeSlots; /* number of ordinary (code) hash slots */
     unsigned int codeLimit;
     unsigned char hashSize;
     unsigned char hashType;

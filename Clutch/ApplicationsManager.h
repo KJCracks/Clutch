@@ -6,8 +6,8 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "Application.h"
+#import <Foundation/Foundation.h>
 
 @interface ApplicationsManager : NSObject
 

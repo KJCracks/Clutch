@@ -7,18 +7,16 @@
 //
 
 #import "ZipOperation.h"
-#import "ZipArchive.h"
 #import "ClutchBundle.h"
 #import "ClutchPrint.h"
+#import "ZipArchive.h"
 
-@interface ZipOperation ()
-{
+@interface ZipOperation () {
     ClutchBundle *_application;
     BOOL _executing, _finished;
     ZipArchive *_archive;
 }
 @end
-
 
 @implementation ZipOperation
 
@@ -50,19 +48,18 @@
 
 - (void)start {
     // Always check for cancellation before launching the task.
-    if ([self isCancelled])
-    {
+    if ([self isCancelled]) {
         // Must move the operation to the finished state if it is canceled.
         [self willChangeValueForKey:@"isFinished"];
         _finished = YES;
         [self didChangeValueForKey:@"isFinished"];
         return;
     }
-    
+
     self.completionBlock = ^{
-        
+
     };
-    
+
     // If the operation is not canceled, begin executing the task.
     [self willChangeValueForKey:@"isExecuting"];
     [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
@@ -72,80 +69,103 @@
 
 - (void)main {
     @try {
-        
+
         NSString *_zipFilename = _application.zipFilename, *_localPrefix = _application.zipPrefix;
-        
-        [[ClutchPrint sharedInstance] print:@"Zipping %@",_application.bundleURL.lastPathComponent];
-        
+
+        [[ClutchPrint sharedInstance] print:@"Zipping %@", _application.bundleURL.lastPathComponent];
+
         if (_archive == nil) {
             _archive = [[ZipArchive alloc] init];
-            [_archive CreateZipFile2:[_application.workingPath stringByAppendingPathComponent:_zipFilename] append:(_application.parentBundle != nil)];
+            [_archive CreateZipFile2:[_application.workingPath stringByAppendingPathComponent:_zipFilename]
+                              append:(_application.parentBundle != nil)];
         }
-        
-        if (!_application.parentBundle && [[NSFileManager defaultManager]fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork" isDirectory:NO].path]) {
-            [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork" isDirectory:NO].path newname:@"iTunesArtwork"];
+
+        if (!_application.parentBundle &&
+            [[NSFileManager defaultManager]
+                fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork"
+                                                                                  isDirectory:NO]
+                                     .path]) {
+            [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork"
+                                                                                    isDirectory:NO]
+                                       .path
+                           newname:@"iTunesArtwork"];
         }
-        
-        if (!_application.parentBundle && [[NSFileManager defaultManager]fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path]) {
-            
+
+        if (!_application.parentBundle &&
+            [[NSFileManager defaultManager]
+                fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist"
+                                                                                  isDirectory:NO]
+                                     .path]) {
+
             // skip iTunesMetadata
-            // [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path newname:@"iTunesMetadata.plist"];
+            // [_archive addFileToZip:[_application.bundleContainerURL
+            // URLByAppendingPathComponent:@"iTunesMetadata.plist" isDirectory:NO].path
+            // newname:@"iTunesMetadata.plist"];
         }
-        
-        NSDirectoryEnumerator *dirEnumerator = [NSFileManager.defaultManager enumeratorAtURL:_application.bundleURL includingPropertiesForKeys:@[NSURLNameKey,NSURLIsDirectoryKey] options:0 errorHandler:^BOOL(NSURL *url, NSError *error) {
-            CLUTCH_UNUSED(url);
-            CLUTCH_UNUSED(error);
-            return YES;
-        }];
-        
-        for (NSURL *theURL in dirEnumerator)
-        {
+
+        NSDirectoryEnumerator *dirEnumerator =
+            [NSFileManager.defaultManager enumeratorAtURL:_application.bundleURL
+                               includingPropertiesForKeys:@[ NSURLNameKey, NSURLIsDirectoryKey ]
+                                                  options:0
+                                             errorHandler:^BOOL(NSURL *url, NSError *error) {
+                                                 CLUTCH_UNUSED(url);
+                                                 CLUTCH_UNUSED(error);
+                                                 return YES;
+                                             }];
+
+        for (NSURL *theURL in dirEnumerator) {
             NSNumber *isDirectory;
             [theURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nil];
-            
-            NSString *_localPath = [theURL.path stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
-            
+
+            NSString *_localPath =
+                [theURL.path stringByReplacingOccurrencesOfString:_application.bundleContainerURL.path withString:@""];
+
             NSArray *_pathComponents = _localPath.pathComponents;
-            
+
             if (_pathComponents.count > 2) {
-                if ([_pathComponents[2] isEqualToString:@"SC_Info"]||[_pathComponents[2] isEqualToString:@"Watch"]||[_pathComponents[2] isEqualToString:@"Frameworks"]||[_pathComponents[2] isEqualToString:@"PlugIns"]) {
-                    if ([_localPath.lastPathComponent hasPrefix:@"libswift"] && ![_localPath.pathExtension caseInsensitiveCompare:@"dylib"]) {
-                        [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
+                if ([_pathComponents[2] isEqualToString:@"SC_Info"] || [_pathComponents[2] isEqualToString:@"Watch"] ||
+                    [_pathComponents[2] isEqualToString:@"Frameworks"] ||
+                    [_pathComponents[2] isEqualToString:@"PlugIns"]) {
+                    if ([_localPath.lastPathComponent hasPrefix:@"libswift"] &&
+                        ![_localPath.pathExtension caseInsensitiveCompare:@"dylib"]) {
+                        [_archive addFileToZip:theURL.path
+                                       newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
 #if PRINT_ZIP_LOGS
-                        [[ClutchPrint sharedInstance] print:@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
+                        [[ClutchPrint sharedInstance]
+                            print:@"Added %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
-                    }else {
+                    } else {
 #if PRINT_ZIP_LOGS
-                        [[ClutchPrint sharedInstance] print:@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
+                        [[ClutchPrint sharedInstance]
+                            print:@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
                     }
-                }
-                else if (![isDirectory boolValue] && ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent]) {
-                    [_archive addFileToZip:theURL.path newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
+                } else if (![isDirectory boolValue] &&
+                           ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent]) {
+                    [_archive addFileToZip:theURL.path
+                                   newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
 #if PRINT_ZIP_LOGS
-                    [[ClutchPrint sharedInstance] print:@"Added %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
+                    [[ClutchPrint sharedInstance]
+                        print:@"Added %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
+#endif
+                } else {
+#if PRINT_ZIP_LOGS
+                    [[ClutchPrint sharedInstance]
+                        print:@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
 #endif
                 }
-                else {
+            } else {
 #if PRINT_ZIP_LOGS
-                    [[ClutchPrint sharedInstance] print:@"Skipping %@",[_localPrefix stringByAppendingPathComponent:_localPath]];
+                [[ClutchPrint sharedInstance] print:@"Skipping %@", _localPath];
 #endif
-                }
             }
-            else {
-#if PRINT_ZIP_LOGS
-                [[ClutchPrint sharedInstance] print:@"Skipping %@",_localPath];
-#endif
-            }
-            
         }
-        
+
         [_archive CloseZipFile2];
-        
+
         // Do the main work of the operation here.
         [self completeOperation];
-    }
-    @catch(...) {
+    } @catch (...) {
         // Do not rethrow exceptions.
     }
 }

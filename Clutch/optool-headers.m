@@ -26,9 +26,9 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "optool-headers.h"
-#import <mach-o/loader.h>
-#import <mach-o/fat.h>
 #import "NSData+Reading.h"
+#import <mach-o/fat.h>
+#import <mach-o/loader.h>
 
 thin_header headerAtOffset(NSData *binary, uint32_t offset) {
     thin_header macho;
@@ -39,10 +39,11 @@ thin_header headerAtOffset(NSData *binary, uint32_t offset) {
     } else {
         macho.size = sizeof(struct mach_header_64);
     }
-    if (macho.header.cputype != CPU_TYPE_X86_64 && macho.header.cputype != CPU_TYPE_I386 && macho.header.cputype != CPU_TYPE_ARM && macho.header.cputype != CPU_TYPE_ARM64){
+    if (macho.header.cputype != CPU_TYPE_X86_64 && macho.header.cputype != CPU_TYPE_I386 &&
+        macho.header.cputype != CPU_TYPE_ARM && macho.header.cputype != CPU_TYPE_ARM64) {
         macho.size = 0;
     }
-    
+
     return macho;
 }
 
@@ -54,12 +55,12 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
     uint32_t magic = [binary intAtOffset:0];
     bool shouldSwap = magic == MH_CIGAM || magic == MH_CIGAM_64 || magic == FAT_CIGAM;
 #define SWAP(NUM) (shouldSwap ? CFSwapInt32((uint32_t)NUM) : (uint32_t)NUM)
-    
+
     uint32_t numArchs = 0;
 
     // a FAT file is basically a collection of thin MachO binaries
     if (magic == FAT_CIGAM || magic == FAT_MAGIC) {
-        
+
         // WE GOT A FAT ONE
         struct fat_header fat = *(struct fat_header *)binary.bytes;
         fat.nfat_arch = SWAP(fat.nfat_arch);
@@ -79,10 +80,10 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
                 headers[numArchs] = macho;
                 numArchs++;
             }
-            
+
             offset += sizeof(struct fat_arch);
         }
-    // The binary is thin, meaning it contains only one architecture
+        // The binary is thin, meaning it contains only one architecture
     } else if (magic == MH_MAGIC || magic == MH_MAGIC_64) {
         thin_header macho = headerAtOffset(binary, 0);
         if (macho.size > 0) {
@@ -90,10 +91,9 @@ thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *a
             numArchs++;
             headers[0] = macho;
         }
-        
-    } 
-    
+    }
+
     *amount = numArchs;
-    
+
     return headers;
 }

@@ -11,37 +11,33 @@
 
 @implementation Framework
 
-- (instancetype)initWithBundleInfo:(NSDictionary *)info
-{
+- (instancetype)initWithBundleInfo:(NSDictionary *)info {
     if (self = [super initWithBundleInfo:info]) {
-        
-        
     }
     return self;
 }
 
-- (void)prepareForDump
-{
+- (void)prepareForDump {
     [super prepareForDump];
 }
 
-- (NSString *)zipFilename
-{
+- (NSString *)zipFilename {
     return self.parentBundle.zipFilename;
 }
 
-- (NSString *)zipPrefix
-{
-    return [@"Payload" stringByAppendingPathComponent:[self.bundleContainerURL.path stringByReplacingOccurrencesOfString:self.parentBundle.bundleContainerURL.path withString:@""]];
+- (NSString *)zipPrefix {
+    return
+        [@"Payload" stringByAppendingPathComponent:[self.bundleContainerURL.path
+                                                       stringByReplacingOccurrencesOfString:self.parentBundle
+                                                                                                .bundleContainerURL.path
+                                                                                 withString:@""]];
 }
 
-- (NSURL *)enumURL
-{
+- (NSURL *)enumURL {
     return self.bundleURL;
 }
 
-- (NSString *)workingPath
-{
+- (NSString *)workingPath {
     return self.parentBundle.workingPath;
 }
 

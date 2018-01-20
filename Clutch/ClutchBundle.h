@@ -6,14 +6,13 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "Binary.h"
+#import <Foundation/Foundation.h>
 
 @class Application;
 
-@interface ClutchBundle : NSBundle
-{
-    @public
+@interface ClutchBundle : NSBundle {
+@public
     NSOperationQueue *_dumpQueue;
 }
 
@@ -25,7 +24,7 @@
 @property (nonatomic, retain, readonly) NSURL *bundleContainerURL;
 @property (nonatomic, retain, readonly) Binary *executable;
 
-@property (nonatomic, retain, readonly) NSString* displayName;
+@property (nonatomic, retain, readonly) NSString *displayName;
 
 - (instancetype)initWithBundleInfo:(NSDictionary *)info;
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL;

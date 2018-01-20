@@ -6,8 +6,8 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "BundleDumpOperation.h"
+#import <Foundation/Foundation.h>
 
 @class ClutchBundle;
 
@@ -21,7 +21,7 @@
 @property (nonatomic, readonly) NSString *sinfPath;
 @property (nonatomic, readonly) NSString *supfPath;
 @property (nonatomic, readonly) NSString *suppPath;
-@property (nonatomic, readonly) NSString* frameworksPath;
+@property (nonatomic, readonly) NSString *frameworksPath;
 
 @property (nonatomic, readonly) BOOL isFAT;
 @property (nonatomic, readonly) BOOL hasARMSlice;

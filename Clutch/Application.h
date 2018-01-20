@@ -6,15 +6,16 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "ClutchBundle.h"
 #import "Extension.h"
 #import "Framework.h"
+#import <Foundation/Foundation.h>
 
 @interface Application : ClutchBundle
 
 @property (nonatomic, readonly) BOOL hasAppleWatchApp; // YES if contains watchOS 2 compatible application
-@property (nonatomic, readonly) BOOL isAppleWatchApp; // only for Apple Watch apps that support watchOS 2 or newer (armv7k)
+@property (nonatomic, readonly)
+    BOOL isAppleWatchApp; // only for Apple Watch apps that support watchOS 2 or newer (armv7k)
 
 @property (nonatomic, retain, readonly) NSArray *extensions;
 @property (nonatomic, retain, readonly) NSArray *frameworks;

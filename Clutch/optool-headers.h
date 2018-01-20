@@ -25,8 +25,8 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import <Foundation/Foundation.h>
 #import "optool-defines.h"
+#import <Foundation/Foundation.h>
 
 thin_header headerAtOffset(NSData *binary, uint32_t offset);
 thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *amount);

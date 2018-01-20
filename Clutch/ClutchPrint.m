@@ -66,7 +66,7 @@
 
 - (void)printDeveloper:(NSString *)format, ...
 {
-#ifdef DEBUG
+    //#ifdef DEBUG
     if (verboseLevel == ClutchPrinterVerboseLevelDeveloper || verboseLevel == ClutchPrinterVerboseLevelFull)
     {
         if (format != nil)
@@ -83,7 +83,7 @@
             va_end(args);
         }
     }
-#endif
+    //#endif
 }
 
 - (void)printError:(NSString *)format, ...

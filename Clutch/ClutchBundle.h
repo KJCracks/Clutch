@@ -17,15 +17,15 @@
     NSOperationQueue *_dumpQueue;
 }
 
-@property ClutchBundle *parentBundle;
-@property (readonly) NSString *workingPath;
-@property (readonly) NSString *zipFilename;
-@property (readonly) NSString *zipPrefix;
-@property (readonly) NSURL *enumURL;
-@property (readonly) NSURL *bundleContainerURL;
-@property (readonly) Binary *executable;
+@property (nonatomic, retain) ClutchBundle *parentBundle;
+@property (nonatomic, retain, readonly) NSString *workingPath;
+@property (nonatomic, retain, readonly) NSString *zipFilename;
+@property (nonatomic, retain, readonly) NSString *zipPrefix;
+@property (nonatomic, retain, readonly) NSURL *enumURL;
+@property (nonatomic, retain, readonly) NSURL *bundleContainerURL;
+@property (nonatomic, retain, readonly) Binary *executable;
 
-@property (readonly) NSString* displayName;
+@property (nonatomic, retain, readonly) NSString* displayName;
 
 - (instancetype)initWithBundleInfo:(NSDictionary *)info;
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL;

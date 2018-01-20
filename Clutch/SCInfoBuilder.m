@@ -13,6 +13,7 @@
 @implementation SCInfoBuilder
 
 + (NSData * _Nullable)sinfForBundle:(ClutchBundle *)bundle {
+    CLUTCH_UNUSED(bundle);
     return nil;
 }
 
@@ -67,7 +68,7 @@
             }else if ([kvalues[name]isEqualToString:@"number"]) {
                 uint32_t integer;
                 [valData getBytes:&integer length:sizeof(integer)];
-                _blob[name] = [NSNumber numberWithInt:CFSwapInt32(integer)];
+                _blob[name] = [NSNumber numberWithUnsignedInteger:CFSwapInt32(integer)];
             }
         
         }else if (name.length && [name isEqualToString:@"schi"]) {
@@ -83,15 +84,15 @@
                 uint32_t kName = blobData.nextInt;
                 uint32_t kValue = blobData.nextInt;
                 
-                NSString *name = [NSString stringWithCString:(const char *)&kName encoding:NSASCIIStringEncoding];
+                NSString *name_ = [NSString stringWithCString:(const char *)&kName encoding:NSASCIIStringEncoding];
                 
-                if (name.length > 4) {
-                    name = [name substringWithRange:NSMakeRange(0, 4)];
+                if (name_.length > 4) {
+                    name_ = [name_ substringWithRange:NSMakeRange(0, 4)];
                 }
                 
-                if ([kvalues[name]isEqualToString:@"number"]&&name.length) {
+                if ([kvalues[name_]isEqualToString:@"number"]&&name_.length) {
 
-                    _righ[name] = [NSNumber numberWithUnsignedInt:CFSwapInt32(kValue)];
+                    _righ[name_] = [NSNumber numberWithUnsignedInt:CFSwapInt32(kValue)];
                 }
                 
             }
@@ -122,7 +123,7 @@
     
     [sinfData getBytes:&sinf length:sizeof(sinf)];
     
-    _sinfDict[@"size"] = [NSNumber numberWithInt:realSize];
+    _sinfDict[@"size"] = [NSNumber numberWithUnsignedInteger:realSize];
     _sinfDict[@"name"] = [NSString stringWithCString:(const char *)&sinf.name encoding:NSASCIIStringEncoding];
     _sinfDict[@"blob"] = [self parseBlob:[sinfData subdataWithRange:NSMakeRange(sizeof(struct sinf_kval), blobSize)]];
 

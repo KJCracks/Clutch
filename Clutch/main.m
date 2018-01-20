@@ -61,6 +61,9 @@ void listApps() {
 
 int main (int argc, const char * argv[])
 {
+    CLUTCH_UNUSED(argc);
+    CLUTCH_UNUSED(argv);
+    
     @autoreleasepool
     {
         if (getuid() != 0) { // Clutch needs to be root user to run
@@ -126,24 +129,23 @@ int main (int argc, const char * argv[])
                     }
                     case ClutchCommandOptionFrameworkDump:
                     {
-                        NSArray *arguments = [NSProcessInfo processInfo].arguments;
+                        NSArray *args = [NSProcessInfo processInfo].arguments;
                         
-                        if (([arguments[1] isEqualToString:@"--fmwk-dump"] || [arguments[1] isEqualToString:@"-f"]) && (arguments.count == 13))
+                        if (([args[1] isEqualToString:@"--fmwk-dump"] || [args[1] isEqualToString:@"-f"]) && (args.count == 13))
                         {
-                            dumpedFramework = YES;
                             FrameworkLoader *fmwk = [FrameworkLoader new];
                             
-                            fmwk.binPath = arguments[2];
-                            fmwk.dumpPath = arguments[3];
-                            fmwk.pages = [arguments[4] intValue];
-                            fmwk.ncmds = [arguments[5] intValue];
-                            fmwk.offset = [arguments[6] intValue];
-                            fmwk.bID = arguments[7];
-                            fmwk.hashOffset = [arguments[8] intValue];
-                            fmwk.codesign_begin = [arguments[9] intValue];
-                            fmwk.cryptsize = [arguments[10] intValue];
-                            fmwk.cryptoff = [arguments[11] intValue];
-                            fmwk.cryptlc_offset = [arguments[12] intValue];
+                            fmwk.binPath = args[2];
+                            fmwk.dumpPath = args[3];
+                            fmwk.pages = [args[4] unsignedIntValue];
+                            fmwk.ncmds = [args[5] unsignedIntValue];
+                            fmwk.offset = [args[6] unsignedIntValue];
+                            fmwk.bID = args[7];
+                            fmwk.hashOffset = [args[8] unsignedIntValue];
+                            fmwk.codesign_begin = [args[9] unsignedIntValue];
+                            fmwk.cryptsize = [args[10] unsignedIntValue];
+                            fmwk.cryptoff = [args[11] unsignedIntValue];
+                            fmwk.cryptlc_offset = [args[12] unsignedIntValue];
                             fmwk.dumpSize = fmwk.cryptoff + fmwk.cryptsize;
                             
                             
@@ -161,7 +163,7 @@ int main (int argc, const char * argv[])
                             }
                             
                         }
-                        else if (arguments.count != 13)
+                        else if (args.count != 13)
                         {
                             [[ClutchPrint sharedInstance] printError:@"Incorrect amount of arguments - see source if you're using this."];
                         }
@@ -176,10 +178,10 @@ int main (int argc, const char * argv[])
                         
                         for (NSString* selection in values)
                         {
-                            int key;
+                            NSUInteger key;
                             Application *_selectedApp;
                             
-                            if (!(key = selection.intValue))
+                            if (!(key = (NSUInteger)selection.integerValue))
                             {
                                 [[ClutchPrint sharedInstance] printDeveloper:@"using bundle identifier"];
                                 if (_installedApps[selection] == nil)
@@ -310,5 +312,3 @@ void _kill(pid_t pid)
     kill(pid, SIGCONT);
     kill(pid, SIGKILL);
 }
-
-

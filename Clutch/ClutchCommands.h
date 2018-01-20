@@ -31,13 +31,17 @@ typedef NS_ENUM(NSUInteger, ClutchCommandOption) {
 
 @interface ClutchCommand : NSObject
 
-@property (nonatomic) ClutchCommandOption option;
-@property (nonatomic) NSString *shortOption;
-@property (nonatomic) NSString *longOption;
-@property (nonatomic) NSString *commandDescription;
-@property (nonatomic) ClutchCommandFlag flag;
+@property (nonatomic, assign) ClutchCommandOption option;
+@property (nonatomic, retain) NSString *shortOption;
+@property (nonatomic, retain) NSString *longOption;
+@property (nonatomic, retain) NSString *commandDescription;
+@property (nonatomic, assign) ClutchCommandFlag flag;
 
-- (instancetype)initWithCommandOption:(ClutchCommandOption)commandOption shortOption:(NSString *)shortOption longOption:(NSString *)longOption commandDescription:(NSString *)commandDescription flag:(ClutchCommandFlag)flag;
+- (instancetype)initWithCommandOption:(ClutchCommandOption)commandOption
+                          shortOption:(NSString *)shortOption
+                           longOption:(NSString *)longOption
+                   commandDescription:(NSString *)commandDescription
+                                 flag:(ClutchCommandFlag)flag;
 
 @end
 

@@ -64,7 +64,7 @@
     
     [[ClutchPrint sharedInstance] printDeveloper: @"32bit Dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset];
     
-    for (int i = 0; i < _thinHeader.header.ncmds; i++) {
+    for (unsigned int i = 0; i < _thinHeader.header.ncmds; i++) {
         
         uint32_t cmd = [newFileHandle intAtOffset:newFileHandle.offsetInFile];
         uint32_t size = [newFileHandle intAtOffset:newFileHandle.offsetInFile+sizeof(uint32_t)];
@@ -163,8 +163,9 @@
     
     if ((_thinHeader.header.flags & MH_PIE) && !self.shouldDisableASLR)
     {
-        mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid];
-        if(main_address == -1) {
+        NSError *error = nil;
+        mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid error:&error];
+        if(error) {
             [[ClutchPrint sharedInstance] printError:@"Failed to find address of header!"];
             goto gotofail;
         }

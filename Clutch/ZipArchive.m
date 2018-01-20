@@ -122,7 +122,7 @@
     time_t current;
     time( &current );
     
-    zip_fileinfo zipInfo = {0};
+    zip_fileinfo zipInfo = {{0}};
     //	zipInfo.dosDate = (unsigned long) current;
     
     NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
@@ -147,7 +147,7 @@
         }
 
         NSNumber *permissionsValue = (NSNumber*)[attr objectForKey:NSFilePosixPermissions];
-        if( permissionsValue )
+        if(permissionsValue.boolValue)
         {
             short permissionsShort = permissionsValue.shortValue;
             // Convert this into an octal by adding 010000, 010000 being the flag for a regular file
@@ -175,7 +175,7 @@
     {
         FILE *f = fopen([file cStringUsingEncoding:NSUTF8StringEncoding], "r");
         fseek(f, 0, SEEK_END);
-        long fLenght = ftell(f);
+        size_t fLenght = (size_t)ftell(f);
         void *fBuffer = malloc(fLenght);
         fread(fBuffer, 1, fLenght, f);
         fclose(f);
@@ -218,7 +218,7 @@
     }
     
     if(fLenght) {
-        fread(fBuffer, 1, fLenght, f);
+        fread(fBuffer, 1, (size_t)fLenght, f);
         ret = zipWriteInFileInZip( _zipFile, (const void*)fBuffer, (uInt)fLenght);
         if( ret!=Z_OK )
         {
@@ -479,7 +479,7 @@
                             }
                         }
                     }
-                    fwrite(buffer, read, 1, fp );
+                    fwrite(buffer, (size_t)read, 1, fp );
                 }
                 else // if (read < 0)
                 {
@@ -500,12 +500,12 @@
                 if( fileInfo.tmu_date.tm_year!=0 )
                 {
                     NSDateComponents* components = [[NSDateComponents alloc] init];
-                    components.second = fileInfo.tmu_date.tm_sec;
-                    components.minute = fileInfo.tmu_date.tm_min;
-                    components.hour = fileInfo.tmu_date.tm_hour;
-                    components.day = fileInfo.tmu_date.tm_mday;
-                    components.month = fileInfo.tmu_date.tm_mon + 1;
-                    components.year = fileInfo.tmu_date.tm_year;
+                    components.second = (NSInteger)fileInfo.tmu_date.tm_sec;
+                    components.minute = (NSInteger)fileInfo.tmu_date.tm_min;
+                    components.hour = (NSInteger)fileInfo.tmu_date.tm_hour;
+                    components.day = (NSInteger)fileInfo.tmu_date.tm_mday;
+                    components.month = (NSInteger)fileInfo.tmu_date.tm_mon + 1;
+                    components.year = (NSInteger)fileInfo.tmu_date.tm_year;
                     
                     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
                     NSDate* orgDate = [gregorianCalendar dateFromComponents:components];
@@ -540,8 +540,8 @@
             
             if (_progressBlock && _numFiles) {
                 index++;
-                int p = index*100/_numFiles;
-                progress = p;
+                unsigned long p = ((unsigned long)index)*100/_numFiles;
+                progress = (int)p;
                 _progressBlock(progress, index, _numFiles);
             }
         }
@@ -605,7 +605,7 @@
                 {
                     if (read != 0)
                     {
-                        [fileMutableData appendBytes:buffer length:read];
+                        [fileMutableData appendBytes:buffer length:(NSUInteger)read];
                     }
                 }
                 else // if (read < 0)
@@ -635,8 +635,8 @@
             
             if (_progressBlock && _numFiles) {
                 index++;
-                int p = index*100/_numFiles;
-                progress = p;
+                unsigned long p = ((unsigned long)index)*100/_numFiles;
+                progress = (int)p;
                 _progressBlock(progress, index, _numFiles);
             }
         }
@@ -770,7 +770,7 @@
 
 @implementation NSFileManager(ZipArchive)
 
-- (NSDictionary *)_attributesOfItemAtPath:(NSString *)path followingSymLinks:(BOOL)followingSymLinks error:(NSError **)error
+- (NSDictionary *)_attributesOfItemAtPath:(NSString *)path followingSymLinks:(BOOL)followingSymLinks error:(NSError * __autoreleasing *)error
 {
     // call file manager default action, which is to not follow symlinks
     NSDictionary* results = [self attributesOfItemAtPath:path error:error];

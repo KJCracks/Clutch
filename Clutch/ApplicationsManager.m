@@ -18,10 +18,7 @@
 typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 
 @interface ApplicationsManager ()
-{
-    NSMutableArray* _cachedApps;
-}
-
+@property (nonatomic, retain) NSMutableArray *cachedApps;
 @end
 
 
@@ -56,7 +53,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
     
     if (MIHandle)
     {
-        mobileInstallationLookup = dlsym(MIHandle,"MobileInstallationLookup");
+        mobileInstallationLookup = (MobileInstallationLookup)dlsym(MIHandle,"MobileInstallationLookup");
         if (mobileInstallationLookup)
         {
             
@@ -159,7 +156,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
     dispatch_async(queue, ^{
-        [_cachedApps writeToFile:applistCachePath atomically:YES];
+        [self.cachedApps writeToFile:applistCachePath atomically:YES];
     });
 }
 
@@ -217,7 +214,7 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
     
     NSMutableArray *paths = [NSMutableArray new];
     
-    for (int i = 0; i < array.count; i++)
+    for (NSUInteger i = 0; i < array.count; i++)
     {
         if (![[array[i] pathExtension] caseInsensitiveCompare:@"ipa"])
         {
@@ -229,3 +226,4 @@ typedef NSDictionary* (*MobileInstallationLookup)(NSDictionary *options);
 }
 
 @end
+

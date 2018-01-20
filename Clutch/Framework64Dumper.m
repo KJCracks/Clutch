@@ -60,7 +60,7 @@
     
     uint32_t cryptlc_offset = 0;
     
-    for (int i = 0; i < _thinHeader.header.ncmds; i++) {
+    for (unsigned int i = 0; i < _thinHeader.header.ncmds; i++) {
         
         uint32_t cmd = [newFileHandle intAtOffset:newFileHandle.offsetInFile];
         uint32_t size = [newFileHandle intAtOffset:newFileHandle.offsetInFile+sizeof(uint32_t)];
@@ -186,7 +186,7 @@
     
     NSString *ns_argv = @"";
     for (size_t i = 0; argv[i] != NULL; i++) {
-        ns_argv = [ns_argv stringByAppendingFormat:@"%s", argv[i]];
+        ns_argv = [ns_argv stringByAppendingFormat:@"%s ", argv[i]];
     }
     [[ClutchPrint sharedInstance] printDeveloper: @"hello potato posix_spawn %@", ns_argv];
     
@@ -212,11 +212,11 @@
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         
         dispatch_sync(queue, ^{
-            int dumpResult = 0;
+            int dumpResult_ = 0;
             kill(pid, SIGCONT);
-            if (waitpid(pid, &dumpResult, 0) != -1) {
-                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Child exited with status %u", dumpResult];
-                finalDumpResult = dumpResult;
+            if (waitpid(pid, &dumpResult_, 0) != -1) {
+                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Child exited with status %u", dumpResult_];
+                finalDumpResult = dumpResult_;
             } else {
                 perror("waitpid");
             }

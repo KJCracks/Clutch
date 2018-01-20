@@ -81,6 +81,8 @@
                                          includingPropertiesForKeys:keys
                                          options:0
                                          errorHandler:^(NSURL *url, NSError *error) {
+                                             CLUTCH_UNUSED(url);
+                                             CLUTCH_UNUSED(error);
                                              // Handle the error.
                                              // Return YES if the enumeration should continue after the error.
                                              return YES;
@@ -121,6 +123,8 @@
                                          includingPropertiesForKeys:keys
                                          options:0
                                          errorHandler:^(NSURL *url, NSError *error) {
+                                             CLUTCH_UNUSED(url);
+                                             CLUTCH_UNUSED(error);
                                              // Handle the error.
                                              // Return YES if the enumeration should continue after the error.
                                              return YES;
@@ -160,6 +164,8 @@
                                          includingPropertiesForKeys:keys
                                          options:0
                                          errorHandler:^(NSURL *url, NSError *error) {
+                                             CLUTCH_UNUSED(url);
+                                             CLUTCH_UNUSED(error);
                                              // Handle the error.
                                              // Return YES if the enumeration should continue after the error.
                                              return YES;
@@ -263,7 +269,7 @@
     if (_onlyBinaries)
         [_additionalZipOpeartions removeAllObjects];
 
-    for (int i=1; i<_additionalZipOpeartions.count;i++) {
+    for (unsigned int i=1; i<_additionalZipOpeartions.count;i++) {
         ZipOperation *_zipOperation = _additionalZipOpeartions[i];
         [_zipOperation addDependency:_additionalZipOpeartions[i-1]];
     }

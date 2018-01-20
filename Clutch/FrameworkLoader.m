@@ -62,16 +62,18 @@
     }
     
     uint32_t imageCount = _dyld_image_count();
-    uint32_t dyldIndex = -1;
+    uint32_t dyldIndex = 0;
+    BOOL modifiedDyldIndex = NO;
     for (uint32_t idx = 0; idx < imageCount; idx++) {
         NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
         if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
             dyldIndex = idx;
+            modifiedDyldIndex = YES;
             break;
         }
     }
     
-    if (dyldIndex == -1) {
+    if (!modifiedDyldIndex) {
         dlclose(handle);
         return NO;
     }
@@ -86,7 +88,7 @@
     
     //[self _dumpToFileHandle:newFileHandle withEncryptionInfoCommand:self.encryptionInfoCommand pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer];
     
-    dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:self.dumpSize pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:dyldPointer codeSignature_hashOffset:self.hashOffset codesign_begin:self.codesign_begin];
+    dumpResult = [self _dumpToFileHandle:newFileHandle withDumpSize:self.dumpSize pages:self.pages fromPort:mach_task_self() pid:[NSProcessInfo processInfo].processIdentifier aslrSlide:(mach_vm_address_t)dyldPointer codeSignature_hashOffset:self.hashOffset codesign_begin:self.codesign_begin];
     
     dlclose(handle);
     
@@ -95,6 +97,9 @@
 
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle withDumpSize:(uint32_t)togo pages:(uint32_t)pages fromPort:(mach_port_t)port pid:(pid_t)pid aslrSlide:(mach_vm_address_t)__text_start codeSignature_hashOffset:(uint32_t)hashOffset codesign_begin:(uint32_t)begin
 {
+    CLUTCH_UNUSED(port);
+    CLUTCH_UNUSED(pid);
+    CLUTCH_UNUSED(__text_start);
     
     [[ClutchPrint sharedInstance] printDeveloper: @"Using Framework Dumper, pages %u", pages];
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
@@ -113,7 +118,8 @@
     while (togo > 0) {
         memcpy(buf, (unsigned char*)image_header + (pages_d * 0x1000), 0x1000);
         [fileHandle writeData:[NSData dataWithBytes:buf length:0x1000]];
-        sha1(checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
+        // https://gcc.gnu.org/onlinedocs/gcc/Pointer-Arith.html
+        sha1((uint8_t *)checksum + (20 * pages_d), buf, 0x1000); // perform checksum on the page
         togo -= 0x1000; // remove a page from the togo
         pages_d += 1; // increase the amount of completed pages
     }

@@ -11,6 +11,6 @@
 
 @interface ASLRDisabler : NSObject
 
-+ (mach_vm_address_t)slideForPID:(pid_t)pid;
++ (mach_vm_address_t)slideForPID:(pid_t)pid error:(NSError **)error;
 
 @end

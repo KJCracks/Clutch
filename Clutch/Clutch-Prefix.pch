@@ -34,6 +34,8 @@ int diff_ms(struct timeval t1, struct timeval t2);
 #define CLUTCH_VERSION CLUTCH_VERSION_
 #endif
 
+#define CLUTCH_UNUSED(x) ((void)x)
+
 
 //#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
 //#   define SUCCESS_OUT(M, ...) fprintf(stdout, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);

@@ -13,21 +13,21 @@
 
 @interface Binary : NSObject
 
-@property (readonly) BOOL hasRestrictedSegment;
+@property (nonatomic, readonly) BOOL hasRestrictedSegment;
 
-@property (readonly) BundleDumpOperation *dumpOperation;
-@property (readonly) NSString *workingPath;
-@property (readonly) NSString *binaryPath;
-@property (readonly) NSString *sinfPath;
-@property (readonly) NSString *supfPath;
-@property (readonly) NSString *suppPath;
-@property (readonly) NSString* frameworksPath;
+@property (nonatomic, readonly) BundleDumpOperation *dumpOperation;
+@property (nonatomic, readonly) NSString *workingPath;
+@property (nonatomic, readonly) NSString *binaryPath;
+@property (nonatomic, readonly) NSString *sinfPath;
+@property (nonatomic, readonly) NSString *supfPath;
+@property (nonatomic, readonly) NSString *suppPath;
+@property (nonatomic, readonly) NSString* frameworksPath;
 
-@property (readonly) BOOL isFAT;
-@property (readonly) BOOL hasARMSlice;
-@property (readonly) BOOL hasARM64Slice;
-@property (readonly) BOOL hasMultipleARMSlices;
-@property (readonly) BOOL hasMultipleARM64Slices;
+@property (nonatomic, readonly) BOOL isFAT;
+@property (nonatomic, readonly) BOOL hasARMSlice;
+@property (nonatomic, readonly) BOOL hasARM64Slice;
+@property (nonatomic, readonly) BOOL hasMultipleARMSlices;
+@property (nonatomic, readonly) BOOL hasMultipleARM64Slices;
 
 - (instancetype)initWithBundle:(ClutchBundle *)bundle;
 

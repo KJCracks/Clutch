@@ -10,7 +10,7 @@
 
 @interface NSBundle (Clutch)
 
-@property NSString *clutchBID;
+@property (nonatomic, retain) NSString *clutchBID;
 
 - (NSString *)bundleIdentifier;
 

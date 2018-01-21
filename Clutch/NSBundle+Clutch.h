@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @interface NSBundle (Clutch)
 
 @property (nonatomic, retain) NSString *clutchBID;

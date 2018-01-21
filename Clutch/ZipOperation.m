@@ -20,9 +20,8 @@
 
 @implementation ZipOperation
 
-- (id)initWithApplication:(ClutchBundle *)application {
-    self = [super init];
-    if (self) {
+- (instancetype)initWithApplication:(ClutchBundle *)application {
+    if ((self = [super init])) {
         _executing = NO;
         _finished = NO;
         _application = application;
@@ -57,7 +56,6 @@
     }
 
     self.completionBlock = ^{
-
     };
 
     // If the operation is not canceled, begin executing the task.
@@ -68,21 +66,22 @@
 }
 
 - (void)main {
-    @try {
+    NSFileManager *fm = [NSFileManager defaultManager];
 
-        NSString *_zipFilename = _application.zipFilename, *_localPrefix = _application.zipPrefix;
+    @try {
+        NSString *_zipFilename = _application.zipFilename;
+        NSString *_localPrefix = _application.zipPrefix;
 
         [[ClutchPrint sharedInstance] print:@"Zipping %@", _application.bundleURL.lastPathComponent];
 
-        if (_archive == nil) {
+        if (!_archive) {
             _archive = [[ZipArchive alloc] init];
             [_archive CreateZipFile2:[_application.workingPath stringByAppendingPathComponent:_zipFilename]
-                              append:(_application.parentBundle != nil)];
+                              append:_application.parentBundle != nil];
         }
 
         if (!_application.parentBundle &&
-            [[NSFileManager defaultManager]
-                fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork"
+            [fm fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork"
                                                                                   isDirectory:NO]
                                      .path]) {
             [_archive addFileToZip:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesArtwork"
@@ -92,8 +91,7 @@
         }
 
         if (!_application.parentBundle &&
-            [[NSFileManager defaultManager]
-                fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist"
+            [fm fileExistsAtPath:[_application.bundleContainerURL URLByAppendingPathComponent:@"iTunesMetadata.plist"
                                                                                   isDirectory:NO]
                                      .path]) {
 
@@ -103,15 +101,14 @@
             // newname:@"iTunesMetadata.plist"];
         }
 
-        NSDirectoryEnumerator *dirEnumerator =
-            [NSFileManager.defaultManager enumeratorAtURL:_application.bundleURL
-                               includingPropertiesForKeys:@[ NSURLNameKey, NSURLIsDirectoryKey ]
-                                                  options:0
-                                             errorHandler:^BOOL(NSURL *url, NSError *error) {
-                                                 CLUTCH_UNUSED(url);
-                                                 CLUTCH_UNUSED(error);
-                                                 return YES;
-                                             }];
+        NSDirectoryEnumerator *dirEnumerator = [fm enumeratorAtURL:_application.bundleURL
+                                        includingPropertiesForKeys:@[ NSURLNameKey, NSURLIsDirectoryKey ]
+                                                           options:0
+                                                      errorHandler:^BOOL(NSURL *url, NSError *error) {
+                                                          CLUTCH_UNUSED(url);
+                                                          CLUTCH_UNUSED(error);
+                                                          return YES;
+                                                      }];
 
         for (NSURL *theURL in dirEnumerator) {
             NSNumber *isDirectory;

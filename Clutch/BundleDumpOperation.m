@@ -13,7 +13,8 @@
 #import "Dumper.h"
 #import "NSData+Reading.h"
 #import "optool.h"
-#import "fenv.h"
+
+#include <fenv.h>
 
 @import ObjectiveC.runtime;
 

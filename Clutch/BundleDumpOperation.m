@@ -13,6 +13,7 @@
 #import "Dumper.h"
 #import "NSData+Reading.h"
 #import "optool.h"
+#import "fenv.h"
 
 @import ObjectiveC.runtime;
 
@@ -275,7 +276,17 @@
                 uint32_t origOffset = (uint32_t)SWAP(keepArch.offset);
 
                 if (!macho_offset) {
-                    macho_offset = (NSUInteger)pow(2.0, SWAP(keepArch.align));
+                    errno = 0;
+                    feclearexcept(FE_ALL_EXCEPT);
+
+                    macho_offset = (NSUInteger)exp2l(SWAP(keepArch.align));
+
+                    if (errno != 0 || fetestexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW) != 0) {
+                        [[ClutchPrint sharedInstance] print:@"Error calculating offset. This might fail"];
+                    }
+
+                    errno = 0;
+                    feclearexcept(FE_ALL_EXCEPT);
                 }
 
                 keepArch.offset = SWAP(macho_offset);

@@ -5,18 +5,16 @@
 //  Created by Anton Titkov on 20.04.15.
 //
 //
+@import ObjectiveC.runtime;
 
 #import "NSBundle+Clutch.h"
 
-@import ObjectiveC.runtime;
+static NSString *_bID;
 
 @implementation NSBundle (Clutch)
 
-static NSString *_bID;
-
 - (NSString *)clutchBID {
-    NSString *value = objc_getAssociatedObject(self, &_bID);
-    return value;
+    return objc_getAssociatedObject(self, &_bID);
 }
 
 - (void)setClutchBID:(NSString *)clutchBID {
@@ -26,13 +24,11 @@ static NSString *_bID;
 }
 
 - (NSString *)bundleIdentifier {
-
-    if ([self.bundlePath isEqualToString:[NSBundle mainBundle].bundlePath]) {
-
+    if ([self.bundlePath isEqualToString:NSBundle.mainBundle.bundlePath]) {
         return self.clutchBID;
     }
 
-    return self.infoDictionary[@"CFBundleIdentifier"];
+    return self.infoDictionary[(__bridge NSString *)kCFBundleIdentifierKey];
 }
 
 @end

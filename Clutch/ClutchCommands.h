@@ -42,6 +42,11 @@ typedef NS_ENUM(NSUInteger, ClutchCommandOption) {
                            longOption:(NSString *)longOption
                    commandDescription:(NSString *)commandDescription
                                  flag:(ClutchCommandFlag)flag;
++ (instancetype)commandWithCommandOption:(ClutchCommandOption)commandOption
+                             shortOption:(NSString *)shortOption
+                              longOption:(NSString *)longOption
+                      commandDescription:(NSString *)commandDescription
+                                    flag:(ClutchCommandFlag)flag;
 
 @end
 

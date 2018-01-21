@@ -16,9 +16,7 @@
                            longOption:(NSString *)longOption
                    commandDescription:(NSString *)commandDescription
                                  flag:(ClutchCommandFlag)flag {
-    self = [super self];
-
-    if (self) {
+    if ((self = [super self])) {
         self.option = commandOption;
         self.shortOption = shortOption;
         self.longOption = longOption;
@@ -27,6 +25,18 @@
     }
 
     return self;
+}
+
++ (instancetype)commandWithCommandOption:(ClutchCommandOption)commandOption
+                             shortOption:(NSString *)shortOption
+                              longOption:(NSString *)longOption
+                      commandDescription:(NSString *)commandDescription
+                                    flag:(ClutchCommandFlag)flag {
+    return [[ClutchCommand alloc] initWithCommandOption:commandOption
+                                            shortOption:shortOption
+                                             longOption:longOption
+                                     commandDescription:commandDescription
+                                                   flag:flag];
 }
 
 @end
@@ -45,7 +55,7 @@
     return self;
 }
 
-- (NSArray *)parseCommandWithArguments:(NSArray *)arguments {
+- (NSArray<ClutchCommand *> *)parseCommandWithArguments:(NSArray *)arguments {
     NSMutableArray<ClutchCommand *> *returnCommands = [NSMutableArray new];
     NSMutableArray<NSString *> *returnValues = [NSMutableArray new];
 
@@ -84,65 +94,64 @@
         return @[ self.allCommands[0] ];
     }
 
-    self.values = (NSArray *)returnValues;
+    self.values = returnValues;
 
-    return (NSArray *)returnCommands;
+    return returnCommands;
 }
 
 - (NSArray<ClutchCommand *> *)buildCommands {
     ClutchCommand *none =
-        [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionNone
-                                         shortOption:nil
-                                          longOption:nil
-                                  commandDescription:@"None command"
-                                                flag:(ClutchCommandFlagInvisible | ClutchCommandFlagNoArguments)];
+        [ClutchCommand commandWithCommandOption:ClutchCommandOptionNone
+                                    shortOption:nil
+                                     longOption:nil
+                             commandDescription:@"None command"
+                                           flag:ClutchCommandFlagInvisible | ClutchCommandFlagNoArguments];
     ClutchCommand *framework =
-        [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionFrameworkDump
-                                         shortOption:@"-f"
-                                          longOption:@"--fmwk-dump"
-                                  commandDescription:@"Only dump binary files from specified bundleID"
-                                                flag:(ClutchCommandFlagArgumentRequired | ClutchCommandFlagInvisible)];
-    ClutchCommand *binary =
-        [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionBinaryDump
-                                         shortOption:@"-b"
-                                          longOption:@"--binary-dump"
-                                  commandDescription:@"Only dump binary files from specified bundleID"
-                                                flag:ClutchCommandFlagArgumentRequired];
-    ClutchCommand *dump = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionDump
-                                                           shortOption:@"-d"
-                                                            longOption:@"--dump"
-                                                    commandDescription:@"Dump specified bundleID into .ipa file"
-                                                                  flag:ClutchCommandFlagArgumentRequired];
-    ClutchCommand *printInstalled = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionPrintInstalled
-                                                                     shortOption:@"-i"
-                                                                      longOption:@"--print-installed"
-                                                              commandDescription:@"Prints installed applications"
-                                                                            flag:ClutchCommandFlagNoArguments];
-    ClutchCommand *clean = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionClean
-                                                            shortOption:nil
-                                                             longOption:@"--clean"
-                                                     commandDescription:@"Clean /var/tmp/clutch directory"
-                                                                   flag:ClutchCommandFlagNoArguments];
-    ClutchCommand *version = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionVersion
-                                                              shortOption:nil
-                                                               longOption:@"--version"
-                                                       commandDescription:@"Display version and exit"
-                                                                     flag:ClutchCommandFlagNoArguments];
-    ClutchCommand *help = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionHelp
-                                                           shortOption:@"-?"
-                                                            longOption:@"--help"
-                                                    commandDescription:@"Displays this help and exit"
-                                                                  flag:ClutchCommandFlagNoArguments];
-    ClutchCommand *noColor = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionNoColor
-                                                              shortOption:@"-n"
-                                                               longOption:@"--no-color"
-                                                       commandDescription:@"Prints with colors disabled"
-                                                                     flag:ClutchCommandFlagOptional];
-    ClutchCommand *verbose = [[ClutchCommand alloc] initWithCommandOption:ClutchCommandOptionVerbose
-                                                              shortOption:@"-v"
-                                                               longOption:@"--verbose"
-                                                       commandDescription:@"Print verbose messages"
-                                                                     flag:ClutchCommandFlagOptional];
+        [ClutchCommand commandWithCommandOption:ClutchCommandOptionFrameworkDump
+                                    shortOption:@"-f"
+                                     longOption:@"--fmwk-dump"
+                             commandDescription:@"Only dump binary files from specified bundleID"
+                                           flag:ClutchCommandFlagArgumentRequired | ClutchCommandFlagInvisible];
+    ClutchCommand *binary = [ClutchCommand commandWithCommandOption:ClutchCommandOptionBinaryDump
+                                                        shortOption:@"-b"
+                                                         longOption:@"--binary-dump"
+                                                 commandDescription:@"Only dump binary files from specified bundleID"
+                                                               flag:ClutchCommandFlagArgumentRequired];
+    ClutchCommand *dump = [ClutchCommand commandWithCommandOption:ClutchCommandOptionDump
+                                                      shortOption:@"-d"
+                                                       longOption:@"--dump"
+                                               commandDescription:@"Dump specified bundleID into .ipa file"
+                                                             flag:ClutchCommandFlagArgumentRequired];
+    ClutchCommand *printInstalled = [ClutchCommand commandWithCommandOption:ClutchCommandOptionPrintInstalled
+                                                                shortOption:@"-i"
+                                                                 longOption:@"--print-installed"
+                                                         commandDescription:@"Prints installed applications"
+                                                                       flag:ClutchCommandFlagNoArguments];
+    ClutchCommand *clean = [ClutchCommand commandWithCommandOption:ClutchCommandOptionClean
+                                                       shortOption:nil
+                                                        longOption:@"--clean"
+                                                commandDescription:@"Clean /var/tmp/clutch directory"
+                                                              flag:ClutchCommandFlagNoArguments];
+    ClutchCommand *version = [ClutchCommand commandWithCommandOption:ClutchCommandOptionVersion
+                                                         shortOption:nil
+                                                          longOption:@"--version"
+                                                  commandDescription:@"Display version and exit"
+                                                                flag:ClutchCommandFlagNoArguments];
+    ClutchCommand *help = [ClutchCommand commandWithCommandOption:ClutchCommandOptionHelp
+                                                      shortOption:@"-?"
+                                                       longOption:@"--help"
+                                               commandDescription:@"Displays this help and exit"
+                                                             flag:ClutchCommandFlagNoArguments];
+    ClutchCommand *noColor = [ClutchCommand commandWithCommandOption:ClutchCommandOptionNoColor
+                                                         shortOption:@"-n"
+                                                          longOption:@"--no-color"
+                                                  commandDescription:@"Prints with colors disabled"
+                                                                flag:ClutchCommandFlagOptional];
+    ClutchCommand *verbose = [ClutchCommand commandWithCommandOption:ClutchCommandOptionVerbose
+                                                         shortOption:@"-v"
+                                                          longOption:@"--verbose"
+                                                  commandDescription:@"Print verbose messages"
+                                                                flag:ClutchCommandFlagOptional];
 
     return @[ none, framework, binary, dump, printInstalled, clean, version, help, noColor, verbose ];
 }
@@ -159,10 +168,10 @@
 
 - (NSString *)buildHelpString {
     NSMutableString *helpString =
-        [NSMutableString stringWithFormat:@"Usage: %@ [OPTIONS]\n", [NSProcessInfo processInfo].processName];
+        [NSMutableString stringWithFormat:@"Usage: %@ [OPTIONS]\n", NSProcessInfo.processInfo.processName];
 
     for (ClutchCommand *command in self.allCommands) {
-        BOOL isInvisible = (command.flag & ClutchCommandFlagInvisible);
+        BOOL isInvisible = command.flag & ClutchCommandFlagInvisible;
 
         if (!isInvisible) {
             [helpString appendFormat:@"%-2s %-30s%@\n",
@@ -172,7 +181,7 @@
         }
     }
 
-    return (NSString *)helpString;
+    return helpString;
 }
 
 @end

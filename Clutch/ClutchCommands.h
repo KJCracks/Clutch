@@ -53,9 +53,9 @@ typedef NS_ENUM(NSUInteger, ClutchCommandOption) {
 @interface ClutchCommands : NSObject
 
 @property (nonatomic, retain) NSArray *allCommands;
-@property (nonatomic) NSArray *commands;
-@property (nonatomic) NSString *helpString;
-@property (nonatomic) NSArray *values;
+@property (nonatomic, retain) NSArray *commands;
+@property (nonatomic, retain) NSString *helpString;
+@property (nonatomic, retain) NSArray *values;
 
 - (instancetype)initWithArguments:(NSArray *)arguments;
 

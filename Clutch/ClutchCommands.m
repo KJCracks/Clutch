@@ -44,9 +44,7 @@
 @implementation ClutchCommands
 
 - (instancetype)initWithArguments:(NSArray *)arguments {
-    self = [super self];
-
-    if (self) {
+    if ((self = [super self])) {
         self.allCommands = [self buildCommands];
         self.commands = [self parseCommandWithArguments:arguments];
         self.helpString = [self buildHelpString];
@@ -58,14 +56,13 @@
 - (NSArray<ClutchCommand *> *)parseCommandWithArguments:(NSArray *)arguments {
     NSMutableArray<ClutchCommand *> *returnCommands = [NSMutableArray new];
     NSMutableArray<NSString *> *returnValues = [NSMutableArray new];
-
     BOOL commandFound = NO;
 
     for (NSString *argument in arguments) {
         if ([argument isEqualToString:arguments[0]]) {
             continue;
-        } else if ([argument isEqualToString:@"--no-color"]) // Optionals
-        {
+        } else if ([argument isEqualToString:@"--no-color"]) {
+            // Optionals
             [returnCommands insertObject:self.allCommands[8] atIndex:0];
         } else if ([argument isEqualToString:@"--verbose"]) {
             [returnCommands insertObject:self.allCommands[9] atIndex:0];
@@ -73,7 +70,7 @@
             // is a flag
             for (ClutchCommand *command in self.allCommands) {
                 if ([argument isEqualToString:command.shortOption] || [argument isEqualToString:command.longOption]) {
-                    if (commandFound == NO) {
+                    if (!commandFound) {
                         commandFound = YES;
                         [returnCommands addObject:command];
                         break;

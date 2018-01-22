@@ -31,7 +31,7 @@
 @implementation BundleDumpOperation
 
 - (void)failedOperation {
-    self.failed = YES;
+    _failed = YES;
     NSLog(@"failed operation :(");
     NSLog(@"application %@", _application->_dumpQueue);
     NSArray *wow = [_application->_dumpQueue operations];
@@ -42,13 +42,16 @@
 }
 
 - (instancetype)initWithBundle:(ClutchBundle *)application {
-    self = [super init];
-    if (self) {
+    if ((self = [super init])) {
         _executing = NO;
         _finished = NO;
         _application = application;
     }
     return self;
+}
+
++ (instancetype)operationWithBundle:(ClutchBundle *)application {
+    return [[self alloc] initWithBundle:application];
 }
 
 - (BOOL)isAsynchronous {

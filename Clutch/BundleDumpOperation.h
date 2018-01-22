@@ -11,8 +11,10 @@
 @class ClutchBundle;
 
 @interface BundleDumpOperation : NSOperation
+
 @property (nonatomic, assign) BOOL failed;
 
 - (instancetype)initWithBundle:(ClutchBundle *)application;
++ (instancetype)operationWithBundle:(ClutchBundle *)application;
 
 @end

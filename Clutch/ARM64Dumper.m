@@ -22,8 +22,8 @@
 
 - (BOOL)dumpBinary {
     __block BOOL dumpResult;
-    NSString *binaryDumpPath =
-        [self.originalBinary.workingPath stringByAppendingPathComponent:self.originalBinary.binaryPath.lastPathComponent];
+    NSString *binaryDumpPath = [self.originalBinary.workingPath
+        stringByAppendingPathComponent:self.originalBinary.binaryPath.lastPathComponent];
 
     NSFileHandle *newFileHandle =
         [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
@@ -65,7 +65,8 @@
 
     uint64_t __text_start = 0;
 
-    KJDebug(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:self.thinHeader], self.thinHeader.offset);
+    KJDebug(
+        @"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:self.thinHeader], self.thinHeader.offset);
 
     for (unsigned int i = 0; i < self.thinHeader.header.ncmds; i++) {
 
@@ -125,8 +126,9 @@
         return NO;
     }
 
-    KJDebug(
-        @"found all required load commands for %@ %@", self.originalBinary, [Dumper readableArchFromHeader:self.thinHeader]);
+    KJDebug(@"found all required load commands for %@ %@",
+            self.originalBinary,
+            [Dumper readableArchFromHeader:self.thinHeader]);
 
     pid_t pid;         // store the process ID of the fork
     mach_port_t port;  // mach port used for moving virtual memory

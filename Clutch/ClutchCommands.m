@@ -48,10 +48,10 @@
                       commandDescription:(NSString *)commandDescription
                                     flag:(ClutchCommandFlag)flag {
     return [[self alloc] initWithCommandOption:commandOption
-                                            shortOption:shortOption
-                                             longOption:longOption
-                                     commandDescription:commandDescription
-                                                   flag:flag];
+                                   shortOption:shortOption
+                                    longOption:longOption
+                            commandDescription:commandDescription
+                                          flag:flag];
 }
 
 @end

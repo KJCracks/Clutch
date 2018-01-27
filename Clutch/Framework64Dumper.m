@@ -21,8 +21,8 @@
 
     ClutchBundle *bundle = [self.originalBinary valueForKey:@"_bundle"];
 
-    NSString *binaryDumpPath =
-        [self.originalBinary.workingPath stringByAppendingPathComponent:self.originalBinary.binaryPath.lastPathComponent];
+    NSString *binaryDumpPath = [self.originalBinary.workingPath
+        stringByAppendingPathComponent:self.originalBinary.binaryPath.lastPathComponent];
 
     NSString *swappedBinaryPath = self.originalBinary.binaryPath, *newSinf = self.originalBinary.sinfPath,
              *newSupp = self.originalBinary.suppPath,
@@ -59,7 +59,8 @@
     directory.hashOffset = 0;
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
 
-    KJDebug(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:self.thinHeader], self.thinHeader.offset);
+    KJDebug(
+        @"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:self.thinHeader], self.thinHeader.offset);
 
     uint32_t cryptlc_offset = 0;
 

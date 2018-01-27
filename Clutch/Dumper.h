@@ -14,17 +14,16 @@
 #import "mach_vm.h"
 
 void *safe_trim(void *p, size_t n);
-
-@interface Dumper : NSObject {
-    Binary *_originalBinary;
-    thin_header _thinHeader;
-}
 void exit_with_errno(int err, const char *prefix);
 void _kill(pid_t pid);
+
+@interface Dumper : NSObject
 
 @property (nonatomic, readonly) BOOL isASLRProtected;
 @property (nonatomic, retain) NSFileHandle *originalFileHandle;
 @property (nonatomic, assign) BOOL shouldDisableASLR;
+@property (nonatomic, retain) Binary *originalBinary;
+@property (nonatomic, assign) thin_header thinHeader;
 
 + (NSString *)readableArchFromHeader:(thin_header)macho;
 + (NSString *)readableArchFromMachHeader:(struct mach_header)header;
@@ -32,9 +31,7 @@ void _kill(pid_t pid);
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL)suspend;
 - (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary;
 - (ArchCompatibility)compatibilityMode;
-
 - (void)swapArch;
-
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle
                 withDumpSize:(uint32_t)togo
                        pages:(uint32_t)pages

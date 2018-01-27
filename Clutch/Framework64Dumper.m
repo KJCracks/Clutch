@@ -19,26 +19,26 @@
 
 - (BOOL)dumpBinary {
 
-    ClutchBundle *bundle = [_originalBinary valueForKey:@"_bundle"];
+    ClutchBundle *bundle = [self.originalBinary valueForKey:@"_bundle"];
 
     NSString *binaryDumpPath =
-        [_originalBinary.workingPath stringByAppendingPathComponent:_originalBinary.binaryPath.lastPathComponent];
+        [self.originalBinary.workingPath stringByAppendingPathComponent:self.originalBinary.binaryPath.lastPathComponent];
 
-    NSString *swappedBinaryPath = _originalBinary.binaryPath, *newSinf = _originalBinary.sinfPath,
-             *newSupp = _originalBinary.suppPath,
-             *newSupf = _originalBinary.supfPath; // default values if we dont need to swap archs
+    NSString *swappedBinaryPath = self.originalBinary.binaryPath, *newSinf = self.originalBinary.sinfPath,
+             *newSupp = self.originalBinary.suppPath,
+             *newSupf = self.originalBinary.supfPath; // default values if we dont need to swap archs
 
     // check if cpusubtype matches
-    if ((_thinHeader.header.cpusubtype != [Device cpu_subtype]) && _originalBinary.hasMultipleARM64Slices) {
-        NSString *suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
+    if ((self.thinHeader.header.cpusubtype != [Device cpu_subtype]) && self.originalBinary.hasMultipleARM64Slices) {
+        NSString *suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:self.thinHeader]];
 
-        swappedBinaryPath = [_originalBinary.binaryPath stringByAppendingString:suffix];
-        newSinf = [_originalBinary.sinfPath.stringByDeletingPathExtension
-            stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.sinfPath.pathExtension]];
-        newSupp = [_originalBinary.suppPath.stringByDeletingPathExtension
-            stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.suppPath.pathExtension]];
-        newSupf = [_originalBinary.supfPath.stringByDeletingPathExtension
-            stringByAppendingString:[suffix stringByAppendingPathExtension:_originalBinary.supfPath.pathExtension]];
+        swappedBinaryPath = [self.originalBinary.binaryPath stringByAppendingString:suffix];
+        newSinf = [self.originalBinary.sinfPath.stringByDeletingPathExtension
+            stringByAppendingString:[suffix stringByAppendingPathExtension:self.originalBinary.sinfPath.pathExtension]];
+        newSupp = [self.originalBinary.suppPath.stringByDeletingPathExtension
+            stringByAppendingString:[suffix stringByAppendingPathExtension:self.originalBinary.suppPath.pathExtension]];
+        newSupf = [self.originalBinary.supfPath.stringByDeletingPathExtension
+            stringByAppendingString:[suffix stringByAppendingPathExtension:self.originalBinary.supfPath.pathExtension]];
 
         [self swapArch];
     }
@@ -46,7 +46,7 @@
     NSFileHandle *newFileHandle =
         [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
 
-    [newFileHandle seekToFileOffset:_thinHeader.offset + _thinHeader.size];
+    [newFileHandle seekToFileOffset:self.thinHeader.offset + self.thinHeader.size];
 
     struct linkedit_data_command ldid;       // LC_CODE_SIGNATURE load header (for resign)
     struct encryption_info_command_64 crypt; // LC_ENCRYPTION_INFO load header (for crypt*)
@@ -59,11 +59,11 @@
     directory.hashOffset = 0;
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
 
-    KJDebug(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
+    KJDebug(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:self.thinHeader], self.thinHeader.offset);
 
     uint32_t cryptlc_offset = 0;
 
-    for (unsigned int i = 0; i < _thinHeader.header.ncmds; i++) {
+    for (unsigned int i = 0; i < self.thinHeader.header.ncmds; i++) {
 
         uint32_t cmd = [newFileHandle intAtOffset:newFileHandle.offsetInFile];
         uint32_t size = [newFileHandle intAtOffset:newFileHandle.offsetInFile + sizeof(uint32_t)];
@@ -125,7 +125,7 @@
     codesignblob = malloc(ldid.datasize);
     // seek to ldid offset
 
-    [newFileHandle seekToFileOffset:_thinHeader.offset + ldid.dataoff];
+    [newFileHandle seekToFileOffset:self.thinHeader.offset + ldid.dataoff];
     [newFileHandle getBytes:codesignblob inRange:NSMakeRange((NSUInteger)(newFileHandle.offsetInFile), ldid.datasize)];
 
     uint32_t countBlobs = CFSwapInt32(codesignblob->count); // how many indexes?
@@ -133,8 +133,8 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
-            KJDebug(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
-            begin = _thinHeader.offset + ldid.dataoff +
+            KJDebug(@"%u %u %u", self.thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
+            begin = self.thinHeader.offset + ldid.dataoff +
                     CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle
                 getBytes:&directory
@@ -181,7 +181,7 @@
         return NO;
     }
 
-    if (_originalBinary.frameworksPath == nil) {
+    if (self.originalBinary.frameworksPath == nil) {
         KJPrint(@"Could not find Frameworks path to create symbolic link to");
         return NO;
     }
@@ -189,7 +189,7 @@
     KJDebug(@"cryptlc_offset %u", cryptlc_offset);
 
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"]
-                                         withDestinationPath:_originalBinary.frameworksPath
+                                         withDestinationPath:self.originalBinary.frameworksPath
                                                        error:nil];
 
     const char *argv[] = {[[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
@@ -197,8 +197,8 @@
                           swappedBinaryPath.UTF8String,
                           binaryDumpPath.UTF8String,
                           [NSString stringWithFormat:@"%u", pages].UTF8String,
-                          [NSString stringWithFormat:@"%u", _thinHeader.header.ncmds].UTF8String,
-                          [NSString stringWithFormat:@"%u", _thinHeader.offset].UTF8String,
+                          [NSString stringWithFormat:@"%u", self.thinHeader.header.ncmds].UTF8String,
+                          [NSString stringWithFormat:@"%u", self.thinHeader.offset].UTF8String,
                           bundle.parentBundle.bundleIdentifier.UTF8String,
                           [NSString stringWithFormat:@"%u", CFSwapInt32(directory.hashOffset)].UTF8String,
                           [NSString stringWithFormat:@"%u", (unsigned int)begin].UTF8String,
@@ -248,13 +248,13 @@
         KJPrint(@"posix_spawn: %s (Error %u)", strerror(dumpResult), dumpResult);
     }
 
-    if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
+    if (![swappedBinaryPath isEqualToString:self.originalBinary.binaryPath])
         [[NSFileManager defaultManager] removeItemAtPath:swappedBinaryPath error:nil];
-    if (![newSinf isEqualToString:_originalBinary.sinfPath])
+    if (![newSinf isEqualToString:self.originalBinary.sinfPath])
         [[NSFileManager defaultManager] removeItemAtPath:newSinf error:nil];
-    if (![newSupp isEqualToString:_originalBinary.suppPath])
+    if (![newSupp isEqualToString:self.originalBinary.suppPath])
         [[NSFileManager defaultManager] removeItemAtPath:newSupp error:nil];
-    if (![newSupf isEqualToString:_originalBinary.supfPath])
+    if (![newSupf isEqualToString:self.originalBinary.supfPath])
         [[NSFileManager defaultManager] removeItemAtPath:newSupf error:nil];
 
     [[NSFileManager defaultManager] removeItemAtPath:workingPath error:nil];

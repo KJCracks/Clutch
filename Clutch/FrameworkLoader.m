@@ -44,7 +44,7 @@
 
     [NSBundle mainBundle].clutchBID = self.bID; //_infoPlist[@"CFBundleIdentifier"];
 
-    _originalBinary = (Binary *)[NSString stringWithFormat:@"<%@>", _infoPlist[@"CFBundleExecutable"]];
+    self.originalBinary = (Binary *)[NSString stringWithFormat:@"<%@>", _infoPlist[@"CFBundleExecutable"]];
 
     NSFileHandle *newFileHandle =
         [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(binaryDumpPath.UTF8String, "r+"))];
@@ -117,7 +117,7 @@
 
     const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
 
-    KJPrint(@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]);
+    KJPrint(@"Dumping %@ %@", self.originalBinary, [Dumper readableArchFromMachHeader:*image_header]);
 
     uint32_t pages_d = 0;
 

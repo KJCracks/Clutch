@@ -15,6 +15,7 @@
 #endif
 
 @implementation Dumper
+
 - (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary {
     self = [super init];
     if (self) {

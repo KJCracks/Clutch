@@ -72,7 +72,7 @@
         NSString *_zipFilename = _application.zipFilename;
         NSString *_localPrefix = _application.zipPrefix;
 
-        [[ClutchPrint sharedInstance] print:@"Zipping %@", _application.bundleURL.lastPathComponent];
+        KJPrint(@"Zipping %@", _application.bundleURL.lastPathComponent);
 
         if (!_archive) {
             _archive = [[ZipArchive alloc] init];
@@ -127,34 +127,20 @@
                         ![_localPath.pathExtension caseInsensitiveCompare:@"dylib"]) {
                         [_archive addFileToZip:theURL.path
                                        newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
-#if PRINT_ZIP_LOGS
-                        [[ClutchPrint sharedInstance]
-                            print:@"Added %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
-#endif
+                        KJDebug(@"Added %@", [_localPrefix stringByAppendingPathComponent:_localPath]);
                     } else {
-#if PRINT_ZIP_LOGS
-                        [[ClutchPrint sharedInstance]
-                            print:@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
-#endif
+                        KJDebug(@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]);
                     }
                 } else if (![isDirectory boolValue] &&
                            ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent]) {
                     [_archive addFileToZip:theURL.path
                                    newname:[_localPrefix stringByAppendingPathComponent:_localPath]];
-#if PRINT_ZIP_LOGS
-                    [[ClutchPrint sharedInstance]
-                        print:@"Added %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
-#endif
+                    KJDebug(@"Added %@", [_localPrefix stringByAppendingPathComponent:_localPath]);
                 } else {
-#if PRINT_ZIP_LOGS
-                    [[ClutchPrint sharedInstance]
-                        print:@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]];
-#endif
+                    KJDebug(@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]);
                 }
             } else {
-#if PRINT_ZIP_LOGS
-                [[ClutchPrint sharedInstance] print:@"Skipping %@", _localPath];
-#endif
+                KJDebug(@"Skipping %@", _localPath);
             }
         }
 

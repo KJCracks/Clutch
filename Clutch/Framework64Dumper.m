@@ -59,9 +59,9 @@
     directory.hashOffset = 0;
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"64bit dumping: arch %@ offset %u",
+    KJDebug(@"64bit dumping: arch %@ offset %u",
                                                  [Dumper readableArchFromHeader:_thinHeader],
-                                                 _thinHeader.offset];
+                                                 _thinHeader.offset);
 
     uint32_t cryptlc_offset = 0;
 
@@ -77,8 +77,7 @@
                                                     sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
 
-                [[ClutchPrint sharedInstance]
-                    printDeveloper:@"FOUND CODE SIGNATURE: dataoff %u | datasize %u", ldid.dataoff, ldid.datasize];
+                KJDebug(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u", ldid.dataoff, ldid.datasize);
 
                 break;
             }
@@ -89,11 +88,10 @@
                                                     sizeof(struct encryption_info_command_64))];
                 foundCrypt = YES;
 
-                [[ClutchPrint sharedInstance]
-                    printDeveloper:@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",
+                KJDebug(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",
                                    crypt.cryptoff,
                                    crypt.cryptsize,
-                                   crypt.cryptid];
+                                   crypt.cryptid);
 
                 break;
             }
@@ -104,7 +102,7 @@
 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
-                    [[ClutchPrint sharedInstance] printDeveloper:@"FOUND %s SEGMENT", __text.segname];
+                    KJDebug(@"FOUND %s SEGMENT", __text.segname);
                 }
                 break;
             }
@@ -118,10 +116,10 @@
 
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"dumping binary: some load commands were not found %@ %@ %@",
+        KJDebug(@"dumping binary: some load commands were not found %@ %@ %@",
                                                      foundCrypt ? @"YES" : @"NO",
                                                      foundSignature ? @"YES" : @"NO",
-                                                     foundStartText ? @"YES" : @"NO"];
+                                                     foundStartText ? @"YES" : @"NO");
         return NO;
     }
 
@@ -137,14 +135,13 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
-            [[ClutchPrint sharedInstance]
-                printDeveloper:@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset];
+            KJDebug(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
             begin = _thinHeader.offset + ldid.dataoff +
                     CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle
                 getBytes:&directory
                  inRange:NSMakeRange(begin, sizeof(struct code_directory))]; // read the blob from its beginning
-            [[ClutchPrint sharedInstance] printDeveloper:@"Found CSSLOT_CODEDIRECTORY"];
+            KJDebug(@"Found CSSLOT_CODEDIRECTORY");
             break; // break (we don't need anything from this the superblob anymore)
         }
     }
@@ -153,7 +150,7 @@
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
 
     if (pages == 0) {
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"pages == 0"];
+        KJPrintVerbose(@"pages == 0");
         return NO;
     }
 
@@ -182,16 +179,16 @@
     if (![[NSFileManager defaultManager] copyItemAtPath:[NSProcessInfo processInfo].arguments[0]
                                                  toPath:[workingPath stringByAppendingPathComponent:@"clutch"]
                                                   error:nil]) {
-        [[ClutchPrint sharedInstance] printError:@"Failed to copy clutch to %@", workingPath];
+        KJPrint(@"Failed to copy clutch to %@", workingPath);
         return NO;
     }
 
     if (_originalBinary.frameworksPath == nil) {
-        [[ClutchPrint sharedInstance] printError:@"Could not find Frameworks path to create symbolic link to"];
+        KJPrint(@"Could not find Frameworks path to create symbolic link to");
         return NO;
     }
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"cryptlc_offset %u", cryptlc_offset];
+    KJDebug(@"cryptlc_offset %u", cryptlc_offset);
 
     [[NSFileManager defaultManager] createSymbolicLinkAtPath:[workingPath stringByAppendingPathComponent:@"Frameworks"]
                                          withDestinationPath:_originalBinary.frameworksPath
@@ -216,7 +213,7 @@
     for (size_t i = 0; argv[i] != NULL; i++) {
         ns_argv = [ns_argv stringByAppendingFormat:@"%s ", argv[i]];
     }
-    [[ClutchPrint sharedInstance] printDeveloper:@"hello potato posix_spawn %@", ns_argv];
+    KJDebug(@"hello potato posix_spawn %@", ns_argv);
 
     posix_spawnattr_init(&attr);
 
@@ -234,7 +231,7 @@
     __block int finalDumpResult = 9999;
 
     if (dumpResult == 0) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"Child pid: %i", pid];
+        KJDebug(@"Child pid: %i", pid);
 
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 
@@ -242,16 +239,15 @@
             int dumpResult_ = 0;
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult_, 0) != -1) {
-                [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple
-                                                  format:@"Child exited with status %u", dumpResult_];
+                KJPrintVerbose(@"Child exited with status %u", dumpResult_);
                 finalDumpResult = dumpResult_;
             } else {
-                perror("waitpid");
+                KJPrintVerbose(@"waitpid");
             }
         });
 
     } else {
-        [[ClutchPrint sharedInstance] printError:@"posix_spawn: %s (Error %u)", strerror(dumpResult), dumpResult];
+        KJPrint(@"posix_spawn: %s (Error %u)", strerror(dumpResult), dumpResult);
     }
 
     if (![swappedBinaryPath isEqualToString:_originalBinary.binaryPath])
@@ -265,7 +261,7 @@
 
     [[NSFileManager defaultManager] removeItemAtPath:workingPath error:nil];
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Final dump result %u", finalDumpResult];
+    KJDebug(@"Final dump result %u", finalDumpResult);
 
     if (finalDumpResult == 0)
         return YES;

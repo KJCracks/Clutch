@@ -36,7 +36,7 @@
     NSLog(@"application %@", _application->_dumpQueue);
     NSArray *wow = [_application->_dumpQueue operations];
     for (NSOperation *operation in wow) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"operation hash %lu", (unsigned long)operation.hash];
+        KJDebug(@"operation hash %lu", (unsigned long)operation.hash);
     }
     [self completeOperation];
 }
@@ -118,7 +118,7 @@
         [tmpHandle closeFile];
 
         if (!headersData) {
-            [[ClutchPrint sharedInstance] print:@"Failed to extract headers info from binary %@.", originalBinary];
+            KJPrint(@"Failed to extract headers info from binary %@.", originalBinary);
             [self failedOperation];
             return;
         }
@@ -129,7 +129,7 @@
         headersFromBinary(headers, headersData, &numHeaders);
 
         if (numHeaders == 0) {
-            [[ClutchPrint sharedInstance] print:@"No compatible architecture found"];
+            KJPrint(@"No compatible architecture found");
         }
 
         uint32_t dumpCount = 0;
@@ -144,20 +144,18 @@
             thin_header macho = headers[i];
             Dumper<BinaryDumpProtocol> *_dumper = nil;
 
-            [[ClutchPrint sharedInstance]
-                printDeveloper:@"Finding compatible dumper for binary %@ with arch cputype: %u",
+            KJDebug(@"Finding compatible dumper for binary %@ with arch cputype: %u",
                                originalBinary,
-                               macho.header.cputype];
+                               macho.header.cputype);
             for (Class dumperClass in dumpers) {
                 _dumper = [[dumperClass alloc] initWithHeader:macho originalBinary:originalBinary];
 
                 if ([_dumper compatibilityMode] == ArchCompatibilityNotCompatible) {
-                    [[ClutchPrint sharedInstance]
-                        printDeveloper:
+                    KJDebug(
                             @"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper",
                             _dumper,
                             originalBinary,
-                            [Dumper readableArchFromHeader:macho]];
+                            [Dumper readableArchFromHeader:macho]);
                     _dumper = nil;
                 } else {
                     break;
@@ -165,20 +163,19 @@
             }
 
             if (_dumper == nil) {
-                [[ClutchPrint sharedInstance]
-                    printDeveloper:
+                KJDebug(
                         @"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",
                         originalBinary,
-                        [Dumper readableArchFromHeader:macho]];
-                [[ClutchPrint sharedInstance] printDeveloper:@"offset %u", macho.offset];
+                        [Dumper readableArchFromHeader:macho]);
+
                 [_headersToStrip addObject:[NSNumber numberWithUnsignedInt:macho.offset]];
                 continue;
             }
 
-            [[ClutchPrint sharedInstance] printDeveloper:@"Found compatible dumper %@ for binary %@ with arch %@",
+            KJDebug(@"Found compatible dumper %@ for binary %@ with arch %@",
                                                          _dumper,
                                                          originalBinary,
-                                                         [Dumper readableArchFromHeader:macho]];
+                                                         [Dumper readableArchFromHeader:macho]);
 
             NSFileHandle *_handle =
                 [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))
@@ -190,13 +187,13 @@
 
             if (result == YES) {
                 dumpCount++;
-                [[ClutchPrint sharedInstance] printDeveloper:@"Sucessfully dumped %@ segment of %@",
+                KJDebug(@"Sucessfully dumped %@ segment of %@",
                                                              [Dumper readableArchFromHeader:macho],
-                                                             originalBinary];
+                                                             originalBinary);
             } else {
-                [[ClutchPrint sharedInstance] printError:@"Failed to dump %@ with arch %@",
+                KJPrint(@"Failed to dump %@ with arch %@",
                                                          originalBinary,
-                                                         [Dumper readableArchFromHeader:macho]];
+                                                         [Dumper readableArchFromHeader:macho]);
                 [self failedOperation];
             }
 
@@ -204,7 +201,7 @@
         }
 
         if (!dumpCount) {
-            [[ClutchPrint sharedInstance] printError:@"Failed to dump %@", originalBinary];
+            KJPrint(@"Failed to dump %@", originalBinary);
             [self failedOperation];
 
             return;
@@ -232,16 +229,15 @@
             for (uint32_t i = 0; i < fat.nfat_arch; i++) {
                 struct fat_arch arch = *(struct fat_arch *)((char *)buffer.bytes + offset);
                 NSNumber *archOffset = [NSNumber numberWithUnsignedInt:SWAP(arch.offset)];
-                [[ClutchPrint sharedInstance] printDeveloper:@"current offset %u", SWAP(arch.offset)];
+                KJDebug(@"current offset %u", SWAP(arch.offset));
                 if ([_headersToStrip containsObject:archOffset]) {
-                    [[ClutchPrint sharedInstance] printDeveloper:@"arch to strip %u %u",
+                    KJDebug(@"arch to strip %u %u",
                                                                  (cpu_subtype_t)SWAP(arch.cpusubtype),
-                                                                 (cpu_type_t)SWAP(arch.cputype)];
+                                                                 (cpu_type_t)SWAP(arch.cputype));
                 } else {
                     NSValue *archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
                     [_headersToKeep addObject:archValue];
-                    [[ClutchPrint sharedInstance]
-                        printDeveloper:@"storing the arch we want to keep %u", (cpu_subtype_t)SWAP(arch.cpusubtype)];
+                    KJDebug(@"storing the arch we want to keep %u", (cpu_subtype_t)SWAP(arch.cpusubtype));
                 }
                 offset += sizeof(struct fat_arch);
             }
@@ -265,7 +261,7 @@
             // skip 4 bytes for magic, 4 bytes of nfat_arch
             uint32_t nfat_arch = SWAP((uint32_t)[_headersToKeep count]);
             [_dumpHandle replaceBytesInRange:NSMakeRange(sizeof(uint32_t), sizeof(uint32_t)) withBytes:&nfat_arch];
-            [[ClutchPrint sharedInstance] printDeveloper:@"changing nfat_arch to %u", SWAP(nfat_arch)];
+            KJDebug(@"changing nfat_arch to %u", SWAP(nfat_arch));
 
             offset = sizeof(struct fat_header);
 
@@ -273,9 +269,9 @@
                 NSValue *archValue = _headersToKeep[i];
                 struct fat_arch keepArch;
                 [archValue getValue:&keepArch];
-                [[ClutchPrint sharedInstance] printDeveloper:@"headers to keep: %u %u",
+                KJDebug(@"headers to keep: %u %u",
                                                              (uint32_t)SWAP(keepArch.cpusubtype),
-                                                             SWAP(keepArch.cputype)];
+                                                             SWAP(keepArch.cputype));
 
                 uint32_t origOffset = (uint32_t)SWAP(keepArch.offset);
 
@@ -286,7 +282,7 @@
                     macho_offset = (NSUInteger)exp2l(SWAP(keepArch.align));
 
                     if (errno != 0 || fetestexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW) != 0) {
-                        [[ClutchPrint sharedInstance] print:@"Error calculating offset. This might fail"];
+                        KJPrint(@"Error calculating offset. This might fail");
                     }
 
                     errno = 0;
@@ -313,9 +309,8 @@
             [[NSFileManager defaultManager] removeItemAtPath:[_binaryDumpPath stringByAppendingPathExtension:@"fatty"]
                                                        error:nil];
 
-            [[ClutchPrint sharedInstance] printVerbose:@"Finished 'stripping' binary %@", originalBinary];
-            [[ClutchPrint sharedInstance]
-                printVerbose:@"Note: This binary will be missing some undecryptable architectures"];
+            KJPrintVerbose(@"Finished 'stripping' binary %@", originalBinary);
+            KJPrintVerbose(@"Note: This binary will be missing some undecryptable architectures");
         }
 
 #pragma mark checking if everything's fine

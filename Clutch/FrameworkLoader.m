@@ -54,7 +54,7 @@
     void *handle = dlopen(swappedBinaryPath.UTF8String, RTLD_LAZY);
 
     if (!handle) {
-        [[ClutchPrint sharedInstance] printError:@"Failed to dlopen %@ %s", swappedBinaryPath, dlerror()];
+        KJPrint(@"Failed to dlopen %@ %s", swappedBinaryPath, dlerror());
         return NO;
     }
 
@@ -79,7 +79,7 @@
 
     intptr_t dyldPointer = _dyld_get_image_vmaddr_slide(dyldIndex);
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"dyld offset %u", dyldPointer];
+    KJDebug(@"dyld offset %u", dyldPointer);
 
     BOOL dumpResult;
 
@@ -112,14 +112,12 @@
     CLUTCH_UNUSED(pid);
     CLUTCH_UNUSED(__text_start);
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Using Framework Dumper, pages %u", pages];
+    KJDebug(@"Using Framework Dumper, pages %u", pages);
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
 
     const struct mach_header *image_header = _dyld_get_image_header(_dyldImageIndex);
 
-    [[ClutchPrint sharedInstance]
-        printColor:ClutchPrinterColorPurple
-            format:@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]];
+    KJPrint(@"Dumping %@ %@", _originalBinary, [Dumper readableArchFromMachHeader:*image_header]);
 
     uint32_t pages_d = 0;
 
@@ -138,7 +136,7 @@
     free(buf);
 
     // nice! now let's write the new checksum data
-    [[ClutchPrint sharedInstance] printDeveloper:@"Writing new checksum"];
+    KJDebug(@"Writing new checksum");
 
     [fileHandle seekToFileOffset:(begin + hashOffset)];
 
@@ -147,9 +145,9 @@
     free(checksum);
     [fileHandle writeData:trimmed_checksum];
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Done writing checksum"];
+    KJDebug(@"Done writing checksum");
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Patching cryptid"];
+    KJDebug(@"Patching cryptid");
 
     NSData *data;
 
@@ -158,7 +156,7 @@
 
         [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command_64)];
 
-        [[ClutchPrint sharedInstance] printDeveloper:@"current cryptid %u", crypt.cryptid];
+        KJDebug(@"current cryptid %u", crypt.cryptid);
         crypt.cryptid = 0;
         [fileHandle seekToFileOffset:self.cryptlc_offset];
 
@@ -167,7 +165,7 @@
     } else {
         struct encryption_info_command crypt;
         [fileHandle getBytes:&crypt atOffset:self.cryptlc_offset length:sizeof(struct encryption_info_command)];
-        [[ClutchPrint sharedInstance] printDeveloper:@"current cryptid %u", crypt.cryptid];
+        KJDebug(@"current cryptid %u", crypt.cryptid);
         crypt.cryptid = 0;
         [fileHandle seekToFileOffset:self.cryptlc_offset];
         data = [NSData dataWithBytes:&crypt length:sizeof(struct encryption_info_command)];

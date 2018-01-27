@@ -65,9 +65,9 @@
 
     uint64_t __text_start = 0;
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"64bit dumping: arch %@ offset %u",
+    KJDebug(@"64bit dumping: arch %@ offset %u",
                                                  [Dumper readableArchFromHeader:_thinHeader],
-                                                 _thinHeader.offset];
+                                                 _thinHeader.offset);
 
     for (unsigned int i = 0; i < _thinHeader.header.ncmds; i++) {
 
@@ -81,8 +81,7 @@
                                                     sizeof(struct linkedit_data_command))];
                 foundSignature = YES;
 
-                [[ClutchPrint sharedInstance]
-                    printDeveloper:@"FOUND CODE SIGNATURE: dataoff %u | datasize %u", ldid.dataoff, ldid.datasize];
+                KJDebug(@"FOUND CODE SIGNATURE: dataoff %u | datasize %u", ldid.dataoff, ldid.datasize);
 
                 break;
             }
@@ -92,11 +91,10 @@
                                                     sizeof(struct encryption_info_command_64))];
                 foundCrypt = YES;
 
-                [[ClutchPrint sharedInstance]
-                    printDeveloper:@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",
+                KJDebug(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",
                                    crypt.cryptoff,
                                    crypt.cryptsize,
-                                   crypt.cryptid];
+                                   crypt.cryptid);
 
                 break;
             }
@@ -107,7 +105,7 @@
 
                 if (strncmp(__text.segname, "__TEXT", 6) == 0) {
                     foundStartText = YES;
-                    [[ClutchPrint sharedInstance] printDeveloper:@"FOUND %s SEGMENT", __text.segname];
+                    KJDebug(@"FOUND %s SEGMENT", __text.segname);
                     __text_start = __text.vmaddr;
                 }
                 break;
@@ -122,16 +120,16 @@
 
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"dumping binary: some load commands were not found %@ %@ %@",
+        KJDebug(@"dumping binary: some load commands were not found %@ %@ %@",
                                                      foundCrypt ? @"YES" : @"NO",
                                                      foundSignature ? @"YES" : @"NO",
-                                                     foundStartText ? @"YES" : @"NO"];
+                                                     foundStartText ? @"YES" : @"NO");
         return NO;
     }
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"found all required load commands for %@ %@",
+    KJDebug(@"found all required load commands for %@ %@",
                                                  _originalBinary,
-                                                 [Dumper readableArchFromHeader:_thinHeader]];
+                                                 [Dumper readableArchFromHeader:_thinHeader]);
 
     pid_t pid;         // store the process ID of the fork
     mach_port_t port;  // mach port used for moving virtual memory
@@ -141,8 +139,8 @@
     pid = [self posix_spawn:swappedBinaryPath disableASLR:self.shouldDisableASLR];
 
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
-        [[ClutchPrint sharedInstance] printError:@"Could not obtain mach port, either the process is dead (codesign "
-                                                 @"error?) or entitlements were not properly signed!"];
+        KJPrint(@"Could not obtain mach port, either the process is dead (codesign "
+                                                 @"error?) or entitlements were not properly signed!");
         goto gotofail;
     }
 
@@ -158,14 +156,13 @@
     for (uint32_t index = 0; index < countBlobs; index++) { // is this the code directory?
         if (CFSwapInt32(codesignblob->index[index].type) == CSSLOT_CODEDIRECTORY) {
             // we'll find the hash metadata in here
-            [[ClutchPrint sharedInstance]
-                printDeveloper:@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset];
+            KJDebug(@"%u %u %u", _thinHeader.offset, ldid.dataoff, codesignblob->index[index].offset);
             begin = _thinHeader.offset + ldid.dataoff +
                     CFSwapInt32(codesignblob->index[index].offset); // store the top of the codesign directory blob
             [newFileHandle
                 getBytes:&directory
                  inRange:NSMakeRange(begin, sizeof(struct code_directory))]; // read the blob from its beginning
-            [[ClutchPrint sharedInstance] printDeveloper:@"Found CSSLOT_CODEDIRECTORY"];
+            KJDebug(@"Found CSSLOT_CODEDIRECTORY");
             break; // break (we don't need anything from this the superblob anymore)
         }
     }
@@ -174,10 +171,10 @@
 
     uint32_t pages = CFSwapInt32(directory.nCodeSlots); // get the amount of codeslots
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Codesign Pages %u", pages];
+    KJDebug(@"Codesign Pages %u", pages);
 
     if (pages == 0) {
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"pages == 0"];
+        KJPrint(@"pages == 0");
         goto gotofail;
     }
 
@@ -187,12 +184,11 @@
         NSError *error = nil;
         mach_vm_address_t main_address = [ASLRDisabler slideForPID:pid error:&error];
         if (error) {
-            [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple
-                                              format:@"Failed to find address of header!"];
+            KJPrint(@"Failed to find address of header!");
             goto gotofail;
         }
 
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink format:@"ASLR slide: 0x%llx", main_address];
+        KJDebug(@"ASLR slide: 0x%llx", main_address);
         __text_start = main_address;
     }
 
@@ -210,7 +206,7 @@
                                   codesign_begin:(uint32_t)begin];
         });
     }
-    [[ClutchPrint sharedInstance] printDeveloper:@"done dumping"];
+    KJDebug(@"done dumping");
 
     // done dumping, let's wait for pid
 

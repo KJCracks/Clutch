@@ -30,8 +30,8 @@
 
     _executable = [[Binary alloc] initWithBundle:self];
 
-    [[ClutchPrint sharedInstance] printVerbose:@"Preparing to dump %@", _executable];
-    [[ClutchPrint sharedInstance] printVerbose:@"Path: %@", self.executable.binaryPath];
+    KJPrintVerbose(@"Preparing to dump %@", _executable);
+    KJPrintVerbose(@"Path: %@", self.executable.binaryPath);
 
     NSDictionary *ownershipInfo = @{NSFileOwnerAccountName : @"mobile", NSFileGroupOwnerAccountName : @"mobile"};
 

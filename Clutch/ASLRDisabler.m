@@ -23,8 +23,7 @@
     vm_map_t targetTask = 0;
     kern_return_t kr = 0;
     if (task_for_pid(mach_task_self(), pid, &targetTask)) {
-        [[ClutchPrint sharedInstance]
-            printError:@"Can't execute task_for_pid! Do you have the right permissions/entitlements?"];
+        KJPrint(@"Can't execute task_for_pid! Do you have the right permissions/entitlements?");
         NSDictionary<NSErrorUserInfoKey, NSString *> *userInfo = @{
             NSLocalizedDescriptionKey : @"Failed to execute task_for_pid",
         };
@@ -57,9 +56,7 @@
         if (kr == KERN_SUCCESS && bytes_read == sizeof(struct mach_header)) {
             /* only one image with MH_EXECUTE filetype */
             if ((mh.magic == MH_MAGIC || mh.magic == MH_MAGIC_64) && mh.filetype == MH_EXECUTE) {
-#if DEBUG
-                [[ClutchPrint sharedInstance] printDeveloper:@"Found main binary mach-o image @ %p!", (void *)addr];
-#endif
+                KJDebug(@"Found main binary mach-o image @ %p!", (void *)addr);
                 return addr;
             }
         }

@@ -13,7 +13,7 @@
 #import "ZipOperation.h"
 #import <sys/time.h>
 
-int diff_ms(struct timeval, struct timeval);
+NSInteger diff_ms(struct timeval, struct timeval);
 extern struct timeval gStart;
 
 @interface FinalizeDumpOperation () {
@@ -65,10 +65,9 @@ extern struct timeval gStart;
     self.completionBlock = ^{
         struct timeval end;
         gettimeofday(&end, NULL);
-        int dif = diff_ms(end, gStart);
-        float sec = ((dif + 500.0f) / 1000.0f);
-        [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPink
-                                          format:@"Finished dumping %@ in %0.1f seconds", bundleIdentifier, sec];
+        NSInteger dif = diff_ms(end, gStart);
+        CGFloat sec = ((dif + 500.0f) / 1000.0f);
+        KJPrint(@"Finished dumping %@ in %0.1f seconds", bundleIdentifier, sec);
     };
 
     // If the operation is not canceled, begin executing the task.
@@ -113,11 +112,9 @@ extern struct timeval gStart;
             __block BOOL status = plists.count == self.expectedBinariesCount;
 
             if (status) {
-                [[ClutchPrint sharedInstance]
-                    printColor:ClutchPrinterColorPink
-                        format:@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath];
+                KJPrint(@"Finished dumping %@ to %@", _application.bundleIdentifier, _application.workingPath);
             } else {
-                [[ClutchPrint sharedInstance] printError:@"Failed to dump %@ :(", _application.bundleIdentifier];
+                KJPrint(@"Failed to dump %@ :(", _application.bundleIdentifier);
                 return;
             }
 
@@ -129,7 +126,7 @@ extern struct timeval gStart;
         NSString *_zipFilename = _application.zipFilename;
 
         if (_application.parentBundle) {
-            [[ClutchPrint sharedInstance] printDeveloper:@"Zipping %@", _application.bundleURL.lastPathComponent];
+            KJDebug(@"Zipping %@", _application.bundleURL.lastPathComponent);
         }
 
         if (_archive == nil) {
@@ -161,9 +158,7 @@ extern struct timeval gStart;
                     for (NSString *key in dict.allKeys) {
                         NSString *zipPath = dict[key];
                         [_archive addFileToZip:key newname:zipPath];
-#if PRINT_ZIP_LOGS
-                        [[ClutchPrint sharedInstance] print:@"Added %@", zipPath];
-#endif
+                        KJDebug(@"Added %@", zipPath);
                     }
 
                     [plists addObject:theURL.path];
@@ -211,10 +206,10 @@ extern struct timeval gStart;
                         if (![[NSFileManager defaultManager] moveItemAtURL:ipaSrcURL
                                                                      toURL:[NSURL fileURLWithPath:currentFile]
                                                                      error:&anError]) {
-                            [[ClutchPrint sharedInstance] printDeveloper:@"Failed to move from %@ to %@ with error %@",
+                            KJDebug(@"Failed to move from %@ to %@ with error %@",
                                                                          ipaSrcURL,
                                                                          [NSURL fileURLWithPath:currentFile],
-                                                                         anError];
+                                                                         anError);
                         }
                         break;
                     }
@@ -223,15 +218,15 @@ extern struct timeval gStart;
                 if (![[NSFileManager defaultManager] moveItemAtURL:ipaSrcURL
                                                              toURL:[NSURL fileURLWithPath:_ipaPath]
                                                              error:&anError]) {
-                    [[ClutchPrint sharedInstance] printDeveloper:@"Failed to move from %@ to %@ with error %@",
+                    KJDebug(@"Failed to move from %@ to %@ with error %@",
                                                                  ipaSrcURL,
                                                                  [NSURL fileURLWithPath:_ipaPath],
-                                                                 anError];
+                                                                 anError);
                 }
             }
         }
 
-        [[ClutchPrint sharedInstance] print:@"%@: %@", status ? @"DONE" : @"FAILED", status ? _ipaPath : _application];
+        KJPrint(@"%@: %@", status ? @"DONE" : @"FAILED", status ? _ipaPath : _application);
 
         // Do the main work of the operation here.
         [self completeOperation];

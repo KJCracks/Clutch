@@ -33,7 +33,7 @@
 
         _bundle = path;
 
-        [[ClutchPrint sharedInstance] printDeveloper:@"######## bundle URL %@", _bundle.bundleContainerURL];
+        KJDebug(@"######## bundle URL %@", _bundle.bundleContainerURL);
         if ([[_bundle.bundleContainerURL path] hasSuffix:@"Frameworks"]) {
             _frameworksPath = [_bundle.bundleContainerURL path];
         }

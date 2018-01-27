@@ -66,6 +66,8 @@
             [returnCommands insertObject:self.allCommands[8] atIndex:0];
         } else if ([argument isEqualToString:@"--verbose"]) {
             [returnCommands insertObject:self.allCommands[9] atIndex:0];
+        } else if ([argument isEqualToString:@"--debug"]) {
+            [returnCommands insertObject:self.allCommands[10] atIndex:0];
         } else if ([argument hasPrefix:@"-"]) {
             // is a flag
             for (ClutchCommand *command in self.allCommands) {
@@ -75,8 +77,7 @@
                         [returnCommands addObject:command];
                         break;
                     } else {
-                        [[ClutchPrint sharedInstance]
-                            print:@"Ignoring incorrectly chained command and values: %@.", argument];
+                        KJPrint(@"Ignoring incorrectly chained command and values: %@.", argument);
                         // ignore 2nd command in chained commands like -b foo -d bar
                     }
                 }
@@ -149,8 +150,14 @@
                                                           longOption:@"--verbose"
                                                   commandDescription:@"Print verbose messages"
                                                                 flag:ClutchCommandFlagOptional];
+    ClutchCommand *debug = [ClutchCommand commandWithCommandOption:ClutchCommandOptionDebug
+                                                       shortOption:nil
+                                                        longOption:@"--debug"
+                                                commandDescription:
+                            @"Enable debug logging. Only available with a debug build."
+                                                              flag:ClutchCommandFlagNoArguments | ClutchCommandFlagInvisible];
 
-    return @[ none, framework, binary, dump, printInstalled, clean, version, help, noColor, verbose ];
+    return @[ none, framework, binary, dump, printInstalled, clean, version, help, noColor, verbose, debug ];
 }
 
 - (ClutchCommand *)parseCommandString:(NSString *)commandString {

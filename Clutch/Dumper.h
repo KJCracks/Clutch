@@ -21,9 +21,9 @@ void _kill(pid_t pid);
 
 @property (nonatomic, readonly) BOOL isASLRProtected;
 @property (nonatomic, retain) NSFileHandle *originalFileHandle;
-@property (nonatomic, assign) BOOL shouldDisableASLR;
+@property (nonatomic, assign, readonly) BOOL shouldDisableASLR;
 @property (nonatomic, retain) Binary *originalBinary;
-@property (nonatomic, assign) thin_header thinHeader;
+@property (nonatomic, assign, readonly) thin_header thinHeader;
 
 + (NSString *)readableArchFromHeader:(thin_header)macho;
 + (NSString *)readableArchFromMachHeader:(struct mach_header)header;

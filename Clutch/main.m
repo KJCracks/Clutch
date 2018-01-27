@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 AppAddict. All rights reserved.
 //
 
-#import "ApplicationsManager.h"
+#import "KJApplicationManager.h"
 #import "ClutchCommands.h"
 #import "ClutchPrint.h"
 #import "FrameworkLoader.h"
@@ -24,7 +24,7 @@ int diff_ms(struct timeval t1, struct timeval t2) {
 
 void listApps(void);
 void listApps() {
-    ApplicationsManager *_manager = [[ApplicationsManager alloc] init];
+    KJApplicationManager *_manager = [[KJApplicationManager alloc] init];
 
     NSArray *installedApps = [_manager installedApps].allValues;
     [[ClutchPrint sharedInstance] print:@"Installed apps:"];
@@ -157,7 +157,7 @@ int main(int argc, const char *argv[]) {
                     }
                     case ClutchCommandOptionBinaryDump:
                     case ClutchCommandOptionDump: {
-                        NSDictionary *_installedApps = [[[ApplicationsManager alloc] init] _allCachedApplications];
+                        NSDictionary *_installedApps = [[[KJApplicationManager alloc] init] cachedApplications];
                         NSArray *_installedArray = _installedApps.allValues;
 
                         for (NSString *selection in values) {

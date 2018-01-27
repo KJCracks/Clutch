@@ -59,7 +59,7 @@
 
     if ((_thinHeader.header.flags & MH_PIE) && yrn) {
 
-        [[ClutchPrint sharedInstance] printDeveloper:@"disabling MH_PIE!!!!"];
+        KJDebug(@"disabling MH_PIE!!!!");
 
         _thinHeader.header.flags &= ~(uint32_t)MH_PIE;
         [self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header))
@@ -70,7 +70,7 @@
         //[self.originalFileHandle replaceBytesInRange:NSMakeRange(_thinHeader.offset, sizeof(_thinHeader.header))
         // withBytes:&_thinHeader.header];
     } else {
-        [[ClutchPrint sharedInstance] printDeveloper:@"to MH_PIE or not to MH_PIE, that is the question"];
+        KJDebug(@"to MH_PIE or not to MH_PIE, that is the question");
     }
 
     pid_t pid = 0;
@@ -96,7 +96,7 @@
 
     posix_spawnattr_destroy(&attr);
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"got the pid %u %@", pid, binaryPath];
+    KJDebug(@"got the pid %u %@", pid, binaryPath);
 
     return pid;
 }
@@ -111,7 +111,7 @@
 
 - (void)swapArch {
 
-    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Swapping architectures.."];
+    KJPrint(@"Swapping architectures..");
 
     // time to swap
     NSString *suffix = [NSString stringWithFormat:@"_%@", [Dumper readableArchFromHeader:_thinHeader]];
@@ -137,7 +137,7 @@
 
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.binaryPath toPath:swappedBinaryPath error:&error];
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"%@", error];
+    KJDebug(@"%@", error);
 
     [[NSFileManager defaultManager] copyItemAtPath:_originalBinary.sinfPath toPath:newSinf error:nil];
 
@@ -188,9 +188,7 @@
                         arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_XEON);
                         break;
                     default:
-                        [[ClutchPrint sharedInstance]
-                            printColor:ClutchPrinterColorPurple
-                                format:@"Warning: A wild 32-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype)];
+                        KJPrint(@"Warning: A wild 32-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype));
                         arch.cputype = (cpu_type_t)SWAP(CPU_TYPE_I386);
                         arch.cpusubtype = (cpu_subtype_t)SWAP(CPU_SUBTYPE_PENTIUM_3_XEON); // pentium 3 ftw
                         break;
@@ -207,9 +205,7 @@
                         arch.cpusubtype = (int)SWAP(CPU_SUBTYPE_X86_64_H);
                         break;
                     default:
-                        [[ClutchPrint sharedInstance]
-                            printColor:ClutchPrinterColorPurple
-                                format:@"Warning: A wild 64-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype)];
+                        KJPrint(@"Warning: A wild 64-bit cpusubtype appeared! %u", SWAP(arch.cpusubtype));
                         arch.cputype = (int)SWAP(CPU_TYPE_X86_64);
                         arch.cpusubtype = (int)SWAP(CPU_SUBTYPE_X86_64_ALL);
                         break;
@@ -223,7 +219,7 @@
         offset += sizeof(struct fat_arch);
     }
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"wrote new header to binary"];
+    KJDebug(@"wrote new header to binary");
     // we don't close file handle here since it's reused later in dumping!
 }
 
@@ -235,7 +231,7 @@
                    aslrSlide:(mach_vm_address_t)__text_start
     codeSignature_hashOffset:(uint32_t)hashOffset
               codesign_begin:(uint32_t)begin {
-    [[ClutchPrint sharedInstance] printDeveloper:@"checksum size %u", pages * 20];
+    KJDebug(@"checksum size %u", pages * 20);
     void *checksum = malloc(pages * 20); // 160 bits for each hash (SHA1)
 
     uint32_t headerProgress =
@@ -250,9 +246,7 @@
     uint8_t *buf = &buf_d[0];      // store the location of the buffer
     mach_vm_size_t local_size = 0; // amount of data moved into the buffer
 
-    [[ClutchPrint sharedInstance]
-        printColor:ClutchPrinterColorPurple
-            format:@"Dumping %@ (%@)", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]];
+    KJPrint(@"Dumping %@ (%@)", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]);
 
     while (togo > 0) {
         if ((err = mach_vm_read_overwrite(port,
@@ -261,7 +255,7 @@
                                           (pointer_t)buf,
                                           &local_size)) != KERN_SUCCESS) {
 
-            [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Failed to dump a page :("];
+            KJPrint(@"Failed to dump a page :(");
             free(checksum); // free checksum table
 
             _kill(pid);
@@ -292,13 +286,11 @@
                 if (l_cmd->cmd == LC_ENCRYPTION_INFO) {
                     struct encryption_info_command *newcrypt = (struct encryption_info_command *)curloc;
                     newcrypt->cryptid = 0; // change the cryptid to 0
-                    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple
-                                                      format:@"Patched cryptid (32bit segment)"];
+                    KJPrint(@"Patched cryptid (32bit segment)");
                 } else if (l_cmd->cmd == LC_ENCRYPTION_INFO_64) {
                     struct encryption_info_command_64 *newcrypt = (struct encryption_info_command_64 *)curloc;
                     newcrypt->cryptid = 0; // change the cryptid to 0
-                    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple
-                                                      format:@"Patched cryptid (64bit segment)"];
+                    KJPrint(@"Patched cryptid (64bit segment)");
                 }
 
                 curloc += lcmd_size;
@@ -322,7 +314,7 @@
     }
 
     // nice! now let's write the new checksum data
-    [[ClutchPrint sharedInstance] printColor:ClutchPrinterColorPurple format:@"Writing new checksum"];
+    KJPrint(@"Writing new checksum");
     [fileHandle seekToFileOffset:(begin + hashOffset)];
 
     NSData *trimmed_checksum =
@@ -330,7 +322,7 @@
     free(checksum);
     [fileHandle writeData:trimmed_checksum];
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Done writing checksum"];
+    KJDebug(@"Done writing checksum");
 
     return YES;
 }
@@ -349,28 +341,26 @@ void *safe_trim(void *p, size_t n) {
 
 - (ArchCompatibility)compatibilityMode {
 
-    [[ClutchPrint sharedInstance] printDeveloper:@"Segment cputype: %u, cpusubtype: %u",
+    KJDebug(@"Segment cputype: %u, cpusubtype: %u",
                                                  _thinHeader.header.cputype,
-                                                 _thinHeader.header.cpusubtype];
-    [[ClutchPrint sharedInstance]
-        printDeveloper:@"Device cputype: %u, cpusubtype: %u", Device.cpu_type, Device.cpu_subtype];
-    [[ClutchPrint sharedInstance] printDeveloper:@"Dumper supports cputype %u", self.supportedCPUType];
+                                                 _thinHeader.header.cpusubtype);
+    KJDebug(@"Device cputype: %u, cpusubtype: %u", Device.cpu_type, Device.cpu_subtype);
+    KJDebug(@"Dumper supports cputype %u", self.supportedCPUType);
 
     if (self.supportedCPUType != _thinHeader.header.cputype) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"Dumper <%@> does not support the %@ architecture",
+        KJDebug(@"Dumper <%@> does not support the %@ architecture",
                                                      NSStringFromClass([self class]),
-                                                     [Dumper readableArchFromHeader:_thinHeader]];
+                                                     [Dumper readableArchFromHeader:_thinHeader]);
         return ArchCompatibilityNotCompatible;
     }
 
     else if ((Device.cpu_type == CPU_TYPE_ARM64) && (_thinHeader.header.cputype == CPU_TYPE_ARM)) {
-        [[ClutchPrint sharedInstance] printDeveloper:@"God Mode On"];
+        KJDebug(@"God Mode On");
         return ArchCompatibilityCompatible;
     }
 
     else if ((_thinHeader.header.cpusubtype > Device.cpu_subtype) || (_thinHeader.header.cputype > Device.cpu_type)) {
-        [[ClutchPrint sharedInstance]
-            printDeveloper:@"Cannot use dumper %@, device not supported", NSStringFromClass([self class])];
+        KJDebug(@"Cannot use dumper %@, device not supported", NSStringFromClass([self class]));
         return ArchCompatibilityNotCompatible;
     }
 

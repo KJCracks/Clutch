@@ -47,7 +47,7 @@
 
 - (void)start {
     // Always check for cancellation before launching the task.
-    if ([self isCancelled]) {
+    if (self.isCancelled) {
         // Must move the operation to the finished state if it is canceled.
         [self willChangeValueForKey:@"isFinished"];
         _finished = YES;

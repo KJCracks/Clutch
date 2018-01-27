@@ -9,12 +9,12 @@
 #import "Application.h"
 #import <Foundation/Foundation.h>
 
-@interface ApplicationsManager : NSObject
+@interface KJApplicationManager : NSObject
 
 - (instancetype)init;
 
-@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSDictionary *installedApps;
+@property (nonatomic, readonly, copy) NSDictionary *installedApps;
 
-- (NSDictionary *)_allCachedApplications;
+- (NSDictionary *)cachedApplications;
 
 @end

@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 AppAddict. All rights reserved.
 //
 
-#import "KJApplicationManager.h"
 #import "ClutchCommands.h"
 #import "ClutchPrint.h"
 #import "FrameworkLoader.h"
+#import "KJApplicationManager.h"
 #import "NSTask.h"
 #import "sha1.h"
 #import <Foundation/Foundation.h>
@@ -148,7 +148,7 @@ int main(int argc, const char *argv[]) {
                                 KJDebug(@"using bundle identifier");
                                 if (_installedApps[selection] == nil) {
                                     KJPrint(@"Couldn't find installed app with bundle identifier: %@",
-                                              _selectedBundleID);
+                                            _selectedBundleID);
                                     return 1;
                                 } else {
                                     _selectedApp = _installedApps[selection];
@@ -173,9 +173,9 @@ int main(int argc, const char *argv[]) {
 
                             if (_selectedApp.hasAppleWatchApp) {
                                 KJPrint(@"%@ contains watchOS 2 compatible application. It's not possible to dump "
-                                          @"watchOS 2 apps with Clutch %@ at this moment.",
-                                          _selectedApp.bundleIdentifier,
-                                          CLUTCH_VERSION);
+                                        @"watchOS 2 apps with Clutch %@ at this moment.",
+                                        _selectedApp.bundleIdentifier,
+                                        CLUTCH_VERSION);
                             }
 
                             gettimeofday(&gStart, NULL);

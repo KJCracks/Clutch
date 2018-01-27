@@ -144,15 +144,13 @@
             thin_header macho = headers[i];
             Dumper<BinaryDumpProtocol> *_dumper = nil;
 
-            KJDebug(@"Finding compatible dumper for binary %@ with arch cputype: %u",
-                               originalBinary,
-                               macho.header.cputype);
+            KJDebug(
+                @"Finding compatible dumper for binary %@ with arch cputype: %u", originalBinary, macho.header.cputype);
             for (Class dumperClass in dumpers) {
                 _dumper = [[dumperClass alloc] initWithHeader:macho originalBinary:originalBinary];
 
                 if ([_dumper compatibilityMode] == ArchCompatibilityNotCompatible) {
-                    KJDebug(
-                            @"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper",
+                    KJDebug(@"%@ cannot dump binary %@ (arch %@). Dumper not compatible, finding another dumper",
                             _dumper,
                             originalBinary,
                             [Dumper readableArchFromHeader:macho]);
@@ -163,8 +161,7 @@
             }
 
             if (_dumper == nil) {
-                KJDebug(
-                        @"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",
+                KJDebug(@"Couldn't find compatible dumper for binary %@ with arch %@. Will have to \"strip\".",
                         originalBinary,
                         [Dumper readableArchFromHeader:macho]);
 
@@ -173,9 +170,9 @@
             }
 
             KJDebug(@"Found compatible dumper %@ for binary %@ with arch %@",
-                                                         _dumper,
-                                                         originalBinary,
-                                                         [Dumper readableArchFromHeader:macho]);
+                    _dumper,
+                    originalBinary,
+                    [Dumper readableArchFromHeader:macho]);
 
             NSFileHandle *_handle =
                 [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(originalBinary.binaryPath.UTF8String, "r+"))
@@ -187,13 +184,9 @@
 
             if (result == YES) {
                 dumpCount++;
-                KJDebug(@"Sucessfully dumped %@ segment of %@",
-                                                             [Dumper readableArchFromHeader:macho],
-                                                             originalBinary);
+                KJDebug(@"Sucessfully dumped %@ segment of %@", [Dumper readableArchFromHeader:macho], originalBinary);
             } else {
-                KJPrint(@"Failed to dump %@ with arch %@",
-                                                         originalBinary,
-                                                         [Dumper readableArchFromHeader:macho]);
+                KJPrint(@"Failed to dump %@ with arch %@", originalBinary, [Dumper readableArchFromHeader:macho]);
                 [self failedOperation];
             }
 
@@ -231,9 +224,8 @@
                 NSNumber *archOffset = [NSNumber numberWithUnsignedInt:SWAP(arch.offset)];
                 KJDebug(@"current offset %u", SWAP(arch.offset));
                 if ([_headersToStrip containsObject:archOffset]) {
-                    KJDebug(@"arch to strip %u %u",
-                                                                 (cpu_subtype_t)SWAP(arch.cpusubtype),
-                                                                 (cpu_type_t)SWAP(arch.cputype));
+                    KJDebug(
+                        @"arch to strip %u %u", (cpu_subtype_t)SWAP(arch.cpusubtype), (cpu_type_t)SWAP(arch.cputype));
                 } else {
                     NSValue *archValue = [NSValue value:&arch withObjCType:@encode(struct fat_arch)];
                     [_headersToKeep addObject:archValue];
@@ -269,9 +261,7 @@
                 NSValue *archValue = _headersToKeep[i];
                 struct fat_arch keepArch;
                 [archValue getValue:&keepArch];
-                KJDebug(@"headers to keep: %u %u",
-                                                             (uint32_t)SWAP(keepArch.cpusubtype),
-                                                             SWAP(keepArch.cputype));
+                KJDebug(@"headers to keep: %u %u", (uint32_t)SWAP(keepArch.cpusubtype), SWAP(keepArch.cputype));
 
                 uint32_t origOffset = (uint32_t)SWAP(keepArch.offset);
 

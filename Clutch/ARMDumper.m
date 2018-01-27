@@ -66,9 +66,7 @@
 
     uint64_t __text_start = 0;
 
-    KJDebug(@"32bit Dumping: arch %@ offset %u",
-                                                 [Dumper readableArchFromHeader:_thinHeader],
-                                                 _thinHeader.offset);
+    KJDebug(@"32bit Dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
 
     for (unsigned int i = 0; i < _thinHeader.header.ncmds; i++) {
 
@@ -93,9 +91,9 @@
                 foundCrypt = YES;
 
                 KJDebug(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",
-                                   crypt.cryptoff,
-                                   crypt.cryptsize,
-                                   crypt.cryptid);
+                        crypt.cryptoff,
+                        crypt.cryptsize,
+                        crypt.cryptid);
 
                 break;
             }
@@ -124,15 +122,14 @@
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
         KJPrint(@"dumping binary: some load commands were not found %@ %@ %@",
-                                                 foundCrypt ? @"YES" : @"NO",
-                                                 foundSignature ? @"YES" : @"NO",
-                                                 foundStartText ? @"YES" : @"NO");
+                foundCrypt ? @"YES" : @"NO",
+                foundSignature ? @"YES" : @"NO",
+                foundStartText ? @"YES" : @"NO");
         return NO;
     }
 
-    KJDebug(@"found all required load commands for %@ %@",
-                                                 _originalBinary,
-                                                 [Dumper readableArchFromHeader:_thinHeader]);
+    KJDebug(
+        @"found all required load commands for %@ %@", _originalBinary, [Dumper readableArchFromHeader:_thinHeader]);
 
     pid_t pid;         // store the process ID of the fork
     mach_port_t port;  // mach port used for moving virtual memory
@@ -143,7 +140,7 @@
 
     if ((err = task_for_pid(mach_task_self(), pid, &port) != KERN_SUCCESS)) {
         KJPrint(@"Could not obtain mach port, either the process is dead (codesign "
-                                                 @"error?) or entitlements were not properly signed!?");
+                @"error?) or entitlements were not properly signed!?");
         goto gotofail;
     }
 

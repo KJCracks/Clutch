@@ -59,9 +59,7 @@
     directory.hashOffset = 0;
     BOOL foundCrypt = NO, foundSignature = NO, foundStartText = NO;
 
-    KJDebug(@"64bit dumping: arch %@ offset %u",
-                                                 [Dumper readableArchFromHeader:_thinHeader],
-                                                 _thinHeader.offset);
+    KJDebug(@"64bit dumping: arch %@ offset %u", [Dumper readableArchFromHeader:_thinHeader], _thinHeader.offset);
 
     uint32_t cryptlc_offset = 0;
 
@@ -89,9 +87,9 @@
                 foundCrypt = YES;
 
                 KJDebug(@"FOUND ENCRYPTION INFO: cryptoff %u | cryptsize %u | cryptid %u",
-                                   crypt.cryptoff,
-                                   crypt.cryptsize,
-                                   crypt.cryptid);
+                        crypt.cryptoff,
+                        crypt.cryptsize,
+                        crypt.cryptid);
 
                 break;
             }
@@ -117,9 +115,9 @@
     // we need to have all of these
     if (!foundCrypt || !foundSignature || !foundStartText) {
         KJDebug(@"dumping binary: some load commands were not found %@ %@ %@",
-                                                     foundCrypt ? @"YES" : @"NO",
-                                                     foundSignature ? @"YES" : @"NO",
-                                                     foundStartText ? @"YES" : @"NO");
+                foundCrypt ? @"YES" : @"NO",
+                foundSignature ? @"YES" : @"NO",
+                foundStartText ? @"YES" : @"NO");
         return NO;
     }
 

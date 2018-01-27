@@ -341,16 +341,14 @@ void *safe_trim(void *p, size_t n) {
 
 - (ArchCompatibility)compatibilityMode {
 
-    KJDebug(@"Segment cputype: %u, cpusubtype: %u",
-                                                 _thinHeader.header.cputype,
-                                                 _thinHeader.header.cpusubtype);
+    KJDebug(@"Segment cputype: %u, cpusubtype: %u", _thinHeader.header.cputype, _thinHeader.header.cpusubtype);
     KJDebug(@"Device cputype: %u, cpusubtype: %u", Device.cpu_type, Device.cpu_subtype);
     KJDebug(@"Dumper supports cputype %u", self.supportedCPUType);
 
     if (self.supportedCPUType != _thinHeader.header.cputype) {
         KJDebug(@"Dumper <%@> does not support the %@ architecture",
-                                                     NSStringFromClass([self class]),
-                                                     [Dumper readableArchFromHeader:_thinHeader]);
+                NSStringFromClass([self class]),
+                [Dumper readableArchFromHeader:_thinHeader]);
         return ArchCompatibilityNotCompatible;
     }
 

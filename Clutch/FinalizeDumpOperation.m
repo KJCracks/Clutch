@@ -207,9 +207,9 @@ extern struct timeval gStart;
                                                                      toURL:[NSURL fileURLWithPath:currentFile]
                                                                      error:&anError]) {
                             KJDebug(@"Failed to move from %@ to %@ with error %@",
-                                                                         ipaSrcURL,
-                                                                         [NSURL fileURLWithPath:currentFile],
-                                                                         anError);
+                                    ipaSrcURL,
+                                    [NSURL fileURLWithPath:currentFile],
+                                    anError);
                         }
                         break;
                     }
@@ -219,9 +219,9 @@ extern struct timeval gStart;
                                                              toURL:[NSURL fileURLWithPath:_ipaPath]
                                                              error:&anError]) {
                     KJDebug(@"Failed to move from %@ to %@ with error %@",
-                                                                 ipaSrcURL,
-                                                                 [NSURL fileURLWithPath:_ipaPath],
-                                                                 anError);
+                            ipaSrcURL,
+                            [NSURL fileURLWithPath:_ipaPath],
+                            anError);
                 }
             }
         }

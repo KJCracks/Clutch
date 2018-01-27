@@ -150,12 +150,12 @@
                                                           longOption:@"--verbose"
                                                   commandDescription:@"Print verbose messages"
                                                                 flag:ClutchCommandFlagOptional];
-    ClutchCommand *debug = [ClutchCommand commandWithCommandOption:ClutchCommandOptionDebug
-                                                       shortOption:nil
-                                                        longOption:@"--debug"
-                                                commandDescription:
-                            @"Enable debug logging. Only available with a debug build."
-                                                              flag:ClutchCommandFlagNoArguments | ClutchCommandFlagInvisible];
+    ClutchCommand *debug =
+        [ClutchCommand commandWithCommandOption:ClutchCommandOptionDebug
+                                    shortOption:nil
+                                     longOption:@"--debug"
+                             commandDescription:@"Enable debug logging. Only available with a debug build."
+                                           flag:ClutchCommandFlagNoArguments | ClutchCommandFlagInvisible];
 
     return @[ none, framework, binary, dump, printInstalled, clean, version, help, noColor, verbose, debug ];
 }

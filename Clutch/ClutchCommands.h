@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 typedef NS_OPTIONS(NSInteger, ClutchCommandFlag) {
     ClutchCommandFlagNone = 0,
     ClutchCommandFlagInvisible = 1 << 0,        // don't print to help
@@ -32,32 +30,21 @@ typedef NS_ENUM(NSUInteger, ClutchCommandOption) {
 
 @interface ClutchCommand : NSObject
 
-@property (nonatomic, assign) ClutchCommandOption option;
-@property (nonatomic, retain) NSString *shortOption;
-@property (nonatomic, retain) NSString *longOption;
-@property (nonatomic, retain) NSString *commandDescription;
-@property (nonatomic, assign) ClutchCommandFlag flag;
-
-- (instancetype)initWithCommandOption:(ClutchCommandOption)commandOption
-                          shortOption:(NSString *)shortOption
-                           longOption:(NSString *)longOption
-                   commandDescription:(NSString *)commandDescription
-                                 flag:(ClutchCommandFlag)flag;
-+ (instancetype)commandWithCommandOption:(ClutchCommandOption)commandOption
-                             shortOption:(NSString *)shortOption
-                              longOption:(NSString *)longOption
-                      commandDescription:(NSString *)commandDescription
-                                    flag:(ClutchCommandFlag)flag;
+@property (nonatomic, assign, readonly) ClutchCommandOption option;
+@property (nonatomic, retain, readonly) NSString *shortOption;
+@property (nonatomic, retain, readonly) NSString *longOption;
+@property (nonatomic, retain, readonly) NSString *commandDescription;
+@property (nonatomic, assign, readonly) ClutchCommandFlag flag;
 
 @end
 
 @interface ClutchCommands : NSObject
 
-@property (nonatomic, retain) NSArray *allCommands;
-@property (nonatomic, retain) NSArray *commands;
-@property (nonatomic, retain) NSString *helpString;
-@property (nonatomic, retain) NSArray *values;
+@property (nonatomic, retain, readonly) NSArray<ClutchCommand *> *allCommands;
+@property (nonatomic, retain, readonly) NSArray<ClutchCommand *> *commands;
+@property (nonatomic, retain, readonly) NSString *helpString;
+@property (nonatomic, retain, readonly) NSArray<NSString *> *values;
 
-- (instancetype)initWithArguments:(NSArray *)arguments;
+- (instancetype)initWithArguments:(NSArray<NSString *> *)arguments;
 
 @end

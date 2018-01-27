@@ -9,6 +9,21 @@
 #import "ClutchCommands.h"
 #import "ClutchPrint.h"
 
+@interface ClutchCommand ()
+
+- (instancetype)initWithCommandOption:(ClutchCommandOption)commandOption
+                          shortOption:(NSString *)shortOption
+                           longOption:(NSString *)longOption
+                   commandDescription:(NSString *)commandDescription
+                                 flag:(ClutchCommandFlag)flag;
++ (instancetype)commandWithCommandOption:(ClutchCommandOption)commandOption
+                             shortOption:(NSString *)shortOption
+                              longOption:(NSString *)longOption
+                      commandDescription:(NSString *)commandDescription
+                                    flag:(ClutchCommandFlag)flag;
+
+@end
+
 @implementation ClutchCommand
 
 - (instancetype)initWithCommandOption:(ClutchCommandOption)commandOption
@@ -17,11 +32,11 @@
                    commandDescription:(NSString *)commandDescription
                                  flag:(ClutchCommandFlag)flag {
     if ((self = [super self])) {
-        self.option = commandOption;
-        self.shortOption = shortOption;
-        self.longOption = longOption;
-        self.commandDescription = commandDescription;
-        self.flag = flag;
+        _option = commandOption;
+        _shortOption = shortOption;
+        _longOption = longOption;
+        _commandDescription = commandDescription;
+        _flag = flag;
     }
 
     return self;
@@ -43,17 +58,17 @@
 
 @implementation ClutchCommands
 
-- (instancetype)initWithArguments:(NSArray *)arguments {
+- (instancetype)initWithArguments:(NSArray<NSString *> *)arguments {
     if ((self = [super self])) {
-        self.allCommands = [self buildCommands];
-        self.commands = [self parseCommandWithArguments:arguments];
-        self.helpString = [self buildHelpString];
+        _allCommands = [self buildCommands];
+        _commands = [self parseCommandWithArguments:arguments];
+        _helpString = [self buildHelpString];
     }
 
     return self;
 }
 
-- (NSArray<ClutchCommand *> *)parseCommandWithArguments:(NSArray *)arguments {
+- (NSArray<ClutchCommand *> *)parseCommandWithArguments:(NSArray<NSString *> *)arguments {
     NSMutableArray<ClutchCommand *> *returnCommands = [NSMutableArray new];
     NSMutableArray<NSString *> *returnValues = [NSMutableArray new];
     BOOL commandFound = NO;
@@ -92,7 +107,7 @@
         return @[ self.allCommands[0] ];
     }
 
-    self.values = returnValues;
+    _values = returnValues;
 
     return returnCommands;
 }

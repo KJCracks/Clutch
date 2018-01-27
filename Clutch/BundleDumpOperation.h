@@ -6,13 +6,11 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @class ClutchBundle;
 
 @interface BundleDumpOperation : NSOperation
 
-@property (nonatomic, assign) BOOL failed;
+@property (nonatomic, assign, readonly) BOOL failed;
 
 - (instancetype)initWithBundle:(ClutchBundle *)application;
 + (instancetype)operationWithBundle:(ClutchBundle *)application;

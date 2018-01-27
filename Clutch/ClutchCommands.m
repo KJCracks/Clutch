@@ -47,7 +47,7 @@
                               longOption:(NSString *)longOption
                       commandDescription:(NSString *)commandDescription
                                     flag:(ClutchCommandFlag)flag {
-    return [[ClutchCommand alloc] initWithCommandOption:commandOption
+    return [[self alloc] initWithCommandOption:commandOption
                                             shortOption:shortOption
                                              longOption:longOption
                                      commandDescription:commandDescription

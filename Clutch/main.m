@@ -18,8 +18,9 @@
 
 struct timeval gStart;
 
-int diff_ms(struct timeval t1, struct timeval t2) {
-    return (int)((((t1.tv_sec - t2.tv_sec) * 1000000) + (t1.tv_usec - t2.tv_usec)) / 1000);
+NSInteger diff_ms(struct timeval t1, struct timeval t2);
+NSInteger diff_ms(struct timeval t1, struct timeval t2) {
+    return (((t1.tv_sec - t2.tv_sec) * 1000000) + (t1.tv_usec - t2.tv_usec)) / 1000;
 }
 
 void listApps(void);
@@ -27,7 +28,7 @@ void listApps() {
     KJApplicationManager *_manager = [[KJApplicationManager alloc] init];
 
     NSArray *installedApps = [_manager installedApps].allValues;
-    [[ClutchPrint sharedInstance] print:@"Installed apps:"];
+    KJPrint(@"Installed apps:");
 
     NSUInteger count;
     NSString *space;
@@ -39,16 +40,7 @@ void listApps() {
             space = @" ";
         }
 
-        ClutchPrinterColor color;
-        if (count % 2 == 0) {
-            color = ClutchPrinterColorPurple;
-        } else {
-            color = ClutchPrinterColorPink;
-        }
-
-        [[ClutchPrint sharedInstance]
-            printColor:color
-                format:@"%d: %@%@ <%@>", count, space, _app.displayName, _app.bundleIdentifier];
+        KJPrint(@"%d: %@%@ <%@>", count, space, _app.displayName, _app.bundleIdentifier);
     }
 }
 
@@ -58,20 +50,14 @@ int main(int argc, const char *argv[]) {
 
     @autoreleasepool {
         if (getuid() != 0) { // Clutch needs to be root user to run
-            [[ClutchPrint sharedInstance]
-                print:@"Clutch needs to be run as the root user, please change user and rerun."];
-
+            KJPrint(@"Clutch needs to be run as the root user, please change user and rerun.");
             return 0;
         }
 
         if (SYSTEM_VERSION_LESS_THAN(NSFoundationVersionNumber_iOS_8_0)) {
-            [[ClutchPrint sharedInstance] print:@"You need iOS 8.0+ to use Clutch %@", CLUTCH_VERSION];
-
+            KJPrint(@"You need iOS 8.0+ to use Clutch %@", CLUTCH_VERSION);
             return 0;
         }
-
-        [[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelFull];
-        [[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelNone];
 
         BOOL dumpedFramework = NO;
         BOOL successfullyDumpedFramework = NO;
@@ -98,19 +84,18 @@ int main(int argc, const char *argv[]) {
 
                 // Switch optionals
                 switch (command.option) {
-                    case ClutchCommandOptionNoColor:
-                        [[ClutchPrint sharedInstance] setColorLevel:ClutchPrinterColorLevelNone];
-                        break;
                     case ClutchCommandOptionVerbose:
-                        [[ClutchPrint sharedInstance] setVerboseLevel:ClutchPrinterVerboseLevelFull];
+                        KJPrintCurrentLogLevel = KJPrintLogLevelVerbose;
                         break;
+                    case ClutchCommandOptionDebug:
+                        KJPrintCurrentLogLevel = KJPrintLogLevelDebug;
                     default:
                         break;
                 }
 
                 switch (command.option) {
                     case ClutchCommandOptionNone: {
-                        [[ClutchPrint sharedInstance] print:@"%@", commands.helpString];
+                        KJPrint(@"%@", commands.helpString);
                         break;
                     }
                     case ClutchCommandOptionFrameworkDump: {
@@ -136,21 +121,16 @@ int main(int argc, const char *argv[]) {
                             BOOL result = successfullyDumpedFramework = [fmwk dumpBinary];
 
                             if (result) {
-                                [[ClutchPrint sharedInstance]
-                                    printColor:ClutchPrinterColorPurple
-                                        format:@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent];
+                                KJPrint(@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent);
 
                                 return 1;
                             } else {
-                                [[ClutchPrint sharedInstance]
-                                    printColor:ClutchPrinterColorPurple
-                                        format:@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent];
+                                KJPrint(@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent);
                                 return 0;
                             }
 
                         } else if (args.count != 13) {
-                            [[ClutchPrint sharedInstance]
-                                printError:@"Incorrect amount of arguments - see source if you're using this."];
+                            KJPrint(@"Incorrect amount of arguments - see source if you're using this.");
                         }
 
                         break;
@@ -165,44 +145,38 @@ int main(int argc, const char *argv[]) {
                             Application *_selectedApp;
 
                             if (!(key = (NSUInteger)selection.integerValue)) {
-                                [[ClutchPrint sharedInstance] printDeveloper:@"using bundle identifier"];
+                                KJDebug(@"using bundle identifier");
                                 if (_installedApps[selection] == nil) {
-                                    [[ClutchPrint sharedInstance]
-                                        print:@"Couldn't find installed app with bundle identifier: %@",
-                                              _selectedBundleID];
+                                    KJPrint(@"Couldn't find installed app with bundle identifier: %@",
+                                              _selectedBundleID);
                                     return 1;
                                 } else {
                                     _selectedApp = _installedApps[selection];
                                 }
                             } else {
-                                [[ClutchPrint sharedInstance] printDeveloper:@"using number"];
+                                KJDebug(@"using number");
                                 key = key - 1;
 
                                 if (key > [_installedArray count]) {
-                                    [[ClutchPrint sharedInstance]
-                                        print:@"Couldn't find app with corresponding number!?!"];
+                                    KJPrint(@"Couldn't find app with corresponding number!?!");
                                     return 1;
                                 }
                                 _selectedApp = [_installedArray objectAtIndex:key];
                             }
 
                             if (!_selectedApp) {
-                                [[ClutchPrint sharedInstance] print:@"Couldn't find installed app"];
+                                KJPrint(@"Couldn't find installed app");
                                 return 1;
                             }
 
-                            [[ClutchPrint sharedInstance]
-                                printVerbose:@"Now dumping %@", _selectedApp.bundleIdentifier];
+                            KJPrintVerbose(@"Now dumping %@", _selectedApp.bundleIdentifier);
 
-#ifndef DEBUG
                             if (_selectedApp.hasAppleWatchApp) {
-                                [[ClutchPrint sharedInstance]
-                                    print:@"%@ contains watchOS 2 compatible application. It's not possible to dump "
+                                KJPrint(@"%@ contains watchOS 2 compatible application. It's not possible to dump "
                                           @"watchOS 2 apps with Clutch %@ at this moment.",
                                           _selectedApp.bundleIdentifier,
-                                          CLUTCH_VERSION];
+                                          CLUTCH_VERSION);
                             }
-#endif
 
                             gettimeofday(&gStart, NULL);
                             if (![_selectedApp dumpToDirectoryURL:nil
@@ -225,11 +199,11 @@ int main(int argc, const char *argv[]) {
                         break;
                     }
                     case ClutchCommandOptionVersion: {
-                        [[ClutchPrint sharedInstance] print:CLUTCH_VERSION];
+                        KJPrint(CLUTCH_VERSION);
                         break;
                     }
                     case ClutchCommandOptionHelp: {
-                        [[ClutchPrint sharedInstance] print:@"%@", commands.helpString];
+                        KJPrint(@"%@", commands.helpString);
                         break;
                     }
                     default:

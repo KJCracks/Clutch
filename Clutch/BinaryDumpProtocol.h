@@ -8,7 +8,6 @@
 
 #import "NSFileHandle+Private.h"
 #import "optool.h"
-#import <Foundation/Foundation.h>
 #import <mach/machine.h>
 
 typedef NS_ENUM(NSUInteger, ArchCompatibility) {
@@ -57,7 +56,6 @@ struct code_directory {
 @protocol BinaryDumpProtocol <NSObject>
 
 - (cpu_type_t)supportedCPUType;
-
 - (BOOL)dumpBinary;
 
 @end
@@ -65,7 +63,6 @@ struct code_directory {
 @protocol FrameworkBinaryDumpProtocol <NSObject>
 
 - (cpu_type_t)supportedCPUType;
-
 - (BOOL)dumpBinary;
 
 @end

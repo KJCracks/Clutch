@@ -24,7 +24,7 @@
 
 - (void)OutputErrorMessage:(NSString *)msg;
 - (BOOL)OverWrite:(NSString *)file;
-- (NSDate *)Date1980;
+@property (nonatomic, readonly, copy) NSDate *Date1980;
 
 @property (nonatomic, copy) NSString *password;
 @end
@@ -37,11 +37,11 @@
 @synthesize progressBlock = _progressBlock;
 @synthesize stringEncoding = _stringEncoding;
 
-- (id)init {
+- (instancetype)init {
     return [self initWithFileManager:[NSFileManager defaultManager]];
 }
 
-- (id)initWithFileManager:(NSFileManager *)fileManager {
+- (instancetype)initWithFileManager:(NSFileManager *)fileManager {
     if (self = [super init]) {
         _zipFile = NULL;
         _fileManager = fileManager;
@@ -69,7 +69,7 @@
 }
 
 - (BOOL)CreateZipFile2:(NSString *)zipFile append:(BOOL)isAppend {
-    _zipFile = zipOpen((const char *)[zipFile UTF8String], (isAppend ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE));
+    _zipFile = zipOpen((const char *)zipFile.UTF8String, (isAppend ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE));
     if (!_zipFile)
         return NO;
     return YES;
@@ -108,33 +108,33 @@
     if (!_zipFile)
         return NO;
 
-    //	tm_zip filetime;
+    //    tm_zip filetime;
     time_t current;
     time(&current);
 
     zip_fileinfo zipInfo = {{0}};
-    //	zipInfo.dosDate = (unsigned long) current;
+    //    zipInfo.dosDate = (unsigned long) current;
 
     NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
     if (attr) {
-        NSDate *fileDate = (NSDate *)[attr objectForKey:NSFileModificationDate];
+        NSDate *fileDate = (NSDate *)attr[NSFileModificationDate];
         if (fileDate) {
             // some application does use dosDate, but tmz_date instead
-            //	zipInfo.dosDate = [fileDate timeIntervalSinceDate:[self Date1980] ];
+            //    zipInfo.dosDate = [fileDate timeIntervalSinceDate:[self Date1980] ];
             NSCalendar *currCalendar = [NSCalendar currentCalendar];
             // Use CF constants to avoid deprecation warnings and stay compatible with < iOS 8
             uint flags = kCFCalendarUnitYear | kCFCalendarUnitMonth | kCFCalendarUnitDay | kCFCalendarUnitHour |
                          kCFCalendarUnitMinute | kCFCalendarUnitSecond;
             NSDateComponents *dc = [currCalendar components:flags fromDate:fileDate];
-            zipInfo.tmz_date.tm_sec = (uInt)[dc second];
-            zipInfo.tmz_date.tm_min = (uInt)[dc minute];
-            zipInfo.tmz_date.tm_hour = (uInt)[dc hour];
-            zipInfo.tmz_date.tm_mday = (uInt)[dc day];
-            zipInfo.tmz_date.tm_mon = (uInt)[dc month] - 1;
-            zipInfo.tmz_date.tm_year = (uInt)[dc year];
+            zipInfo.tmz_date.tm_sec = (uInt)dc.second;
+            zipInfo.tmz_date.tm_min = (uInt)dc.minute;
+            zipInfo.tmz_date.tm_hour = (uInt)dc.hour;
+            zipInfo.tmz_date.tm_mday = (uInt)dc.day;
+            zipInfo.tmz_date.tm_mon = (uInt)dc.month - 1;
+            zipInfo.tmz_date.tm_year = (uInt)dc.year;
         }
 
-        NSNumber *permissionsValue = (NSNumber *)[attr objectForKey:NSFilePosixPermissions];
+        NSNumber *permissionsValue = (NSNumber *)attr[NSFilePosixPermissions];
         if (permissionsValue.boolValue) {
             short permissionsShort = permissionsValue.shortValue;
             // Convert this into an octal by adding 010000, 010000 being the flag for a regular file
@@ -148,9 +148,9 @@
 
     int ret;
     NSData *data = nil;
-    if ([_password length] == 0) {
+    if (_password.length == 0) {
         ret = zipOpenNewFileInZip(_zipFile,
-                                  (const char *)[newname UTF8String],
+                                  (const char *)newname.UTF8String,
                                   &zipInfo,
                                   NULL,
                                   0,
@@ -168,9 +168,9 @@
         fclose(f);
         data = [[NSData alloc] initWithBytesNoCopy:fBuffer length:fLenght];
         uLong crcValue = crc32(0L, NULL, 0L);
-        crcValue = crc32(crcValue, (const Bytef *)[data bytes], (uInt)[data length]);
+        crcValue = crc32(crcValue, (const Bytef *)data.bytes, (uInt)data.length);
         ret = zipOpenNewFileInZip3(_zipFile,
-                                   (const char *)[newname UTF8String],
+                                   (const char *)newname.UTF8String,
                                    &zipInfo,
                                    NULL,
                                    0,
@@ -241,7 +241,7 @@
     }
     if (!_zipFile)
         return NO;
-    //	tm_zip filetime;
+    //    tm_zip filetime;
 
     zip_fileinfo zipInfo = {{0}};
 
@@ -267,7 +267,7 @@
     zipInfo.tmz_date.tm_year = (uInt)components.year;
 
     int ret;
-    if ([_password length] == 0) {
+    if (_password.length == 0) {
         ret = zipOpenNewFileInZip(_zipFile,
                                   (const char *)[newname cStringUsingEncoding:self.stringEncoding],
                                   &zipInfo,
@@ -280,7 +280,7 @@
                                   self.compression);
     } else {
         uLong crcValue = crc32(0L, NULL, 0L);
-        crcValue = crc32(crcValue, (const Bytef *)[data bytes], (unsigned int)[data length]);
+        crcValue = crc32(crcValue, (const Bytef *)data.bytes, (unsigned int)data.length);
         ret = zipOpenNewFileInZip3(_zipFile,
                                    (const char *)[newname cStringUsingEncoding:self.stringEncoding],
                                    &zipInfo,
@@ -301,8 +301,8 @@
     if (ret != Z_OK) {
         return NO;
     }
-    unsigned int dataLen = (unsigned int)[data length];
-    ret = zipWriteInFileInZip(_zipFile, (const void *)[data bytes], dataLen);
+    unsigned int dataLen = (unsigned int)data.length;
+    ret = zipWriteInFileInZip(_zipFile, (const void *)data.bytes, dataLen);
     if (ret != Z_OK) {
         return NO;
     }
@@ -338,7 +338,7 @@
     // create an array to receive the list of unzipped files.
     _unzippedFiles = [[NSMutableArray alloc] initWithCapacity:1];
 
-    _unzFile = unzOpen((const char *)[zipFile UTF8String]);
+    _unzFile = unzOpen((const char *)zipFile.UTF8String);
     if (_unzFile) {
         unz_global_info globalInfo = {0};
         if (unzGetGlobalInfo(_unzFile, &globalInfo) == UNZ_OK) {
@@ -390,7 +390,7 @@
 
     do {
         @autoreleasepool {
-            if ([_password length] == 0)
+            if (_password.length == 0)
                 ret = unzOpenCurrentFile(_unzFile);
             else
                 ret = unzOpenCurrentFilePassword(_unzFile, password);
@@ -428,7 +428,7 @@
             if (isDirectory)
                 [_fileManager createDirectoryAtPath:fullPath withIntermediateDirectories:YES attributes:nil error:nil];
             else
-                [_fileManager createDirectoryAtPath:[fullPath stringByDeletingLastPathComponent]
+                [_fileManager createDirectoryAtPath:fullPath.stringByDeletingLastPathComponent
                         withIntermediateDirectories:YES
                                          attributes:nil
                                               error:nil];
@@ -445,7 +445,7 @@
                             }
                         }
                         if (!isDirectory) {
-                            fp = fopen((const char *)[fullPath UTF8String], "wb");
+                            fp = fopen((const char *)fullPath.UTF8String, "wb");
                             if (fp == NULL) {
                                 [self OutputErrorMessage:@"Failed to open output file for writing"];
                                 break;
@@ -485,7 +485,7 @@
                         NSFileModificationDate : orgDate
                     }; //[_fileManager fileAttributesAtPath:fullPath traverseLink:YES];
                     if (attr) {
-                        //	[attr  setValue:orgDate forKey:NSFileCreationDate];
+                        //    [attr  setValue:orgDate forKey:NSFileCreationDate];
                         if (![_fileManager setAttributes:attr ofItemAtPath:fullPath error:nil]) {
                             // cann't set attributes
                             NSLog(@"Failed to set attributes");
@@ -533,7 +533,7 @@
 
     do {
         @autoreleasepool {
-            if ([_password length] == 0)
+            if (_password.length == 0)
                 ret = unzOpenCurrentFile(_unzFile);
             else
                 ret = unzOpenCurrentFilePassword(_unzFile, password);
@@ -640,7 +640,7 @@
     const char *password = [_password cStringUsingEncoding:NSASCIIStringEncoding];
 
     do {
-        if ([_password length] == 0)
+        if (_password.length == 0)
             ret = unzOpenCurrentFile(_unzFile);
         else
             ret = unzOpenCurrentFilePassword(_unzFile, password);
@@ -704,9 +704,9 @@
 #pragma mark get NSDate object for 1980-01-01
 - (NSDate *)Date1980 {
     NSDateComponents *comps = [[NSDateComponents alloc] init];
-    [comps setDay:1];
-    [comps setMonth:1];
-    [comps setYear:1980];
+    comps.day = 1;
+    comps.month = 1;
+    comps.year = 1980;
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDate *date = [gregorian dateFromComponents:comps];
 

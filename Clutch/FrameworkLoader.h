@@ -8,7 +8,9 @@
 
 #import "Dumper.h"
 
-@interface FrameworkLoader : Dumper
+NS_ASSUME_NONNULL_BEGIN
+
+@interface FrameworkLoader : Dumper<BinaryDumpProtocol, FrameworkBinaryDumpProtocol> 
 
 @property (nonatomic, assign) uint32_t ncmds;
 @property (nonatomic, assign) uint32_t offset;
@@ -23,9 +25,9 @@
 @property (nonatomic, retain) NSString *binPath;
 @property (nonatomic, retain) NSString *dumpPath;
 @property (nonatomic, retain) NSString *bID;
-
-- (cpu_type_t)supportedCPUType;
-
-- (BOOL)dumpBinary;
+@property (nonatomic, readonly) cpu_type_t supportedCPUType;
+@property (nonatomic, readonly) BOOL dumpBinary;
 
 @end
+
+NS_ASSUME_NONNULL_END

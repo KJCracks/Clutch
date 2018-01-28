@@ -11,8 +11,9 @@
 #import <mach-o/fat.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
-
 #import "BinaryDumpProtocol.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface Device : NSObject
 
@@ -20,3 +21,5 @@
 + (cpu_subtype_t)cpu_subtype;
 
 @end
+
+NS_ASSUME_NONNULL_END

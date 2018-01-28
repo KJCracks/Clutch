@@ -16,10 +16,24 @@
 
 @implementation ClutchBundle
 
-- (instancetype)initWithBundleInfo:(NSDictionary *)info {
-    if (self = [super initWithURL:info[@"BundleURL"]]) {
+- (nullable instancetype)initWithPath:(NSString *)path {
+    return [self initWithBundleInfo:@{
+                                      @"BundleURL": [NSURL fileURLWithPath:path],
+                                      @"BundleContainer": NSNull.null,
+                                      @"DisplayName": NSNull.null,
+                                      }];
+}
+
+- (nullable instancetype)initWithBundleInfo:(NSDictionary *)info {
+    if ((self = [super initWithPath:[[NSURL URLWithString:info[@"BundleURL"]] path]])) {
         _bundleContainerURL = [info[@"BundleContainer"] copy];
+        if ([NSNull isEqual:_bundleContainerURL]) {
+            return nil;
+        }
         _displayName = [info[@"DisplayName"] copy];
+        if ([NSNull isEqual:_displayName]) {
+            return nil;
+        }
         _dumpQueue = [NSOperationQueue new];
     }
 
@@ -27,7 +41,6 @@
 }
 
 - (void)prepareForDump {
-
     _executable = [[Binary alloc] initWithBundle:self];
 
     KJPrintVerbose(@"Preparing to dump %@", _executable);

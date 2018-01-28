@@ -6,13 +6,17 @@
 //
 //
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class ClutchBundle;
 
 @interface BundleDumpOperation : NSOperation
 
 @property (nonatomic, assign, readonly) BOOL failed;
 
-- (instancetype)initWithBundle:(ClutchBundle *)application;
-+ (instancetype)operationWithBundle:(ClutchBundle *)application;
+- (nullable instancetype)initWithBundle:(nullable ClutchBundle *)application NS_DESIGNATED_INITIALIZER;
++ (nullable instancetype)operationWithBundle:(nullable ClutchBundle *)application;
 
 @end
+
+NS_ASSUME_NONNULL_END

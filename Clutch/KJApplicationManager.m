@@ -162,7 +162,7 @@ typedef NSDictionary *(*MobileInstallationLookup)(NSDictionary *options);
 }
 
 - (NSDictionary *)cachedApplications {
-    if ([_cachedApps count] < 1) {
+    if (_cachedApps.count < 1) {
         return [self _allApplications];
     }
 

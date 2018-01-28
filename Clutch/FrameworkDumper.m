@@ -197,7 +197,7 @@
                                          withDestinationPath:self.originalBinary.frameworksPath
                                                        error:nil];
 
-    const char *argv[] = {[[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
+    const char *argv[] = {[workingPath stringByAppendingPathComponent:@"clutch"].UTF8String,
                           "-f",
                           swappedBinaryPath.UTF8String,
                           binaryDumpPath.UTF8String,
@@ -214,7 +214,7 @@
 
     KJDebug(@"i must have called a thousand times!");
 
-    KJDebug(@"hello potato posix_spawn %@", [[NSString alloc] initWithUTF8String:argv[0]]);
+    KJDebug(@"hello potato posix_spawn %@", @(argv[0]));
 
     posix_spawnattr_init(&attr);
 

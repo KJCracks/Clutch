@@ -6,6 +6,8 @@
 //
 //
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSFileHandle (Private)
 
 /**
@@ -35,3 +37,5 @@
 - (void)getBytes:(void *)result inRange:(NSRange)range;
 
 @end
+
+NS_ASSUME_NONNULL_END

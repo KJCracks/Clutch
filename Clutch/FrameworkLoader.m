@@ -62,7 +62,7 @@
     uint32_t dyldIndex = 0;
     BOOL modifiedDyldIndex = NO;
     for (uint32_t idx = 0; idx < imageCount; idx++) {
-        NSString *dyldPath = [NSString stringWithUTF8String:_dyld_get_image_name(idx)];
+        NSString *dyldPath = @(_dyld_get_image_name(idx));
         if ([swappedBinaryPath.lastPathComponent isEqualToString:dyldPath.lastPathComponent]) {
             dyldIndex = idx;
             modifiedDyldIndex = YES;

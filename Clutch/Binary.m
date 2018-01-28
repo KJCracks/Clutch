@@ -28,14 +28,21 @@
     return [_bundle.workingPath stringByAppendingPathComponent:_bundle.bundleIdentifier];
 }
 
-- (instancetype)initWithBundle:(ClutchBundle *)path {
-    if (self = [super init]) {
+- (nullable instancetype)init {
+    return [self initWithBundle:nil];
+}
 
+- (nullable instancetype)initWithBundle:(nullable ClutchBundle *)path {
+    if (!path) {
+        return nil;
+    }
+
+    if (self = [super init]) {
         _bundle = path;
 
         KJDebug(@"######## bundle URL %@", _bundle.bundleContainerURL);
-        if ([[_bundle.bundleContainerURL path] hasSuffix:@"Frameworks"]) {
-            _frameworksPath = [_bundle.bundleContainerURL path];
+        if ([(_bundle.bundleContainerURL).path hasSuffix:@"Frameworks"]) {
+            _frameworksPath = (_bundle.bundleContainerURL).path;
         }
 
         // perm. fix

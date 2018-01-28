@@ -193,7 +193,7 @@
                                          withDestinationPath:self.originalBinary.frameworksPath
                                                        error:nil];
 
-    const char *argv[] = {[[workingPath stringByAppendingPathComponent:@"clutch"] UTF8String],
+    const char *argv[] = {[workingPath stringByAppendingPathComponent:@"clutch"].UTF8String,
                           "-f",
                           swappedBinaryPath.UTF8String,
                           binaryDumpPath.UTF8String,

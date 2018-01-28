@@ -27,7 +27,7 @@ void listApps(void);
 void listApps() {
     KJApplicationManager *_manager = [[KJApplicationManager alloc] init];
 
-    NSArray *installedApps = [_manager installedApps].allValues;
+    NSArray *installedApps = _manager.installedApps.allValues;
     KJPrint(@"Installed apps:");
 
     NSUInteger count;
@@ -64,7 +64,7 @@ int main(int argc, const char *argv[]) {
         NSString *_selectedOption = @"";
         NSString *_selectedBundleID;
 
-        NSArray<NSString *> *arguments = [[NSProcessInfo processInfo] arguments];
+        NSArray<NSString *> *arguments = [NSProcessInfo processInfo].arguments;
 
         ClutchCommands *commands = [[ClutchCommands alloc] initWithArguments:arguments];
 
@@ -157,11 +157,11 @@ int main(int argc, const char *argv[]) {
                                 KJDebug(@"using number");
                                 key = key - 1;
 
-                                if (key > [_installedArray count]) {
+                                if (key > _installedArray.count) {
                                     KJPrint(@"Couldn't find app with corresponding number!?!");
                                     return 1;
                                 }
-                                _selectedApp = [_installedArray objectAtIndex:key];
+                                _selectedApp = _installedArray[key];
                             }
 
                             if (!_selectedApp) {

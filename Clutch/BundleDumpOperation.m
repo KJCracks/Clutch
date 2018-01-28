@@ -33,15 +33,22 @@
 - (void)failedOperation {
     _failed = YES;
     NSLog(@"failed operation :(");
-    NSLog(@"application %@", _application->_dumpQueue);
-    NSArray *wow = [_application->_dumpQueue operations];
+    NSLog(@"application %@", _application.dumpQueue);
+    NSArray *wow = _application.dumpQueue.operations;
     for (NSOperation *operation in wow) {
         KJDebug(@"operation hash %lu", (unsigned long)operation.hash);
     }
     [self completeOperation];
 }
 
-- (instancetype)initWithBundle:(ClutchBundle *)application {
+- (nullable instancetype)init {
+    return [self initWithBundle:nil];
+}
+
+- (nullable instancetype)initWithBundle:(nullable ClutchBundle *)application {
+    if (!application) {
+        return nil;
+    }
     if ((self = [super init])) {
         _executing = NO;
         _finished = NO;
@@ -50,7 +57,7 @@
     return self;
 }
 
-+ (instancetype)operationWithBundle:(ClutchBundle *)application {
++ (nullable instancetype)operationWithBundle:(ClutchBundle *)application {
     return [[self alloc] initWithBundle:application];
 }
 
@@ -72,7 +79,7 @@
 
 - (void)start {
     // Always check for cancellation before launching the task.
-    if ([self isCancelled]) {
+    if (self.cancelled) {
         // Must move the operation to the finished state if it is canceled.
         [self willChangeValueForKey:@"isFinished"];
         _finished = YES;
@@ -165,7 +172,7 @@
                         originalBinary,
                         [Dumper readableArchFromHeader:macho]);
 
-                [_headersToStrip addObject:[NSNumber numberWithUnsignedInt:macho.offset]];
+                [_headersToStrip addObject:@(macho.offset)];
                 continue;
             }
 
@@ -201,7 +208,7 @@
         }
 
 #pragma mark "stripping" headers in FAT binary
-        if ([_headersToStrip count] > 0) {
+        if (_headersToStrip.count > 0) {
             NSFileHandle *_dumpHandle =
                 [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))
                                               closeOnDealloc:YES];
@@ -221,7 +228,7 @@
             int offset = sizeof(struct fat_header);
             for (uint32_t i = 0; i < fat.nfat_arch; i++) {
                 struct fat_arch arch = *(struct fat_arch *)((char *)buffer.bytes + offset);
-                NSNumber *archOffset = [NSNumber numberWithUnsignedInt:SWAP(arch.offset)];
+                NSNumber *archOffset = @SWAP(arch.offset);
                 KJDebug(@"current offset %u", SWAP(arch.offset));
                 if ([_headersToStrip containsObject:archOffset]) {
                     KJDebug(
@@ -288,7 +295,7 @@
                 [_dumpHandle replaceBytesInRange:NSMakeRange((NSUInteger)offset, sizeof(struct fat_arch))
                                        withBytes:&keepArch];
                 [_dumpHandle replaceBytesInRange:NSMakeRange(macho_offset, SWAP(keepArch.size))
-                                       withBytes:[machOData bytes]];
+                                       withBytes:machOData.bytes];
                 offset += sizeof(struct fat_arch);
                 macho_offset += SWAP(keepArch.size);
             }

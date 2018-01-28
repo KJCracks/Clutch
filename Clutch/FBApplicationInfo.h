@@ -16,7 +16,7 @@
 @property (copy, nonatomic) NSString *displayName;               // @synthesize displayName=_displayName;
 @property (readonly, retain, nonatomic, getter=_proxy) id proxy; // @synthesize proxy=_proxy;
 
-- (id)initWithApplicationProxy:(id)arg1;
+- (instancetype)initWithApplicationProxy:(id)arg1;
 
 @end
 
@@ -97,15 +97,15 @@
 - (id)_localizedGenreNameForID:(long long)arg1;
 - (void)_cacheFolderNamesForSystemApp:(id)arg1;
 - (id)_configureEnvironment:(id)arg1;
-- (long long)_computeRatingRank;
-- (id)_copyiTunesMetadata;
+@property (nonatomic, readonly) long long _computeRatingRank;
+@property (nonatomic, readonly, strong) id _copyiTunesMetadata;
 - (void)_buildDefaultsFromInfoPlist:(id)arg1;
 - (id)_computeSupportedInterfaceOrientations:(id)arg1;
 - (void)_acceptApplicationSignatureIdentity;
-- (id)_preferenceDomain;
+@property (nonatomic, readonly, strong) id _preferenceDomain;
 - (double)_lastModifiedDateForPath:(id)arg1;
 - (unsigned long long)_applicationType:(id)arg1;
-- (id)description;
+@property (nonatomic, readonly, strong) id description;
 - (_Bool)builtOnOrAfterSDKVersion:(id)arg1;
 - (void)acceptApplicationSignatureIdentity;
 - (_Bool)supportsInterfaceOrientation:(long long)arg1;
@@ -115,6 +115,6 @@
 @property (readonly, retain, nonatomic) NSArray *folderNames; // @synthesize folderNames=_folderNames;
 @property (readonly, nonatomic) long long signatureState;     // @dynamic signatureState;
 - (void)dealloc;
-- (id)initWithApplicationProxy:(id)arg1;
+- (instancetype)initWithApplicationProxy:(id)arg1;
 
 @end

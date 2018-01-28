@@ -9,7 +9,8 @@
 #import "ClutchBundle.h"
 #import "Extension.h"
 #import "Framework.h"
-#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface Application : ClutchBundle
 
@@ -21,6 +22,8 @@
 @property (nonatomic, retain, readonly) NSArray *frameworks;
 @property (nonatomic, retain, readonly) NSArray *watchOSApps;
 
-- (BOOL)dumpToDirectoryURL:(NSURL *)directoryURL onlyBinaries:(BOOL)yrn;
+- (BOOL)dumpToDirectoryURL:(nullable NSURL *)directoryURL onlyBinaries:(BOOL)yrn;
 
 @end
+
+NS_ASSUME_NONNULL_END

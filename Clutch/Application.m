@@ -93,7 +93,7 @@
 
         if (![url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
             // handle error
-        } else if (![[url.path pathExtension] caseInsensitiveCompare:@"app"] && [isDirectory boolValue]) {
+        } else if (![(url.path).pathExtension caseInsensitiveCompare:@"app"] && isDirectory.boolValue) {
             Application *watchOSApp = [[Application alloc]
                 initWithBundleInfo:@{@"BundleContainer" : url.URLByDeletingLastPathComponent, @"BundleURL" : url}];
 
@@ -132,7 +132,7 @@
 
         if (![url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
             // handle error
-        } else if (![[url.path pathExtension] caseInsensitiveCompare:@"framework"] && [isDirectory boolValue]) {
+        } else if (![(url.path).pathExtension caseInsensitiveCompare:@"framework"] && isDirectory.boolValue) {
             Framework *fmwk = [[Framework alloc]
                 initWithBundleInfo:@{@"BundleContainer" : url.URLByDeletingLastPathComponent, @"BundleURL" : url}];
             if (fmwk) {
@@ -171,7 +171,7 @@
 
         if (![url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
             // handle error
-        } else if (![[url.path pathExtension] caseInsensitiveCompare:@"appex"] && [isDirectory boolValue]) {
+        } else if (![(url.path).pathExtension caseInsensitiveCompare:@"appex"] && isDirectory.boolValue) {
             Extension *_extension = [[Extension alloc]
                 initWithBundleInfo:@{@"BundleContainer" : url.URLByDeletingLastPathComponent, @"BundleURL" : url}];
             if (_extension) {
@@ -183,7 +183,7 @@
     }
 }
 
-- (BOOL)dumpToDirectoryURL:(NSURL *)directoryURL onlyBinaries:(BOOL)_onlyBinaries {
+- (BOOL)dumpToDirectoryURL:(nullable NSURL *)directoryURL onlyBinaries:(BOOL)_onlyBinaries {
     [super dumpToDirectoryURL:directoryURL];
 
     [self prepareForDump];
@@ -277,23 +277,23 @@
     }
 
     if (!_onlyBinaries)
-        [_dumpQueue addOperation:_mainZipOperation];
+        [self.dumpQueue addOperation:_mainZipOperation];
 
-    [_dumpQueue addOperation:_dumpOperation];
+    [self.dumpQueue addOperation:_dumpOperation];
 
     for (NSOperation *operation in _additionalDumpOpeartions) {
-        [_dumpQueue addOperation:operation];
+        [self.dumpQueue addOperation:operation];
     }
 
     for (NSOperation *operation in _additionalZipOpeartions) {
-        [_dumpQueue addOperation:operation];
+        [self.dumpQueue addOperation:operation];
     }
 
-    [_dumpQueue addOperation:_finalizeDumpOperation];
+    [self.dumpQueue addOperation:_finalizeDumpOperation];
     BOOL failed = NO;
 
-    while (_dumpQueue.operationCount > 0) {
-        for (NSOperation *op in _dumpQueue.operations) {
+    while (self.dumpQueue.operationCount > 0) {
+        for (NSOperation *op in self.dumpQueue.operations) {
             if ([op isKindOfClass:[BundleDumpOperation class]]) {
                 BundleDumpOperation *op2 = (BundleDumpOperation *)op;
                 if (op2.failed) {
@@ -304,10 +304,10 @@
         }
     }
     if (failed) {
-        [_dumpQueue cancelAllOperations];
+        [self.dumpQueue cancelAllOperations];
     }
 
-    [_dumpQueue waitUntilAllOperationsAreFinished];
+    [self.dumpQueue waitUntilAllOperationsAreFinished];
 
     return !failed;
 }

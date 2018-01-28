@@ -16,7 +16,14 @@
 
 @implementation Dumper
 
-- (instancetype)initWithHeader:(thin_header)macho originalBinary:(Binary *)binary {
+- (nullable instancetype)init {
+    return [self initWithHeader:(thin_header){0} originalBinary:nil];
+}
+
+- (nullable instancetype)initWithHeader:(thin_header)macho originalBinary:(nullable Binary *)binary {
+    if (!binary) {
+        return nil;
+    }
     self = [super init];
     if (self) {
         _thinHeader = macho;

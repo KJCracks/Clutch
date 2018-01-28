@@ -20,7 +20,15 @@
 
 @implementation ZipOperation
 
-- (instancetype)initWithApplication:(ClutchBundle *)application {
+- (nullable instancetype)init {
+    return [self initWithApplication:nil];
+}
+
+- (nullable instancetype)initWithApplication:(nullable ClutchBundle *)application {
+    if (!application) {
+        return nil;
+    }
+
     if ((self = [super init])) {
         _executing = NO;
         _finished = NO;
@@ -131,7 +139,7 @@
                     } else {
                         KJDebug(@"Skipping %@", [_localPrefix stringByAppendingPathComponent:_localPath]);
                     }
-                } else if (![isDirectory boolValue] &&
+                } else if (!isDirectory.boolValue &&
                            ![_pathComponents[2] isEqualToString:_application.executablePath.lastPathComponent]) {
                     [_archive addFileToZip:theURL.path
                                    newname:[_localPrefix stringByAppendingPathComponent:_localPath]];

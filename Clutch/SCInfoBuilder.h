@@ -7,7 +7,8 @@
 //
 
 #import "ClutchBundle.h"
-#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 struct sinf_atom {
     uint32_t size;  // size of entire atom structure
@@ -22,7 +23,9 @@ struct sinf_kval {
 
 @interface SCInfoBuilder : NSObject
 
-+ (NSData *)sinfForBundle:(ClutchBundle *)bundle;
++ (nullable NSData *)sinfForBundle:(ClutchBundle *)bundle;
 + (NSDictionary *)parseOriginaleSinfForBundle:(ClutchBundle *)bundle;
 
 @end
+
+NS_ASSUME_NONNULL_END

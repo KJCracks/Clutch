@@ -26,7 +26,10 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "optool-defines.h"
-#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 thin_header headerAtOffset(NSData *binary, uint32_t offset);
 thin_header *headersFromBinary(thin_header *headers, NSData *binary, uint32_t *amount);
+
+NS_ASSUME_NONNULL_END

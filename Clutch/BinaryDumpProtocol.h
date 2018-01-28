@@ -55,14 +55,14 @@ struct code_directory {
 
 @protocol BinaryDumpProtocol <NSObject>
 
-- (cpu_type_t)supportedCPUType;
-- (BOOL)dumpBinary;
+@property (nonatomic, readonly) cpu_type_t supportedCPUType;
+@property (nonatomic, readonly) BOOL dumpBinary;
 
 @end
 
 @protocol FrameworkBinaryDumpProtocol <NSObject>
 
-- (cpu_type_t)supportedCPUType;
-- (BOOL)dumpBinary;
+@property (nonatomic, readonly) cpu_type_t supportedCPUType;
+@property (nonatomic, readonly) BOOL dumpBinary;
 
 @end

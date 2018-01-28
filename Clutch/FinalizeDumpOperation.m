@@ -25,7 +25,14 @@ extern struct timeval gStart;
 
 @implementation FinalizeDumpOperation
 
-- (instancetype)initWithApplication:(Application *)application {
+- (nullable instancetype)init {
+    return [self initWithApplication:nil];
+}
+
+- (nullable instancetype)initWithApplication:(nullable Application *)application {
+    if (!application) {
+        return nil;
+    }
     self = [super init];
     if (self) {
         _executing = NO;
@@ -53,7 +60,7 @@ extern struct timeval gStart;
 
 - (void)start {
     // Always check for cancellation before launching the task.
-    if ([self isCancelled]) {
+    if (self.cancelled) {
         // Must move the operation to the finished state if it is canceled.
         [self willChangeValueForKey:@"isFinished"];
         _finished = YES;

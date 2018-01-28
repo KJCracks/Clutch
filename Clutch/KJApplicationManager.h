@@ -7,14 +7,16 @@
 //
 
 #import "Application.h"
-#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface KJApplicationManager : NSObject
 
 - (instancetype)init;
 
 @property (nonatomic, readonly, copy) NSDictionary *installedApps;
-
-- (NSDictionary *)cachedApplications;
+@property (nonatomic, readonly, copy) NSDictionary *cachedApplications;
 
 @end
+
+NS_ASSUME_NONNULL_END

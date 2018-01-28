@@ -111,8 +111,8 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSStrin
             case LC_LOAD_DYLIB: {
                 struct dylib_command command = *(struct dylib_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name =
-                    (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset,
-                                                                  command.cmdsize - command.dylib.name.offset)] bytes];
+                    (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset,
+                                                                  command.cmdsize - command.dylib.name.offset)].bytes;
                 if ([@(name) isEqualToString:payload]) {
                     printf("removing payload from %s...\n", LC(cmd));
                     // remove load command
@@ -172,8 +172,8 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
             case LC_LOAD_DYLIB: {
                 struct dylib_command command = *(struct dylib_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name =
-                    (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset,
-                                                                  command.cmdsize - command.dylib.name.offset)] bytes];
+                    (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset,
+                                                                  command.cmdsize - command.dylib.name.offset)].bytes;
 
                 if ([@(name) isEqualToString:dylib]) {
                     *lastOffset = (unsigned int)binary.currentOffset;
@@ -215,8 +215,8 @@ BOOL removeRPATHFromBinary(NSMutableData *binary, thin_header macho) {
             case LC_RPATH: {
                 struct rpath_command command = *(struct rpath_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name =
-                    (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
-                                                                  command.cmdsize - command.path.offset)] bytes];
+                    (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
+                                                                  command.cmdsize - command.path.offset)].bytes;
                 if ([@(name) hasPrefix:@"/private/var/mobile"] || [@(name) hasPrefix:@"/var/mobile"]) {
                     printf("removing payload from %s...\n", LC(cmd));
                     // remove load command
@@ -274,8 +274,8 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
             case LC_RPATH: {
                 struct rpath_command command = *(struct rpath_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name =
-                    (char *)[[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
-                                                                  command.cmdsize - command.path.offset)] bytes];
+                    (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
+                                                                  command.cmdsize - command.path.offset)].bytes;
 
                 if ([@(name) isEqualToString:dylib]) {
                     *lastOffset = (unsigned int)binary.currentOffset;
@@ -328,7 +328,7 @@ BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_head
     // so we don't want to append new bytes to the binary (that would break the executable
     // since everything is offset-based–we'd have to go in and adjust every offset)
     // So instead take advantage of the huge amount of padding after the load commands
-    if (strcmp([occupant bytes], "\0")) {
+    if (strcmp(occupant.bytes, "\0")) {
         NSLog(@"cannot inject payload into %s because there is no room", dylibPath.fileSystemRepresentation);
         return NO;
     }
@@ -399,7 +399,7 @@ BOOL insertLoadEntryIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_
     // so we don't want to append new bytes to the binary (that would break the executable
     // since everything is offset-based–we'd have to go in and adjust every offset)
     // So instead take advantage of the huge amount of padding after the load commands
-    if (strcmp([occupant bytes], "\0")) {
+    if (strcmp(occupant.bytes, "\0")) {
         NSLog(@"cannot inject payload into %s because there is no room", dylibPath.fileSystemRepresentation);
         return NO;
     }

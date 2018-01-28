@@ -6,6 +6,8 @@
 //
 //
 
+NS_ASSUME_NONNULL_BEGIN
+
 FOUNDATION_EXTERN NSUInteger KJPrintCurrentLogLevel;
 typedef NS_ENUM(NSUInteger, KJPrintLogLevel) {
     KJPrintLogLevelNormal = 0,
@@ -20,3 +22,5 @@ NSInteger KJDebug(NSString *format, ...);
 #else
 #define KJDebug(x...)
 #endif
+
+NS_ASSUME_NONNULL_END

@@ -206,7 +206,7 @@
                 [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(_binaryDumpPath.UTF8String, "r+"))
                                               closeOnDealloc:YES];
 
-            uint32_t magic = [_dumpHandle intAtOffset:0];
+            uint32_t magic = [_dumpHandle unsignedInt32Atoffset:0];
             NSData *buffer = [_dumpHandle readDataOfLength:4096];
 
             [_dumpHandle closeFile];

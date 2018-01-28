@@ -153,7 +153,7 @@
         [[NSFileHandle alloc] initWithFileDescriptor:fileno(fopen(swappedBinaryPath.UTF8String, "r+"))
                                       closeOnDealloc:YES];
 
-    uint32_t magic = [self.originalFileHandle intAtOffset:0];
+    uint32_t magic = [self.originalFileHandle unsignedInt32Atoffset:0];
     bool shouldSwap = magic == FAT_CIGAM;
 #define SWAP(NUM) (shouldSwap ? CFSwapInt32((uint32_t)NUM) : (uint32_t)NUM)
 

@@ -95,8 +95,8 @@
                 tmpHandle.offsetInFile > macho.header.sizeofcmds + macho.size + macho.offset)
                 break;
 
-            uint32_t cmd = [tmpHandle intAtOffset:tmpHandle.offsetInFile];
-            uint32_t size_ = [tmpHandle intAtOffset:tmpHandle.offsetInFile + sizeof(uint32_t)];
+            uint32_t cmd = [tmpHandle unsignedInt32Atoffset:tmpHandle.offsetInFile];
+            uint32_t size_ = [tmpHandle unsignedInt32Atoffset:tmpHandle.offsetInFile + sizeof(uint32_t)];
 
             struct segment_command *command;
 

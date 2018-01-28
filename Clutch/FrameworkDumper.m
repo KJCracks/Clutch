@@ -64,8 +64,8 @@
 
     for (unsigned int i = 0; i < self.thinHeader.header.ncmds; i++) {
 
-        uint32_t cmd = [newFileHandle intAtOffset:newFileHandle.offsetInFile];
-        uint32_t size = [newFileHandle intAtOffset:newFileHandle.offsetInFile + sizeof(uint32_t)];
+        uint32_t cmd = [newFileHandle unsignedInt32Atoffset:newFileHandle.offsetInFile];
+        uint32_t size = [newFileHandle unsignedInt32Atoffset:newFileHandle.offsetInFile + sizeof(uint32_t)];
 
         switch (cmd) {
             case LC_CODE_SIGNATURE: {

@@ -7,7 +7,7 @@
  */
 
 @interface LSApplicationWorkspace : NSObject
-+ (LSApplicationWorkspace*)defaultWorkspace;
++ (LSApplicationWorkspace *)defaultWorkspace;
 - (void)_sf_openURL:(id)arg1 withOptions:(id)arg2 completionHandler:(/*^block*/ id)arg3;
 - (id)operationToOpenResource:(id)arg1 usingApplication:(id)arg2 userInfo:(id)arg3;
 @property (nonatomic, readonly) BOOL establishConnection;

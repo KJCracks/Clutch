@@ -18,10 +18,10 @@
 
 - (nullable instancetype)initWithPath:(NSString *)path {
     return [self initWithBundleInfo:@{
-                                      @"BundleURL": [NSURL fileURLWithPath:path],
-                                      @"BundleContainer": NSNull.null,
-                                      @"DisplayName": NSNull.null,
-                                      }];
+        @"BundleURL" : [NSURL fileURLWithPath:path],
+        @"BundleContainer" : NSNull.null,
+        @"DisplayName" : NSNull.null,
+    }];
 }
 
 - (nullable instancetype)initWithBundleInfo:(NSDictionary *)info {

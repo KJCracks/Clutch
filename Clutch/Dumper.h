@@ -19,7 +19,7 @@ void *safe_trim(void *p, size_t n);
 void exit_with_errno(int err, const char *prefix);
 void _kill(pid_t pid);
 
-@interface Dumper : NSObject<FrameworkBinaryDumpProtocol, BinaryDumpProtocol> 
+@interface Dumper : NSObject <FrameworkBinaryDumpProtocol, BinaryDumpProtocol>
 
 @property (nonatomic, readonly) BOOL isASLRProtected;
 @property (nonatomic, retain) NSFileHandle *originalFileHandle;
@@ -32,7 +32,8 @@ void _kill(pid_t pid);
 + (NSString *)readableArchFromMachHeader:(struct mach_header)header;
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn;
 - (pid_t)posix_spawn:(NSString *)binaryPath disableASLR:(BOOL)yrn suspend:(BOOL)suspend;
-- (nullable instancetype)initWithHeader:(thin_header)macho originalBinary:(nullable Binary *)binary NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithHeader:(thin_header)macho
+                         originalBinary:(nullable Binary *)binary NS_DESIGNATED_INITIALIZER;
 - (void)swapArch;
 - (BOOL)_dumpToFileHandle:(NSFileHandle *)fileHandle
                 withDumpSize:(uint32_t)togo

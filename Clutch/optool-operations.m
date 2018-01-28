@@ -112,7 +112,8 @@ BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSStrin
                 struct dylib_command command = *(struct dylib_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name =
                     (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset,
-                                                                  command.cmdsize - command.dylib.name.offset)].bytes;
+                                                                 command.cmdsize - command.dylib.name.offset)]
+                        .bytes;
                 if ([@(name) isEqualToString:payload]) {
                     printf("removing payload from %s...\n", LC(cmd));
                     // remove load command
@@ -173,7 +174,8 @@ BOOL binaryHasLoadCommandForDylib(NSMutableData *binary, NSString *dylib, uint32
                 struct dylib_command command = *(struct dylib_command *)((char *)binary.bytes + binary.currentOffset);
                 char *name =
                     (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.dylib.name.offset,
-                                                                  command.cmdsize - command.dylib.name.offset)].bytes;
+                                                                 command.cmdsize - command.dylib.name.offset)]
+                        .bytes;
 
                 if ([@(name) isEqualToString:dylib]) {
                     *lastOffset = (unsigned int)binary.currentOffset;
@@ -214,9 +216,9 @@ BOOL removeRPATHFromBinary(NSMutableData *binary, thin_header macho) {
         switch (cmd) {
             case LC_RPATH: {
                 struct rpath_command command = *(struct rpath_command *)((char *)binary.bytes + binary.currentOffset);
-                char *name =
-                    (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
-                                                                  command.cmdsize - command.path.offset)].bytes;
+                char *name = (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
+                                                                          command.cmdsize - command.path.offset)]
+                                 .bytes;
                 if ([@(name) hasPrefix:@"/private/var/mobile"] || [@(name) hasPrefix:@"/var/mobile"]) {
                     printf("removing payload from %s...\n", LC(cmd));
                     // remove load command
@@ -273,9 +275,9 @@ BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset
         switch (cmd) {
             case LC_RPATH: {
                 struct rpath_command command = *(struct rpath_command *)((char *)binary.bytes + binary.currentOffset);
-                char *name =
-                    (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
-                                                                  command.cmdsize - command.path.offset)].bytes;
+                char *name = (char *)[binary subdataWithRange:NSMakeRange(binary.currentOffset + command.path.offset,
+                                                                          command.cmdsize - command.path.offset)]
+                                 .bytes;
 
                 if ([@(name) isEqualToString:dylib]) {
                     *lastOffset = (unsigned int)binary.currentOffset;

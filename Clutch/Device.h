@@ -7,11 +7,11 @@
 //
 //  Re-tailored for Clutch
 
+#import "BinaryDumpProtocol.h"
 #import <UIKit/UIKit.h>
 #import <mach-o/fat.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
-#import "BinaryDumpProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

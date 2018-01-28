@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FrameworkLoader : Dumper<BinaryDumpProtocol, FrameworkBinaryDumpProtocol> 
+@interface FrameworkLoader : Dumper <BinaryDumpProtocol, FrameworkBinaryDumpProtocol>
 
 @property (nonatomic, assign) uint32_t ncmds;
 @property (nonatomic, assign) uint32_t offset;

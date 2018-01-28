@@ -112,7 +112,8 @@ typedef void (^ZipArchiveProgressUpdateBlock)(int percentage, int filesProcessed
 - (BOOL)UnzipOpenFile:(NSString *)zipFile;
 - (BOOL)UnzipOpenFile:(NSString *)zipFile Password:(NSString *)password;
 - (BOOL)UnzipFileTo:(NSString *)path overWrite:(BOOL)overwrite;
-@property (nonatomic, readonly, copy) NSDictionary *UnzipFileToMemory; // To avoid memory issue, only use this method for small zip files.
+@property (nonatomic, readonly, copy)
+    NSDictionary *UnzipFileToMemory; // To avoid memory issue, only use this method for small zip files.
 @property (nonatomic, readonly) BOOL UnzipCloseFile;
 
 // List the contents of the zip archive. must be called after UnzipOpenFile.

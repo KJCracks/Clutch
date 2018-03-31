@@ -25,23 +25,24 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#import <Foundation/Foundation.h>
+NS_ASSUME_NONNULL_BEGIN
 
 @interface NSData (Reading)
 
-- (NSUInteger)currentOffset;
-- (void)setCurrentOffset:(NSUInteger)offset;
+@property (nonatomic) NSUInteger currentOffset;
 
-- (uint8_t)nextByte;
+@property (nonatomic, readonly) uint8_t nextByte;
 - (uint8_t)byteAtOffset:(NSUInteger)offset;
 
-- (uint16_t)nextShort;
+@property (nonatomic, readonly) uint16_t nextShort;
 - (uint16_t)shortAtOffset:(NSUInteger)offset;
 
-- (uint32_t)nextInt;
+@property (nonatomic, readonly) uint32_t nextInt;
 - (uint32_t)intAtOffset:(NSUInteger)offset;
 
-- (uint64_t)nextLong;
+@property (nonatomic, readonly) uint64_t nextLong;
 - (uint64_t)longAtOffset:(NSUInteger)offset;
 
 @end
+
+NS_ASSUME_NONNULL_END

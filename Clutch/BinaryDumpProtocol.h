@@ -6,14 +6,13 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <mach/machine.h>
-#import "optool.h"
 #import "NSFileHandle+Private.h"
+#import "optool.h"
+#import <mach/machine.h>
 
 typedef NS_ENUM(NSUInteger, ArchCompatibility) {
     ArchCompatibilityCompatible,
-    //ArchCompatibilityStrip,
+    // ArchCompatibilityStrip,
     ArchCompatibilitySwap,
     ArchCompatibilityNotCompatible,
 };
@@ -45,7 +44,7 @@ struct code_directory {
     unsigned int hashOffset;
     unsigned int identOffset;
     unsigned int nSpecialSlots;
-    unsigned int nCodeSlots;      /* number of ordinary (code) hash slots */
+    unsigned int nCodeSlots; /* number of ordinary (code) hash slots */
     unsigned int codeLimit;
     unsigned char hashSize;
     unsigned char hashType;
@@ -56,16 +55,14 @@ struct code_directory {
 
 @protocol BinaryDumpProtocol <NSObject>
 
-- (cpu_type_t)supportedCPUType;
-
-- (BOOL)dumpBinary;
+@property (nonatomic, readonly) cpu_type_t supportedCPUType;
+@property (nonatomic, readonly) BOOL dumpBinary;
 
 @end
 
 @protocol FrameworkBinaryDumpProtocol <NSObject>
 
-- (cpu_type_t)supportedCPUType;
-
-- (BOOL)dumpBinary;
+@property (nonatomic, readonly) cpu_type_t supportedCPUType;
+@property (nonatomic, readonly) BOOL dumpBinary;
 
 @end

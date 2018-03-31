@@ -1,37 +1,37 @@
-#ifndef	_mach_vm_user_
-#define	_mach_vm_user_
+#ifndef _mach_vm_user_
+#define _mach_vm_user_
 
 /* Module mach_vm */
 
-#include <string.h>
-#include <mach/ndr.h>
 #include <mach/boolean.h>
 #include <mach/kern_return.h>
-#include <mach/notify.h>
 #include <mach/mach_types.h>
 #include <mach/message.h>
 #include <mach/mig_errors.h>
+#include <mach/ndr.h>
+#include <mach/notify.h>
 #include <mach/port.h>
+#include <string.h>
 
 #ifdef AUTOTEST
 #ifndef FUNCTION_PTR_T
 #define FUNCTION_PTR_T
 typedef void (*function_ptr_t)(mach_port_t, char *, mach_msg_type_number_t);
 typedef struct {
-    char            *name;
-    function_ptr_t  function;
+    char *name;
+    function_ptr_t function;
 } function_table_entry;
-typedef function_table_entry 	*function_table_t;
+typedef function_table_entry *function_table_t;
 #endif /* FUNCTION_PTR_T */
 #endif /* AUTOTEST */
 
-#ifndef	mach_vm_MSG_COUNT
-#define	mach_vm_MSG_COUNT	18
-#endif	/* mach_vm_MSG_COUNT */
+#ifndef mach_vm_MSG_COUNT
+#define mach_vm_MSG_COUNT 18
+#endif /* mach_vm_MSG_COUNT */
 
-#include <mach/std_types.h>
-#include <mach/mig.h>
 #include <mach/mach_types.h>
+#include <mach/mig.h>
+#include <mach/std_types.h>
 #include <mach_debug/mach_debug_types.h>
 
 #ifdef __BeforeMigUserHeader
@@ -39,283 +39,227 @@ __BeforeMigUserHeader
 #endif /* __BeforeMigUserHeader */
 
 #include <sys/cdefs.h>
-__BEGIN_DECLS
-
+    __BEGIN_DECLS
 
 /* Routine mach_vm_allocate */
-#ifdef	mig_external
-mig_external
+#ifdef mig_external
+        mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_allocate
-(
-	vm_map_t target,
-	mach_vm_address_t *address,
-	mach_vm_size_t size,
-	int flags
- );
+#endif /* mig_external */
+            kern_return_t
+            mach_vm_allocate(vm_map_t target, mach_vm_address_t *address, mach_vm_size_t size, int flags);
 
 /* Routine mach_vm_deallocate */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_deallocate
-(
-	vm_map_t target,
-	mach_vm_address_t address,
-	mach_vm_size_t size
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_deallocate(vm_map_t target, mach_vm_address_t address, mach_vm_size_t size);
 
 /* Routine mach_vm_protect */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_protect
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	boolean_t set_maximum,
-	vm_prot_t new_protection
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_protect(vm_map_t target_task,
+                    mach_vm_address_t address,
+                    mach_vm_size_t size,
+                    boolean_t set_maximum,
+                    vm_prot_t new_protection);
 
 /* Routine mach_vm_inherit */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_inherit
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	vm_inherit_t new_inheritance
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_inherit(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, vm_inherit_t new_inheritance);
 
 /* Routine mach_vm_read */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_read
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	vm_offset_t *data,
-	mach_msg_type_number_t *dataCnt
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_read(vm_map_t target_task,
+                 mach_vm_address_t address,
+                 mach_vm_size_t size,
+                 vm_offset_t *data,
+                 mach_msg_type_number_t *dataCnt);
 
 /* Routine mach_vm_read_list */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_read_list
-(
-	vm_map_t target_task,
-	mach_vm_read_entry_t data_list,
-	natural_t count
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_read_list(vm_map_t target_task, mach_vm_read_entry_t data_list, natural_t count);
 
 /* Routine mach_vm_write */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_write
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	vm_offset_t data,
-	mach_msg_type_number_t dataCnt
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_write(vm_map_t target_task, mach_vm_address_t address, vm_offset_t data, mach_msg_type_number_t dataCnt);
 
 /* Routine mach_vm_copy */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_copy
-(
-	vm_map_t target_task,
-	mach_vm_address_t source_address,
-	mach_vm_size_t size,
-	mach_vm_address_t dest_address
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_copy(vm_map_t target_task,
+                 mach_vm_address_t source_address,
+                 mach_vm_size_t size,
+                 mach_vm_address_t dest_address);
 
 /* Routine mach_vm_read_overwrite */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_read_overwrite
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	mach_vm_address_t data,
-	mach_vm_size_t *outsize
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_read_overwrite(vm_map_t target_task,
+                           mach_vm_address_t address,
+                           mach_vm_size_t size,
+                           mach_vm_address_t data,
+                           mach_vm_size_t *outsize);
 
 /* Routine mach_vm_msync */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_msync
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	vm_sync_t sync_flags
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_msync(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, vm_sync_t sync_flags);
 
 /* Routine mach_vm_behavior_set */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_behavior_set
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	vm_behavior_t new_behavior
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_behavior_set(vm_map_t target_task,
+                         mach_vm_address_t address,
+                         mach_vm_size_t size,
+                         vm_behavior_t new_behavior);
 
 /* Routine mach_vm_map */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_map
-(
-	vm_map_t target_task,
-	mach_vm_address_t *address,
-	mach_vm_size_t size,
-	mach_vm_offset_t mask,
-	int flags,
-	mem_entry_name_port_t object,
-	memory_object_offset_t offset,
-	boolean_t copy,
-	vm_prot_t cur_protection,
-	vm_prot_t max_protection,
-	vm_inherit_t inheritance
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_map(vm_map_t target_task,
+                mach_vm_address_t *address,
+                mach_vm_size_t size,
+                mach_vm_offset_t mask,
+                int flags,
+                mem_entry_name_port_t object,
+                memory_object_offset_t offset,
+                boolean_t copy,
+                vm_prot_t cur_protection,
+                vm_prot_t max_protection,
+                vm_inherit_t inheritance);
 
 /* Routine mach_vm_machine_attribute */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_machine_attribute
-(
-	vm_map_t target_task,
-	mach_vm_address_t address,
-	mach_vm_size_t size,
-	vm_machine_attribute_t attribute,
-	vm_machine_attribute_val_t *value
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_machine_attribute(vm_map_t target_task,
+                              mach_vm_address_t address,
+                              mach_vm_size_t size,
+                              vm_machine_attribute_t attribute,
+                              vm_machine_attribute_val_t *value);
 
 /* Routine mach_vm_remap */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_remap
-(
-	vm_map_t target_task,
-	mach_vm_address_t *target_address,
-	mach_vm_size_t size,
-	mach_vm_offset_t mask,
-	boolean_t anywhere,
-	vm_map_t src_task,
-	mach_vm_address_t src_address,
-	boolean_t copy,
-	vm_prot_t *cur_protection,
-	vm_prot_t *max_protection,
-	vm_inherit_t inheritance
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_remap(vm_map_t target_task,
+                  mach_vm_address_t *target_address,
+                  mach_vm_size_t size,
+                  mach_vm_offset_t mask,
+                  boolean_t anywhere,
+                  vm_map_t src_task,
+                  mach_vm_address_t src_address,
+                  boolean_t copy,
+                  vm_prot_t *cur_protection,
+                  vm_prot_t *max_protection,
+                  vm_inherit_t inheritance);
 
 /* Routine mach_vm_page_query */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_page_query
-(
-	vm_map_t target_map,
-	mach_vm_offset_t offset,
-	integer_t *disposition,
-	integer_t *ref_count
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_page_query(vm_map_t target_map, mach_vm_offset_t offset, integer_t *disposition, integer_t *ref_count);
 
 /* Routine mach_vm_region_recurse */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_region_recurse
-(
-	vm_map_t target_task,
-	mach_vm_address_t *address,
-	mach_vm_size_t *size,
-	natural_t *nesting_depth,
-	vm_region_recurse_info_t info,
-	mach_msg_type_number_t *infoCnt
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_region_recurse(vm_map_t target_task,
+                           mach_vm_address_t *address,
+                           mach_vm_size_t *size,
+                           natural_t *nesting_depth,
+                           vm_region_recurse_info_t info,
+                           mach_msg_type_number_t *infoCnt);
 
 /* Routine mach_vm_region */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t mach_vm_region
-(
-	vm_map_t target_task,
-	mach_vm_address_t *address,
-	mach_vm_size_t *size,
-	vm_region_flavor_t flavor,
-	vm_region_info_t info,
-	mach_msg_type_number_t *infoCnt,
-	mach_port_t *object_name
- );
+#endif /* mig_external */
+    kern_return_t
+    mach_vm_region(vm_map_t target_task,
+                   mach_vm_address_t *address,
+                   mach_vm_size_t *size,
+                   vm_region_flavor_t flavor,
+                   vm_region_info_t info,
+                   mach_msg_type_number_t *infoCnt,
+                   mach_port_t *object_name);
 
 /* Routine _mach_make_memory_entry */
-#ifdef	mig_external
+#ifdef mig_external
 mig_external
 #else
 extern
-#endif	/* mig_external */
-kern_return_t _mach_make_memory_entry
-(
-	vm_map_t target_task,
-	memory_object_size_t *size,
-	memory_object_offset_t offset,
-	vm_prot_t permission,
-	mem_entry_name_port_t *object_handle,
-	mem_entry_name_port_t parent_handle
- );
+#endif /* mig_external */
+    kern_return_t
+    _mach_make_memory_entry(vm_map_t target_task,
+                            memory_object_size_t *size,
+                            memory_object_offset_t offset,
+                            vm_prot_t permission,
+                            mem_entry_name_port_t *object_handle,
+                            mem_entry_name_port_t parent_handle);
 
 __END_DECLS
 
@@ -335,7 +279,7 @@ __END_DECLS
 #ifndef __Request__mach_vm_subsystem__defined
 #define __Request__mach_vm_subsystem__defined
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -345,11 +289,11 @@ typedef struct {
     mach_vm_size_t size;
     int flags;
 } __Request__mach_vm_allocate_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -358,11 +302,11 @@ typedef struct {
     mach_vm_address_t address;
     mach_vm_size_t size;
 } __Request__mach_vm_deallocate_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -373,11 +317,11 @@ typedef struct {
     boolean_t set_maximum;
     vm_prot_t new_protection;
 } __Request__mach_vm_protect_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -387,11 +331,11 @@ typedef struct {
     mach_vm_size_t size;
     vm_inherit_t new_inheritance;
 } __Request__mach_vm_inherit_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -400,11 +344,11 @@ typedef struct {
     mach_vm_address_t address;
     mach_vm_size_t size;
 } __Request__mach_vm_read_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -413,11 +357,11 @@ typedef struct {
     mach_vm_read_entry_t data_list;
     natural_t count;
 } __Request__mach_vm_read_list_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -430,11 +374,11 @@ typedef struct {
     mach_vm_address_t address;
     mach_msg_type_number_t dataCnt;
 } __Request__mach_vm_write_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -444,11 +388,11 @@ typedef struct {
     mach_vm_size_t size;
     mach_vm_address_t dest_address;
 } __Request__mach_vm_copy_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -458,11 +402,11 @@ typedef struct {
     mach_vm_size_t size;
     mach_vm_address_t data;
 } __Request__mach_vm_read_overwrite_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -472,11 +416,11 @@ typedef struct {
     mach_vm_size_t size;
     vm_sync_t sync_flags;
 } __Request__mach_vm_msync_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -486,11 +430,11 @@ typedef struct {
     mach_vm_size_t size;
     vm_behavior_t new_behavior;
 } __Request__mach_vm_behavior_set_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -510,11 +454,11 @@ typedef struct {
     vm_prot_t max_protection;
     vm_inherit_t inheritance;
 } __Request__mach_vm_map_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -525,11 +469,11 @@ typedef struct {
     vm_machine_attribute_t attribute;
     vm_machine_attribute_val_t value;
 } __Request__mach_vm_machine_attribute_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -547,11 +491,11 @@ typedef struct {
     boolean_t copy;
     vm_inherit_t inheritance;
 } __Request__mach_vm_remap_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -559,11 +503,11 @@ typedef struct {
     NDR_record_t NDR;
     mach_vm_offset_t offset;
 } __Request__mach_vm_page_query_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -573,11 +517,11 @@ typedef struct {
     natural_t nesting_depth;
     mach_msg_type_number_t infoCnt;
 } __Request__mach_vm_region_recurse_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -587,11 +531,11 @@ typedef struct {
     vm_region_flavor_t flavor;
     mach_msg_type_number_t infoCnt;
 } __Request__mach_vm_region_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -605,7 +549,7 @@ typedef struct {
     memory_object_offset_t offset;
     vm_prot_t permission;
 } __Request___mach_make_memory_entry_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 #endif /* !__Request__mach_vm_subsystem__defined */
@@ -640,7 +584,7 @@ union __RequestUnion__mach_vm_subsystem {
 #ifndef __Reply__mach_vm_subsystem__defined
 #define __Reply__mach_vm_subsystem__defined
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -649,11 +593,11 @@ typedef struct {
     kern_return_t RetCode;
     mach_vm_address_t address;
 } __Reply__mach_vm_allocate_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -661,11 +605,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_deallocate_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -673,11 +617,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_protect_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -685,11 +629,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_inherit_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -701,11 +645,11 @@ typedef struct {
     NDR_record_t NDR;
     mach_msg_type_number_t dataCnt;
 } __Reply__mach_vm_read_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -714,11 +658,11 @@ typedef struct {
     kern_return_t RetCode;
     mach_vm_read_entry_t data_list;
 } __Reply__mach_vm_read_list_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -726,11 +670,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_write_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -738,11 +682,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_copy_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -751,11 +695,11 @@ typedef struct {
     kern_return_t RetCode;
     mach_vm_size_t outsize;
 } __Reply__mach_vm_read_overwrite_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -763,11 +707,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_msync_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -775,11 +719,11 @@ typedef struct {
     NDR_record_t NDR;
     kern_return_t RetCode;
 } __Reply__mach_vm_behavior_set_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -788,11 +732,11 @@ typedef struct {
     kern_return_t RetCode;
     mach_vm_address_t address;
 } __Reply__mach_vm_map_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -801,11 +745,11 @@ typedef struct {
     kern_return_t RetCode;
     vm_machine_attribute_val_t value;
 } __Reply__mach_vm_machine_attribute_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -816,11 +760,11 @@ typedef struct {
     vm_prot_t cur_protection;
     vm_prot_t max_protection;
 } __Reply__mach_vm_remap_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -830,11 +774,11 @@ typedef struct {
     integer_t disposition;
     integer_t ref_count;
 } __Reply__mach_vm_page_query_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -847,11 +791,11 @@ typedef struct {
     mach_msg_type_number_t infoCnt;
     int info[19];
 } __Reply__mach_vm_region_recurse_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -866,11 +810,11 @@ typedef struct {
     mach_msg_type_number_t infoCnt;
     int info[10];
 } __Reply__mach_vm_region_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack(4)
 #endif
 typedef struct {
@@ -882,7 +826,7 @@ typedef struct {
     NDR_record_t NDR;
     memory_object_size_t size;
 } __Reply___mach_make_memory_entry_t;
-#ifdef  __MigPackStructs
+#ifdef __MigPackStructs
 #pragma pack()
 #endif
 #endif /* !__Reply__mach_vm_subsystem__defined */
@@ -914,29 +858,18 @@ union __ReplyUnion__mach_vm_subsystem {
 #endif /* !__RequestUnion__mach_vm_subsystem__defined */
 
 #ifndef subsystem_to_name_map_mach_vm
-#define subsystem_to_name_map_mach_vm \
-{ "mach_vm_allocate", 4800 },\
-{ "mach_vm_deallocate", 4801 },\
-{ "mach_vm_protect", 4802 },\
-{ "mach_vm_inherit", 4803 },\
-{ "mach_vm_read", 4804 },\
-{ "mach_vm_read_list", 4805 },\
-{ "mach_vm_write", 4806 },\
-{ "mach_vm_copy", 4807 },\
-{ "mach_vm_read_overwrite", 4808 },\
-{ "mach_vm_msync", 4809 },\
-{ "mach_vm_behavior_set", 4810 },\
-{ "mach_vm_map", 4811 },\
-{ "mach_vm_machine_attribute", 4812 },\
-{ "mach_vm_remap", 4813 },\
-{ "mach_vm_page_query", 4814 },\
-{ "mach_vm_region_recurse", 4815 },\
-{ "mach_vm_region", 4816 },\
-{ "_mach_make_memory_entry", 4817 }
+#define subsystem_to_name_map_mach_vm                                                                                  \
+    {"mach_vm_allocate", 4800}, {"mach_vm_deallocate", 4801}, {"mach_vm_protect", 4802}, {"mach_vm_inherit", 4803},    \
+        {"mach_vm_read", 4804}, {"mach_vm_read_list", 4805}, {"mach_vm_write", 4806}, {"mach_vm_copy", 4807},          \
+        {"mach_vm_read_overwrite", 4808}, {"mach_vm_msync", 4809}, {"mach_vm_behavior_set", 4810},                     \
+        {"mach_vm_map", 4811}, {"mach_vm_machine_attribute", 4812}, {"mach_vm_remap", 4813},                           \
+        {"mach_vm_page_query", 4814}, {"mach_vm_region_recurse", 4815}, {"mach_vm_region", 4816}, {                    \
+        "_mach_make_memory_entry", 4817                                                                                \
+    }
 #endif
 
 #ifdef __AfterMigUserHeader
 __AfterMigUserHeader
 #endif /* __AfterMigUserHeader */
 
-#endif	 /* _mach_vm_user_ */
+#endif /* _mach_vm_user_ */

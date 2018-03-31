@@ -6,14 +6,16 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "ClutchBundle.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class Application;
 
-NS_CLASS_AVAILABLE_IOS(8_0)
 @interface Extension : ClutchBundle
 
 @property (readonly) BOOL isWatchKitExtension;
 
 @end
+
+NS_ASSUME_NONNULL_END

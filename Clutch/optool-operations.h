@@ -25,9 +25,9 @@
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-#import <Foundation/Foundation.h>
 #import "optool-defines.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 BOOL stripCodeSignatureFromBinary(NSMutableData *binary, thin_header macho, BOOL soft);
 BOOL removeLoadEntryFromBinary(NSMutableData *binary, thin_header macho, NSString *payload);
@@ -39,3 +39,5 @@ BOOL removeASLRFromBinary(NSMutableData *binary, thin_header macho);
 BOOL insertRPATHIntoBinary(NSString *dylibPath, NSMutableData *binary, thin_header macho);
 BOOL removeRPATHFromBinary(NSMutableData *binary, thin_header macho);
 BOOL binaryHasRPATH(NSMutableData *binary, NSString *dylib, uint32_t *lastOffset, thin_header macho);
+
+NS_ASSUME_NONNULL_END

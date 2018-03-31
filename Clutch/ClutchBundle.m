@@ -7,8 +7,8 @@
 //
 
 #import "ClutchBundle.h"
-#import "optool.h"
 #import "ClutchPrint.h"
+#import "optool.h"
 
 @interface ClutchBundle ()
 
@@ -16,43 +16,59 @@
 
 @implementation ClutchBundle
 
-- (instancetype)initWithBundleInfo:(NSDictionary *)info
-{
-    if (self = [super initWithURL:info[@"BundleURL"]]) {
+- (nullable instancetype)initWithPath:(NSString *)path {
+    return [self initWithBundleInfo:@{
+        @"BundleURL" : [NSURL fileURLWithPath:path],
+        @"BundleContainer" : NSNull.null,
+        @"DisplayName" : NSNull.null,
+    }];
+}
+
+- (nullable instancetype)initWithBundleInfo:(NSDictionary *)info {
+    if ((self = [super initWithPath:[[NSURL URLWithString:info[@"BundleURL"]] path]])) {
         _bundleContainerURL = [info[@"BundleContainer"] copy];
+        if ([NSNull isEqual:_bundleContainerURL]) {
+            return nil;
+        }
         _displayName = [info[@"DisplayName"] copy];
+        if ([NSNull isEqual:_displayName]) {
+            return nil;
+        }
         _dumpQueue = [NSOperationQueue new];
     }
-    
+
     return self;
 }
 
 - (void)prepareForDump {
+    _executable = [[Binary alloc] initWithBundle:self];
 
-    _executable = [[Binary alloc]initWithBundle:self];
+    KJPrintVerbose(@"Preparing to dump %@", _executable);
+    KJPrintVerbose(@"Path: %@", self.executable.binaryPath);
 
-    [[ClutchPrint sharedInstance] printVerbose:@"Preparing to dump %@", _executable];
-	[[ClutchPrint sharedInstance] printVerbose:@"Path: %@", self.executable.binaryPath];
-    
-    NSDictionary *ownershipInfo = @{NSFileOwnerAccountName:@"mobile", NSFileGroupOwnerAccountName:@"mobile"};
-    
+    NSDictionary *ownershipInfo = @{NSFileOwnerAccountName : @"mobile", NSFileGroupOwnerAccountName : @"mobile"};
+
     [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.executable.binaryPath error:nil];
-    
 }
 
-- (void)dumpToDirectoryURL:(NSURL *)directoryURL
-{
+- (void)dumpToDirectoryURL:(NSURL *)directoryURL {
     CLUTCH_UNUSED(directoryURL);
     if (_dumpQueue.operationCount)
         [_dumpQueue cancelAllOperations];
 }
 
 - (NSString *)debugDescription {
-    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",NSStringFromClass([self class]),(void *)self,self.bundleIdentifier,self.bundleURL];
+    return [NSString stringWithFormat:@"<%@: %p, bundleIdentifier: %@, bundleURL: %@>",
+                                      NSStringFromClass([self class]),
+                                      (void *)self,
+                                      self.bundleIdentifier,
+                                      self.bundleURL];
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@ bundleID: %@>",self.bundlePath.lastPathComponent.stringByDeletingPathExtension,self.bundleIdentifier];
+    return [NSString stringWithFormat:@"<%@ bundleID: %@>",
+                                      self.bundlePath.lastPathComponent.stringByDeletingPathExtension,
+                                      self.bundleIdentifier];
 }
 
 @end

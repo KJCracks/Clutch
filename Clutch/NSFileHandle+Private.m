@@ -10,75 +10,50 @@
 
 @implementation NSFileHandle (Private)
 
-- (void)replaceBytesInRange:(NSRange)range withBytes:(const void *)bytes
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:range.location];
-    
-    [self writeData:[NSData dataWithBytes:bytes length:range.length]];
-    
-    [self seekToFileOffset:oldOffset];
+#pragma mark - Public methods
+
+- (void)replaceBytesInRange:(NSRange)range withBytes:(const void *)bytes {
+    [self performWithFileOffsetResetOffset:range.location
+                                     block:^(NSFileHandle *__weak fh) {
+                                         [fh writeData:[NSData dataWithBytes:bytes length:range.length]];
+                                     }];
 }
 
-- (void)getBytes:(void *)result inRange:(NSRange)range
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:range.location];
-    
-    NSData *data = [self readDataOfLength:range.length];
-    
-    [data getBytes:result length:range.length];
-    
-    [self seekToFileOffset:oldOffset];
+- (void)getBytes:(void *)result inRange:(NSRange)range {
+    [self performWithFileOffsetResetOffset:range.location
+                                     block:^(NSFileHandle *__weak fh) {
+                                         NSData *data = [fh readDataOfLength:range.length];
+                                         [data getBytes:result length:range.length];
+                                     }];
 }
 
-- (void)getBytes:(void*)result atOffset:(NSUInteger)offset length:(NSUInteger)length
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:offset];
-    
-    NSData *data = [self readDataOfLength:length];
-    
-    [data getBytes:result length:length];
-    
-    [self seekToFileOffset:oldOffset];
+- (void)getBytes:(void *)result atOffset:(const unsigned long long)offset length:(NSUInteger)length {
+    [self performWithFileOffsetResetOffset:offset
+                                     block:^(NSFileHandle *__weak fh) {
+                                         NSData *data = [fh readDataOfLength:length];
+                                         [data getBytes:result length:length];
+                                     }];
 }
 
-- (const void *)bytesAtOffset:(NSUInteger)offset length:(NSUInteger)size
-{
-    unsigned long long oldOffset = self.offsetInFile;
-    
-    [self seekToFileOffset:offset];
-    
-    const void * result;
-    
-    NSData *data = [self readDataOfLength:size];
-    
-    [data getBytes:&result length:size];
-    
-    [self seekToFileOffset:oldOffset];
-    
+- (uint32_t)unsignedInt32Atoffset:(const unsigned long long)offset {
+    __block uint32_t result;
+    [self performWithFileOffsetResetOffset:offset
+                                     block:^(NSFileHandle *__weak fh) {
+                                         NSData *data = [fh readDataOfLength:sizeof(uint32_t)];
+                                         [data getBytes:&result length:sizeof(result)];
+                                     }];
     return result;
 }
 
-- (uint32_t)intAtOffset:(unsigned long long)offset
-{
+#pragma mark - Private methods
+
+- (void)performWithFileOffsetResetOffset:(const unsigned long long)offset
+                                   block:(void (^)(NSFileHandle *__weak fh))block {
+    NSFileHandle *__weak weakSelf = self;
     unsigned long long oldOffset = self.offsetInFile;
-    
     [self seekToFileOffset:offset];
-    
-    uint32_t result;
-    
-    NSData *data = [self readDataOfLength:sizeof(result)];
-    
-    [data getBytes:&result length:sizeof(result)];
-    
+    block(weakSelf);
     [self seekToFileOffset:oldOffset];
-    
-    return result;
 }
 
 @end

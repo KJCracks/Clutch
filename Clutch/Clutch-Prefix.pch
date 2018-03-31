@@ -1,64 +1,41 @@
 //
 // Prefix header for all source files of the 'Clutch' target in the 'Clutch' project
 //
-
-
-/* credits: some guy on stackoverflow, sorry!
-
- #define KNRM  "\x1B[0m"
- #define KRED  "\x1B[31m"
- #define KGRN  "\x1B[32m"
- #define KYEL  "\x1B[33m"
- #define KBLU  "\x1B[34m"
- #define KMAG  "\x1B[35m"
- #define KCYN  "\x1B[36m"
- #define KWHT  "\x1B[37m"
- #define RESET "\033[0m"
-
- */
+#include <sys/time.h>
 
 #ifdef __OBJC__
-    #import <Foundation/Foundation.h>
+# import <Foundation/Foundation.h>
 #endif
 
-#include <sys/time.h>
-int diff_ms(struct timeval t1, struct timeval t2);
-
-
-
-#define CLUTCH_VERSION_ @"2.0.4"
-
-#ifdef DEBUG
-#define CLUTCH_VERSION [NSString stringWithFormat:@"%@ DEBUG",CLUTCH_VERSION_]
+/* Definition of `CGFLOAT_TYPE', `CGFLOAT_IS_DOUBLE', `CGFLOAT_MIN', and
+ `CGFLOAT_MAX'. */
+#if defined(__LP64__) && __LP64__
+# define CGFLOAT_TYPE double
+# define CGFLOAT_IS_DOUBLE 1
+# define CGFLOAT_MIN DBL_MIN
+# define CGFLOAT_MAX DBL_MAX
 #else
-#define CLUTCH_VERSION CLUTCH_VERSION_
+# define CGFLOAT_TYPE float
+# define CGFLOAT_IS_DOUBLE 0
+# define CGFLOAT_MIN FLT_MIN
+# define CGFLOAT_MAX FLT_MAX
 #endif
 
+/* Definition of the `CGFloat' type and `CGFLOAT_DEFINED'. */
+typedef CGFLOAT_TYPE CGFloat;
+#define CGFLOAT_DEFINED 1
+
+/* Definition of `CLUTCH_VERSION'. */
+#define CLUTCH_VERSION ((NSString *)(NSBundle.mainBundle.infoDictionary[@"CFBundleVersion"]))
+
+/* Definition of `CLUTCH_UNUSED'. */
 #define CLUTCH_UNUSED(x) ((void)x)
 
-
-//#   define SUCCESS(M, ...) fprintf(stderr, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-//#   define SUCCESS_OUT(M, ...) fprintf(stdout, "\033[1;35m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-
-# define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // shortened path of __FILE__ is there is one
-
-/*#ifdef DEBUG
-
-#   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#   define NSLog(M, ...) fprintf(stderr, "\033[0;33mDEBUG\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#   define VERBOSE(M, ...) fprintf(stderr, "\033[0;33mVERBOSE\033[0m | %s:%s [Line %d] | %s\n", FILE_NAME, __PRETTY_FUNCTION__, __LINE__, [[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-
-#else
-#   define NSLog(...)
-
-#   define ERROR(M, ...) fprintf(stderr, "\033[1;31mERROR\033[0m | %s\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#   define VERBOSE(M, ...) fprintf(stderr, "\033[0;33m%s\033[0m\n",[[NSString stringWithFormat:M, ##__VA_ARGS__] UTF8String]);
-#endif
-*/
-
-
-#define SYSTEM_VERSION_EQUAL_TO(_v)                  ( floor(NSFoundationVersionNumber) == _v ? YES : NO )
-#define SYSTEM_VERSION_GREATER_THAN(_v)              ( floor(NSFoundationVersionNumber) >  _v ? YES : NO )
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(_v)  ( floor(NSFoundationVersionNumber) >= _v ? YES : NO )
-#define SYSTEM_VERSION_LESS_THAN(_v)                 ( floor(NSFoundationVersionNumber) <  _v ? YES : NO )
-#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(_v)     ( floor(NSFoundationVersionNumber) <= _v ? YES : NO )
+/* Definition of `SYSTEM_VERSION_EQUAL_TO', `SYSTEM_VERSION_GREATER_THAN',
+ `SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO', `SYSTEM_VERSION_LESS_THAN',
+ and `SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO'. */
+#define SYSTEM_VERSION_EQUAL_TO(_v)                 (floor(NSFoundationVersionNumber) == _v ? YES : NO)
+#define SYSTEM_VERSION_GREATER_THAN(_v)             (floor(NSFoundationVersionNumber) >  _v ? YES : NO)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(_v) (floor(NSFoundationVersionNumber) >= _v ? YES : NO)
+#define SYSTEM_VERSION_LESS_THAN(_v)                (floor(NSFoundationVersionNumber) <  _v ? YES : NO)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(_v)    (floor(NSFoundationVersionNumber) <= _v ? YES : NO)

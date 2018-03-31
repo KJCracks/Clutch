@@ -8,6 +8,9 @@
 
 #import "Dumper.h"
 
-@interface Framework64Dumper : Dumper <FrameworkBinaryDumpProtocol>
+NS_ASSUME_NONNULL_BEGIN
 
+@interface Framework64Dumper : Dumper <FrameworkBinaryDumpProtocol, BinaryDumpProtocol>
 @end
+
+NS_ASSUME_NONNULL_END

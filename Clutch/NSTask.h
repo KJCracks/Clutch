@@ -48,7 +48,7 @@
 @property (NS_NONATOMIC_IOSONLY, readonly) BOOL resume;
 
 // status
-@property (NS_NONATOMIC_IOSONLY, readonly) int processIdentifier; 
+@property (NS_NONATOMIC_IOSONLY, readonly) int processIdentifier;
 @property (NS_NONATOMIC_IOSONLY, getter=isRunning, readonly) BOOL running;
 
 @property (NS_NONATOMIC_IOSONLY, readonly) int terminationStatus;
@@ -65,5 +65,4 @@
 
 @end
 
-FOUNDATION_EXPORT NSString * const NSTaskDidTerminateNotification;
-
+FOUNDATION_EXPORT NSString *const NSTaskDidTerminateNotification;

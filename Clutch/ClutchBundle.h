@@ -6,16 +6,11 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "Binary.h"
 
-@class Application;
+NS_ASSUME_NONNULL_BEGIN
 
 @interface ClutchBundle : NSBundle
-{
-    @public
-    NSOperationQueue *_dumpQueue;
-}
 
 @property (nonatomic, retain) ClutchBundle *parentBundle;
 @property (nonatomic, retain, readonly) NSString *workingPath;
@@ -24,11 +19,13 @@
 @property (nonatomic, retain, readonly) NSURL *enumURL;
 @property (nonatomic, retain, readonly) NSURL *bundleContainerURL;
 @property (nonatomic, retain, readonly) Binary *executable;
+@property (nonatomic, retain) NSOperationQueue *dumpQueue;
+@property (nonatomic, retain, readonly) NSString *displayName;
 
-@property (nonatomic, retain, readonly) NSString* displayName;
-
-- (instancetype)initWithBundleInfo:(NSDictionary *)info;
+- (nullable instancetype)initWithBundleInfo:(NSDictionary *)info NS_DESIGNATED_INITIALIZER;
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL;
 - (void)prepareForDump;
 
 @end
+
+NS_ASSUME_NONNULL_END

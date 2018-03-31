@@ -7,32 +7,32 @@
 //
 
 #import "ASLRDisabler.h"
+#import "ClutchPrint.h"
+#import "mach_vm.h"
 #import <dlfcn.h>
 #import <mach-o/fat.h>
-#import <mach/mach_traps.h>
 #import <mach/mach_init.h>
+#import <mach/mach_traps.h>
 #import <mach/vm_map.h>
-#import "mach_vm.h"
-#import "ClutchPrint.h"
 
 @import MachO.loader;
 
 @implementation ASLRDisabler
 
-+ (mach_vm_address_t)slideForPID:(pid_t)pid error:(NSError * __autoreleasing *)error {
++ (mach_vm_address_t)slideForPID:(pid_t)pid error:(NSError *__autoreleasing *)error {
     vm_map_t targetTask = 0;
     kern_return_t kr = 0;
     if (task_for_pid(mach_task_self(), pid, &targetTask)) {
-        [[ClutchPrint sharedInstance] printError:@"Can't execute task_for_pid! Do you have the right permissions/entitlements?"];
+        KJPrint(@"Can't execute task_for_pid! Do you have the right permissions/entitlements?");
         NSDictionary<NSErrorUserInfoKey, NSString *> *userInfo = @{
-            NSLocalizedDescriptionKey: @"Failed to execute task_for_pid",
-            };
+            NSLocalizedDescriptionKey : @"Failed to execute task_for_pid",
+        };
         if (error) {
             *error = [NSError errorWithDomain:NSMachErrorDomain code:-1 userInfo:userInfo];
         }
         return 0;
     }
-    
+
     vm_address_t iter = 0;
     while (1) {
         struct mach_header mh = {0};
@@ -47,14 +47,16 @@
             break;
         }
 
-        kr = mach_vm_read_overwrite(targetTask, (mach_vm_address_t)addr, (mach_vm_size_t)sizeof(struct mach_header), (mach_vm_address_t)&mh, &bytes_read);
+        kr = mach_vm_read_overwrite(targetTask,
+                                    (mach_vm_address_t)addr,
+                                    (mach_vm_size_t)sizeof(struct mach_header),
+                                    (mach_vm_address_t)&mh,
+                                    &bytes_read);
 
         if (kr == KERN_SUCCESS && bytes_read == sizeof(struct mach_header)) {
             /* only one image with MH_EXECUTE filetype */
             if ((mh.magic == MH_MAGIC || mh.magic == MH_MAGIC_64) && mh.filetype == MH_EXECUTE) {
-#if DEBUG
-                [[ClutchPrint sharedInstance] printDeveloper:@"Found main binary mach-o image @ %p!", (void *)addr];
-#endif
+                KJDebug(@"Found main binary mach-o image @ %p!", (void *)addr);
                 return addr;
             }
         }
@@ -63,7 +65,7 @@
     }
 
     NSDictionary<NSErrorUserInfoKey, NSString *> *userInfo = @{
-        NSLocalizedDescriptionKey: @"Should not reach here",
+        NSLocalizedDescriptionKey : @"Should not reach here",
     };
     if (error) {
         *error = [NSError errorWithDomain:NSMachErrorDomain code:-1 userInfo:userInfo];

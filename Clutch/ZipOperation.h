@@ -6,16 +6,14 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
-#ifdef DEBUG
-#define PRINT_ZIP_LOGS 0
-#endif
+NS_ASSUME_NONNULL_BEGIN
 
 @class ClutchBundle;
 
 @interface ZipOperation : NSOperation
 
-- (instancetype)initWithApplication:(ClutchBundle *)clutchBundle;
+- (nullable instancetype)initWithApplication:(nullable ClutchBundle *)clutchBundle NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -22,7 +22,6 @@
 		266FD1891E1D7CD300935807 /* Application.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6411A8926DC00844540 /* Application.m */; };
 		266FD18A1E1D7CD300935807 /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A71A89BEBE00BB5ABC /* Extension.m */; };
 		266FD18B1E1D7CD300935807 /* Framework.m in Sources */ = {isa = PBXBuildFile; fileRef = 32FB77A41A89BEAD00BB5ABC /* Framework.m */; };
-		266FD18C1E1D7CD300935807 /* ApplicationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA63B1A8925DB00844540 /* ApplicationsManager.m */; };
 		266FD18D1E1D7CD300935807 /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 3258FD631A90AAED007C2E66 /* Device.m */; };
 		266FD18E1E1D7CD300935807 /* SCInfoBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 328CCB3E1ACED00600B21225 /* SCInfoBuilder.m */; };
 		266FD18F1E1D7CD300935807 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = ADAD7C171C5B3C8600644FD6 /* sha1.c */; };
@@ -41,9 +40,7 @@
 		26AB705C1E1D857E00BDAE34 /* Clutch-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 26AB705B1E1D857E00BDAE34 /* Clutch-Prefix.pch */; };
 		26AB705E1E1D8CA600BDAE34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 324EA6321A89258000844540 /* main.m */; };
 		26AB70871E1DC6DB00BDAE34 /* libMiniZip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AB70791E1DC67500BDAE34 /* libMiniZip.a */; };
-		26EDA1FC1E1DFF6700108AA0 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EDA1F61E1DFF6700108AA0 /* ioapi.c */; };
-		26EDA1FD1E1DFF6700108AA0 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EDA1F81E1DFF6700108AA0 /* unzip.c */; };
-		26EDA1FE1E1DFF6700108AA0 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EDA1FA1E1DFF6700108AA0 /* zip.c */; };
+		26FB0323201BFD8F0046D1CA /* KJApplicationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FB0322201BFD8F0046D1CA /* KJApplicationManager.m */; };
 		D7C6DCC01E250B7000B5AFEE /* ClutchCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = D7C6DCBE1E250B7000B5AFEE /* ClutchCommands.h */; };
 		D7C6DCC11E250B7000B5AFEE /* ClutchCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C6DCBF1E250B7000B5AFEE /* ClutchCommands.m */; };
 /* End PBXBuildFile section */
@@ -78,21 +75,21 @@
 		26AB705B1E1D857E00BDAE34 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
 		26AB705F1E1D8E5C00BDAE34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26AB70791E1DC67500BDAE34 /* libMiniZip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMiniZip.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		26EDA1F51E1DFF6700108AA0 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypt.h; path = Clutch/MiniZip/crypt.h; sourceTree = SOURCE_ROOT; };
-		26EDA1F61E1DFF6700108AA0 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ioapi.c; path = Clutch/MiniZip/ioapi.c; sourceTree = SOURCE_ROOT; };
-		26EDA1F71E1DFF6700108AA0 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ioapi.h; path = Clutch/MiniZip/ioapi.h; sourceTree = SOURCE_ROOT; };
-		26EDA1F81E1DFF6700108AA0 /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = unzip.c; path = Clutch/MiniZip/unzip.c; sourceTree = SOURCE_ROOT; };
-		26EDA1F91E1DFF6700108AA0 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unzip.h; path = Clutch/MiniZip/unzip.h; sourceTree = SOURCE_ROOT; };
-		26EDA1FA1E1DFF6700108AA0 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zip.c; path = Clutch/MiniZip/zip.c; sourceTree = SOURCE_ROOT; };
-		26EDA1FB1E1DFF6700108AA0 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zip.h; path = Clutch/MiniZip/zip.h; sourceTree = SOURCE_ROOT; };
+		26FB0322201BFD8F0046D1CA /* KJApplicationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KJApplicationManager.m; sourceTree = "<group>"; };
+		26FB0325201BFDC10046D1CA /* crypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		26FB0326201BFDC10046D1CA /* ioapi.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		26FB0327201BFDC10046D1CA /* ioapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		26FB0328201BFDC10046D1CA /* unzip.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		26FB0329201BFDC10046D1CA /* unzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		26FB032A201BFDC10046D1CA /* zip.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		26FB032B201BFDC10046D1CA /* zip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		32042D8D1AC03B580033F163 /* optool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optool.h; sourceTree = "<group>"; };
 		323C86AB1AC03E3F008949F2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		323C86B01AC05AE4008949F2 /* Dumper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Dumper.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		324EA6261A89258000844540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		324EA6321A89258000844540 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; };
 		324EA6341A89258000844540 /* Clutch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Clutch-Prefix.pch"; sourceTree = "<group>"; };
-		324EA63A1A8925DB00844540 /* ApplicationsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationsManager.h; sourceTree = "<group>"; };
-		324EA63B1A8925DB00844540 /* ApplicationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationsManager.m; sourceTree = "<group>"; };
+		324EA63A1A8925DB00844540 /* KJApplicationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KJApplicationManager.h; sourceTree = "<group>"; };
 		324EA63D1A89260A00844540 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		324EA6401A8926DC00844540 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		324EA6411A8926DC00844540 /* Application.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Application.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -183,25 +180,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		26AB70651E1DC5D300BDAE34 /* MiniZip */ = {
+		26FB0324201BFDC10046D1CA /* MiniZip */ = {
 			isa = PBXGroup;
 			children = (
-				26EDA1F51E1DFF6700108AA0 /* crypt.h */,
-				26EDA1F61E1DFF6700108AA0 /* ioapi.c */,
-				26EDA1F71E1DFF6700108AA0 /* ioapi.h */,
-				26EDA1F81E1DFF6700108AA0 /* unzip.c */,
-				26EDA1F91E1DFF6700108AA0 /* unzip.h */,
-				26EDA1FA1E1DFF6700108AA0 /* zip.c */,
-				26EDA1FB1E1DFF6700108AA0 /* zip.h */,
+				26FB0325201BFDC10046D1CA /* crypt.h */,
+				26FB0326201BFDC10046D1CA /* ioapi.c */,
+				26FB0327201BFDC10046D1CA /* ioapi.h */,
+				26FB0328201BFDC10046D1CA /* unzip.c */,
+				26FB0329201BFDC10046D1CA /* unzip.h */,
+				26FB032A201BFDC10046D1CA /* zip.c */,
+				26FB032B201BFDC10046D1CA /* zip.h */,
 			);
-			path = MiniZip;
+			name = MiniZip;
+			path = Clutch/MiniZip;
 			sourceTree = "<group>";
 		};
 		324EA61A1A89258000844540 = {
 			isa = PBXGroup;
 			children = (
 				324EA6281A89258000844540 /* Clutch */,
-				26AB70651E1DC5D300BDAE34 /* MiniZip */,
+				26FB0324201BFDC10046D1CA /* MiniZip */,
 				324EA6251A89258000844540 /* Frameworks */,
 				324EA6241A89258000844540 /* Products */,
 			);
@@ -236,8 +234,8 @@
 				32EFB6F51A8AC29D005BB56C /* Operations */,
 				32FB77AA1A89D6C500BB5ABC /* Dumpers */,
 				32FB77A91A89CBAF00BB5ABC /* Application */,
-				324EA63A1A8925DB00844540 /* ApplicationsManager.h */,
-				324EA63B1A8925DB00844540 /* ApplicationsManager.m */,
+				324EA63A1A8925DB00844540 /* KJApplicationManager.h */,
+				26FB0322201BFD8F0046D1CA /* KJApplicationManager.m */,
 				3258FD621A90AAED007C2E66 /* Device.h */,
 				3258FD631A90AAED007C2E66 /* Device.m */,
 				324EA6321A89258000844540 /* main.m */,
@@ -511,10 +509,10 @@
 				266FD1861E1D7CD300935807 /* FrameworkLoader.m in Sources */,
 				266FD1871E1D7CD300935807 /* Binary.m in Sources */,
 				266FD1881E1D7CD300935807 /* ClutchBundle.m in Sources */,
+				26FB0323201BFD8F0046D1CA /* KJApplicationManager.m in Sources */,
 				266FD1891E1D7CD300935807 /* Application.m in Sources */,
 				266FD18A1E1D7CD300935807 /* Extension.m in Sources */,
 				266FD18B1E1D7CD300935807 /* Framework.m in Sources */,
-				266FD18C1E1D7CD300935807 /* ApplicationsManager.m in Sources */,
 				266FD18D1E1D7CD300935807 /* Device.m in Sources */,
 				266FD18E1E1D7CD300935807 /* SCInfoBuilder.m in Sources */,
 				D7C6DCC11E250B7000B5AFEE /* ClutchCommands.m in Sources */,
@@ -534,9 +532,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26EDA1FE1E1DFF6700108AA0 /* zip.c in Sources */,
-				26EDA1FD1E1DFF6700108AA0 /* unzip.c in Sources */,
-				26EDA1FC1E1DFF6700108AA0 /* ioapi.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

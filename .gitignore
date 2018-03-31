@@ -12,3 +12,4 @@ xcuserdata
 cmake-build-debug
 ldid
 bin
+CMakeFiles/

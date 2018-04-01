@@ -38,9 +38,9 @@
 #endif
 #endif
 
-#import "zlib.h"
-#import <stdio.h>
-#import <stdlib.h>
+#include "zlib.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #if defined(USE_FILE32API)
 #define fopen64 fopen

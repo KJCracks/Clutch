@@ -36,6 +36,7 @@
     NSLog(@"application %@", _application.dumpQueue);
     NSArray *wow = _application.dumpQueue.operations;
     for (NSOperation *operation in wow) {
+        (void)operation; // for release build
         KJDebug(@"operation hash %lu", (unsigned long)operation.hash);
     }
     [self completeOperation];

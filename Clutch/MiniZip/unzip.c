@@ -1364,9 +1364,9 @@ extern int ZEXPORT unzReadCurrentFile(unzFile file, voidp buf, unsigned len) {
                     return UNZ_ERRNO;
 
                 bytes_read = (uInt)ZREAD64(pfile_in_zip_read_info->z_filefunc,
-                                     pfile_in_zip_read_info->filestream,
-                                     pfile_in_zip_read_info->read_buffer + bytes_not_read + total_bytes_read,
-                                     bytes_to_read - total_bytes_read);
+                                           pfile_in_zip_read_info->filestream,
+                                           pfile_in_zip_read_info->read_buffer + bytes_not_read + total_bytes_read,
+                                           bytes_to_read - total_bytes_read);
 
                 total_bytes_read += bytes_read;
                 pfile_in_zip_read_info->pos_in_zipfile += bytes_read;

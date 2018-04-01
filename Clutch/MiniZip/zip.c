@@ -635,9 +635,9 @@ extern zipFile ZEXPORT zipOpen4(const void *pathname,
     zip64_internal ziinit;
     zip64_internal *zi;
     ZPOS64_T byte_before_the_zipfile; /* byte before the zipfile, (>0 for sfx)*/
-    ZPOS64_T size_central_dir = 0;        /* size of the central directory  */
-    ZPOS64_T offset_central_dir = 0;      /* offset of start of central directory */
-    ZPOS64_T number_entry_CD = 0;         /* total number of entries in the central dir */
+    ZPOS64_T size_central_dir = 0;    /* size of the central directory  */
+    ZPOS64_T offset_central_dir = 0;  /* offset of start of central directory */
+    ZPOS64_T number_entry_CD = 0;     /* total number of entries in the central dir */
     ZPOS64_T number_entry;
     ZPOS64_T central_pos;
     ZPOS64_T size_central_dir_to_read;
@@ -1256,7 +1256,8 @@ extern int ZEXPORT zipOpenNewFileInZip4_64(zipFile file,
             zi->ci.pcrc_32_tab = (const unsigned long *)get_crc_table();
             /*init_keys(password, zi->ci.keys, zi->ci.pcrc_32_tab);*/
 
-            sizeHead = (unsigned int)crypthead(password, bufHead, RAND_HEAD_LEN, zi->ci.keys, zi->ci.pcrc_32_tab, crcForCrypting);
+            sizeHead = (unsigned int)crypthead(
+                password, bufHead, RAND_HEAD_LEN, zi->ci.keys, zi->ci.pcrc_32_tab, crcForCrypting);
             zi->ci.crypt_header_size = (int)sizeHead;
 
             if (ZWRITE64(zi->z_filefunc, zi->filestream, bufHead, sizeHead) != sizeHead)

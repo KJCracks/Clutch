@@ -25,7 +25,12 @@
 }
 
 - (nullable instancetype)initWithBundleInfo:(NSDictionary *)info {
-    if ((self = [super initWithPath:[[NSURL URLWithString:info[@"BundleURL"]] path]])) {
+    NSURL *url = info[@"BundleURL"];
+    if (!url || [NSNull isEqual:url]) {
+        return nil;
+    }
+
+    if ((self = [super initWithPath:url.path])) {
         _bundleContainerURL = [info[@"BundleContainer"] copy];
         if ([NSNull isEqual:_bundleContainerURL]) {
             return nil;

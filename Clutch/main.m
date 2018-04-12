@@ -99,7 +99,7 @@ int main(int argc, const char *argv[]) {
                         break;
                     }
                     case ClutchCommandOptionFrameworkDump: {
-                        NSArray *args = [NSProcessInfo processInfo].arguments;
+                        NSArray<NSString *> *args = [NSProcessInfo processInfo].arguments;
 
                         if (([args[1] isEqualToString:@"--fmwk-dump"] || [args[1] isEqualToString:@"-f"]) &&
                             (args.count == 13)) {
@@ -107,15 +107,15 @@ int main(int argc, const char *argv[]) {
 
                             fmwk.binPath = args[2];
                             fmwk.dumpPath = args[3];
-                            fmwk.pages = [args[4] unsignedIntValue];
-                            fmwk.ncmds = [args[5] unsignedIntValue];
-                            fmwk.offset = [args[6] unsignedIntValue];
+                            fmwk.pages = (uint32_t)[args[4] intValue];
+                            fmwk.ncmds = (uint32_t)[args[5] intValue];
+                            fmwk.offset = (uint32_t)[args[6] intValue];
                             fmwk.bID = args[7];
-                            fmwk.hashOffset = [args[8] unsignedIntValue];
-                            fmwk.codesign_begin = [args[9] unsignedIntValue];
-                            fmwk.cryptsize = [args[10] unsignedIntValue];
-                            fmwk.cryptoff = [args[11] unsignedIntValue];
-                            fmwk.cryptlc_offset = [args[12] unsignedIntValue];
+                            fmwk.hashOffset = (uint32_t)[args[8] intValue];
+                            fmwk.codesign_begin = (uint32_t)[args[9] intValue];
+                            fmwk.cryptsize = (uint32_t)[args[10] intValue];
+                            fmwk.cryptoff = (uint32_t)[args[11] intValue];
+                            fmwk.cryptlc_offset = (uint32_t)[args[12] intValue];
                             fmwk.dumpSize = fmwk.cryptoff + fmwk.cryptsize;
 
                             BOOL result = successfullyDumpedFramework = [fmwk dumpBinary];

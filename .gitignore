@@ -17,6 +17,8 @@ DerivedData/
 *.xccheckout
 *.moved-aside
 !Podfile.lock
+.idea
+cmake-build-debug
 
 # OS junk
 .DS_Store

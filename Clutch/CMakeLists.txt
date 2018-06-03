@@ -1,92 +1,128 @@
-set( PRECOMPILED_HEADER Clutch-Prefix.pch )
+cmake_minimum_required( VERSION 3.8 )
 
-set( HEADERS
-    ../LSApplicationProxy.h
-    ARM64Dumper.h
-    ARMDumper.h
-    ASLRDisabler.h
-    Application.h
-    ApplicationsManager.h
-    Binary.h
-    BinaryDumpProtocol.h
-    BundleDumpOperation.h
-    ClutchBundle.h
-    ClutchCommands.h
-    ClutchPrint.h
-    Device.h
-    Dumper.h
-    Extension.h
-    FBApplicationInfo.h
-    FinalizeDumpOperation.h
-    Framework.h
-    Framework64Dumper.h
-    FrameworkDumper.h
-    FrameworkLoader.h
-    LSApplicationWorkspace.h
-    NSBundle+Clutch.h
-    NSData+Reading.h
-    NSFileHandle+Private.h
-    NSTask.h
-    SCInfoBuilder.h
-    ZipArchive.h
-    ZipOperation.h
-    mach_vm.h
-    move_and_sign.sh
-    optool-defines.h
-    optool-headers.h
-    optool-operations.h
-    optool.h
-    scinfo.h
-    sha1.h )
+set( SOURCE_COMMANDS
+        ClutchCommands.h
+        ClutchCommands.m )
+source_group( "Commands" FILES ${SOURCE_COMMANDS} )
+list( APPEND SOURCE_FILES ${SOURCE_COMMANDS} )
 
-set( SOURCE
-    ARM64Dumper.m
-    ARMDumper.m
-    ASLRDisabler.m
-    Application.m
-    ApplicationsManager.m
-    Binary.m
-    BundleDumpOperation.m
-    ClutchBundle.m
-    ClutchCommands.m
-    ClutchPrint.m
-    Device.m
-    Dumper.m
-    Extension.m
-    FinalizeDumpOperation.m
-    Framework.m
-    Framework64Dumper.m
-    FrameworkDumper.m
-    FrameworkLoader.m
-    NSBundle+Clutch.m
-    NSData+Reading.m
-    NSFileHandle+Private.m
-    SCInfoBuilder.m
-    ZipArchive.m
-    ZipOperation.m
-    main.m
-    optool-headers.m
-    optool-operations.m
-    scinfo.m
-    sha1.c )
+set( SOURCE_OPERATIONS
+        ZipOperation.h
+        ZipOperation.m
+        BundleDumpOperation.h
+        BundleDumpOperation.m
+        FinalizeDumpOperation.h
+        FinalizeDumpOperation.m )
+source_group( "Operations" FILES ${SOURCE_OPERATIONS} )
+list( APPEND SOURCE_FILES ${SOURCE_OPERATIONS} )
 
-set( RESOURCES
-    move_and_sign.sh
-    Clutch.entitlements
-    Info.plist
-    Info.plist.in )
+set( SOURCE_DUMPERS
+        ASLRDisabler.h
+        ASLRDisabler.m
+        ARMDumper.h
+        ARMDumper.m
+        ARM64Dumper.h
+        ARM64Dumper.m
+        FrameworkDumper.h
+        FrameworkDumper.m
+        Framework64Dumper.h
+        Framework64Dumper.m
+        FrameworkLoader.h
+        FrameworkLoader.m )
+source_group( "Dumpers" FILES ${SOURCE_DUMPERS} )
+list( APPEND SOURCE_FILES ${SOURCE_DUMPERS} )
+
+set( SOURCE_PROTOCOL_PARENT_DUMPER
+        BinaryDumpProtocol.h
+        Dumper.h
+        Dumper.m )
+source_group( "Dumpers\\Protocol + Parent Dumper" FILES ${SOURCE_PROTOCOL_PARENT_DUMPER} )
+list( APPEND SOURCE_FILES ${SOURCE_PROTOCOL_PARENT_DUMPER} )
+
+set( SOURCE_APPLICATION
+        Application.h
+        Application.m
+        Extension.h
+        Extension.m
+        Framework.h
+        Framework.m )
+source_group( "Application" FILES ${SOURCE_APPLICATION} )
+list( APPEND SOURCE_FILES ${SOURCE_APPLICATION} )
+
+set( SOURCE_CLUTCH_BUNDLE
+        Binary.h
+        Binary.m
+        ClutchBundle.h
+        ClutchBundle.m )
+source_group( "Application\\ClutchBundle" FILES ${SOURCE_CLUTCH_BUNDLE} )
+list( APPEND SOURCE_FILES ${SOURCE_CLUTCH_BUNDLE} )
+
+set( SOURCE_MAIN
+        ApplicationsManager.h
+        ApplicationsManager.m
+        Device.h
+        Device.m
+        main.m
+        ClutchPrint.h
+        ClutchPrint.m )
+source_group( "" FILES ${SOURCE_MAIN} )
+list( APPEND SOURCE_FILES ${SOURCE_MAIN} )
+
+set( SOURCE_SUPPORTING_FILES
+        Clutch-Prefix.pch
+        SCInfoBuilder.h
+        SCInfoBuilder.m
+        sha1.c
+        sha1.h
+        Clutch.entitlements
+        mach_vm.h
+        NSTask.h
+        scinfo.h
+        scinfo.m
+        LSApplicationProxy.h
+        LSApplicationWorkspace.h
+        FBApplicationInfo.h
+        Info.plist
+        NSFileHandle+Private.h
+        NSFileHandle+Private.m
+        NSBundle+Clutch.h
+        NSBundle+Clutch.m )
+source_group( "Supporting Files" FILES ${SOURCE_SUPPORTING_FILES} )
+list( APPEND SOURCE_FILES ${SOURCE_SUPPORTING_FILES} )
+
+set( SOURCE_OPTOOL
+        optool.h
+        optool-defines.h
+        optool-headers.h
+        optool-headers.m
+        optool-operations.h
+        optool-operations.m
+        NSData+Reading.h
+        NSData+Reading.m )
+source_group( "Supporting Files\\optools" FILES ${SOURCE_OPTOOL} )
+list( APPEND SOURCE_FILES ${SOURCE_OPTOOL} )
+
+set( SOURCE_ZIP
+        ZipArchive.h
+        ZipArchive.m )
+source_group( "Supporting Files\\Zip" FILES ${SOURCE_ZIP} )
+list( APPEND SOURCE_FILES ${SOURCE_ZIP} )
+
+set( RESOURCE_SCRIPTS
+    move_and_sign.sh )
+source_group( "scripts" FILES ${RESOURCE_SCRIPTS} )
+list( APPEND SOURCE_FILES ${RESOURCE_SCRIPTS} )
 
 configure_file( Clutch.entitlements Clutch.entitlements COPYONLY )
 configure_file( Info.plist.in Info.plist COPYONLY )
 
 add_subdirectory( MiniZip )
 
-
 find_library( FOUNDATION Foundation )
 find_library( UIKIT UIKit )
 find_library( MOBILECORESERVICES MobileCoreServices )
 
-add_executable( Clutch ${SOURCE} $<TARGET_OBJECTS:MiniZip> )
+add_executable( Clutch MACOSX_BUNDLE ${SOURCE_FILES} $<TARGET_OBJECTS:MiniZip> )
 target_link_libraries( Clutch
         PRIVATE
             ${FOUNDATION}
@@ -95,28 +131,31 @@ target_link_libraries( Clutch
 target_include_directories( Clutch PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} )
 target_compile_options( Clutch PRIVATE -include ${PRECOMPILED_HEADER} )
 
-install( TARGETS Clutch
-        RUNTIME DESTINATION bin )
-
+if( CMAKE_GENERATOR STREQUAL Xcode )
 set_target_properties( Clutch
         PROPERTIES
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Clutch/Info.plist.in
-        XCODE_ATTRIBUTE_ARCHS "$(ARCHS_STANDARD)"
-        XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym"
-        XCODE_ATTRIBUTE_GCC_PREFIX_HEADER "${PRECOMPILED_HEADER}"
-        XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER YES
-        XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS "@executable_path/Frameworks"
-        XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET ${DEPLOYMENT_TARGET}
-        XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${DEVICE_FAMILY}
-        XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
-        XCODE_ATTRIBUTE_COMBINE_HIDPI_IMAGES NO
-        XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)"
-        XCODE_ATTRIBUTE_ENABLE_TESTABILITY YES
-        XCODE_ATTRIBUTE_ENABLE_BITCODE NO
-        XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN YES )
-
+            MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in"
+            XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "${PRODUCT_BUNDLE_IDENTIFIER}"
+            XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "${CMAKE_CURRENT_SOURCE_DIR}/Clutch.entitlements"
+            XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "${CODE_SIGN_IDENTITY}"
+            XCODE_ATTIRBUTE_CODE_SIGN_STYLE "Manual"
+            XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS YES
+            XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET ${MACOSX_DEPLOYMENT_TARGET}
+            XCODE_ATTRIBUTE_ARCHS "$(ARCHS_STANDARD)"
+            XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT dwarf-with-dsym
+            XCODE_ATTRIBUTE_GCC_PREFIX_HEADER "${PRECOMPILED_HEADER}"
+            XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER YES
+            XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS "@executable_path/Frameworks"
+            XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${DEVICE_FAMILY}
+            XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
+            XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)"
+            XCODE_ATTRIBUTE_ENABLE_TESTABILITY YES
+            XCODE_ATTRIBUTE_ENABLE_BITCODE NO
+            XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN YES )
+else()
 target_compile_options( Clutch
         PRIVATE
-        -mios-version-min=9.0
-        -fmodules
-        -fobjc-arc )
+            -miphoneos-version-min=${MACOSX_DEPLOYMENT_TARGET}
+            -fobjc-arc
+            -fmodules )
+endif()

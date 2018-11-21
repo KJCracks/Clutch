@@ -241,7 +241,7 @@
             int dumpResult_ = 0;
             if (waitpid(pid, &dumpResult_, 0) != -1) {
                 KJDebug(@"Child exited with status %u", dumpResult);
-                finalDumpResult = (NSUInteger)dumpResult_;
+                finalDumpResult = WEXITSTATUS(dumpResult_);
             } else {
                 perror("waitpid");
             }

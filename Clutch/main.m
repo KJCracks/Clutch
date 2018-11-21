@@ -123,10 +123,10 @@ int main(int argc, const char *argv[]) {
                             if (result) {
                                 KJPrint(@"Successfully dumped framework %@!", fmwk.binPath.lastPathComponent);
 
-                                return 1;
+                                return 0;
                             } else {
                                 KJPrint(@"Failed to dump framework %@ :(", fmwk.binPath.lastPathComponent);
-                                return 0;
+                                return 1;
                             }
 
                         } else if (args.count != 13) {

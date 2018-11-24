@@ -239,7 +239,7 @@
             kill(pid, SIGCONT);
             if (waitpid(pid, &dumpResult_, 0) != -1) {
                 KJPrintVerbose(@"Child exited with status %u", dumpResult_);
-                finalDumpResult = dumpResult_;
+                finalDumpResult = WEXITSTATUS(dumpResult_);
             } else {
                 KJPrintVerbose(@"waitpid");
             }

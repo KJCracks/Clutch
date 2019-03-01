@@ -103,6 +103,8 @@ Clutch would not be what it is without these people:
 * [DoubleDoughnut](https://github.com/DoubleDoughnut)
 * [iD70my](https://github.com/iD70my)
 * [OdNairy](https://github.com/OdNairy)
+* [palmerc](https://github.com/palmerc)
+* [jack980517](https://github.com/jack980517)
 
 # Copyright
 

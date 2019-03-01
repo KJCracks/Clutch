@@ -39,8 +39,19 @@ Note that if you update Xcode you may need to run these commands again.
 
 ## Compiling
 
+### Xcode
+
 ```sh
 xcodebuild clean build
+```
+
+### CMake
+
+```sh
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../cmake/iphoneos.toolchain.cmake ..
+make -j$(sysctl -n hw.logicalcpu)
 ```
 
 ## Installation
@@ -58,6 +69,12 @@ scp -P 2222 ./build/Clutch root@localhost:/usr/bin/Clutch
 ```
 
 When you SSH into your device, run `Clutch`.
+
+If you are using the [unc0ver jailbreak](https://www.theiphonewiki.com/wiki/Unc0ver), you may need to run the following:
+
+```sh
+inject ./Clutch
+```
 
 # Licenses
 

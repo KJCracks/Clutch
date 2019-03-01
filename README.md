@@ -73,7 +73,7 @@ When you SSH into your device, run `Clutch`.
 If you are using the [unc0ver jailbreak](https://www.theiphonewiki.com/wiki/Unc0ver), you may need to run the following:
 
 ```sh
-inject ./Clutch
+inject /usr/bin/Clutch
 ```
 
 # Licenses

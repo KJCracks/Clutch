@@ -24,9 +24,10 @@
     self = [super init];
     if (self) {
         _thinHeader = macho;
-        _originalBinary = binary;
+        if (binary) {
+            _originalBinary = binary;
+        }
         _shouldDisableASLR = NO;
-
         _isASLRProtected = (_thinHeader.header.flags & MH_PIE) ? YES : NO;
     }
 

@@ -542,8 +542,10 @@ local ZPOS64_T zip64local_SearchCentralDir(const zlib_filefunc64_32_def *pzlib_f
     if (buf == NULL)
         return 0;
 
-    if (ZSEEK64(*pzlib_filefunc_def, filestream, 0, ZLIB_FILEFUNC_SEEK_END) != 0)
+    if (ZSEEK64(*pzlib_filefunc_def, filestream, 0, ZLIB_FILEFUNC_SEEK_END) != 0) {
+        TRYFREE(buf);
         return 0;
+    }
 
     file_size = ZTELL64(*pzlib_filefunc_def, filestream);
 

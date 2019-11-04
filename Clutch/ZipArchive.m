@@ -158,7 +158,7 @@
                                   0,
                                   NULL, // comment
                                   Z_DEFLATED,
-                                  self.compression);
+                                  (int)self.compression);
     } else {
         FILE *f = fopen([file cStringUsingEncoding:NSUTF8StringEncoding], "r");
         fseek(f, 0, SEEK_END);
@@ -178,7 +178,7 @@
                                    0,
                                    NULL, // comment
                                    Z_DEFLATED,
-                                   self.compression,
+                                   (int)self.compression,
                                    0,
                                    15,
                                    8,
@@ -277,7 +277,7 @@
                                   0,
                                   NULL, // comment
                                   Z_DEFLATED,
-                                  self.compression);
+                                  (int)self.compression);
     } else {
         uLong crcValue = crc32(0L, NULL, 0L);
         crcValue = crc32(crcValue, (const Bytef *)data.bytes, (unsigned int)data.length);
@@ -290,7 +290,7 @@
                                    0,
                                    NULL, // comment
                                    Z_DEFLATED,
-                                   self.compression,
+                                   (int)self.compression,
                                    0,
                                    15,
                                    8,

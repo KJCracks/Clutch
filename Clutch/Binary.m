@@ -51,12 +51,15 @@
 
         [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.binaryPath error:nil];
 
-        _sinfPath =
-            [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"sinf" inDirectory:@"SC_Info"];
-        _supfPath =
-            [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"supf" inDirectory:@"SC_Info"];
-        _suppPath =
-            [_bundle pathForResource:_bundle.executablePath.lastPathComponent ofType:@"supp" inDirectory:@"SC_Info"];
+        _sinfPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent
+                                      ofType:@"sinf"
+                                 inDirectory:@"SC_Info"];
+        _supfPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent
+                                      ofType:@"supf"
+                                 inDirectory:@"SC_Info"];
+        _suppPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent
+                                      ofType:@"supp"
+                                 inDirectory:@"SC_Info"];
 
         _dumpOperation = [[BundleDumpOperation alloc] initWithBundle:_bundle];
 

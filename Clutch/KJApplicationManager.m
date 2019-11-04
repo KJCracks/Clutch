@@ -181,8 +181,8 @@ typedef NSDictionary *(*MobileInstallationLookup)(NSDictionary *options);
 
 - (NSArray *)dumpedApps {
     NSString *dumpedPath = @"";
-    NSArray *array =
-        [[NSArray alloc] initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:dumpedPath error:nil]];
+    NSArray *array = [[NSArray alloc] initWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:dumpedPath
+                                                                                                        error:nil]];
 
     NSMutableArray *paths = [NSMutableArray new];
 

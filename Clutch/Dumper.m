@@ -323,8 +323,8 @@
     KJPrint(@"Writing new checksum");
     [fileHandle seekToFileOffset:(begin + hashOffset)];
 
-    NSData *trimmed_checksum =
-        [[NSData dataWithBytes:checksum length:pages * 20] subdataWithRange:NSMakeRange(0, 20 * pages_d)];
+    NSData *trimmed_checksum = [[NSData dataWithBytes:checksum
+                                               length:pages * 20] subdataWithRange:NSMakeRange(0, 20 * pages_d)];
     free(checksum);
     [fileHandle writeData:trimmed_checksum];
 

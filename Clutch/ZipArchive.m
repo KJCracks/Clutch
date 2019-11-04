@@ -93,13 +93,13 @@
     return [self CreateZipFile2:zipFile append:isAppend];
 }
 
-    /**
-     * add an existing file on disk to the zip archive, compressing it.
-     *
-     * @param file    the path to the file to compress
-     * @param newname the name of the file in the zip archive, ie: path relative to the zip archive root.
-     * @returns BOOL YES on success
-     */
+/**
+ * add an existing file on disk to the zip archive, compressing it.
+ *
+ * @param file    the path to the file to compress
+ * @param newname the name of the file in the zip archive, ie: path relative to the zip archive root.
+ * @returns BOOL YES on success
+ */
 
 #define M_FRAGMENT_SIZE (1024 * 1024 * 15)
 

@@ -230,7 +230,6 @@
     _finalizeDumpOperation.expectedBinariesCount = _additionalDumpOpeartions.count + 1;
 
     NSMutableArray *_additionalZipOpeartions = ({
-
         NSMutableArray *array = [NSMutableArray new];
 
 #ifdef DEBUG

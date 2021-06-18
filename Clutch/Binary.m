@@ -45,12 +45,6 @@
             _frameworksPath = (_bundle.bundleContainerURL).path;
         }
 
-        // perm. fix
-
-        NSDictionary *ownershipInfo = @{NSFileOwnerAccountName : @"mobile", NSFileGroupOwnerAccountName : @"mobile"};
-
-        [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.binaryPath error:nil];
-
         _sinfPath = [_bundle pathForResource:_bundle.executablePath.lastPathComponent
                                       ofType:@"sinf"
                                  inDirectory:@"SC_Info"];

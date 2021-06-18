@@ -50,10 +50,6 @@
 
     KJPrintVerbose(@"Preparing to dump %@", _executable);
     KJPrintVerbose(@"Path: %@", self.executable.binaryPath);
-
-    NSDictionary *ownershipInfo = @{NSFileOwnerAccountName : @"mobile", NSFileGroupOwnerAccountName : @"mobile"};
-
-    [[NSFileManager defaultManager] setAttributes:ownershipInfo ofItemAtPath:self.executable.binaryPath error:nil];
 }
 
 - (void)dumpToDirectoryURL:(NSURL *)directoryURL {

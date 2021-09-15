@@ -303,7 +303,7 @@
                 if (curloc >= buf + 0x1000) {
                     // we are currently extended past the header page
                     // offset for the next round:
-                    headerProgress = (((char *)curloc - (char *)buf) % 0x1000);
+                    headerProgress = (uint32_t)(((char *)curloc - (char *)buf) % 0x1000);
                     // prevent attaching overdrive dylib by skipping
                     goto writedata;
                 }

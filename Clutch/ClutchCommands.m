@@ -190,7 +190,7 @@
         [NSMutableString stringWithFormat:@"Usage: %@ [OPTIONS]\n", NSProcessInfo.processInfo.processName];
 
     for (ClutchCommand *command in self.allCommands) {
-        BOOL isInvisible = command.flag & ClutchCommandFlagInvisible;
+        BOOL isInvisible = (command.flag & ClutchCommandFlagInvisible) ? YES : NO;
 
         if (!isInvisible) {
             [helpString appendFormat:@"%-2s %-30s%@\n",

@@ -154,6 +154,11 @@
     }
 
     [newFileHandle closeFile];
+	
+	// Lazy, but when dumping a framework it may refer to other frameworks by
+	// rpath. Set our own framework path to the app's framework directory so
+	// that these dependent loads will fallback here.
+	setenv("DYLD_FRAMEWORK_PATH", self.originalBinary.frameworksPath.UTF8String, 0);
 
     extern char **environ;
     posix_spawnattr_t attr;
